@@ -1,0 +1,87 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Assinatura de produção:
+// 1) preferencialmente CallMedTWA/keystore.properties (não versionado), ou
+// 2) variáveis de ambiente CALLMED_KEYSTORE_* em CI/GitHub Actions.
+def playProperties = new Properties()
+def playPropertiesFile = rootProject.file('keystore.properties')
+if (playPropertiesFile.exists()) {
+    playPropertiesFile.withInputStream { playProperties.load(it) }
+}
+
+def signingValue = { String envName, String propertyName ->
+    def envValue = System.getenv(envName)
+    if (envValue != null && !envValue.trim().isEmpty()) return envValue.trim()
+    def propertyValue = playProperties.getProperty(propertyName)
+    return propertyValue == null ? null : propertyValue.trim()
+}
+
+def releaseStoreFile = signingValue('CALLMED_KEYSTORE_FILE', 'storeFile')
+def releaseStorePassword = signingValue('CALLMED_KEYSTORE_PASSWORD', 'storePassword')
+def releaseKeyAlias = signingValue('CALLMED_KEY_ALIAS', 'keyAlias')
+def releaseKeyPassword = signingValue('CALLMED_KEY_PASSWORD', 'keyPassword')
+def releaseSigningReady = [releaseStoreFile, releaseStorePassword, releaseKeyAlias, releaseKeyPassword].every { it != null && !it.isEmpty() }
+def releaseRequested = gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') }
+
+if (releaseRequested && !releaseSigningReady) {
+    throw new GradleException('Assinatura Play ausente. Crie CallMedTWA/keystore.properties a partir de keystore.properties.example ou configure CALLMED_KEYSTORE_FILE, CALLMED_KEYSTORE_PASSWORD, CALLMED_KEY_ALIAS e CALLMED_KEY_PASSWORD.')
+}
+
+android {
+    namespace 'com.callmed.app'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.callmed.app'
+        minSdk 26
+        // Google Play: novos apps/atualizações precisam mirar API 36 a partir de 31/08/2026.
+        targetSdk 36
+        versionCode 2160
+        versionName '21.6.0'
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        if (releaseSigningReady) {
+            release {
+                storeFile rootProject.file(releaseStoreFile)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            versionNameSuffix '-debug'
+        }
+        release {
+            if (releaseSigningReady) {
+                signingConfig signingConfigs.release
+            }
+            minifyEnabled false
+            shrinkResources false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.7.2'
+    implementation 'androidx.browser:browser:1.10.0'
+    implementation 'androidx.core:core:1.16.0'
+}

@@ -1,0 +1,87 @@
+@model IEnumerable<MKSANCrud.Models.ListaEspera>
+@inject MKSANCrud.Services.Clinica.IClinicaClock Clock
+@{
+    ViewData["Title"] = "Lista de espera";
+    var lista = Model.ToList();
+    var ativas = lista.Count(x => x.Ativa);
+    var ofertas = ViewBag.Ofertas as IDictionary<int, MKSANCrud.Models.Disponibilidade>
+        ?? new Dictionary<int, MKSANCrud.Models.Disponibilidade>();
+}
+<section class="v16-page">
+    <div class="v16-page-head">
+        <div>
+            <span class="v16-eyebrow">VAGAS INTELIGENTES</span>
+            <h1>Lista de espera</h1>
+            <p>A CallMed acompanha vagas reais e avisa pelo canal preferido. Se o canal digital não estiver disponível, a equipe pode receber uma tarefa para contato telefônico.</p>
+        </div>
+        <a class="btn" asp-action="Create">+ Entrar na lista</a>
+    </div>
+
+    <div class="agenda-summary">
+        <div class="v16-stat"><span>Pedidos</span><strong>@lista.Count</strong><small>total exibido</small></div>
+        <div class="v16-stat"><span>Ativos</span><strong>@ativas</strong><small>aguardando vaga</small></div>
+        <div class="v16-stat"><span>Encerrados</span><strong>@(lista.Count - ativas)</strong><small>concluídos/cancelados</small></div>
+        <div class="v16-stat"><span>Automação</span><strong class="stat-date">15 min</strong><small>verificação de novas vagas</small></div>
+    </div>
+
+    <div class="v16-card table-card">
+        @if (!lista.Any())
+        {
+            <div class="v16-empty">
+                <span>◷</span>
+                <strong>Nenhum pedido na lista de espera.</strong>
+                <p>Crie uma preferência para receber aviso quando surgir uma vaga compatível.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-scroll">
+                <table class="v16-table">
+                    <thead>
+                        <tr><th>Paciente</th><th>Preferência</th><th>Data</th><th>Período</th><th>Situação</th><th>Último aviso</th><th>Ação</th></tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in lista)
+                    {
+                        ofertas.TryGetValue(item.Id, out var oferta);
+                        <tr>
+                            <td><strong>@item.Paciente?.Nome</strong></td>
+                            <td>@(item.Medico?.Nome ?? item.Especialidade?.Nome ?? "—")</td>
+                            <td>@(item.DataPreferida?.ToString("dd/MM/yyyy") ?? "Próximos 90 dias")</td>
+                            <td><span class="soft-pill">@item.Periodo</span></td>
+                            <td>
+                                @if (item.Ativa && oferta?.Data is DateTime dataOferta)
+                                {
+                                    <span class="status-dot-pill active"><i></i>Vaga encontrada</span>
+                                    <small class="cm21-wait-offer">@oferta.Medico?.Nome · @dataOferta.ToString("dd/MM") às @oferta.Horario</small>
+                                }
+                                else
+                                {
+                                    <span class="status-dot-pill @(item.Ativa ? "active" : "inactive")"><i></i>@(item.Ativa ? "Aguardando" : "Encerrada")</span>
+                                }
+                            </td>
+                            <td>@(item.NotificadoEm.HasValue ? Clock.ConverterUtc(item.NotificadoEm.Value).ToString("dd/MM HH:mm") : "—")</td>
+                            <td>
+                                @if (item.Ativa && oferta is not null && User.IsInRole("Paciente"))
+                                {
+                                    <form asp-action="AceitarVaga" method="post" class="cm21-inline-form">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button class="btn small" type="submit">Aceitar vaga</button>
+                                    </form>
+                                }
+                                @if (item.Ativa)
+                                {
+                                    <form asp-action="Cancelar" method="post" class="cm21-inline-form" onsubmit="return confirm('Sair desta lista de espera?');">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button class="btn-link-clean danger-link" type="submit">Cancelar</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</section>

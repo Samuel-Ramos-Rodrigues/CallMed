@@ -1,0 +1,161 @@
+@model MKSANCrud.ViewModels.FuncionarioPainelViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Dashboard";
+    var primeiroNome = string.IsNullOrWhiteSpace(Model.NomeUsuario) ? "Equipe" : Model.NomeUsuario.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "Equipe";
+    var serie = Model.SerieConsultas.ToList();
+    var maxSerie = Math.Max(1, serie.Select(x => x.Total).DefaultIfEmpty(0).Max());
+    var pontos = new List<string>();
+    for (var i = 0; i < serie.Count; i++)
+    {
+        var x = serie.Count <= 1 ? 50 : 4 + (92.0 * i / (serie.Count - 1));
+        var y = 86 - (68.0 * serie[i].Total / maxSerie);
+        pontos.Add($"{x.ToString("0.##", CultureInfo.InvariantCulture)},{y.ToString("0.##", CultureInfo.InvariantCulture)}");
+    }
+    var totalAtendimento = Math.Max(1, Model.ConversasAbertas);
+    var iaPct = Model.ConversasIA * 100.0 / totalAtendimento;
+    var humanoPct = Model.ConversasHumano * 100.0 / totalAtendimento;
+    var aguardandoPct = Math.Max(0, 100 - iaPct - humanoPct);
+    var agendaHoje = Model.ProximasConsultas.Where(x => x.Data.Date == Model.Hoje.Date).Take(5).ToList();
+    if (!agendaHoje.Any()) agendaHoje = Model.ProximasConsultas.Take(5).ToList();
+}
+
+<section class="cm19-dashboard">
+    <header class="cm19-welcome-row">
+        <div>
+            <h1>Bom dia, @primeiroNome! <span aria-hidden="true">👋</span></h1>
+            <p>Aqui está o que acontece hoje na CallMed.</p>
+        </div>
+        <div class="cm19-date-chip">
+            <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg>
+            <span>@Model.Hoje.ToString("dd 'de' MMMM 'de' yyyy", new CultureInfo("pt-BR"))</span>
+        </div>
+    </header>
+
+    <div class="cm19-kpis">
+        <a class="cm19-kpi green" asp-controller="Consulta" asp-action="Index">
+            <span class="cm19-kpi-icon"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg></span>
+            <span><small>Consultas hoje</small><strong>@Model.ConsultasHoje</strong><em>Agenda atual</em></span>
+        </a>
+        <a class="cm19-kpi amber" asp-controller="Consulta" asp-action="Index" asp-route-status="Pendente">
+            <span class="cm19-kpi-icon"><svg><use href="/icons/callmed-ui.svg#clock"></use></svg></span>
+            <span><small>Aguardando</small><strong>@Model.AguardandoHoje</strong><em>Precisam de atenção</em></span>
+        </a>
+        <a class="cm19-kpi green-soft" asp-controller="Consulta" asp-action="Index" asp-route-status="Confirmada">
+            <span class="cm19-kpi-icon"><svg><use href="/icons/callmed-ui.svg#check"></use></svg></span>
+            <span><small>Confirmadas</small><strong>@Model.ConfirmadasHoje</strong><em>Para hoje</em></span>
+        </a>
+        <a class="cm19-kpi red" asp-controller="Consulta" asp-action="Index" asp-route-status="Cancelada">
+            <span class="cm19-kpi-icon"><b>×</b></span>
+            <span><small>Canceladas</small><strong>@Model.CanceladasHoje</strong><em>Hoje</em></span>
+        </a>
+    </div>
+
+    <section class="cm21-challenge-results cm19-card">
+        <div class="cm19-card-head"><div><h2>Indicadores do desafio</h2><p>Resultados ligados à agilidade, confirmação, absenteísmo e integração de canais.</p></div><a asp-controller="Solicitacoes" asp-action="Index">Abrir fluxo de solicitações</a></div>
+        <div class="cm21-result-grid">
+            <a asp-controller="Solicitacoes" asp-action="Index"><small>Solicitações hoje</small><strong>@Model.SolicitacoesHoje</strong><span>Todos os canais</span></a>
+            <a asp-controller="Solicitacoes" asp-action="Index"><small>Pendentes no fluxo</small><strong>@Model.SolicitacoesPendentes</strong><span>@Model.SolicitacoesAtrasadas há mais de 30 min</span></a>
+            <div><small>Taxa de confirmação</small><strong>@Model.TaxaConfirmacaoSolicitacoes.ToString("0.0")%</strong><span>Solicitações do mês convertidas em consulta</span></div>
+            <div><small>Tempo médio até confirmação</small><strong>@(Model.TempoMedioConfirmacaoMinutos <= 0 ? "—" : $"{Model.TempoMedioConfirmacaoMinutos:0} min")</strong><span>Solicitação → consulta</span></div>
+            <a asp-controller="Consulta" asp-action="Index" asp-route-status="Ausente"><small>Absenteísmo no mês</small><strong>@Model.TaxaAbsenteismo.ToString("0.0")%</strong><span>@Model.AusenciasMes ausência(s)</span></a>
+            <a asp-controller="ListaEspera" asp-action="Index"><small>Vagas recuperadas</small><strong>@Model.VagasRecuperadasListaEspera</strong><span>Lista de espera</span></a>
+        </div>
+        @if (Model.SolicitacoesPorCanal.Any())
+        {
+            var totalCanais = Math.Max(1, Model.SolicitacoesPorCanal.Sum(x => x.Total));
+            <div class="cm21-channel-strip">
+                @foreach (var canal in Model.SolicitacoesPorCanal)
+                {
+                    var pctCanal = canal.Total * 100.0 / totalCanais;
+                    <div><span><b>@canal.Nome</b><em>@canal.Total · @pctCanal.ToString("0")%</em></span><i><u style="width:@pctCanal.ToString("0.##", CultureInfo.InvariantCulture)%"></u></i></div>
+                }
+            </div>
+        }
+    </section>
+
+    <div class="cm19-dashboard-grid two">
+        <section class="cm19-card cm19-today-card">
+            <div class="cm19-card-head">
+                <div><h2>Agenda de hoje</h2><p>Próximos atendimentos da clínica.</p></div>
+                <a asp-controller="Agenda" asp-action="Index">Ver agenda completa</a>
+            </div>
+            @if (!agendaHoje.Any())
+            {
+                <div class="cm19-empty">Nenhuma consulta encontrada para o período.</div>
+            }
+            else
+            {
+                <div class="cm19-agenda-list">
+                    @foreach (var item in agendaHoje)
+                    {
+                        <a asp-controller="Consulta" asp-action="Details" asp-route-id="@item.Id" class="cm19-agenda-row">
+                            <time>@item.Horario</time>
+                            <span class="cm19-person-copy"><strong>@(item.Paciente?.Nome ?? "Paciente")</strong><small>@(item.Medico?.Especialidade ?? "Consulta") · @(item.Medico?.Nome ?? "Médico")</small></span>
+                            <span class="cm19-status status-@item.Status.ToLowerInvariant()">@item.Status</span>
+                        </a>
+                    }
+                </div>
+            }
+        </section>
+
+        <section class="cm19-card cm19-live-card">
+            <div class="cm19-card-head"><div><h2>Atendimento em tempo real</h2><p>Distribuição das conversas abertas.</p></div><a asp-controller="Atendimento" asp-action="Index">Abrir Central</a></div>
+            <div class="cm19-live-body">
+                <div class="cm19-donut" style="--ia:@iaPct.ToString("0.##", CultureInfo.InvariantCulture);--humano:@humanoPct.ToString("0.##", CultureInfo.InvariantCulture)">
+                    <span><strong>@Model.ConversasAbertas</strong><small>Conversas</small></span>
+                </div>
+                <div class="cm19-live-legend">
+                    <div><i class="wait"></i><span>Aguardando humano</span><strong>@Math.Max(0, Model.ConversasAbertas - Model.ConversasHumano - Model.ConversasIA)</strong></div>
+                    <div><i class="human"></i><span>Em atendimento</span><strong>@Model.ConversasHumano</strong></div>
+                    <div><i class="ai"></i><span>IA atendendo</span><strong>@Model.ConversasIA</strong></div>
+                </div>
+            </div>
+            <div class="cm19-live-footer"><span><small>Atendimentos abertos</small><strong>@Model.ConversasAbertas</strong></span><span><small>Lista de espera</small><strong>@Model.ListaEsperaAtiva</strong></span></div>
+        </section>
+    </div>
+
+    <div class="cm19-dashboard-grid two bottom">
+        <section class="cm19-card cm19-line-card">
+            <div class="cm19-card-head">
+                <div><h2>Consultas nos últimos @Model.PeriodoDias dias</h2><p>Evolução dos agendamentos.</p></div>
+                <form method="get"><select name="dias" onchange="this.form.submit()"><option value="7" selected="@(Model.PeriodoDias == 7 ? "selected" : null)">7 dias</option><option value="14" selected="@(Model.PeriodoDias == 14 ? "selected" : null)">14 dias</option><option value="30" selected="@(Model.PeriodoDias == 30 ? "selected" : null)">30 dias</option></select></form>
+            </div>
+            <div class="cm19-line-chart">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="Gráfico de consultas">
+                    <defs><linearGradient id="cm19Area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a9b6b" stop-opacity=".22"/><stop offset="1" stop-color="#0a9b6b" stop-opacity="0"/></linearGradient></defs>
+                    <polyline class="area" points="4,90 @string.Join(" ", pontos) 96,90" />
+                    <polyline class="line" points="@string.Join(" ", pontos)" />
+                    @for (var i = 0; i < serie.Count; i++)
+                    {
+                        var x = serie.Count <= 1 ? 50 : 4 + (92.0 * i / (serie.Count - 1));
+                        var y = 86 - (68.0 * serie[i].Total / maxSerie);
+                        <circle cx="@x.ToString("0.##", CultureInfo.InvariantCulture)" cy="@y.ToString("0.##", CultureInfo.InvariantCulture)" r="1.25" />
+                    }
+                </svg>
+                <div class="cm19-chart-labels">
+                    @foreach (var item in serie) { <span>@item.Data.ToString("dd/MM")</span> }
+                </div>
+            </div>
+        </section>
+
+        <section class="cm19-card cm19-specialties">
+            <div class="cm19-card-head"><div><h2>Principais especialidades</h2><p>Demanda do mês.</p></div><a asp-controller="Relatorios" asp-action="Index">Relatório</a></div>
+            @if (!Model.EspecialidadesMaisProcuradas.Any())
+            {
+                <div class="cm19-empty">Ainda não há dados suficientes.</div>
+            }
+            else
+            {
+                var totalRanking = Math.Max(1, Model.EspecialidadesMaisProcuradas.Sum(x => x.Total));
+                <div class="cm19-ranking">
+                    @foreach (var item in Model.EspecialidadesMaisProcuradas.Take(5))
+                    {
+                        var pct = item.Total * 100.0 / totalRanking;
+                        <div><span><strong>@item.Nome</strong><b>@pct.ToString("0")%</b></span><i><em style="width:@pct.ToString("0.##", CultureInfo.InvariantCulture)%"></em></i></div>
+                    }
+                </div>
+            }
+        </section>
+    </div>
+</section>

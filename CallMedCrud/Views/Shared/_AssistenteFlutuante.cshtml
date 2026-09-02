@@ -1,0 +1,96 @@
+@{
+    var autenticado = User.Identity?.IsAuthenticated == true;
+    var podeUsarAssistente = User.IsInRole("Paciente") || User.IsInRole("Funcionario") || User.IsInRole("Admin");
+}
+
+@if (autenticado && podeUsarAssistente)
+{
+    <div class="mksan-floating-actions"
+         data-user-id="@(User.Identity?.Name ?? "anon")">
+
+        <button type="button"
+                id="mksan-ai-fab"
+                class="mksan-fab mksan-ai-fab"
+                aria-label="Abrir assistente virtual CallMed"
+                aria-controls="mksan-ai-widget"
+                aria-expanded="false"
+                title="Assistente virtual CallMed">
+
+            <span class="mksan-ai-ring" aria-hidden="true"></span>
+
+            <img src="~/images/logo-callmed-mark.png"
+                 alt=""
+                 class="mksan-fab-logo" />
+
+            <span class="mksan-online-dot"
+                  aria-hidden="true"></span>
+        </button>
+    </div>
+
+    <section id="mksan-ai-widget"
+             class="mksan-ai-widget"
+             aria-hidden="true"
+             aria-label="Assistente virtual CallMed">
+
+        <header class="mksan-ai-widget-header">
+            <div class="mksan-widget-brand">
+                <span class="mksan-widget-brand-icon">
+                    <img src="~/images/logo-callmed-mark.png"
+                         alt="" />
+                </span>
+
+                <div class="mksan-widget-brand-copy">
+                    <small>ASSISTENTE VIRTUAL</small>
+                    <strong>CallMed</strong>
+
+                    <span class="mksan-widget-status ia">
+                        <i aria-hidden="true"></i>
+                        <span>Assistente IA</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="mksan-ai-widget-actions">
+                <button type="button"
+                        id="mksan-widget-new"
+                        title="Limpar mensagens"
+                        aria-label="Limpar mensagens exibidas">
+                    ↻
+                </button>
+
+                <button type="button"
+                        id="mksan-widget-close"
+                        title="Fechar"
+                        aria-label="Fechar assistente">
+                    ×
+                </button>
+            </div>
+        </header>
+
+        <div id="mksan-widget-messages"
+             class="mksan-ai-widget-messages"
+             role="log"
+             aria-live="polite"
+             aria-relevant="additions"></div>
+
+        <form id="mksan-widget-form"
+              class="mksan-ai-widget-form">
+
+            @Html.AntiForgeryToken()
+
+            <textarea id="mksan-widget-input"
+                      rows="1"
+                      maxlength="1000"
+                      autocomplete="off"
+                      aria-label="Mensagem para o assistente"
+                      placeholder="Digite sua mensagem..."></textarea>
+
+            <button id="mksan-widget-send"
+                    type="submit"
+                    aria-label="Enviar mensagem"
+                    title="Enviar">
+                ➤
+            </button>
+        </form>
+    </section>
+}

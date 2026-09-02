@@ -1,0 +1,156 @@
+@model Paciente
+
+<div asp-validation-summary="ModelOnly" class="validation"></div>
+
+<section class="patient-form-section patient-section-personal">
+    <div class="patient-form-section-head">
+        <span class="patient-form-section-icon">
+            <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg>
+        </span>
+        <div>
+            <h2>Dados pessoais</h2>
+            <p>Informações básicas de identificação do paciente.</p>
+        </div>
+    </div>
+    <div class="patient-form-section-body">
+        <div class="form-grid patient-personal-grid">
+            <div class="field">
+                <label asp-for="Nome">Nome completo</label>
+                <input asp-for="Nome" autocomplete="name" placeholder="Digite o nome completo" />
+                <span asp-validation-for="Nome" class="validation"></span>
+            </div>
+
+            <div class="field">
+                <label asp-for="Cpf">CPF</label>
+                <input asp-for="Cpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" />
+                <span asp-validation-for="Cpf" class="validation"></span>
+            </div>
+
+            <div class="field full patient-date-field">
+                <label asp-for="DataNascimento">Data de nascimento</label>
+                <input type="hidden"
+                       id="dataNascimentoPaciente"
+                       name="DataNascimento"
+                       value="@(Model?.DataNascimento?.ToString("yyyy-MM-dd") ?? "")" />
+                <div class="date-select"
+                     data-date-select
+                     data-target="dataNascimentoPaciente"
+                     data-mode="birth"></div>
+                <span asp-validation-for="DataNascimento" class="validation"></span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="patient-form-section patient-section-contact">
+    <div class="patient-form-section-head">
+        <span class="patient-form-section-icon">
+            <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#phone"></use></svg>
+        </span>
+        <div>
+            <h2>Contato</h2>
+            <p>Canais de comunicação utilizados pela clínica.</p>
+        </div>
+    </div>
+    <div class="patient-form-section-body">
+        <div class="form-grid">
+            <div class="field">
+                <label asp-for="Email">E-mail</label>
+                <input asp-for="Email" autocomplete="email" placeholder="paciente@email.com" />
+                <span asp-validation-for="Email" class="validation"></span>
+            </div>
+
+            <div class="field">
+                <label asp-for="Telefone">Telefone</label>
+                <input asp-for="Telefone" inputmode="tel" autocomplete="tel" placeholder="(79) 99999-9999" />
+                <span asp-validation-for="Telefone" class="validation"></span>
+            </div>
+
+            <div class="field full">
+                <label asp-for="CanalPreferido">Canal preferido para lembretes</label>
+                <select asp-for="CanalPreferido">
+                    <option value="WhatsApp">WhatsApp</option>
+                    <option value="SMS">SMS</option>
+                    <option value="Email">E-mail</option>
+                    <option value="Telefone">Ligação telefônica / contato manual</option>
+                </select>
+                <small>Para telefone, a CallMed cria uma tarefa para a equipe entrar em contato, sem depender de robô de voz.</small>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="patient-form-section patient-section-insurance">
+    <div class="patient-form-section-head">
+        <span class="patient-form-section-icon">
+            <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#card"></use></svg>
+        </span>
+        <div>
+            <h2>Convênio</h2>
+            <p>Informações de cobertura e identificação do plano.</p>
+        </div>
+    </div>
+    <div class="patient-form-section-body">
+        <div class="form-grid">
+            <div class="field full toggle-field">
+                <span class="toggle-field-label">Possui convênio</span>
+                <label class="cm-switch-control">
+                    <input asp-for="TemConvenio" class="cm-switch-input" />
+                    <span class="cm-switch-track" aria-hidden="true"><span></span></span>
+                    <span class="cm-switch-copy">Sim</span>
+                </label>
+            </div>
+
+            <div class="field">
+                <label asp-for="NomeConvenio">Nome do convênio</label>
+                <input asp-for="NomeConvenio" autocomplete="off" placeholder="Digite o nome do convênio" />
+                <span asp-validation-for="NomeConvenio" class="validation"></span>
+            </div>
+
+            <div class="field">
+                <label asp-for="NumeroConvenio">Número do convênio</label>
+                <input asp-for="NumeroConvenio" autocomplete="off" placeholder="Digite o número da carteirinha" />
+                <span asp-validation-for="NumeroConvenio" class="validation"></span>
+            </div>
+
+            <div class="field full patient-validity-field">
+                <label asp-for="ValidadeConvenio">Validade do convênio</label>
+                <input type="hidden"
+                       id="validadeConvenioPaciente"
+                       name="ValidadeConvenio"
+                       value="@(Model?.ValidadeConvenio?.ToString("yyyy-MM-dd") ?? "")" />
+                <div class="date-select"
+                     data-date-select
+                     data-target="validadeConvenioPaciente"
+                     data-mode="validity"></div>
+                <span asp-validation-for="ValidadeConvenio" class="validation"></span>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (Model is not null && Model.Id > 0)
+{
+    <section class="patient-form-section patient-section-status">
+        <div class="patient-form-section-head">
+            <span class="patient-form-section-icon">
+                <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#shield"></use></svg>
+            </span>
+            <div>
+                <h2>Situação do cadastro</h2>
+                <p>Gerencie o acesso do paciente sem apagar o histórico.</p>
+            </div>
+        </div>
+        <div class="patient-form-section-body patient-status-body">
+            <div class="toggle-field status-toggle-field">
+                <span class="toggle-field-label">Paciente ativo</span>
+                <label class="cm-switch-control">
+                    <input asp-for="Ativo" class="cm-switch-input" />
+                    <span class="cm-switch-track" aria-hidden="true"><span></span></span>
+                    <span class="cm-switch-copy">Sim</span>
+                </label>
+                <small>Ao desativar, o acesso é bloqueado e o histórico de consultas é preservado.</small>
+            </div>
+        </div>
+    </section>
+}

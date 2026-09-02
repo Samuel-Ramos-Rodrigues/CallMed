@@ -1,0 +1,30 @@
+@model MKSANCrud.ViewModels.NovaSolicitacaoViewModel
+@using MKSANCrud.Models.Atendimento
+@{
+    ViewData["Title"] = "Nova solicitação";
+}
+<section class="cm21-form-page">
+    <header class="cm21-page-head"><div><span class="v16-eyebrow">ENTRADA HÍBRIDA</span><h1>Registrar solicitação</h1><p>Use esta tela para telefone, presencial ou qualquer solicitação que precise entrar manualmente no fluxo.</p></div><a class="btn secondary" asp-action="Index">Voltar</a></header>
+    <form asp-action="Create" method="post" class="cm21-form-card">
+        <div asp-validation-summary="All" class="validation"></div>
+        <div class="cm21-form-grid">
+            <label><span>Canal de entrada</span><select asp-for="Canal">
+                <option value="Presencial">Presencial</option><option value="Telefone">Telefone</option><option value="WhatsApp">WhatsApp</option><option value="Web">Site/PWA</option><option value="Email">E-mail</option><option value="Sms">SMS</option>
+            </select></label>
+            <label><span>Paciente já cadastrado</span><select asp-for="PacienteId" asp-items="ViewBag.Pacientes"><option value="">Ainda não identificado / novo contato</option></select></label>
+            <label><span>Especialidade solicitada</span><select asp-for="EspecialidadeId" asp-items="ViewBag.Especialidades"><option value="">Definir na triagem</option></select></label>
+            <label><span>Médico preferido</span><select asp-for="MedicoId" asp-items="ViewBag.Medicos"><option value="">Sem preferência</option></select></label>
+            <label><span>Data preferida</span><input asp-for="DataPreferida" type="date" /></label>
+            <label><span>Período</span><select asp-for="PeriodoPreferido"><option>Qualquer</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></label>
+        </div>
+        <fieldset class="cm21-fieldset"><legend>Contato, caso ainda não esteja identificado</legend><div class="cm21-form-grid">
+            <label><span>Nome</span><input asp-for="NomeContato" /></label>
+            <label><span>Telefone</span><input asp-for="TelefoneContato" inputmode="tel" /></label>
+            <label><span>E-mail</span><input asp-for="EmailContato" type="email" /></label>
+        </div></fieldset>
+        <label class="cm21-full"><span>O que o paciente solicitou?</span><textarea asp-for="Observacao" rows="5" placeholder="Ex.: deseja consulta de dermatologia pela manhã; informou convênio..."></textarea></label>
+        <div class="cm21-form-actions"><a class="btn secondary" asp-action="Index">Cancelar</a><button class="btn" type="submit">Criar e iniciar triagem</button></div>
+    </form>
+</section>
+
+@section Scripts { <partial name="_ValidationScriptsPartial"/> }

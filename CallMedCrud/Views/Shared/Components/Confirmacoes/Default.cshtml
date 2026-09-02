@@ -1,0 +1,90 @@
+@model MKSANCrud.ViewModels.ConfirmacoesViewModel
+@{
+    var primeiro = Model.Itens.FirstOrDefault();
+}
+<div class="v18-tool-wrap cm-confirm-wrap">
+    <button type="button"
+            class="v18-icon-button v18-notification-button cm-confirm-trigger"
+            data-popover-trigger="confirmacoes"
+            data-confirmation-count="@Model.Total"
+            data-confirmation-title="@(primeiro?.Titulo ?? "")"
+            data-confirmation-description="@(primeiro?.Descricao ?? "")"
+            aria-label="Confirmações pendentes"
+            title="Confirmações">
+        <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#bell"></use></svg>
+        @if (Model.Total > 0)
+        {
+            <span class="v18-notification-badge cm-confirm-badge">@(Model.Total > 99 ? "99+" : Model.Total)</span>
+        }
+    </button>
+
+    <div class="v18-popover cm-confirm-popover" data-popover="confirmacoes" hidden>
+        <div class="cm-confirm-popover-head">
+            <div>
+                <strong>Confirmações</strong>
+                <small>@(Model.Total == 0 ? "Nenhuma ação pendente" : $"{Model.Total} ação(ões) aguardando você")</small>
+            </div>
+            @if (Model.Total > 0)
+            {
+                <span>@Model.Total</span>
+            }
+        </div>
+
+        @if (Model.Total == 0)
+        {
+            <div class="cm-confirm-empty">
+                <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg>
+                <div><strong>Tudo certo por aqui.</strong><small>Quando algo precisar da sua confirmação, aparecerá neste sino.</small></div>
+            </div>
+        }
+        else
+        {
+            <div class="cm-confirm-mini-list">
+                @foreach (var item in Model.Itens.Take(3))
+                {
+                    <article class="cm-confirm-mini-item">
+                        <div class="cm-confirm-mini-icon">
+                            <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#@(item.Tipo == "lista-espera" ? "clock" : item.Tipo == "solicitacao" ? "chat" : "calendar")"></use></svg>
+                        </div>
+                        <div class="cm-confirm-mini-copy">
+                            <strong>@item.Titulo</strong>
+                            <small>@item.Descricao</small>
+                            <div class="cm-confirm-mini-actions">
+                                @if (item.Tipo == "consulta")
+                                {
+                                    @if (Model.Papel is "Paciente" or "Funcionario" or "Admin")
+                                    {
+                                        <form asp-controller="Consulta" asp-action="Confirmar" method="post">
+                                            <input type="hidden" name="id" value="@item.Id" />
+                                            <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                                            <button type="submit" class="cm-confirm-primary">Confirmar</button>
+                                        </form>
+                                    }
+                                    @if (Model.Papel == "Paciente")
+                                    {
+                                        <a asp-controller="Consulta" asp-action="Remarcar" asp-route-id="@item.Id">Remarcar</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Consulta" asp-action="Details" asp-route-id="@item.Id">Ver</a>
+                                    }
+                                }
+                                else if (item.Tipo == "lista-espera" && Model.Papel == "Paciente")
+                                {
+                                    <form asp-controller="ListaEspera" asp-action="AceitarVaga" method="post"><input type="hidden" name="id" value="@item.ListaEsperaId" /><input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" /><button type="submit" class="cm-confirm-primary">Aceitar vaga</button></form>
+                                    <a asp-controller="ListaEspera" asp-action="Index">Ver pedido</a>
+                                }
+                                else if (item.Tipo == "solicitacao" && Model.Papel is "Funcionario" or "Admin")
+                                {
+                                    <a class="cm-confirm-primary" asp-controller="Solicitacoes" asp-action="Triagem" asp-route-id="@item.Id">Abrir triagem</a>
+                                    <a asp-controller="Solicitacoes" asp-action="Index">Ver fila</a>
+                                }
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+            <a class="cm-confirm-all" asp-controller="Confirmacoes" asp-action="Index">Ver todas as confirmações <span>→</span></a>
+        }
+    </div>
+</div>

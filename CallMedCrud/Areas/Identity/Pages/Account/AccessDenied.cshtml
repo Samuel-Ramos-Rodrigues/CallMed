@@ -1,0 +1,62 @@
+@page
+@{
+    Layout = null; ViewData["Title"] = "Acesso negado";
+}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+        <meta name="theme-color" content="#eef6f2"  />
+        <script>
+            (function () {
+                var pref = 'system';
+                try {
+                    var saved = localStorage.getItem('callmed-theme');
+                    if (saved === 'light' || saved === 'dark' || saved === 'system') pref = saved;
+                } catch { }
+                var dark = pref === 'dark' || (pref === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.dataset.themePreference = pref;
+                document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+                document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+                var themeMeta = document.querySelector('meta[name="theme-color"]');
+                if (themeMeta) themeMeta.setAttribute('content', dark ? '#071611' : '#eef6f2');
+            })();
+        </script>
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="CallMed" />
+        <meta name="application-name" content="CallMed" />
+        <link rel="manifest" href="~/manifest.json" />
+        <link rel="apple-touch-icon" sizes="180x180" href="~/icons/apple-touch-icon.png" />
+        <title>Acesso negado | CallMed</title>
+        <link rel="stylesheet" href="~/css/identity.css?v=2160" />
+    </head>
+    <body class="identity-body">
+        <main class="identity-shell">
+            <section class="identity-showcase">
+                <a href="/" class="identity-brand"><img src="~/images/logo-callmed-horizontal.png?v=2160" alt="CallMed" class="identity-brand-horizontal" /></a>
+                <div class="identity-copy">
+                    <span class="identity-kicker">Permissões</span>
+                    <h1>Esse recurso não está disponível para o seu perfil.</h1>
+                    <p>
+                        O sistema protege funções administrativas e dados sensíveis conforme o tipo de usuário autenticado.
+                    </p>
+                </div>
+            </section>
+            <section class="identity-panel">
+                <div class="identity-state">
+                    <div class="identity-state-icon">!</div>
+                    <h1>Acesso não permitido</h1>
+                    <p>
+                        Seu perfil não possui permissão para acessar esta função. Você pode voltar e continuar usando normalmente as áreas liberadas.
+                    </p>
+                    <a class="identity-secondary" asp-area="" asp-controller="Home" asp-action="Index">← Voltar ao início</a>
+                </div>
+            </section>
+        </main>
+            <script src="~/js/theme.js?v=2160"></script>
+            <script src="~/js/pwa.js?v=2160"></script>
+    </body>
+</html>

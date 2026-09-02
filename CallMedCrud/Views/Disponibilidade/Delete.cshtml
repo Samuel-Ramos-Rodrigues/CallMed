@@ -1,0 +1,25 @@
+@model Disponibilidade
+@{
+    ViewData["Title"]="Excluir horário excepcional";
+}
+<div class="page-head">
+    <h1>Excluir horário excepcional</h1>
+</div>
+<div class="details-card">
+    <div class="danger-box">
+        Excluir o horário excepcional de
+        <strong>@Model.Medico?.Nome</strong>
+        em
+        <strong>@(Model.Data?.ToString("dd/MM/yyyy") ?? "data não definida")</strong>
+        às
+        <strong>@Model.Horario</strong>
+        ?
+    </div>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="form-actions">
+            <button type="submit" class="btn danger">Excluir</button>
+            <a class="btn secondary" asp-action="Index">Cancelar</a>
+        </div>
+    </form>
+</div>

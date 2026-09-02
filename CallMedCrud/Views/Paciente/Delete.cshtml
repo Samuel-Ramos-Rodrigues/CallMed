@@ -1,0 +1,19 @@
+@model Paciente
+@{
+    ViewData["Title"] = "Desativar paciente";
+}
+<div class="page-head">
+    <h1>Desativar paciente</h1>
+</div>
+<div class="details-card">
+    <div class="danger-box">
+        <strong>@Model.Nome</strong> será desativado. O login será bloqueado, mas o cadastro e todo o histórico de consultas serão preservados.
+    </div>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="form-actions">
+            <button type="submit" class="btn danger">Desativar</button>
+            <a class="btn secondary" asp-action="Index">Cancelar</a>
+        </div>
+    </form>
+</div>

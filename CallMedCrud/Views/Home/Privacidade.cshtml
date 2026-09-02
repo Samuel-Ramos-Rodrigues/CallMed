@@ -1,0 +1,91 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    Layout = null;
+    var contato = Configuration["PlayStore:SupportEmail"]?.Trim();
+    if (string.IsNullOrWhiteSpace(contato))
+        contato = Configuration["Clinica:Email"]?.Trim();
+    var possuiContato = !string.IsNullOrWhiteSpace(contato);
+}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="theme-color" content="#eef6f2" />
+        <script>
+            (function () {
+                var pref = 'system';
+                try {
+                    var saved = localStorage.getItem('callmed-theme');
+                    if (saved === 'light' || saved === 'dark' || saved === 'system') pref = saved;
+                } catch { }
+                var dark = pref === 'dark' || (pref === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.dataset.themePreference = pref;
+                document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+                document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+            })();
+        </script>
+    <title>Política de Privacidade - CallMed</title>
+    <link rel="icon" type="image/png" href="~/icons/icon-192.png" />
+    <link rel="stylesheet" href="~/css/public.css?v=2160" />
+    <style>
+        .privacy-shell{width:min(920px,calc(100% - 24px));margin:32px auto 64px;padding:clamp(20px,4vw,38px);border:1px solid #c7ddd3;border-radius:24px;background:rgba(247,252,249,.96);box-shadow:0 22px 60px rgba(6,63,53,.09)}
+        .privacy-shell h1{margin:.2em 0 .35em;color:#123d32;font-size:clamp(30px,5vw,46px);letter-spacing:-.045em}.privacy-shell h2{margin:1.6em 0 .45em;color:#16493b;font-size:19px}.privacy-shell p,.privacy-shell li{color:#49675c;line-height:1.7;font-size:14px}.privacy-shell ul{padding-left:20px}.privacy-meta{color:#72877f;font-size:12px}.privacy-brand{display:inline-flex;align-items:center;gap:10px;color:#143f34;text-decoration:none;font-size:22px;font-weight:850}.privacy-brand img{width:150px;height:auto}.privacy-note{margin-top:24px;padding:16px;border:1px solid #b9d8ca;border-radius:15px;background:#e8f6ef}.privacy-actions{margin-top:28px;display:flex;flex-wrap:wrap;gap:10px}.privacy-actions a{padding:11px 15px;border-radius:11px;text-decoration:none;font-weight:800}.privacy-actions .primary{color:#fff;background:#087d5d}.privacy-actions .secondary{color:#165445;border:1px solid #bcd6ca;background:#f4faf7}
+        @@media(max-width:560px){.privacy-shell{margin:12px auto 40px;border-radius:18px}.privacy-actions{display:grid}.privacy-actions a{text-align:center}}
+    </style>
+</head>
+<body class="public-body">
+    <main class="privacy-shell">
+        <a class="privacy-brand" href="/"><img src="~/images/logo-callmed-horizontal.png" alt="CallMed" /></a>
+        <p class="privacy-meta">Última atualização: 29/08/2026</p>
+        <h1>Política de Privacidade</h1>
+        <p>Esta política explica como o CallMed trata informações necessárias ao cadastro, agendamento de consultas, atendimento e recursos digitais da clínica. A organização que opera o CallMed é responsável por usar o sistema de acordo com a LGPD e demais normas aplicáveis.</p>
+
+        <h2>1. Informações tratadas</h2>
+        <ul>
+            <li>Dados de cadastro e contato, como nome, CPF, e-mail, telefone e data de nascimento.</li>
+            <li>Dados de convênio, quando informados, incluindo operadora, carteirinha e validade.</li>
+            <li>Dados de agendamento, como especialidade, médico, data, horário, situação da consulta, confirmações e lista de espera.</li>
+            <li>Mensagens enviadas ao Assistente CallMed ou pelos canais de atendimento integrados, quando o usuário utiliza esses recursos.</li>
+            <li>Dados técnicos essenciais de autenticação, sessão, segurança e funcionamento do aplicativo.</li>
+        </ul>
+
+        <h2>2. Finalidades</h2>
+        <p>Os dados são usados para criar e proteger a conta, localizar horários, agendar, remarcar, cancelar e confirmar consultas, manter histórico operacional, processar lista de espera e lembretes, oferecer atendimento, prevenir uso indevido e manter o serviço funcionando.</p>
+
+        <h2>3. Serviços integrados</h2>
+        <p>O CallMed pode utilizar provedores necessários à operação, como hospedagem no Render, banco PostgreSQL/Neon, Google Gemini para funções do assistente de IA e Evolution/WhatsApp quando o atendimento por WhatsApp estiver habilitado. Ao conversar com o assistente, o conteúdo necessário à resposta pode ser processado pelo provedor de IA configurado.</p>
+
+        <h2>4. Compartilhamento e venda</h2>
+        <p>O software não foi projetado para vender dados pessoais. Informações podem ser processadas por fornecedores técnicos essenciais ao serviço, pela clínica e por profissionais autorizados conforme suas funções, ou compartilhadas quando houver obrigação legal.</p>
+
+        <h2>5. Segurança e acesso</h2>
+        <p>O CallMed utiliza autenticação, perfis de acesso e comunicação HTTPS. Cada perfil recebe somente as funções previstas para paciente, médico, funcionário ou administrador. Nenhum sistema elimina totalmente riscos, por isso credenciais devem ser mantidas em sigilo.</p>
+
+        <h2>6. Retenção e direitos</h2>
+        <p>Os registros são mantidos pelo período necessário às finalidades do serviço e às obrigações da clínica. O titular pode solicitar acesso, correção e, quando juridicamente aplicável, eliminação ou outras medidas previstas na LGPD. Alguns registros podem precisar ser preservados por obrigação legal ou para manter a integridade do histórico de atendimento.</p>
+
+        <h2>7. Assistente de IA e saúde</h2>
+        <div class="privacy-note">O Assistente CallMed é um recurso de apoio para navegação, atendimento e agendamento. Ele não substitui avaliação de profissional de saúde, não deve ser usado para diagnóstico e não é um canal de emergência. Em situação urgente, procure o serviço de emergência adequado.</div>
+
+        <h2>8. Contato</h2>
+        @if (possuiContato)
+        {
+            <p>Para dúvidas sobre privacidade ou tratamento de dados, entre em contato pelo e-mail <a href="@("mailto:" + contato)">@contato</a>.</p>
+        }
+        else
+        {
+            <p>O canal de contato de privacidade deve ser informado pela clínica responsável na configuração do CallMed.</p>
+        }
+
+        <div class="privacy-actions">
+            <a class="primary" href="/">Voltar ao CallMed</a>
+            @if (possuiContato)
+            {
+                <a class="secondary" href="@("mailto:" + contato)">Falar com o suporte</a>
+            }
+        </div>
+    </main>
+<script src="~/js/theme.js?v=2160"></script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+@page
+@model MKSANCrud.Areas.Identity.Pages.Account.LoginModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Entrar";
+}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8"  />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+        <meta name="theme-color" content="#eef6f2"  />
+        <script>
+            (function () {
+                var pref = 'system';
+                try {
+                    var saved = localStorage.getItem('callmed-theme');
+                    if (saved === 'light' || saved === 'dark' || saved === 'system') pref = saved;
+                } catch { }
+                var dark = pref === 'dark' || (pref === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.dataset.themePreference = pref;
+                document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+                document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+                var themeMeta = document.querySelector('meta[name="theme-color"]');
+                if (themeMeta) themeMeta.setAttribute('content', dark ? '#071611' : '#eef6f2');
+            })();
+        </script>
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="CallMed" />
+        <meta name="application-name" content="CallMed" />
+        <link rel="manifest" href="~/manifest.json" />
+        <link rel="apple-touch-icon" sizes="180x180" href="~/icons/apple-touch-icon.png" />
+        <title>Entrar | CallMed</title>
+        <link rel="stylesheet" href="~/css/identity.css?v=2160"  />
+    </head>
+    <body class="identity-body">
+        <main class="identity-shell">
+            <section class="identity-showcase">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="identity-brand" aria-label="CallMed">
+                    <img src="~/images/logo-callmed-horizontal.png?v=2160" alt="CallMed" class="identity-brand-horizontal" />
+                </a>
+
+                <div class="identity-copy">
+                    <span class="identity-kicker">Área segura do paciente</span>
+                    <h1>Sua saúde organizada em um só lugar.</h1>
+                    <p>
+                        Entre para acompanhar consultas, verificar horários, remarcar atendimentos e acessar o assistente virtual da CallMed.
+                    </p>
+
+                    <div class="identity-benefits">
+                        <div class="identity-benefit">
+                            <strong>Agenda online</strong>
+                            <span>Consulte apenas horários realmente disponíveis.</span>
+                        </div>
+                        <div class="identity-benefit">
+                            <strong>Controle simples</strong>
+                            <span>Veja, remarque e cancele suas consultas.</span>
+                        </div>
+                        <div class="identity-benefit">
+                            <strong>Assistente CallMed</strong>
+                            <span>Ajuda rápida diretamente dentro do sistema.</span>
+                        </div>
+                    </div>
+                </div>
+                <small style="position:relative;z-index:1;color:#bcd8ce">CallMed · Atendimento digital</small>
+            </section>
+
+            <section class="identity-panel">
+                <div class="identity-card">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="identity-back">← Voltar ao início</a>
+
+                    <div class="identity-card-header">
+                        <h2>Bem-vindo de volta</h2>
+                        <p>Use seu CPF ou e-mail e sua senha para continuar.</p>
+                    </div>
+
+                    @if (TempData["SenhaRedefinida"] is string senhaRedefinida)
+                    {
+                        <div class="identity-note">
+                            <span>✓</span>
+                            <span>@senhaRedefinida</span>
+                        </div>
+                    }
+
+                    @if (Request.Query["contaInativa"] == "1")
+                    {
+                        <div class="mensagem erro">Esta conta está inativa. Procure a clínica para regularizar o acesso.</div>
+                    }
+
+                    <form method="post" class="identity-form">
+                        <input type="hidden" name="returnUrl" value="@Model.ReturnUrl"  />
+                        <div asp-validation-summary="ModelOnly" class="mensagem erro"></div>
+
+                        <div class="input-group">
+                            <label asp-for="Input.Usuario"></label>
+                            <input asp-for="Input.Usuario" autocomplete="username" autofocus placeholder="CPF ou seuemail@email.com"  />
+                            <span asp-validation-for="Input.Usuario" class="field-error"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label asp-for="Input.Password"></label>
+                            <div class="password-wrap">
+                                <input asp-for="Input.Password" id="login-password" autocomplete="current-password" placeholder="Digite sua senha"  />
+                                <button class="password-toggle" id="login-password-toggle" type="button">Mostrar</button>
+                            </div>
+                            <span asp-validation-for="Input.Password" class="field-error"></span>
+                        </div>
+
+                        <div class="identity-options">
+                            <label>
+                                <input asp-for="Input.RememberMe"  />
+                                Lembrar acesso
+                            </label>
+                            <a asp-page="./ForgotPassword">Esqueci minha senha</a>
+                        </div>
+
+                        <button type="submit" class="identity-submit">Entrar na CallMed</button>
+                    </form>
+
+                    <div class="identity-divider">
+                        <span>AINDA NÃO TEM CONTA?</span>
+                    </div>
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="identity-secondary">Criar conta de paciente</a>
+
+                    <div class="identity-note">
+                        <span>🔒</span>
+                        <span>
+                            Seu acesso usa autenticação do sistema e suas informações clínicas não são exibidas publicamente.
+                        </span>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <script>
+(() => {
+    const input = document.getElementById('login-password');
+    const button = document.getElementById('login-password-toggle');
+    button?.addEventListener('click', () => {
+        const showing = input.type === 'text';
+        input.type = showing ? 'password' : 'text';
+        button.textContent = showing ? 'Mostrar' : 'Ocultar';
+    });
+})();
+</script>
+            <script src="~/js/theme.js?v=2160"></script>
+            <script src="~/js/pwa.js?v=2160"></script>
+    </body>
+</html>

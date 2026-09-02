@@ -1,0 +1,9 @@
+@{ ViewData["Title"] = "Configurações"; }
+<section class="cm19-settings-page">
+    <header class="cm19-page-head"><div><span>CALLMED</span><h1>Configurações</h1><p>Preferências gerais da aplicação e informações do ambiente.</p></div></header>
+    <div class="cm19-settings-grid">
+        <section class="cm19-card cm19-setting-card"><span class="cm19-setting-icon"><svg><use href="/icons/callmed-ui.svg#home"></use></svg></span><div><h2>Clínica</h2><p>Identidade utilizada na experiência do sistema.</p><dl><div><dt>Nome</dt><dd>@ViewBag.NomeClinica</dd></div><div><dt>Fuso horário</dt><dd>@ViewBag.TimeZone</dd></div></dl></div></section>
+        <section class="cm19-card cm19-setting-card"><span class="cm19-setting-icon"><svg><use href="/icons/callmed-ui.svg#download"></use></svg></span><div><h2>PWA</h2><p>A CallMed está preparada para instalação em celulares e computadores.</p><dl><div><dt>Status</dt><dd><span class="cm19-ok-dot">Ativo</span></dd></div><div><dt>Aplicativo</dt><dd>CallMed</dd></div></dl><button type="button" class="btn secondary" id="pwa-install-button-settings" data-pwa-install>Instalar aplicativo</button></div></section>
+        <section class="cm19-card cm19-setting-card"><span class="cm19-setting-icon"><svg><use href="/icons/callmed-ui.svg#shield"></use></svg></span><div><h2>Segurança</h2><p>Autenticação e permissões são gerenciadas pelo ASP.NET Core Identity.</p><dl><div><dt>Perfis</dt><dd>Admin · Funcionário · Médico · Paciente</dd></div><div><dt>Sessão</dt><dd>Protegida</dd></div></dl></div></section>
+    </div>
+</section>

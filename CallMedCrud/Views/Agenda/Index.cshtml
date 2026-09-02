@@ -1,0 +1,79 @@
+@model MKSANCrud.ViewModels.AgendaViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Agenda geral";
+    var anterior = Model.Modo == "dia" ? Model.DataReferencia.AddDays(-1) : Model.Modo == "semana" ? Model.DataReferencia.AddDays(-7) : Model.DataReferencia.AddDays(-14);
+    var proximo = Model.Modo == "dia" ? Model.DataReferencia.AddDays(1) : Model.Modo == "semana" ? Model.DataReferencia.AddDays(7) : Model.DataReferencia.AddDays(14);
+    var pt = new CultureInfo("pt-BR");
+    var hojeClinica = ViewBag.HojeClinica is DateTime h ? h.Date : DateTime.Today;
+}
+<section class="cm19-agenda-page">
+    <header class="cm19-page-head agenda-head">
+        <div><span>AGENDA CLÍNICA</span><h1>Agenda geral</h1><p>Consultas, vagas e bloqueios em uma única visão.</p></div>
+        <div class="cm19-head-actions"><a class="btn secondary" asp-controller="Disponibilidade" asp-action="Index">Exceções</a><a class="btn" asp-controller="Consulta" asp-action="Create">+ Nova consulta</a></div>
+    </header>
+
+    <section class="cm19-agenda-toolbar cm19-card">
+        <div class="cm19-period-nav">
+            <a asp-action="Index" asp-route-modo="@Model.Modo" asp-route-data="@anterior.ToString("yyyy-MM-dd")" asp-route-medicoId="@Model.MedicoId" asp-route-especialidadeId="@Model.EspecialidadeId">‹</a>
+            <strong>@(Model.Modo == "dia" ? Model.DataReferencia.ToString("dd 'de' MMMM", pt) : $"{Model.InicioPeriodo:dd MMM} - {Model.FimPeriodo:dd MMM yyyy}")</strong>
+            <a asp-action="Index" asp-route-modo="@Model.Modo" asp-route-data="@proximo.ToString("yyyy-MM-dd")" asp-route-medicoId="@Model.MedicoId" asp-route-especialidadeId="@Model.EspecialidadeId">›</a>
+            <a class="today" asp-action="Index" asp-route-modo="@Model.Modo">Hoje</a>
+        </div>
+        <form method="get" class="cm19-agenda-filters">
+            <input type="hidden" name="modo" value="@Model.Modo" />
+            <select name="medicoId"><option value="">Todos os médicos</option>@foreach(var m in Model.Medicos){<option value="@m.Id" selected="@(Model.MedicoId == m.Id ? "selected" : null)">@m.Nome</option>}</select>
+            <select name="especialidadeId"><option value="">Todas as especialidades</option>@foreach(var e in Model.Especialidades){<option value="@e.Id" selected="@(Model.EspecialidadeId == e.Id ? "selected" : null)">@e.Nome</option>}</select>
+            <button type="submit" class="btn secondary">Filtrar</button>
+        </form>
+        <nav class="cm19-view-switch"><a class="@(Model.Modo == "dia" ? "active" : "")" asp-action="Index" asp-route-modo="dia" asp-route-data="@Model.DataReferencia.ToString("yyyy-MM-dd")">Dia</a><a class="@(Model.Modo == "semana" ? "active" : "")" asp-action="Index" asp-route-modo="semana" asp-route-data="@Model.DataReferencia.ToString("yyyy-MM-dd")">Semana</a><a class="@(Model.Modo == "lista" ? "active" : "")" asp-action="Index" asp-route-modo="lista" asp-route-data="@Model.DataReferencia.ToString("yyyy-MM-dd")">14 dias</a></nav>
+    </section>
+
+    <div class="cm19-agenda-metrics"><span><small>Consultas</small><strong>@Model.TotalConsultas</strong></span><span><small>Vagas livres</small><strong>@Model.TotalLivres</strong></span><span><small>Bloqueios</small><strong>@Model.TotalBloqueados</strong></span></div>
+
+    <section class="cm19-calendar cm19-card" style="--day-count:@Math.Max(1, Model.Dias.Count)">
+        <div class="cm19-calendar-scroll">
+            <div class="cm19-calendar-grid">
+                <div class="cm19-cal-corner"><strong>Médicos</strong></div>
+                @foreach (var dia in Model.Dias)
+                {
+                    <div class="cm19-cal-day @(dia.Data.Date == hojeClinica ? "today" : "")"><small>@dia.Data.ToString("ddd", pt).ToUpper()</small><strong>@dia.Data.ToString("dd/MM")</strong></div>
+                }
+                @foreach (var medico in Model.Medicos)
+                {
+                    <div class="cm19-cal-doctor"><span>@(string.IsNullOrWhiteSpace(medico.Nome) ? "M" : medico.Nome.Substring(0,1).ToUpper())</span><div><strong>@medico.Nome</strong><small>@(medico.EspecialidadeCadastro?.Nome ?? medico.Especialidade)</small></div></div>
+                    @foreach (var dia in Model.Dias)
+                    {
+                        var slots = dia.Slots.Where(x => x.MedicoId == medico.Id).OrderBy(x => x.Horario).ToList();
+                        <div class="cm19-cal-cell @(dia.Data.Date == hojeClinica ? "today" : "")">
+                            @if (!slots.Any())
+                            {
+                                <span class="cm19-no-slot">—</span>
+                            }
+                            else
+                            {
+                                @foreach (var slot in slots)
+                                {
+                                    var css = slot.ConsultaId.HasValue ? "busy" : slot.Ativo ? "free" : "blocked";
+                                    @if (slot.ConsultaId.HasValue)
+                                    {
+                                        <a class="cm19-cal-event @css" asp-controller="Consulta" asp-action="Details" asp-route-id="@slot.ConsultaId"><strong>@slot.Horario</strong><span>@slot.PacienteNome</span><small>@slot.StatusConsulta</small></a>
+                                    }
+                                    else if (slot.Ativo)
+                                    {
+                                        <a class="cm19-cal-event @css" asp-controller="Consulta" asp-action="Create" asp-route-medicoId="@slot.MedicoId" asp-route-data="@dia.Data.ToString("yyyy-MM-dd")" asp-route-horario="@slot.Horario"><strong>@slot.Horario</strong><span>Vaga livre</span><small>@(slot.Encaixe ? "Encaixe" : "Disponível")</small></a>
+                                    }
+                                    else
+                                    {
+                                        <span class="cm19-cal-event @css"><strong>@slot.Horario</strong><span>Bloqueado</span></span>
+                                    }
+                                }
+                            }
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <footer class="cm19-calendar-legend"><span><i class="free"></i>Disponível</span><span><i class="busy"></i>Consulta</span><span><i class="blocked"></i>Bloqueado</span></footer>
+    </section>
+</section>

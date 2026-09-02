@@ -1,0 +1,47 @@
+@model MKSANCrud.ViewModels.MinhaContaViewModel
+@{
+    ViewData["Title"] = "Meu perfil";
+    var iniciais = string.Join("", (Model.Nome ?? "P").Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(x => x.Substring(0,1).ToUpper()));
+}
+<section class="cm19-patient-record cm19-my-profile">
+    <header class="cm19-record-head cm19-card">
+        <div class="cm19-record-profile"><span class="cm19-record-avatar">@iniciais</span><div><h1>@Model.Nome</h1><p>Paciente desde @ClinicaClock.ConverterUtc(Model.CriadoEm).ToString("MM/yyyy")</p></div></div>
+        <a class="btn secondary" asp-action="Edit">Editar perfil</a>
+    </header>
+    <nav class="cm19-record-tabs"><a class="active" href="#dados">Dados</a><a asp-controller="Consulta" asp-action="Index">Consultas</a><a asp-controller="ListaEspera" asp-action="Index">Lista de espera</a></nav>
+    <section class="cm19-card cm19-data-card" id="dados">
+        <div class="cm19-card-head"><div><h2>Dados pessoais</h2><p>Suas informações na CallMed.</p></div></div>
+        <dl class="cm19-data-list">
+            <div><dt><svg><use href="/icons/callmed-ui.svg#mail"></use></svg>E-mail</dt><dd>@Model.Email</dd></div>
+            <div><dt><svg><use href="/icons/callmed-ui.svg#phone"></use></svg>Telefone</dt><dd>@(string.IsNullOrWhiteSpace(Model.Telefone) ? "Não informado" : Model.Telefone)</dd></div>
+            <div><dt><svg><use href="/icons/callmed-ui.svg#bell"></use></svg>Lembretes</dt><dd>@Model.CanalPreferido</dd></div>
+            <div><dt><svg><use href="/icons/callmed-ui.svg#user"></use></svg>CPF</dt><dd>@Model.Cpf</dd></div>
+            <div><dt><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg>Data de nascimento</dt><dd>@(Model.DataNascimento?.ToString("dd/MM/yyyy") ?? "Não informada")</dd></div>
+            <div><dt><svg><use href="/icons/callmed-ui.svg#card"></use></svg>Convênio</dt><dd>@(Model.TemConvenio ? Model.NomeConvenio ?? "Não informado" : "Particular")</dd></div>
+            @if (Model.TemConvenio)
+            {
+                <div><dt>Carteirinha</dt><dd>@(Model.NumeroConvenio ?? "Não informada")</dd></div>
+                <div><dt>Validade do convênio</dt><dd>@(Model.ValidadeConvenio?.ToString("dd/MM/yyyy") ?? "Não informada")</dd></div>
+            }
+        </dl>
+    </section>
+    <section class="cm19-card cm19-appearance-card" id="aparencia">
+        <div class="cm19-card-head"><div><h2>Aparência</h2><p>Escolha como a CallMed deve aparecer neste dispositivo.</p></div></div>
+        <div class="cm19-appearance-options" role="radiogroup" aria-label="Tema da CallMed">
+            <button type="button" class="cm19-appearance-option" data-theme-choice="light" role="radio" aria-checked="false"><span class="preview light"></span><strong>Claro</strong><small>Visual suave e luminoso</small><i></i></button>
+            <button type="button" class="cm19-appearance-option" data-theme-choice="dark" role="radio" aria-checked="false"><span class="preview dark"></span><strong>Escuro</strong><small>Confortável em ambientes escuros</small><i></i></button>
+            <button type="button" class="cm19-appearance-option" data-theme-choice="system" role="radio" aria-checked="false"><span class="preview system"></span><strong>Sistema</strong><small>Acompanha o celular ou computador</small><i></i></button>
+        </div>
+    </section>
+    <section class="cm19-card cm19-appearance-card" id="acessibilidade">
+        <div class="cm19-card-head"><div><h2>Acessibilidade</h2><p>Adapte a CallMed para leitura mais fácil e uso simplificado.</p></div></div>
+        <div class="cm21-a11y-options">
+            <button type="button" class="cm21-a11y-option" data-a11y-toggle="large" aria-pressed="false"><span>A+</span><div><strong>Texto maior</strong><small>Aumenta textos e controles.</small></div><b data-a11y-status>Desativado</b></button>
+            <button type="button" class="cm21-a11y-option" data-a11y-toggle="contrast" aria-pressed="false"><span>◐</span><div><strong>Alto contraste</strong><small>Destaca bordas e foco.</small></div><b data-a11y-status>Desativado</b></button>
+            <button type="button" class="cm21-a11y-option" data-a11y-toggle="motion" aria-pressed="false"><span>≈</span><div><strong>Reduzir animações</strong><small>Evita movimentos desnecessários.</small></div><b data-a11y-status>Desativado</b></button>
+            <button type="button" class="cm21-a11y-option" data-a11y-toggle="simple" aria-pressed="false"><span>☝</span><div><strong>Modo simplificado</strong><small>Home com quatro ações grandes.</small></div><b data-a11y-status>Desativado</b></button>
+        </div>
+        <div class="cm21-a11y-read-actions"><button type="button" class="btn secondary" data-a11y-read>🔊 Ouvir esta tela</button><button type="button" class="btn secondary" data-a11y-stop-read>Parar leitura</button></div>
+    </section>
+    <section class="cm19-card cm19-profile-danger"><div><strong>Remover meu acesso</strong><p>Seu histórico de consultas será preservado, mas o acesso ficará inativo.</p></div><form asp-action="Delete" method="post" onsubmit="return confirm('Deseja realmente remover seu acesso?');"><button class="btn secondary" type="submit">Remover acesso</button></form></section>
+</section>

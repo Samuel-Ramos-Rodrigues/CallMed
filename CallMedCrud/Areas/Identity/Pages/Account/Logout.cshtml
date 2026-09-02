@@ -1,0 +1,43 @@
+@page
+@model MKSANCrud.Areas.Identity.Pages.Account.LogoutModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+        <meta name="theme-color" content="#eef6f2"  />
+        <script>
+            (function () {
+                var pref = 'system';
+                try {
+                    var saved = localStorage.getItem('callmed-theme');
+                    if (saved === 'light' || saved === 'dark' || saved === 'system') pref = saved;
+                } catch { }
+                var dark = pref === 'dark' || (pref === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.dataset.themePreference = pref;
+                document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+                document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+                var themeMeta = document.querySelector('meta[name="theme-color"]');
+                if (themeMeta) themeMeta.setAttribute('content', dark ? '#071611' : '#eef6f2');
+            })();
+        </script>
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="CallMed" />
+        <meta name="application-name" content="CallMed" />
+        <link rel="manifest" href="~/manifest.json" />
+        <link rel="apple-touch-icon" sizes="180x180" href="~/icons/apple-touch-icon.png" />
+        <link rel="stylesheet" href="~/css/identity.css?v=2160" />
+    
+    <title>Saindo | CallMed</title>
+</head>
+<body>
+    <p>Encerrando sua sessão...</p>
+        <script src="~/js/theme.js?v=2160"></script>
+            <script src="~/js/pwa.js?v=2160"></script>
+    </body>
+</html>

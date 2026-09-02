@@ -1,0 +1,94 @@
+@model MKSANCrud.ViewModels.TriagemSolicitacaoViewModel
+@using MKSANCrud.Models
+@using MKSANCrud.Models.Atendimento
+@{
+    var s = Model.Solicitacao;
+    ViewData["Title"] = $"Triagem #{s.Id}";
+    var atendimentoParticularAtual = string.Equals(s.ConvenioInformado, "Particular", StringComparison.OrdinalIgnoreCase);
+    var elegibilidadeDisponivel = Model.Elegibilidade is not null && s.PacienteId.HasValue && s.EspecialidadeId.HasValue;
+    var elegibilidadeOk = atendimentoParticularAtual || (elegibilidadeDisponivel
+        && (Model.Elegibilidade!.PossuiConvenioValido ? Model.Elegibilidade.RegrasConfiguradas && Model.Elegibilidade.Elegivel : true));
+    var elegibilidadePendente = !atendimentoParticularAtual && (!elegibilidadeDisponivel
+        || (Model.Elegibilidade!.PossuiConvenioValido && !Model.Elegibilidade.RegrasConfiguradas));
+    string CanalNome(CanalAtendimento c) => c switch { CanalAtendimento.WhatsApp=>"WhatsApp", CanalAtendimento.Email=>"E-mail", CanalAtendimento.Sms=>"SMS", CanalAtendimento.Telefone=>"Telefone", CanalAtendimento.Presencial=>"Presencial", _=>"Site/PWA" };
+    var cpfFinal = s.Paciente?.Cpf is string cpf && cpf.Length > 4 ? cpf.Substring(cpf.Length - 4) : s.Paciente?.Cpf;
+    var bloqueada = s.Consulta is not null || s.Status is StatusSolicitacaoAtendimento.Confirmada or StatusSolicitacaoAtendimento.Cancelada or StatusSolicitacaoAtendimento.Encerrada;
+    var prontoParaAgenda = !bloqueada && s.Status == StatusSolicitacaoAtendimento.BuscandoHorario
+        && s.PacienteId.HasValue
+        && s.EspecialidadeId.HasValue
+        && s.ElegivelConvenio != false
+        && string.IsNullOrWhiteSpace(s.PendenciaTriagem);
+}
+<section class="cm21-triage-page">
+    <header class="cm21-page-head"><div><span class="v16-eyebrow">TRIAGEM ADMINISTRATIVA</span><h1>Solicitação #@s.Id</h1><p>@CanalNome(s.Canal) · criada em @ClinicaClock.ConverterUtc(s.CriadoEm).ToString("dd/MM/yyyy HH:mm")</p></div><a class="btn secondary" asp-action="Index">Voltar ao fluxo</a></header>
+
+    <div class="cm21-triage-grid">
+        <form asp-action="Triagem" method="post" class="cm21-form-card @(bloqueada ? "is-locked" : "")">
+            <input type="hidden" name="id" value="@s.Id" />
+            <fieldset class="cm21-triage-fieldset" disabled="@(bloqueada ? "disabled" : null)">
+            <div class="cm21-checklist">
+                <article class="@(s.PacienteId.HasValue ? "ok" : "warn")"><b>1</b><div><strong>Identificação do paciente</strong><small>@(s.Paciente is null ? "Vincule um cadastro para continuar." : $"{s.Paciente.Nome} · CPF final {cpfFinal}")</small></div></article>
+                <article class="@(s.Paciente is not null && (atendimentoParticularAtual || !s.Paciente.TemConvenio || Model.Elegibilidade?.PossuiConvenioValido == true) ? "ok" : "warn")"><b>2</b><div><strong>Convênio</strong><small>@(s.Paciente is null ? "Aguardando identificação." : s.Paciente.TemConvenio ? $"{s.Paciente.NomeConvenio} · validade {(s.Paciente.ValidadeConvenio?.ToString("MM/yyyy") ?? "não informada")}" : "Paciente particular")</small></div></article>
+                <article class="@(s.EspecialidadeId.HasValue ? "ok" : "warn")"><b>3</b><div><strong>Especialidade</strong><small>@(s.Especialidade?.Nome ?? "Selecione a especialidade solicitada.")</small></div></article>
+                <article class="@(elegibilidadePendente ? "warn" : elegibilidadeOk ? "ok" : "danger")"><b>4</b><div><strong>Elegibilidade</strong><small>@(atendimentoParticularAtual ? "Atendimento particular: não depende da matriz de cobertura do convênio." : Model.Elegibilidade?.Mensagem ?? "Será validada quando paciente e especialidade estiverem definidos.")</small></div></article>
+            </div>
+
+            <div class="cm21-form-grid">
+                <label><span>Paciente</span><select name="pacienteId" asp-items="ViewBag.Pacientes"><option value="">Selecione</option></select></label>
+                <label><span>Especialidade</span><select name="especialidadeId" asp-items="ViewBag.Especialidades"><option value="">Selecione</option></select></label>
+                <label><span>Médico preferido</span><select name="medicoId" asp-items="ViewBag.Medicos"><option value="">Qualquer médico elegível</option></select></label>
+                <label class="cm21-full"><span>Pendência/observação da triagem</span><textarea name="pendenciaTriagem" rows="3">@s.PendenciaTriagem</textarea></label>
+                <label class="cm21-check-option"><input type="checkbox" name="atendimentoParticular" value="true" checked="@(string.Equals(s.ConvenioInformado, "Particular", StringComparison.OrdinalIgnoreCase) ? "checked" : null)" /><span><strong>Atendimento particular</strong><small>Use quando o paciente não utilizará o convênio nesta solicitação.</small></span></label>
+                <label class="cm21-check-option"><input type="checkbox" name="liberarSemMatriz" value="true" /><span><strong>Liberação manual sem matriz</strong><small>Somente após conferência externa. A decisão fica registrada na auditoria.</small></span></label>
+                <label class="cm21-full"><span>Justificativa da liberação manual</span><textarea name="justificativaLiberacao" rows="3" placeholder="Obrigatória apenas quando a cobertura foi conferida fora da matriz CallMed.">@s.JustificativaLiberacao</textarea></label>
+            </div>
+            <div class="cm21-form-actions"><button class="btn secondary" type="submit">Salvar triagem</button></div>
+            </fieldset>
+            @if (bloqueada)
+            {
+                <div class="cm21-linked-note">Triagem encerrada. Esta solicitação fica somente para consulta do histórico.</div>
+            }
+        </form>
+
+        <aside class="cm21-triage-side">
+            <article class="cm21-info-card"><span>Status atual</span><strong>@s.Status</strong><p>@(s.Observacao ?? "Sem observações na solicitação.")</p></article>
+            @if (!string.IsNullOrWhiteSpace(s.JustificativaLiberacao))
+            {
+                <article class="cm21-info-card"><span>Liberação manual auditada</span><strong>Cobertura conferida externamente</strong><p>@s.JustificativaLiberacao</p></article>
+            }
+            @if (s.ConversaAtendimentoId.HasValue)
+            {
+                <article class="cm21-info-card"><span>Origem multicanal</span><strong>@CanalNome(s.Canal)</strong><a class="btn secondary" asp-controller="Atendimento" asp-action="Index" asp-route-id="@s.ConversaAtendimentoId">Abrir conversa completa</a></article>
+            }
+            @if (s.Consulta is not null)
+            {
+                <article class="cm21-info-card success"><span>Consulta vinculada</span><strong>@s.Consulta.Data.ToString("dd/MM/yyyy") às @s.Consulta.Horario</strong><a class="btn" asp-controller="Consulta" asp-action="Details" asp-route-id="@s.Consulta.Id">Ver consulta</a></article>
+            }
+            else if (!bloqueada)
+            {
+                @if (prontoParaAgenda)
+                {
+                    <form asp-action="BuscarHorario" method="post"><input type="hidden" name="id" value="@s.Id" /><button class="btn cm21-big-action" type="submit">Buscar horários disponíveis</button></form>
+                }
+                else
+                {
+                    <button class="btn cm21-big-action" type="button" disabled title="Conclua a triagem e resolva as pendências antes de buscar horários.">Buscar horários disponíveis</button>
+                }
+                <form asp-action="AguardarPaciente" method="post"><input type="hidden" name="id" value="@s.Id" /><button class="btn secondary cm21-big-action" type="submit">Aguardando resposta do paciente</button></form>
+            }
+            @if (!bloqueada)
+            {
+                <div class="cm21-danger-actions"><form asp-action="Cancelar" method="post" onsubmit="return confirm('Cancelar esta solicitação?');"><input type="hidden" name="id" value="@s.Id" /><button type="submit">Cancelar</button></form><form asp-action="Encerrar" method="post"><input type="hidden" name="id" value="@s.Id" /><button type="submit">Encerrar</button></form></div>
+            }
+            else
+            {
+                <div class="cm21-linked-note">@(s.Consulta is not null ? "Para cancelar, remarcar ou concluir este atendimento, use a consulta vinculada. Assim o histórico permanece consistente." : "Solicitação finalizada. As ações operacionais foram bloqueadas para preservar o histórico.")</div>
+            }
+        </aside>
+    </div>
+
+    @if (Model.Historico.Any())
+    {
+        <section class="cm21-history"><h2>Histórico da solicitação</h2>@foreach(var h in Model.Historico){<article><time>@ClinicaClock.ConverterUtc(h.CriadoEm).ToString("dd/MM HH:mm")</time><div><strong>@h.Acao</strong><small>@(h.UsuarioNome ?? "Sistema") · @h.Descricao</small></div></article>}</section>
+    }
+</section>

@@ -1,0 +1,60 @@
+@model IEnumerable<Paciente>
+@{
+    ViewData["Title"] = "Pacientes";
+    var lista = Model.ToList();
+}
+<section class="v16-page crud-v16">
+    <div class="v16-page-head">
+        <div><span class="v16-eyebrow">CADASTROS</span><h1>Pacientes</h1><p>Dados, contato, convênio e histórico de atendimento em um só cadastro.</p></div>
+        <a class="btn" asp-action="Create">+ Novo paciente</a>
+    </div>
+
+    <div class="patient-toolbar v16-card">
+        <form method="get" class="v16-search-form">
+            <div class="v16-search-box"><span>⌕</span><input name="busca" value="@ViewBag.Busca" placeholder="Buscar por nome, CPF ou e-mail" /></div>
+            <input type="hidden" name="incluirInativos" value="@(ViewBag.IncluirInativos == true ? "true" : "false")" />
+            <button class="btn" type="submit">Buscar</button>
+            <a class="btn secondary" asp-action="Index">Limpar</a>
+        </form>
+        <a class="filter-toggle-link" asp-action="Index" asp-route-busca="@ViewBag.Busca" asp-route-incluirInativos="@(ViewBag.IncluirInativos != true)">@(ViewBag.IncluirInativos == true ? "Ocultar inativos" : "Mostrar inativos")</a>
+    </div>
+
+    <div class="agenda-summary compact-summary">
+        <div class="v16-stat"><span>Resultados</span><strong>@lista.Count</strong><small>na busca atual</small></div>
+        <div class="v16-stat"><span>Ativos</span><strong>@lista.Count(x => x.Ativo)</strong><small>com acesso disponível</small></div>
+        <div class="v16-stat"><span>Convênio</span><strong>@lista.Count(x => x.Ativo && x.TemConvenio)</strong><small>pacientes conveniados</small></div>
+        <div class="v16-stat"><span>Particular</span><strong>@lista.Count(x => x.Ativo && !x.TemConvenio)</strong><small>atendimento particular</small></div>
+    </div>
+
+    <div class="v16-card table-card">
+        <div class="v16-card-head"><div><h2>Pacientes</h2><p>@lista.Count registro@(lista.Count == 1 ? "" : "s") encontrado@(lista.Count == 1 ? "" : "s").</p></div></div>
+        <div class="table-scroll">
+            <table class="table modern-table v16-table">
+                <thead><tr><th>Paciente</th><th>CPF</th><th>Telefone</th><th>Convênio</th><th>Situação</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var item in lista)
+                {
+                    <tr>
+                        <td><div class="entity-cell"><span class="entity-avatar">@(item.Nome?.Substring(0,1).ToUpper() ?? "P")</span><div><strong>@item.Nome</strong><small class="entity-sub">@item.Email</small></div></div></td>
+                        <td>@item.Cpf</td>
+                        <td>@(string.IsNullOrWhiteSpace(item.Telefone) ? "—" : item.Telefone)</td>
+                        <td><span class="soft-pill">@(item.TemConvenio ? item.NomeConvenio ?? "Convênio" : "Particular")</span></td>
+                        <td><span class="status-dot-pill @(item.Ativo ? "active" : "inactive")"><i></i>@(item.Ativo ? "Ativo" : "Inativo")</span></td>
+                        <td>
+                            <details class="row-menu"><summary aria-label="Ações">•••</summary><div>
+                                <a asp-action="Details" asp-route-id="@item.Id">Ver detalhes</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Editar dados</a>
+                                @if (item.Ativo) { <a class="danger" asp-action="Delete" asp-route-id="@item.Id">Desativar</a> }
+                            </div></details>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        @if (!lista.Any())
+        {
+            <div class="v16-empty"><span>♙</span><strong>Nenhum paciente encontrado.</strong><p>Tente mudar os filtros ou cadastre um novo paciente.</p></div>
+        }
+    </div>
+</section>

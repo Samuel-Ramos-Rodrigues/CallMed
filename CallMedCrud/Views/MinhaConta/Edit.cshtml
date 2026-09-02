@@ -1,0 +1,57 @@
+@model MKSANCrud.ViewModels.MinhaContaViewModel
+@{
+    ViewData["Title"]="Editar minha conta";
+}
+<h1>Editar minha conta</h1>
+<form asp-action="Edit" method="post" class="form-card">
+    <input asp-for="Id" type="hidden" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Nome"></label>
+        <input asp-for="Nome" class="form-control" />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email">E-mail</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Telefone"></label>
+        <input asp-for="Telefone" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="CanalPreferido"></label>
+        <select asp-for="CanalPreferido" class="form-control">
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="SMS">SMS</option>
+            <option value="Email">E-mail</option>
+            <option value="Telefone">Telefone (contato manual)</option>
+        </select>
+        <small>A CallMed tenta usar este canal primeiro para lembretes e confirmações.</small>
+    </div>
+    <div class="form-group">
+        <label asp-for="DataNascimento"></label>
+        <input asp-for="DataNascimento" type="hidden" id="dataNascimentoConta" />
+        <div class="date-select" data-date-select data-target="dataNascimentoConta" data-mode="birth"></div>
+    </div>
+    <div class="form-check">
+        <input asp-for="TemConvenio" />
+        <label asp-for="TemConvenio">Possui convênio</label>
+    </div>
+    <div class="form-group">
+        <label asp-for="NomeConvenio"></label>
+        <input asp-for="NomeConvenio" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="NumeroConvenio"></label>
+        <input asp-for="NumeroConvenio" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="ValidadeConvenio"></label>
+        <input asp-for="ValidadeConvenio" type="hidden" id="validadeConvenioConta" />
+        <div class="date-select" data-date-select data-target="validadeConvenioConta" data-mode="validity"></div>
+    </div>
+    <button class="btn" type="submit">Salvar</button>
+    <a class="btn secondary" asp-action="Index">Voltar</a>
+</form>

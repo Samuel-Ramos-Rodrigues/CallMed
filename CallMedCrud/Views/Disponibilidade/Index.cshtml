@@ -1,0 +1,124 @@
+@model MKSANCrud.ViewModels.AgendaExcecoesPageViewModel
+@{
+    ViewData["Title"] = "Exceções da Agenda";
+    string TipoLabel(string tipo) => tipo switch
+    {
+        AgendaExcecaoTipo.Encaixe => "Encaixe extra",
+        AgendaExcecaoTipo.Ausencia => "Ausência",
+        _ => "Bloqueio"
+    };
+    string TipoIcon(string tipo) => tipo switch
+    {
+        AgendaExcecaoTipo.Encaixe => "+",
+        AgendaExcecaoTipo.Ausencia => "—",
+        _ => "×"
+    };
+}
+
+<section class="v16-page exceptions-page">
+    <div class="v16-page-head">
+        <div>
+            <span class="v16-eyebrow">AJUSTES PONTUAIS</span>
+            <h1>Exceções da Agenda</h1>
+            <p>A agenda normal vem dos horários semanais do médico. Use esta área só para bloqueios, ausências e encaixes extras.</p>
+        </div>
+        <div class="v16-head-actions">
+            <a class="btn secondary" asp-controller="Agenda" asp-action="Index">Ver agenda</a>
+            <a class="btn" asp-action="Create">+ Nova exceção</a>
+        </div>
+    </div>
+
+    <div class="agenda-summary exception-summary">
+        <div class="v16-stat"><span>Ativas</span><strong>@Model.TotalAtivas</strong><small>exceções futuras</small></div>
+        <div class="v16-stat"><span>Encaixes</span><strong>@Model.TotalEncaixes</strong><small>vagas extras</small></div>
+        <div class="v16-stat"><span>Bloqueios</span><strong>@Model.TotalBloqueios</strong><small>horários fechados</small></div>
+        <div class="v16-stat"><span>Ausências</span><strong>@Model.TotalAusencias</strong><small>dias indisponíveis</small></div>
+    </div>
+
+    <div class="v16-card exception-guide">
+        <div><span class="exception-guide-icon extra">+</span><div><strong>Encaixe extra</strong><p>Abre uma vaga fora da agenda semanal.</p></div></div>
+        <div><span class="exception-guide-icon block">×</span><div><strong>Bloquear horário</strong><p>Fecha um horário ou intervalo específico.</p></div></div>
+        <div><span class="exception-guide-icon away">—</span><div><strong>Ausência</strong><p>Fecha o dia inteiro, sem apagar a agenda semanal.</p></div></div>
+    </div>
+
+    <div class="v16-card table-card exception-table-card">
+        <div class="v16-card-head">
+            <div><h2>Exceções cadastradas</h2><p>Somente exceções futuras são exibidas aqui.</p></div>
+        </div>
+        @if (!Model.Excecoes.Any())
+        {
+            <div class="v16-empty">
+                <span>✓</span>
+                <strong>Nenhuma exceção futura.</strong>
+                <p>Os médicos estão seguindo normalmente suas agendas semanais.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-scroll">
+                <table class="table modern-table v16-table">
+                    <thead><tr><th>Tipo</th><th>Médico</th><th>Data</th><th>Horário</th><th>Motivo</th><th>Situação</th><th></th></tr></thead>
+                    <tbody>
+                    @foreach (var item in Model.Excecoes)
+                    {
+                        <tr>
+                            <td><span class="exception-type type-@item.Tipo.ToLowerInvariant()"><i>@TipoIcon(item.Tipo)</i>@TipoLabel(item.Tipo)</span></td>
+                            <td><div class="entity-cell"><span class="entity-avatar doctor">@(item.Medico?.Nome?.Substring(0,1).ToUpper() ?? "M")</span><strong>@item.Medico?.Nome</strong></div></td>
+                            <td><span class="date-chip">@item.Data.ToString("dd/MM/yyyy")</span></td>
+                            <td>
+                                @if (item.Tipo == AgendaExcecaoTipo.Ausencia)
+                                { <span class="soft-pill">Dia inteiro</span> }
+                                else if (!string.IsNullOrWhiteSpace(item.HorarioFim) && item.HorarioFim != item.HorarioInicio)
+                                { <span class="time-chip">@item.HorarioInicio — @item.HorarioFim</span> }
+                                else
+                                { <span class="time-chip">@item.HorarioInicio</span> }
+                            </td>
+                            <td class="muted-cell">@(string.IsNullOrWhiteSpace(item.Motivo) ? "—" : item.Motivo)</td>
+                            <td><span class="status-dot-pill @(item.Ativa ? "active" : "inactive")"><i></i>@(item.Ativa ? "Ativa" : "Encerrada")</span></td>
+                            <td>
+                                @if (item.Ativa)
+                                {
+                                    <form asp-action="Cancelar" method="post" onsubmit="return confirm('Encerrar esta exceção e recalcular a agenda?');">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn small secondary">Encerrar</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    @if (Model.BloqueiosDoMedico.Any())
+    {
+        <div class="v16-card table-card exception-table-card">
+            <div class="v16-card-head">
+                <div><h2>Bloqueios feitos pelos médicos</h2><p>Horários fechados diretamente pela área do profissional.</p></div>
+            </div>
+            <div class="table-scroll">
+                <table class="table modern-table v16-table">
+                    <thead><tr><th>Médico</th><th>Data</th><th>Horário</th><th></th></tr></thead>
+                    <tbody>
+                    @foreach (var item in Model.BloqueiosDoMedico)
+                    {
+                        <tr>
+                            <td>@item.Medico?.Nome</td>
+                            <td>@item.Data?.ToString("dd/MM/yyyy")</td>
+                            <td>@item.Horario</td>
+                            <td>
+                                <form asp-action="DesbloquearMedico" method="post">
+                                    <input type="hidden" name="disponibilidadeId" value="@item.Id" />
+                                    <button class="btn small secondary" type="submit">Desbloquear</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</section>

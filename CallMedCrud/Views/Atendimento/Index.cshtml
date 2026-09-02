@@ -1,0 +1,254 @@
+@using MKSANCrud.Models.Atendimento
+@model MKSANCrud.ViewModels.AtendimentoCentralViewModel
+
+@{
+    ViewData["Title"] = "Central de Atendimento";
+    var abertas = Model.Conversas.Count(x => x.Ativa);
+    var emIa = Model.Conversas.Count(x => x.Modo == ModoAtendimento.IA && x.Ativa);
+    var humano = Model.Conversas.Count(x => x.Modo == ModoAtendimento.Humano && x.Ativa);
+    var naoLidas = Model.Conversas.Sum(x => x.NaoLidas);
+    var usuarioAtualId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+    string CanalLabel(CanalAtendimento canal) => canal switch
+    {
+        CanalAtendimento.WhatsApp => "WhatsApp",
+        CanalAtendimento.Sms => "SMS",
+        CanalAtendimento.Email => "E-mail",
+        _ => "Site"
+    };
+
+    string CanalIcon(CanalAtendimento canal) => canal switch
+    {
+        CanalAtendimento.WhatsApp => "W",
+        CanalAtendimento.Sms => "S",
+        CanalAtendimento.Email => "@",
+        _ => "C"
+    };
+
+    string AutorLabel(AutorMensagemAtendimento autor) => autor switch
+    {
+        AutorMensagemAtendimento.Paciente => "Paciente",
+        AutorMensagemAtendimento.Funcionario => "Equipe CallMed",
+        AutorMensagemAtendimento.Assistente => "Assistente CallMed",
+        _ => "Sistema"
+    };
+}
+
+<section class="v16-page atendimento-v16-page">
+    <div class="v16-page-head">
+        <div><span class="v16-eyebrow">OMNICHANNEL</span><h1>Central de Atendimento</h1><p>Site, WhatsApp, SMS e e-mail em uma caixa de entrada única.</p></div>
+        <div class="v16-head-actions">
+            <button type="button" class="btn secondary" id="channelStatusButton">Situação dos canais</button>
+            <a asp-action="Nova" class="btn">+ Novo atendimento</a>
+        </div>
+    </div>
+
+    <div class="atendimento-stats-v16">
+        <div><span>Conversas abertas</span><strong>@abertas</strong></div>
+        <div><span>Em atendimento IA</span><strong>@emIa</strong></div>
+        <div><span>Em atendimento humano</span><strong>@humano</strong></div>
+        <div><span>Mensagens não lidas</span><strong>@naoLidas</strong></div>
+    </div>
+
+    <form method="get" asp-action="Index" class="atendimento-filters v16-atendimento-filters">
+        <div class="filter-label"><span>⌕</span><strong>Filtros</strong></div>
+        <select name="canal" aria-label="Filtrar por canal">
+            <option value="">Todos os canais</option>
+            <option value="Web" selected="@(Model.FiltroCanal == "Web" ? "selected" : null)">Site</option>
+            <option value="WhatsApp" selected="@(Model.FiltroCanal == "WhatsApp" ? "selected" : null)">WhatsApp</option>
+            <option value="Sms" selected="@(Model.FiltroCanal == "Sms" ? "selected" : null)">SMS</option>
+            <option value="Email" selected="@(Model.FiltroCanal == "Email" ? "selected" : null)">E-mail</option>
+        </select>
+        <select name="modo" aria-label="Filtrar por atendimento">
+            <option value="">IA + Humano</option>
+            <option value="IA" selected="@(Model.FiltroModo == "IA" ? "selected" : null)">Assistente IA</option>
+            <option value="Humano" selected="@(Model.FiltroModo == "Humano" ? "selected" : null)">Atendimento humano</option>
+        </select>
+        <button type="submit" class="btn secondary">Aplicar</button>
+        @if (!string.IsNullOrWhiteSpace(Model.FiltroCanal) || !string.IsNullOrWhiteSpace(Model.FiltroModo))
+        { <a asp-action="Index" class="btn-link-clean">Limpar</a> }
+    </form>
+
+    <div class="atendimento-shell v16-atendimento-shell @(Model.ConversaSelecionada is null ? "no-context" : "")">
+        <aside class="atendimento-inbox v16-inbox">
+            <div class="atendimento-inbox-title"><div><strong>Conversas</strong><small>Mais recentes primeiro</small></div><span>@Model.Conversas.Count</span></div>
+            @if (!Model.Conversas.Any())
+            {
+                <div class="atendimento-empty-list">Nenhuma conversa encontrada.</div>
+            }
+            else
+            {
+                <div class="atendimento-conversation-list">
+                    @foreach (var resumo in Model.Conversas)
+                    {
+                        var ativa = Model.ConversaSelecionada?.Id == resumo.Id;
+                        <a asp-action="Index" asp-route-id="@resumo.Id" asp-route-canal="@Model.FiltroCanal" asp-route-modo="@Model.FiltroModo" class="atendimento-conversation @(ativa ? "active" : "")">
+                            <span class="conversation-channel channel-@resumo.Canal.ToString().ToLowerInvariant()">@CanalIcon(resumo.Canal)</span>
+                            <span class="conversation-copy">
+                                <span class="conversation-topline"><strong>@resumo.Nome</strong>@if (resumo.NaoLidas > 0){<b class="unread-count">@resumo.NaoLidas</b>}</span>
+                                <small>@CanalLabel(resumo.Canal) · @(resumo.Modo == ModoAtendimento.IA ? "IA" : "Humano")</small>
+                                <span class="conversation-preview">@(string.IsNullOrWhiteSpace(resumo.UltimaMensagem) ? "Conversa iniciada" : resumo.UltimaMensagem)</span>
+                            </span>
+                        </a>
+                    }
+                </div>
+            }
+        </aside>
+
+        <section class="atendimento-chat v16-chat">
+            @if (Model.ConversaSelecionada is null)
+            {
+                <div class="atendimento-empty-chat"><div class="empty-chat-mark">✉</div><h2>Selecione uma conversa</h2><p>Escolha um atendimento à esquerda para visualizar as mensagens e o paciente.</p></div>
+            }
+            else
+            {
+                var conversa = Model.ConversaSelecionada;
+                <header class="atendimento-chat-header v16-chat-header">
+                    <div class="atendimento-person">
+                        <span class="conversation-channel channel-@conversa.Canal.ToString().ToLowerInvariant()">@CanalIcon(conversa.Canal)</span>
+                        <div><strong>@(conversa.Paciente?.Nome ?? conversa.IdentificadorExterno)</strong><small>@CanalLabel(conversa.Canal) · @conversa.IdentificadorExterno</small></div>
+                    </div>
+                    <div class="atendimento-header-actions">
+                        @if (!conversa.Ativa)
+                        {
+                            <span class="mode-pill mode-closed">● Conversa encerrada</span>
+                            <form asp-action="Assumir" method="post" class="atendimento-state-form" data-action-name="Reabrir e assumir atendimento"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn small">Reabrir e assumir</button></form>
+                        }
+                        else if (conversa.Modo == ModoAtendimento.IA)
+                        {
+                            <span class="mode-pill mode-ia">✦ Assistente IA</span>
+                            <form asp-action="Assumir" method="post" class="atendimento-state-form" data-action-name="Assumir atendimento"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn small">Assumir</button></form>
+                        }
+                        else if (string.IsNullOrWhiteSpace(conversa.ResponsavelUsuarioId))
+                        {
+                            <span class="mode-pill mode-waiting">● Aguardando equipe</span>
+                            <form asp-action="Assumir" method="post" class="atendimento-state-form" data-action-name="Assumir atendimento"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn small">Assumir</button></form>
+                            <form asp-action="DevolverParaIa" method="post" class="atendimento-state-form" data-action-name="Devolver para IA"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Devolver para IA</button></form>
+                            <form asp-action="Encerrar" method="post" class="atendimento-state-form" data-action-name="Encerrar conversa" data-confirm="Encerrar esta conversa? O histórico será preservado."><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Encerrar</button></form>
+                        }
+                        else if (conversa.ResponsavelUsuarioId == usuarioAtualId)
+                        {
+                            <span class="mode-pill mode-humano">● Assumido por você</span>
+                            <form asp-action="DevolverParaIa" method="post" class="atendimento-state-form" data-action-name="Devolver para IA"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Devolver para IA</button></form>
+                            <form asp-action="Encerrar" method="post" class="atendimento-state-form" data-action-name="Encerrar conversa" data-confirm="Encerrar esta conversa? O histórico será preservado."><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Encerrar</button></form>
+                        }
+                        else
+                        {
+                            <span class="mode-pill mode-humano">● Em atendimento humano</span>
+                            <form asp-action="Assumir" method="post" class="atendimento-state-form" data-action-name="Transferir atendimento para você" data-confirm="Este atendimento está com outro membro da equipe. Deseja assumir mesmo assim?"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn small">Assumir para mim</button></form>
+                            <form asp-action="Encerrar" method="post" class="atendimento-state-form" data-action-name="Encerrar conversa" data-confirm="Encerrar esta conversa? O histórico será preservado."><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Encerrar</button></form>
+                        }
+                    </div>
+                </header>
+                <div class="atendimento-messages" id="atendimentoMessages" data-conversa-id="@conversa.Id" data-last-id="@(Model.Mensagens.LastOrDefault()?.Id ?? 0)" data-mode="@conversa.Modo" data-active="@conversa.Ativa.ToString().ToLowerInvariant()" data-responsavel-id="@conversa.ResponsavelUsuarioId">
+                    @if (!Model.Mensagens.Any())
+                    {
+                        <div class="empty-state">Ainda não há mensagens nessa conversa.</div>
+                    }
+                    else
+                    {
+                        @foreach (var mensagem in Model.Mensagens)
+                        {
+                            var entrada = mensagem.Direcao == DirecaoMensagemAtendimento.Entrada;
+                            <article class="atendimento-message @(entrada ? "incoming" : "outgoing")">
+                                <div class="message-meta">
+                                    <strong>@AutorLabel(mensagem.Autor)</strong>
+                                    <time datetime="@mensagem.CriadoEm.ToString("O")">@ClinicaClock.ConverterUtc(mensagem.CriadoEm).ToString("dd/MM HH:mm")</time>
+                                </div>
+                                <p>@(mensagem.Texto?.Replace("**", string.Empty))</p>
+                                @if (mensagem.Status == StatusMensagemAtendimento.Falhou)
+                                {
+                                    <div class="message-failure"><small class="message-error">Falha no envio: @(mensagem.Erro ?? "erro não informado")</small><form asp-action="Reenviar" method="post"><input type="hidden" name="mensagemId" value="@mensagem.Id" /><button type="submit" class="btn-link-clean">Tentar novamente</button></form></div>
+                                }
+                            </article>
+                        }
+                    }
+                </div>
+
+                @if (conversa.Ativa)
+                {
+                    <form asp-action="EnviarMensagem" method="post" class="atendimento-compose v16-compose">
+                        <input type="hidden" name="id" value="@conversa.Id" />
+                        <textarea name="mensagem" maxlength="4000" rows="2" required placeholder="Digite uma mensagem para este atendimento..."></textarea>
+                        <div class="compose-footer"><small>Ao responder, a conversa passa para atendimento humano.</small><button type="submit" class="btn">Enviar</button></div>
+                    </form>
+                }
+                else
+                {
+                    <div class="atendimento-closed-compose"><strong>Conversa encerrada</strong><span>Reabra e assuma o atendimento para responder novamente.</span></div>
+                }
+            }
+        </section>
+
+        @if (Model.ConversaSelecionada is not null)
+        {
+            var conversa = Model.ConversaSelecionada;
+            <aside class="atendimento-context-v16">
+                <div class="context-profile">
+                    <span class="context-avatar">@(conversa.Paciente?.Nome?.Substring(0,1).ToUpper() ?? "?")</span>
+                    <div><small>CONTATO</small><strong>@(conversa.Paciente?.Nome ?? "Não identificado")</strong><span>@CanalLabel(conversa.Canal)</span></div>
+                </div>
+
+                <div class="context-section">
+                    <h3>Dados do paciente</h3>
+                    @if (conversa.Paciente is not null)
+                    {
+                        <div class="context-info-row"><span>E-mail</span><strong>@conversa.Paciente.Email</strong></div>
+                        <div class="context-info-row"><span>Telefone</span><strong>@(string.IsNullOrWhiteSpace(conversa.Paciente.Telefone) ? "Não informado" : conversa.Paciente.Telefone)</strong></div>
+                        <div class="context-info-row"><span>Atendimento</span><strong>@(conversa.Paciente.TemConvenio ? conversa.Paciente.NomeConvenio ?? "Convênio" : "Particular")</strong></div>
+                        <a class="context-action" asp-controller="Paciente" asp-action="Details" asp-route-id="@conversa.Paciente.Id">Abrir cadastro →</a>
+                    }
+                    else
+                    {
+                        <p class="context-muted">Este contato ainda não está ligado a um paciente.</p>
+                    }
+                </div>
+
+                @if (conversa.Canal != CanalAtendimento.Web)
+                {
+                    <div class="context-section">
+                        <h3>@(conversa.Paciente is null ? "Vincular paciente" : "Alterar vínculo")</h3>
+                        <form asp-action="VincularPaciente" method="post" class="context-link-form">
+                            <input type="hidden" name="id" value="@conversa.Id" />
+                            <select name="pacienteId" required aria-label="Paciente da conversa"><option value="">Selecione um paciente</option>@foreach (var opcao in Model.PacientesParaVinculo){<option value="@opcao.Id" selected="@(conversa.PacienteId == opcao.Id ? "selected" : null)">@opcao.Nome — @opcao.Email</option>}</select>
+                            <button type="submit" class="btn small">Salvar vínculo</button>
+                        </form>
+                        @if (conversa.PacienteId.HasValue)
+                        {
+                            <form asp-action="DesvincularPaciente" method="post" class="context-unlink"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn-link-clean danger-link">Desvincular paciente</button></form>
+                        }
+                    </div>
+                }
+
+                <div class="context-section">
+                    <h3>Conversa</h3>
+                    <div class="context-info-row"><span>Situação</span><strong>@(conversa.Ativa ? "Aberta" : "Encerrada")</strong></div>
+                    <div class="context-info-row"><span>Modo</span><strong>@(conversa.Modo == ModoAtendimento.IA ? "Assistente IA" : "Humano")</strong></div>
+                    @if (conversa.Modo == ModoAtendimento.Humano)
+                    {
+                        <div class="context-info-row"><span>Responsável</span><strong>@(string.IsNullOrWhiteSpace(conversa.ResponsavelUsuarioId) ? "Aguardando equipe" : conversa.ResponsavelUsuarioId == usuarioAtualId ? "Você" : "Outro atendente")</strong></div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(conversa.Assunto)){<div class="context-info-row"><span>Assunto</span><strong>@conversa.Assunto</strong></div>}
+                </div>
+            </aside>
+        }
+    </div>
+</section>
+
+<dialog id="channelStatusDialog" class="channel-status-dialog" aria-labelledby="channelStatusTitle">
+    <div class="channel-status-head">
+        <div>
+            <span class="v16-eyebrow">CANAIS</span>
+            <h2 id="channelStatusTitle">Situação dos canais</h2>
+            <p>Disponibilidade de entrada e saída configurada no CallMed.</p>
+        </div>
+        <button type="button" class="channel-status-close" data-close-channel-status aria-label="Fechar">×</button>
+    </div>
+    <div id="channelStatusContent" class="channel-status-grid">
+        <div class="channel-status-loading">Verificando canais...</div>
+    </div>
+</dialog>
+
+@section Scripts {
+    <script src="~/js/atendimento.js?v=2160"></script>
+}

@@ -1,0 +1,21 @@
+@model Medico
+@{
+    ViewData["Title"]="Excluir médico";
+}
+<div class="page-head">
+    <h1>Excluir médico</h1>
+</div>
+<div class="details-card">
+    <div class="danger-box">
+        Tem certeza que deseja excluir
+        <strong>@Model.Nome</strong>
+        ?
+    </div>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="form-actions">
+            <button type="submit" class="btn danger">Excluir</button>
+            <a class="btn secondary" asp-action="Index">Cancelar</a>
+        </div>
+    </form>
+</div>

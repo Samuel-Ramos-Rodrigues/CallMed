@@ -1,0 +1,49 @@
+@model IEnumerable<MKSANCrud.Models.Consulta>
+@{
+    ViewData["Title"] = User.IsInRole("Paciente") ? "Minhas consultas" : "Consultas";
+    var lista = Model.ToList();
+    var total = lista.Count;
+    var statusSelecionado = ViewBag.Status as string ?? string.Empty;
+    var ehEquipe = User.IsInRole("Funcionario") || User.IsInRole("Admin");
+    var hojeClinica = ViewBag.HojeClinica is DateTime h ? h.Date : DateTime.Today;
+    var futuras = lista.Count(x => x.Data.Date >= hojeClinica && x.Status != ConsultaStatus.Cancelada);
+    var confirmadas = lista.Count(x => x.Status == ConsultaStatus.Confirmada || x.Status == ConsultaStatus.Remarcada);
+}
+<section class="v16-page">
+    <div class="v16-page-head">
+        <div><span class="v16-eyebrow">ATENDIMENTOS</span><h1>@ViewData["Title"]</h1><p>@(User.IsInRole("Paciente") ? "Acompanhe e gerencie seus próximos atendimentos." : "Acompanhe o fluxo de consultas da clínica e abra a agenda quando precisar.")</p></div>
+        <div class="v16-head-actions">@if(ehEquipe){<a class="btn secondary" asp-controller="Agenda" asp-action="Index">Abrir agenda</a>}<a class="btn" asp-action="Create">+ Nova consulta</a></div>
+    </div>
+
+    <div class="agenda-summary consultation-summary-v16">
+        <div class="v16-stat"><span>Total</span><strong>@total</strong><small>no filtro atual</small></div>
+        <div class="v16-stat"><span>Futuras</span><strong>@futuras</strong><small>não canceladas</small></div>
+        <div class="v16-stat"><span>Confirmadas</span><strong>@confirmadas</strong><small>inclui remarcadas</small></div>
+        <div class="v16-stat"><span>Visão</span><strong class="stat-date">@(User.IsInRole("Paciente") ? "Paciente" : "Clínica")</strong><small>acesso atual</small></div>
+    </div>
+
+    <form method="get" class="v16-card simple-filter-v16">
+        <label class="filter-label"><span>Situação</span><select name="status"><option value="">Todas as situações</option>@foreach(var status in ConsultaStatus.Todos){<option value="@status" selected="@(status == statusSelecionado ? "selected" : null)">@status</option>}</select></label>
+        <button class="btn secondary" type="submit">Filtrar</button>
+        @if(!string.IsNullOrWhiteSpace(statusSelecionado)){<a asp-action="Index" class="btn-link-clean">Limpar</a>}
+    </form>
+
+    <div class="v16-card table-card">
+        @if (!lista.Any())
+        { <div class="v16-empty"><span>▦</span><strong>Nenhuma consulta encontrada.</strong><p>Os agendamentos aparecerão aqui.</p></div> }
+        else
+        {
+            <div class="table-scroll"><table class="v16-table"><thead><tr>@if(!User.IsInRole("Paciente")){<th>Paciente</th>}<th>Médico</th><th>Especialidade</th><th>Data</th><th>Horário</th><th>Situação</th><th>Pagamento</th><th></th></tr></thead><tbody>
+            @foreach (var item in lista)
+            {
+                <tr>
+                    @if(!User.IsInRole("Paciente")){<td><strong>@item.Paciente?.Nome</strong></td>}
+                    <td><div class="entity-cell"><span class="entity-avatar doctor">@(item.Medico?.Nome?.Substring(0,1).ToUpper() ?? "M")</span><div><strong>@item.Medico?.Nome</strong></div></div></td>
+                    <td>@item.Medico?.Especialidade</td><td><span class="date-chip">@item.Data.ToString("dd/MM/yyyy")</span></td><td><span class="time-chip">@item.Horario</span></td><td><span class="status-pill status-@item.Status.ToLowerInvariant()">@item.Status</span></td><td><span class="soft-pill">@item.TipoPagamento</span></td>
+                    <td><details class="row-menu"><summary>•••</summary><div><a asp-action="Details" asp-route-id="@item.Id">Ver detalhes</a>@if(ConsultaStatus.PodeRemarcar(item.Status)){<a asp-action="Remarcar" asp-route-id="@item.Id">Remarcar</a>}@if(ehEquipe && ConsultaStatus.PodeRemarcar(item.Status)){<a asp-action="Edit" asp-route-id="@item.Id">Editar</a>}</div></details></td>
+                </tr>
+            }
+            </tbody></table></div>
+        }
+    </div>
+</section>

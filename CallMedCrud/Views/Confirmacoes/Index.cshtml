@@ -1,0 +1,85 @@
+@model MKSANCrud.ViewModels.ConfirmacoesViewModel
+@{
+    ViewData["Title"] = "Confirmações";
+    ViewData["Subtitle"] = "Pendências que precisam da sua ação.";
+}
+<section class="cm-confirm-page">
+    <div class="cm-confirm-page-head">
+        <div>
+            <span class="v16-eyebrow">CENTRAL DE CONFIRMAÇÕES</span>
+            <h1>Confirmações</h1>
+            <p>Consultas e vagas que precisam de uma decisão ficam reunidas aqui.</p>
+        </div>
+        <button type="button" class="btn secondary cm-enable-device-alerts" data-enable-confirmation-notifications>
+            Ativar avisos no dispositivo
+        </button>
+    </div>
+
+    @if (Model.Total == 0)
+    {
+        <div class="cm-confirm-page-empty">
+            <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg>
+            <strong>Nenhuma confirmação pendente.</strong>
+            <p>Quando uma consulta precisar ser confirmada ou uma vaga da lista de espera aparecer, ela será exibida aqui.</p>
+        </div>
+    }
+    else
+    {
+        <div class="cm-confirm-list">
+            @foreach (var item in Model.Itens)
+            {
+                <article class="cm-confirm-card">
+                    <div class="cm-confirm-card-icon">
+                        <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#@(item.Tipo == "lista-espera" ? "clock" : item.Tipo == "solicitacao" ? "chat" : "calendar")"></use></svg>
+                    </div>
+                    <div class="cm-confirm-card-copy">
+                        <span>@(item.Tipo == "lista-espera" ? "LISTA DE ESPERA" : item.Tipo == "solicitacao" ? "SOLICITAÇÃO" : "CONSULTA")</span>
+                        <h2>@item.Titulo</h2>
+                        <p>@item.Descricao</p>
+                        <small>@item.Status</small>
+                    </div>
+                    <div class="cm-confirm-card-actions">
+                        @if (item.Tipo == "consulta")
+                        {
+                            @if (Model.Papel is "Paciente" or "Funcionario" or "Admin")
+                            {
+                                <form asp-controller="Consulta" asp-action="Confirmar" method="post">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input type="hidden" name="returnUrl" value="/Confirmacoes" />
+                                    <button class="btn" type="submit">Confirmar consulta</button>
+                                </form>
+                            }
+                            @if (Model.Papel == "Paciente")
+                            {
+                                <a class="btn secondary" asp-controller="Consulta" asp-action="Remarcar" asp-route-id="@item.Id">Remarcar</a>
+                                <form asp-controller="Consulta" asp-action="Cancelar" method="post" onsubmit="return confirm('Cancelar esta consulta?');">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input type="hidden" name="returnUrl" value="/Confirmacoes" />
+                                    <button class="btn secondary danger-link" type="submit">Cancelar</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <a class="btn secondary" asp-controller="Consulta" asp-action="Details" asp-route-id="@item.Id">Ver consulta</a>
+                            }
+                        }
+                        else if (item.Tipo == "lista-espera" && Model.Papel == "Paciente")
+                        {
+                            <form asp-controller="ListaEspera" asp-action="AceitarVaga" method="post"><input type="hidden" name="id" value="@item.ListaEsperaId" /><input type="hidden" name="returnUrl" value="/Confirmacoes" /><button class="btn" type="submit">Aceitar esta vaga</button></form>
+                            <form asp-controller="ListaEspera" asp-action="Cancelar" method="post" onsubmit="return confirm('Sair desta lista de espera?');">
+                                <input type="hidden" name="id" value="@item.ListaEsperaId" />
+                                <input type="hidden" name="returnUrl" value="/Confirmacoes" />
+                                <button class="btn secondary" type="submit">Não quero esta espera</button>
+                            </form>
+                        }
+                        else if (item.Tipo == "solicitacao" && Model.Papel is "Funcionario" or "Admin")
+                        {
+                            <a class="btn" asp-controller="Solicitacoes" asp-action="Triagem" asp-route-id="@item.Id">Abrir triagem</a>
+                            <a class="btn secondary" asp-controller="Solicitacoes" asp-action="Index">Ver fila completa</a>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>

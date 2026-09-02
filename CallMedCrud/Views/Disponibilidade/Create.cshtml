@@ -1,0 +1,123 @@
+@model MKSANCrud.ViewModels.AgendaExcecaoFormViewModel
+@{
+    ViewData["Title"] = "Nova exceção";
+}
+<section class="v16-page exception-create-page">
+    <div class="v16-page-head compact-head">
+        <div>
+            <span class="v16-eyebrow">AGENDA</span>
+            <h1>Nova exceção</h1>
+            <p>Faça um ajuste pontual sem alterar os horários semanais do médico.</p>
+        </div>
+        <a class="btn secondary" asp-action="Index">Voltar</a>
+    </div>
+
+    <form asp-action="Create" method="post" class="v16-card exception-form" id="exceptionForm">
+        <div asp-validation-summary="ModelOnly" class="validation"></div>
+
+        <div class="exception-type-picker" role="radiogroup" aria-label="Tipo de exceção">
+            <label class="exception-option">
+                <input asp-for="Tipo" type="radio" value="Bloqueio" />
+                <span class="exception-option-icon block">×</span>
+                <strong>Bloquear horário</strong>
+                <small>Fecha um horário ou intervalo.</small>
+            </label>
+            <label class="exception-option">
+                <input asp-for="Tipo" type="radio" value="Encaixe" />
+                <span class="exception-option-icon extra">+</span>
+                <strong>Abrir encaixe</strong>
+                <small>Cria uma vaga fora da agenda normal.</small>
+            </label>
+            <label class="exception-option">
+                <input asp-for="Tipo" type="radio" value="Ausencia" />
+                <span class="exception-option-icon away">—</span>
+                <strong>Ausência do dia</strong>
+                <small>Fecha todos os horários daquele dia.</small>
+            </label>
+        </div>
+        <span asp-validation-for="Tipo" class="validation"></span>
+
+        <div class="exception-form-grid">
+            <div class="field full">
+                <label asp-for="MedicoId">Médico</label>
+                <select asp-for="MedicoId" asp-items="ViewBag.MedicoId">
+                    <option value="">Selecione um médico</option>
+                </select>
+                <span asp-validation-for="MedicoId" class="validation"></span>
+            </div>
+
+            <div class="field">
+                <label asp-for="Data">Data</label>
+                <input asp-for="Data" type="date" />
+                <span asp-validation-for="Data" class="validation"></span>
+            </div>
+
+            <div class="field exception-time" data-time-field="start">
+                <label asp-for="HorarioInicio">Horário</label>
+                <select asp-for="HorarioInicio">
+                    <option value="">Selecione</option>
+                    @for (var hora = 7; hora <= 20; hora++)
+                    {
+                        <option value="@($"{hora:00}:00")">@($"{hora:00}:00")</option>
+                        @if (hora < 20) { <option value="@($"{hora:00}:30")">@($"{hora:00}:30")</option> }
+                    }
+                </select>
+                <span asp-validation-for="HorarioInicio" class="validation"></span>
+            </div>
+
+            <div class="field exception-time" data-time-field="end">
+                <label asp-for="HorarioFim">Até <small>(opcional)</small></label>
+                <select asp-for="HorarioFim">
+                    <option value="">Mesmo horário</option>
+                    @for (var hora = 7; hora <= 20; hora++)
+                    {
+                        <option value="@($"{hora:00}:00")">@($"{hora:00}:00")</option>
+                        @if (hora < 20) { <option value="@($"{hora:00}:30")">@($"{hora:00}:30")</option> }
+                    }
+                </select>
+                <span asp-validation-for="HorarioFim" class="validation"></span>
+            </div>
+
+            <div class="field full">
+                <label asp-for="Motivo">Motivo <small>(opcional)</small></label>
+                <textarea asp-for="Motivo" rows="3" placeholder="Ex.: congresso, compromisso externo, encaixe solicitado pela recepção..."></textarea>
+                <span asp-validation-for="Motivo" class="validation"></span>
+            </div>
+        </div>
+
+        <div class="exception-form-note" id="exceptionNote"></div>
+
+        <div class="form-actions">
+            <button class="btn" type="submit">Salvar exceção</button>
+            <a class="btn secondary" asp-action="Index">Cancelar</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+<script>
+(() => {
+    const form = document.getElementById('exceptionForm');
+    if (!form) return;
+    const radios = [...form.querySelectorAll('input[name="Tipo"]')];
+    const start = form.querySelector('[data-time-field="start"]');
+    const end = form.querySelector('[data-time-field="end"]');
+    const note = document.getElementById('exceptionNote');
+
+    const sync = () => {
+        const type = radios.find(x => x.checked)?.value || 'Bloqueio';
+        start.hidden = type === 'Ausencia';
+        end.hidden = type !== 'Bloqueio';
+        form.querySelectorAll('.exception-option').forEach(x => x.classList.toggle('selected', x.querySelector('input')?.checked));
+        note.textContent = type === 'Encaixe'
+            ? 'O encaixe será exibido como vaga real para o site, o agente e o WhatsApp.'
+            : type === 'Ausencia'
+                ? 'O sistema só permitirá a ausência se não houver consultas marcadas nesse dia.'
+                : 'O bloqueio é persistente e não será reaberto pela renovação automática da agenda.';
+    };
+
+    radios.forEach(r => r.addEventListener('change', sync));
+    sync();
+})();
+</script>
+}

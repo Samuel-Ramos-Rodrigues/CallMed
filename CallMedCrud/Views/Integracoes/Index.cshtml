@@ -1,0 +1,41 @@
+@{ ViewData["Title"] = "Integrações"; bool banco = ViewBag.BancoConectado == true; bool whats = ViewBag.WhatsAppAtivo == true; bool gemini = ViewBag.GeminiConfigurado == true; bool email = ViewBag.EmailConfigurado == true; bool sms = ViewBag.SmsAtivo == true; bool legacy = ViewBag.LegacyConfigurada == true; }
+<section class="cm19-settings-page">
+    <header class="cm19-page-head"><div><span>SISTEMA</span><h1>Integrações</h1><p>Veja rapidamente quais serviços da CallMed estão disponíveis.</p></div><button type="button" class="btn secondary" id="channelStatusButton">Atualizar canais</button></header>
+    <div class="cm19-integration-grid" id="channelStatusContent">
+        <article class="cm19-card cm19-integration-card"><span class="cm19-integration-logo db">DB</span><div><h2>Neon / PostgreSQL</h2><p>Banco principal da aplicação.</p></div><b class="@(banco ? "on" : "off")">@(banco ? "Conectado" : "Indisponível")</b></article>
+        <article class="cm19-card cm19-integration-card" data-integration="whatsapp"><span class="cm19-integration-logo wa">W</span><div><h2>WhatsApp</h2><p>Evolution API para entrada e saída.</p></div><b class="@(whats ? "on" : "off")">@(whats ? "Ativo" : "Inativo")</b></article>
+        <article class="cm19-card cm19-integration-card"><span class="cm19-integration-logo ai">AI</span><div><h2>Gemini</h2><p>Assistente inteligente integrado ao backend.</p></div><b class="@(gemini ? "on" : "off")">@(gemini ? "Configurado" : "Não configurado")</b></article>
+        <article class="cm19-card cm19-integration-card" data-integration="email"><span class="cm19-integration-logo mail">@@</span><div><h2>E-mail</h2><p>Canal SMTP / inbound quando configurado.</p></div><b class="@(email ? "on" : "off")">@(email ? "Configurado" : "Inativo")</b></article>
+        <article class="cm19-card cm19-integration-card" data-integration="sms"><span class="cm19-integration-logo sms">SMS</span><div><h2>SMS</h2><p>Gateway HTTP opcional.</p></div><b class="@(sms ? "on" : "off")">@(sms ? "Ativo" : "Inativo")</b></article>
+        <article class="cm19-card cm19-integration-card" data-integration="web"><span class="cm19-integration-logo pwa">PWA</span><div><h2>Site / PWA</h2><p>Atendimento pelo próprio aplicativo CallMed.</p></div><b class="on">Ativo</b></article>
+        <article class="cm19-card cm19-integration-card" data-integration="legacy"><span class="cm19-integration-logo db">API</span><div><h2>HIS / Sistemas legados</h2><p>API v1 protegida por chave para integração com agendas e cadastros existentes.</p></div><b class="@(legacy ? "on" : "off")">@(legacy ? "Configurada" : "Não configurada")</b></article>
+    </div>
+    <p class="cm19-security-note">Nenhuma chave, senha ou connection string é exibida nesta tela.</p>
+</section>
+
+@section Scripts {
+<script>
+(() => {
+  const button = document.getElementById('channelStatusButton');
+  const setState = (name, enabled, label) => {
+    const card = document.querySelector(`[data-integration="${name}"]`);
+    const badge = card?.querySelector(':scope > b');
+    if (!badge) return;
+    badge.className = enabled ? 'on' : 'off';
+    badge.textContent = enabled ? (label || 'Configurado') : 'Inativo';
+  };
+  button?.addEventListener('click', async () => {
+    const original = button.textContent; button.disabled = true; button.textContent = 'Verificando...';
+    try {
+      const r = await fetch('/api/atendimento/status', { credentials:'same-origin', cache:'no-store', headers:{Accept:'application/json'} });
+      if (!r.ok) throw new Error(); const d = await r.json();
+      setState('web', Boolean(d.web?.enabled && d.web?.outboundConfigured), 'Ativo');
+      setState('whatsapp', Boolean(d.whatsapp?.enabled && d.whatsapp?.inboundConfigured && d.whatsapp?.outboundConfigured));
+      setState('sms', Boolean(d.sms?.enabled && d.sms?.inboundConfigured && d.sms?.outboundConfigured));
+      setState('email', Boolean(d.email?.inboundEnabled && d.email?.inboundConfigured && d.email?.outboundConfigured));
+    } catch { alert('Não foi possível consultar os canais agora.'); }
+    finally { button.disabled = false; button.textContent = original; }
+  });
+})();
+</script>
+}

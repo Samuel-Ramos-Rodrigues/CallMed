@@ -1,0 +1,75 @@
+@model MKSANCrud.ViewModels.RelatorioGeralViewModel
+@{
+    ViewData["Title"] = "Relatório geral";
+    ViewData["Subtitle"] = $"Indicadores consolidados de {Model.InicioMes:MMMM 'de' yyyy}.";
+}
+
+<section class="v18-report-page">
+    <div class="v18-report-kpis">
+        <article><small>Consultas</small><strong>@Model.Consultas</strong><span>@Model.Confirmadas confirmadas</span></article>
+        <article><small>Pendentes</small><strong>@Model.Pendentes</strong><span>aguardando confirmação</span></article>
+        <article><small>Cancelamentos</small><strong>@Model.Canceladas</strong><span>no mês atual</span></article>
+        <article><small>Ocupação</small><strong>@Model.OcupacaoAgenda.ToString("0")%</strong><span>da agenda disponível</span></article>
+    </div>
+
+    <div class="cm21-report-challenge">
+        <article><small>Solicitações recebidas</small><strong>@Model.Solicitacoes</strong><span>@Model.SolicitacoesConfirmadas confirmadas</span></article>
+        <article><small>Taxa de confirmação</small><strong>@Model.TaxaConfirmacaoSolicitacoes.ToString("0.0")%</strong><span>solicitações convertidas em consulta</span></article>
+        <article><small>Tempo médio de confirmação</small><strong>@(Model.TempoMedioConfirmacaoMinutos <= 0 ? "—" : $"{Model.TempoMedioConfirmacaoMinutos:0} min")</strong><span>pedido até confirmação</span></article>
+        <article><small>Absenteísmo</small><strong>@Model.TaxaAbsenteismo.ToString("0.0")%</strong><span>@Model.Ausentes ausência(s)</span></article>
+        <article><small>Vagas recuperadas</small><strong>@Model.VagasRecuperadasListaEspera</strong><span>pela lista de espera</span></article>
+    </div>
+
+    @if (Model.SolicitacoesPorCanal.Any())
+    {
+        var totalCanais = Math.Max(1, Model.SolicitacoesPorCanal.Sum(x => x.Total));
+        <section class="v18-card cm21-report-channels">
+            <header class="v18-card-header"><div><h2>Solicitações por canal</h2><p>Visão omnichannel do mês atual.</p></div></header>
+            <div class="cm21-channel-strip">
+                @foreach (var item in Model.SolicitacoesPorCanal)
+                {
+                    var pct = item.Total * 100.0 / totalCanais;
+                    <div><span><b>@item.Nome</b><em>@item.Total · @pct.ToString("0")%</em></span><i><u style="width:@pct.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%"></u></i></div>
+                }
+            </div>
+        </section>
+    }
+
+    <div class="v18-report-grid">
+        <section class="v18-card">
+            <header class="v18-card-header"><div><h2>Especialidades mais procuradas</h2><p>Ranking do mês atual.</p></div></header>
+            @if (!Model.Especialidades.Any())
+            {
+                <div class="v18-empty"><strong>Ainda não há dados.</strong><small>O ranking será preenchido conforme as consultas forem realizadas.</small></div>
+            }
+            else
+            {
+                var max = Math.Max(1, Model.Especialidades.Max(x => x.Total));
+                <div class="v18-specialty-ranking">
+                    @foreach (var item in Model.Especialidades)
+                    {
+                        var width = item.Total * 100.0 / max;
+                        <div class="v18-specialty-item">
+                            <div><strong>@item.Nome</strong><span>@item.Total consulta(s)</span></div>
+                            <span class="v18-specialty-progress"><i style="width:@width.ToString("0", System.Globalization.CultureInfo.InvariantCulture)%"></i></span>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <section class="v18-card">
+            <header class="v18-card-header"><div><h2>Operação</h2><p>Visão rápida da clínica.</p></div></header>
+            <dl class="v18-report-list">
+                <div><dt>Pacientes ativos</dt><dd>@Model.PacientesAtivos</dd></div>
+                <div><dt>Médicos ativos</dt><dd>@Model.MedicosAtivos</dd></div>
+                <div><dt>Lista de espera</dt><dd>@Model.ListaEsperaAtiva</dd></div>
+                <div><dt>Conversas abertas</dt><dd>@Model.ConversasAbertas</dd></div>
+            </dl>
+            <div class="v18-report-actions">
+                <a class="btn secondary" asp-controller="FuncionarioPainel" asp-action="Index">Voltar à visão geral</a>
+                <a class="btn" asp-controller="Consulta" asp-action="Index">Ver consultas</a>
+            </div>
+        </section>
+    </div>
+</section>

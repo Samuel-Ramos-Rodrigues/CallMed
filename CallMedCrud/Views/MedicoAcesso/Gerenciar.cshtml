@@ -1,0 +1,8 @@
+@model MKSANCrud.ViewModels.MedicoAcessoViewModel
+@{ ViewData["Title"] = "Acesso do médico"; }
+<div class="form-page-head"><div><h1>Acesso do médico</h1><p>Crie ou vincule a conta da área médica de @Model.MedicoNome.</p></div></div>
+<form asp-action="Gerenciar" method="post" class="form-card"><input type="hidden" asp-for="MedicoId"/><input type="hidden" asp-for="MedicoNome"/><input type="hidden" asp-for="PossuiAcesso"/><div asp-validation-summary="ModelOnly" class="validation"></div>
+<div class="form-grid"><div class="field full"><label asp-for="Email">E-mail</label><input asp-for="Email" autocomplete="email"/><span asp-validation-for="Email" class="validation"></span></div>
+@if(!Model.PossuiAcesso){<div class="field full"><label asp-for="Senha">Senha inicial</label><input asp-for="Senha" autocomplete="new-password"/><span asp-validation-for="Senha" class="validation"></span><small class="field-help">O médico poderá usar este e-mail e senha para acessar “Minha Agenda”.</small></div>}else{<div class="alert success full">Este médico já possui acesso. Salvar atualiza o e-mail vinculado.</div>}</div>
+<div class="form-actions"><a class="btn secondary" asp-controller="Medico" asp-action="Details" asp-route-id="@Model.MedicoId">Voltar</a><button class="btn" type="submit">Salvar acesso</button></div></form>
+@section Scripts { <partial name="_ValidationScriptsPartial"/> }

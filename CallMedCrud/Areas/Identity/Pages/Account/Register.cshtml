@@ -1,0 +1,195 @@
+@page
+@model MKSANCrud.Areas.Identity.Pages.Account.RegisterModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Criar conta";
+}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8"  />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+        <meta name="theme-color" content="#eef6f2"  />
+        <script>
+            (function () {
+                var pref = 'system';
+                try {
+                    var saved = localStorage.getItem('callmed-theme');
+                    if (saved === 'light' || saved === 'dark' || saved === 'system') pref = saved;
+                } catch { }
+                var dark = pref === 'dark' || (pref === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.dataset.themePreference = pref;
+                document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+                document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+                var themeMeta = document.querySelector('meta[name="theme-color"]');
+                if (themeMeta) themeMeta.setAttribute('content', dark ? '#071611' : '#eef6f2');
+            })();
+        </script>
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="CallMed" />
+        <meta name="application-name" content="CallMed" />
+        <link rel="manifest" href="~/manifest.json" />
+        <link rel="apple-touch-icon" sizes="180x180" href="~/icons/apple-touch-icon.png" />
+        <title>Criar conta | CallMed</title>
+        <link rel="stylesheet" href="~/css/identity.css?v=2160"  />
+    </head>
+    <body class="identity-body">
+        <main class="identity-shell register-shell">
+            <section class="identity-showcase">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="identity-brand">
+                    <img src="~/images/logo-callmed-horizontal.png?v=2160" alt="CallMed" class="identity-brand-horizontal" />
+                </a>
+                <div class="identity-copy">
+                    <span class="identity-kicker">Novo paciente</span>
+                    <h1>Crie sua conta e cuide da sua agenda.</h1>
+                    <p>
+                        O cadastro é dividido em etapas curtas para manter seus dados pessoais, convênio e acesso bem organizados.
+                    </p>
+
+                    <div class="register-preview">
+                        <div class="register-preview-head">
+                            <div class="register-preview-avatar" id="previewAvatar">P</div>
+                            <div>
+                                <h3 id="previewNome">Paciente CallMed</h3>
+                                <p id="previewEmail">seuemail@email.com</p>
+                            </div>
+                        </div>
+                        <div class="register-preview-grid">
+                            <div>
+                                <span>CPF</span>
+                                <strong id="previewCpf">000.000.000-00</strong>
+                            </div>
+                            <div>
+                                <span>Atendimento</span>
+                                <strong id="previewConvenio">Particular</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <small style="position:relative;z-index:1;color:#bcd8ce">Cadastro protegido · CallMed</small>
+            </section>
+
+            <section class="identity-panel register-panel">
+                <div class="identity-card register-card">
+                    <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="identity-back">← Já tenho uma conta</a>
+                    <div class="identity-card-header">
+                        <h2>Cadastro do paciente</h2>
+                        <p>Preencha as três etapas. Você poderá atualizar seus dados depois.</p>
+                    </div>
+
+                    <div class="steps" aria-label="Etapas do cadastro">
+                        <div class="step ativo" id="step-1">
+                            <span>1</span>
+                            <p>Dados</p>
+                        </div>
+                        <div class="linha"></div>
+                        <div class="step" id="step-2">
+                            <span>2</span>
+                            <p>Convênio</p>
+                        </div>
+                        <div class="linha"></div>
+                        <div class="step" id="step-3">
+                            <span>3</span>
+                            <p>Acesso</p>
+                        </div>
+                    </div>
+
+                    <form method="post" id="form-cadastro" class="identity-form">
+                        <input type="hidden" name="returnUrl" value="@Model.ReturnUrl"  />
+                        <div asp-validation-summary="ModelOnly" class="mensagem erro"></div>
+
+                        <div class="form-etapa ativa" data-etapa="1">
+                            <div class="input-group">
+                                <label asp-for="Input.Nome"></label>
+                                <input asp-for="Input.Nome" id="nome" autocomplete="name" placeholder="Seu nome completo"  />
+                                <span asp-validation-for="Input.Nome" class="field-error"></span>
+                            </div>
+                            <div class="input-group">
+                                <label asp-for="Input.Cpf"></label>
+                                <input asp-for="Input.Cpf" id="cpf" inputmode="numeric" placeholder="000.000.000-00"  />
+                                <span asp-validation-for="Input.Cpf" class="field-error"></span>
+                            </div>
+                            <div class="input-group">
+                                <label asp-for="Input.Telefone"></label>
+                                <input asp-for="Input.Telefone" id="telefone" autocomplete="tel" placeholder="(79) 99999-9999"  />
+                            </div>
+                            <div class="input-group">
+                                <label asp-for="Input.DataNascimento"></label>
+                                <input asp-for="Input.DataNascimento" type="hidden" id="dataNascimento"  />
+                                <div class="date-select" data-date-select data-target="dataNascimento" data-mode="birth"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-etapa" data-etapa="2">
+                            <div class="input-group">
+                                <label asp-for="Input.TemConvenio"></label>
+                                <select asp-for="Input.TemConvenio" id="temConvenio">
+                                    <option value="false">Não, atendimento particular</option>
+                                    <option value="true">Sim, possuo convênio</option>
+                                </select>
+                            </div>
+                            <div id="camposConvenio" class="campos-convenio">
+                                <div class="input-group">
+                                    <label asp-for="Input.NomeConvenio"></label>
+                                    <input asp-for="Input.NomeConvenio" id="nomeConvenio" placeholder="Ex.: Unimed"  />
+                                </div>
+                                <div class="input-group">
+                                    <label asp-for="Input.NumeroConvenio"></label>
+                                    <input asp-for="Input.NumeroConvenio" placeholder="Número da carteirinha"  />
+                                </div>
+                                <div class="input-group">
+                                    <label asp-for="Input.ValidadeConvenio"></label>
+                                    <input asp-for="Input.ValidadeConvenio" type="hidden" id="validadeConvenioRegistro"  />
+                                    <div class="date-select" data-date-select data-target="validadeConvenioRegistro" data-mode="validity"></div>
+                                </div>
+                            </div>
+                            <div class="aviso">
+                                <strong>Observação:</strong>
+                                os dados do convênio poderão ser conferidos durante o atendimento.
+                            </div>
+                        </div>
+
+                        <div class="form-etapa" data-etapa="3">
+                            <div class="input-group">
+                                <label asp-for="Input.Email">E-mail</label>
+                                <input asp-for="Input.Email" id="email" autocomplete="email" placeholder="seuemail@email.com"  />
+                                <span asp-validation-for="Input.Email" class="field-error"></span>
+                            </div>
+                            <div class="input-group">
+                                <label asp-for="Input.Password"></label>
+                                <div class="password-wrap">
+                                    <input asp-for="Input.Password" id="senha" autocomplete="new-password" placeholder="Mínimo de 8 caracteres, com letra e número"  />
+                                    <button type="button" class="password-toggle" id="btnMostrarSenha">Mostrar</button>
+                                </div>
+                                <span asp-validation-for="Input.Password" class="field-error"></span>
+                            </div>
+                            <div class="input-group">
+                                <label asp-for="Input.ConfirmPassword"></label>
+                                <input asp-for="Input.ConfirmPassword" autocomplete="new-password" placeholder="Repita sua senha"  />
+                                <span asp-validation-for="Input.ConfirmPassword" class="field-error"></span>
+                            </div>
+                            <div class="checklist">
+                                <strong>Seu acesso permitirá:</strong>
+                                <div>✓ Entrar com CPF ou e-mail</div>
+                                <div>✓ Gerenciar suas consultas</div>
+                                <div>✓ Usar o assistente virtual CallMed</div>
+                            </div>
+                        </div>
+
+                        <div class="botoes-form">
+                            <button type="button" id="btnVoltar" class="btn-secundario">Voltar</button>
+                            <button type="button" id="btnProximo">Continuar</button>
+                            <button type="submit" id="btnCadastrar">Criar minha conta</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+        <script src="~/js/date-select.js?v=2160"></script>
+        <script src="~/js/identity-register.js?v=2160"></script>
+            <script src="~/js/theme.js?v=2160"></script>
+            <script src="~/js/pwa.js?v=2160"></script>
+    </body>
+</html>

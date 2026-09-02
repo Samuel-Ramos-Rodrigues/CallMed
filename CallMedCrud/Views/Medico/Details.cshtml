@@ -1,0 +1,85 @@
+@model Medico
+@{
+    ViewData["Title"] = "Médico";
+    string Dia(int numero) => numero switch
+    {
+        1 => "Segunda-feira",
+        2 => "Terça-feira",
+        3 => "Quarta-feira",
+        4 => "Quinta-feira",
+        5 => "Sexta-feira",
+        6 => "Sábado",
+        _ => "Domingo"
+    };
+    var agenda = Model.HorariosSemanais
+        .Where(x => x.Ativo)
+        .GroupBy(x => x.DiaSemana)
+        .OrderBy(g => g.Key == 0 ? 7 : g.Key)
+        .ToList();
+}
+<div class="page-head page-head-rich">
+    <div>
+        <h1>Detalhes do médico</h1>
+        <p>Dados profissionais e agenda semanal.</p>
+    </div>
+</div>
+
+<div class="details-card">
+    <section class="doctor-form-section">
+        <div class="doctor-section-head">
+            <span class="doctor-section-number">1</span>
+            <div>
+                <h2>Dados profissionais</h2>
+            </div>
+        </div>
+        <dl class="details-list">
+            <dt>Nome</dt>
+            <dd>@Model.Nome</dd>
+            <dt>Especialidade</dt>
+            <dd>@(Model.EspecialidadeCadastro?.Nome ?? Model.Especialidade)</dd>
+            <dt>CRM</dt>
+            <dd>@(string.IsNullOrWhiteSpace(Model.Crm) ? "—" : Model.Crm)</dd>
+            <dt>Ativo</dt>
+            <dd>@(Model.Ativo ? "Sim" : "Não")</dd>
+        </dl>
+    </section>
+
+    <section class="doctor-form-section">
+        <div class="doctor-section-head">
+            <span class="doctor-section-number">2</span>
+            <div>
+                <h2>Agenda semanal</h2>
+                <p>Dias e horários configurados para atendimento.</p>
+            </div>
+        </div>
+
+        @if (agenda.Count == 0)
+        {
+            <p class="muted">Nenhuma agenda semanal cadastrada.</p>
+        }
+        else
+        {
+            <div class="weekly-schedule">
+                @foreach (var grupo in agenda)
+                {
+                    <div class="schedule-day">
+                        <strong>@Dia(grupo.Key)</strong>
+                        <div class="schedule-chip-list">
+                            @foreach (var item in grupo.OrderBy(x => x.Horario))
+                            {
+                                <span class="soft-pill">@item.Horario</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+
+    <div class="form-actions">
+        <a class="btn" asp-action="Edit" asp-route-id="@Model.Id">Editar</a>
+        <a class="btn secondary" asp-action="Index">Voltar</a>
+    </div>
+</div>
+
+@if (User.IsInRole("Admin")) { <div class="form-actions"><a class="btn" asp-controller="MedicoAcesso" asp-action="Gerenciar" asp-route-id="@Model.Id">Configurar acesso do médico</a></div> }

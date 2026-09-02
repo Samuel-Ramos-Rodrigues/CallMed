@@ -1,0 +1,44 @@
+name: CallMed TWA - APK Debug
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'CallMedTWA/**'
+      - 'CallMedCrud/wwwroot/manifest.json'
+      - 'CallMedCrud/Program.cs'
+      - '.github/workflows/callmed-twa-debug.yml'
+
+jobs:
+  build-debug-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Instalar SDK Android 36
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Gerar APK TWA
+        working-directory: CallMedTWA
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
+
+      - name: Publicar APK como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CallMed-v21.3-TWA-debug
+          path: CallMedTWA/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error

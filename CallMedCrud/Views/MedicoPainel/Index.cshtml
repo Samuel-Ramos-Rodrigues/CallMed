@@ -1,0 +1,118 @@
+@model MKSANCrud.ViewModels.MedicoPainelViewModel
+@{
+    ViewData["Title"] = "Minha Agenda";
+    var proximaHoje = Model.AgendaHoje.FirstOrDefault(c => c.Status != MKSANCrud.Models.ConsultaStatus.Cancelada && c.Status != MKSANCrud.Models.ConsultaStatus.Realizada);
+    var nomes = new[] { "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb" };
+}
+<section class="v16-page doctor-home-v16">
+    <div class="doctor-welcome-v16">
+        <div><span class="v16-eyebrow">ÁREA DO MÉDICO</span><h1>Olá, @Model.Medico.Nome</h1><p>@Model.Medico.Especialidade · sua agenda e seus próximos pacientes.</p></div>
+        <span class="doctor-crm-pill">@(string.IsNullOrWhiteSpace(Model.Medico.Crm) ? "CRM não informado" : Model.Medico.Crm)</span>
+    </div>
+
+    @if (proximaHoje is not null)
+    {
+        <section class="doctor-next-patient">
+            <div class="doctor-next-time"><span>PRÓXIMO PACIENTE</span><strong>@proximaHoje.Horario</strong><small>hoje</small></div>
+            <div class="doctor-next-copy"><span class="status-pill status-@proximaHoje.Status.ToLowerInvariant()">@proximaHoje.Status</span><h2>@proximaHoje.Paciente?.Nome</h2><p>Consulta de @Model.Medico.Especialidade</p></div>
+            <div class="doctor-next-actions">
+                @if (proximaHoje.Status == MKSANCrud.Models.ConsultaStatus.Pendente)
+                {
+                    <form asp-action="Confirmar" method="post"><input type="hidden" name="consultaId" value="@proximaHoje.Id"/><button class="btn" type="submit">Confirmar consulta</button></form>
+                }
+                @if (proximaHoje.Status == MKSANCrud.Models.ConsultaStatus.Confirmada || proximaHoje.Status == MKSANCrud.Models.ConsultaStatus.Remarcada)
+                {
+                    <form asp-action="Concluir" method="post"><input type="hidden" name="consultaId" value="@proximaHoje.Id"/><button class="btn" type="submit">Concluir atendimento</button></form>
+                }
+            </div>
+        </section>
+    }
+
+    <div class="v16-kpi-grid doctor-kpi-grid">
+        <article class="v16-kpi"><span class="v16-kpi-icon green">▦</span><div><small>Consultas hoje</small><strong>@Model.ConsultasHoje</strong><span>atendimentos do dia</span></div></article>
+        <article class="v16-kpi"><span class="v16-kpi-icon blue">7</span><div><small>Próximos 7 dias</small><strong>@Model.ConsultasSemana</strong><span>consultas agendadas</span></div></article>
+        <article class="v16-kpi"><span class="v16-kpi-icon purple">♙</span><div><small>Pacientes hoje</small><strong>@Model.PacientesHoje</strong><span>pacientes distintos</span></div></article>
+        <article class="v16-kpi"><span class="v16-kpi-icon amber">＋</span><div><small>Vagas livres hoje</small><strong>@Model.VagasHoje</strong><span>pela agenda atual</span></div></article>
+    </div>
+
+    <div class="doctor-home-grid-v16">
+        <section class="v16-card doctor-day-card">
+            <div class="v16-card-head"><div><h2>Agenda de hoje</h2><p>Consultas na ordem dos horários.</p></div></div>
+            @if (!Model.AgendaHoje.Any())
+            {
+                <div class="v16-empty compact"><span>✓</span><strong>Nenhuma consulta marcada para hoje.</strong></div>
+            }
+            else
+            {
+                <div class="doctor-timeline-v16">
+                    @foreach (var c in Model.AgendaHoje)
+                    {
+                        <div class="doctor-timeline-row">
+                            <div class="doctor-time-dot"><strong>@c.Horario</strong><i></i></div>
+                            <div class="doctor-patient-v16"><strong>@c.Paciente?.Nome</strong><small>@c.Status</small></div>
+                            <div class="doctor-actions-v16">
+                                @if (c.Status == MKSANCrud.Models.ConsultaStatus.Pendente)
+                                { <form asp-action="Confirmar" method="post"><input type="hidden" name="consultaId" value="@c.Id"/><button class="btn small" type="submit">Confirmar</button></form> }
+                                @if (c.Status == MKSANCrud.Models.ConsultaStatus.Confirmada || c.Status == MKSANCrud.Models.ConsultaStatus.Remarcada)
+                                { <form asp-action="Concluir" method="post"><input type="hidden" name="consultaId" value="@c.Id"/><button class="btn secondary small" type="submit">Concluir</button></form> }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <section class="v16-card doctor-week-card">
+            <div class="v16-card-head"><div><h2>Minha semana padrão</h2><p>Horários configurados pela clínica.</p></div></div>
+            @if (!Model.AgendaSemanal.Any())
+            {
+                <div class="v16-empty compact"><strong>Agenda semanal ainda não configurada.</strong></div>
+            }
+            else
+            {
+                <div class="doctor-week-v16">
+                    @foreach (var g in Model.AgendaSemanal.GroupBy(x => x.DiaSemana).OrderBy(x => x.Key == 0 ? 7 : x.Key))
+                    {
+                        <div><span>@nomes[g.Key]</span><div>@foreach (var h in g.OrderBy(x => x.Horario)){<b>@h.Horario</b>}</div></div>
+                    }
+                </div>
+            }
+        </section>
+    </div>
+
+    <section class="v16-card doctor-upcoming-card">
+        <div class="v16-card-head"><div><h2>Próximos pacientes</h2><p>Agenda futura após hoje.</p></div></div>
+        @if (!Model.ProximasConsultas.Any())
+        { <div class="v16-empty compact"><strong>Nenhuma consulta futura.</strong></div> }
+        else
+        {
+            <div class="v16-appointment-list">
+            @foreach (var c in Model.ProximasConsultas.Take(10))
+            {
+                <div class="v16-appointment-row static"><div class="v16-date-badge"><strong>@c.Data.Day</strong><span>@c.Data.ToString("MMM")</span></div><div class="v16-appointment-person"><strong>@c.Paciente?.Nome</strong><small>@c.Status</small></div><span class="v16-time">@c.Horario</span></div>
+            }
+            </div>
+        }
+    </section>
+
+    <div class="doctor-slots-grid-v16">
+        <section class="v16-card doctor-slot-card-v16">
+            <div class="v16-card-head"><div><h2>Bloquear horário livre</h2><p>Próximas vagas dos próximos 14 dias.</p></div></div>
+            @if (!Model.ProximasVagasLivres.Any())
+            { <div class="v16-empty compact"><strong>Nenhuma vaga livre no período.</strong></div> }
+            else
+            {
+                <div class="slot-grid v16-slot-grid">@foreach (var vaga in Model.ProximasVagasLivres){<form asp-action="BloquearHorario" method="post" class="slot-card v16-slot"><input type="hidden" name="disponibilidadeId" value="@vaga.Id"/><span>@vaga.Data!.Value.ToString("dd/MM")</span><strong>@vaga.Horario</strong><button type="submit" class="btn-link danger">Bloquear</button></form>}</div>
+            }
+        </section>
+        <section class="v16-card doctor-slot-card-v16">
+            <div class="v16-card-head"><div><h2>Meus bloqueios</h2><p>Horários que você fechou manualmente.</p></div></div>
+            @if (!Model.BloqueiosManuais.Any())
+            { <div class="v16-empty compact"><strong>Nenhum bloqueio futuro.</strong></div> }
+            else
+            {
+                <div class="slot-grid v16-slot-grid">@foreach (var vaga in Model.BloqueiosManuais){<form asp-action="DesbloquearHorario" method="post" class="slot-card v16-slot"><input type="hidden" name="disponibilidadeId" value="@vaga.Id"/><span>@vaga.Data!.Value.ToString("dd/MM")</span><strong>@vaga.Horario</strong><button type="submit" class="btn-link">Desbloquear</button></form>}</div>
+            }
+        </section>
+    </div>
+</section>
