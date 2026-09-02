@@ -1,206 +1,122 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Samuel-Ramos-Rodrigues/CallMed/master/CallMedCrud/wwwroot/images/logo-callmed-horizontal.png" alt="CallMed" width="360" />
+  <img src="./CallMedCrud/wwwroot/images/logo-callmed-horizontal.png" alt="CallMed" width="340">
 </p>
 
 <h1 align="center">CallMed</h1>
 
 <p align="center">
-  <strong>Todos os canais. Uma única agenda.</strong><br>
-  Plataforma omnichannel para tornar a marcação de consultas mais rápida, acessível, padronizada e integrada.
+  <strong>Todos os canais. Uma única agenda.</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white" alt=".NET 8" />
-  <img src="https://img.shields.io/badge/ASP.NET%20Core-MVC-5C2D91?logo=dotnet&logoColor=white" alt="ASP.NET Core MVC" />
-  <img src="https://img.shields.io/badge/PostgreSQL-Neon-336791?logo=postgresql&logoColor=white" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/PWA-Ready-0A9B62?logo=pwa&logoColor=white" alt="PWA" />
-  <img src="https://img.shields.io/badge/Android-TWA-3DDC84?logo=android&logoColor=white" alt="Android TWA" />
-  <img src="https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white" alt="Docker" />
-  <img src="https://img.shields.io/badge/Deploy-Render-46E3B7" alt="Render" />
-  <img src="https://img.shields.io/badge/versão-21.6.0-0B5D4C" alt="Versão 21.6.0" />
+  Plataforma omnichannel para centralizar solicitações, triagem, agendamento, confirmações e atendimento de uma clínica em um único fluxo.
 </p>
 
 <p align="center">
-  <a href="https://callmed.onrender.com/">Aplicação</a> •
-  <a href="docs/ARQUITETURA.md">Arquitetura</a> •
-  <a href="docs/DESAFIO-SENAI.md">Desafio SENAI</a> •
-  <a href="docs/integracoes/INTEGRACAO-LEGADO.md">Integração legada</a> •
-  <a href="docs/validacao/VALIDACAO.md">Validação</a>
+  <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=flat-square&logo=dotnet&logoColor=white" alt=".NET 8">
+  <img src="https://img.shields.io/badge/ASP.NET_Core-MVC-512BD4?style=flat-square&logo=dotnet&logoColor=white" alt="ASP.NET Core MVC">
+  <img src="https://img.shields.io/badge/PostgreSQL-Neon-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL / Neon">
+  <img src="https://img.shields.io/badge/PWA-Ready-5A0FC8?style=flat-square&logo=pwa&logoColor=white" alt="PWA">
+  <img src="https://img.shields.io/badge/Android-TWA-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android TWA">
+  <img src="https://img.shields.io/badge/Deploy-Render-46E3B7?style=flat-square" alt="Render">
 </p>
 
-📑 Sumário
+<p align="center">
+  <a href="https://callmed.onrender.com/"><strong>🌐 Acessar aplicação</strong></a>
+  &nbsp;•&nbsp;
+  <a href="./docs/ARQUITETURA.md">Arquitetura</a>
+  &nbsp;•&nbsp;
+  <a href="./docs/DESAFIO-SENAI.md">Desafio SENAI</a>
+  &nbsp;•&nbsp;
+  <a href="./docs/validacao/VALIDACAO.md">Validação</a>
+</p>
 
-Sobre o projeto
+Sobre a CallMed
 
-Problema que a CallMed resolve
+A CallMed é uma plataforma web de gestão e marcação de consultas criada para reduzir a fragmentação entre recepção, telefone, WhatsApp, e-mail e canais digitais.
 
-Objetivos
+Em vez de cada canal funcionar como um processo separado, a CallMed transforma o atendimento em um fluxo único:
 
-Visão da solução
+solicitação → triagem → disponibilidade → agendamento → confirmação → acompanhamento
 
-Principais funcionalidades
+A proposta é apoiar a equipe da clínica, reduzir tarefas repetitivas e oferecer ao paciente uma experiência simples e acessível — sem eliminar o atendimento humano, telefônico ou presencial.
 
-Perfis e permissões
+Objetivo: tornar o processo de marcação de consultas mais rápido, acessível, padronizado e conectado.
 
-Fluxo de marcação
+O problema que o projeto resolve
 
-Arquitetura
-
-Tecnologias
-
-Estrutura do projeto
-
-Banco de dados
-
-Inteligência artificial
-
-Atendimento omnichannel
-
-Lista de espera e redução de absenteísmo
-
-PWA e acessibilidade
-
-Android / TWA
-
-Integração com sistemas legados
-
-Segurança
-
-Variáveis de ambiente
-
-Executando localmente
-
-Banco Neon e migrations
-
-Deploy no Render
-
-Health check
-
-Validação atual
-
-Solução de problemas
-
-Documentação complementar
-
-Contexto acadêmico
-
-🩺 Sobre o projeto
-
-A CallMed é uma plataforma web de gestão e marcação de consultas criada para centralizar um processo que normalmente acontece de forma fragmentada entre recepção, telefone, WhatsApp, e-mail e sistemas internos.
-
-O sistema reúne em uma única aplicação:
-
-solicitação de atendimento;
-
-triagem administrativa;
-
-cadastro de pacientes;
-
-convênios e elegibilidade;
-
-médicos e especialidades;
-
-agenda e disponibilidade;
-
-agendamento e remarcação;
-
-confirmações e lembretes;
-
-lista de espera;
-
-atendimento humano e por IA;
-
-histórico e auditoria;
-
-indicadores operacionais;
-
-PWA acessível para pacientes;
-
-integração com canais externos e sistemas legados.
-
-A proposta não é substituir o atendimento humano. A CallMed busca organizar o fluxo, automatizar tarefas repetitivas e deixar a equipe disponível para situações que realmente exigem intervenção humana.
-
-Posicionamento: Todos os canais. Uma única agenda.
-
-🎯 Problema que a CallMed resolve
-
-O projeto nasceu de um desafio sobre a ineficiência no processo de marcação de consultas.
-
-Em muitos ambientes de saúde, a solicitação pode chegar presencialmente, por telefone, WhatsApp ou e-mail. A equipe precisa conferir cadastro, convênio, especialidade, regras e agenda, muitas vezes utilizando sistemas diferentes ou até planilhas paralelas.
-
-Isso pode gerar:
-
-tempo elevado entre solicitação e confirmação;
-
-informações diferentes entre os canais;
-
-retrabalho da recepção;
-
-dificuldade para localizar horários realmente disponíveis;
-
-baixa visibilidade do histórico do paciente;
-
-dificuldade de acesso para idosos e pessoas com baixa familiaridade tecnológica;
-
-esquecimentos e absenteísmo;
-
-vagas desperdiçadas após cancelamentos;
-
-dependência excessiva de processos manuais.
-
-A CallMed transforma esse cenário em um fluxo único, rastreável e padronizado.
-
-✅ Objetivos
-
-Objetivo
+Cenário comum
 
 Como a CallMed responde
 
-Agilidade operacional
+Solicitações espalhadas em vários canais
 
-Centralização de solicitações, triagem e disponibilidade em um único fluxo.
+Centraliza tudo em um fluxo de atendimento
 
-Melhor experiência do paciente
+Demora para encontrar horários
 
-PWA simples, consultas, confirmação e acompanhamento em poucos passos.
+Consulta disponibilidade real da agenda
 
-Acessibilidade e inclusão
+Informações diferentes entre atendentes
 
-Modo Fácil, texto ampliado, alto contraste e manutenção dos canais telefone/presencial.
+Padroniza triagem, status e regras
 
-Redução de absenteísmo
+Esquecimento de consultas
 
-Confirmações, lembretes automáticos e tratamento de ausência.
+Trabalha com confirmações e lembretes
 
-Visão integrada
+Vagas perdidas após cancelamentos
 
-Pacientes, consultas, solicitações, conversas e agenda na mesma base.
+Utiliza lista de espera
 
-Padronização
+Dificuldade de uso por alguns pacientes
 
-Status, triagem, regras de convênio, auditoria e fluxo operacional definidos.
+PWA responsiva e recursos de acessibilidade
 
-Otimização da equipe
+Retrabalho da recepção
 
-IA no primeiro contato, automações e Central de Atendimento.
+Automatiza tarefas operacionais e oferece apoio por IA
 
-Aproveitamento da agenda
+Sistemas existentes isolados
 
-Lista de espera capaz de reaproveitar vagas canceladas.
+Disponibiliza API de integração legada
 
-Integração
+Principais recursos
 
-API para sistemas legados, webhooks e canais configuráveis.
 
-Baixo custo
 
-Stack web baseada em .NET, PostgreSQL/Neon e integrações opcionais.
 
-Sustentabilidade
 
-Registros digitais e redução do uso de papel e processos paralelos.
 
-🔄 Visão da solução
+
+📅 Agenda inteligente
+Agenda semanal, sessões, disponibilidade, exceções e prevenção de conflitos.
+
+💬 Atendimento omnichannel
+Web/PWA, WhatsApp, e-mail, SMS e registro de telefone/presencial.
+
+🤖 Assistente com IA
+Gemini conectado às informações reais do sistema para apoiar o atendimento.
+
+🩺 Gestão de consultas
+Agendamento, confirmação, remarcação, cancelamento e histórico.
+
+🔁 Lista de espera
+Ajuda a reaproveitar vagas liberadas e reduz horários ociosos.
+
+✅ Triagem administrativa
+Paciente, convênio, especialidade, preferências e elegibilidade.
+
+♿ Acessibilidade
+Modo Fácil, texto ampliado, alto contraste e interface mobile-first.
+
+📊 Indicadores e auditoria
+Acompanhamento operacional, rastreabilidade e eventos administrativos.
+
+🔌 Integrações
+Evolution API, SMTP, SMS HTTP, webhooks e API para sistemas legados.
+
+Fluxo de atendimento
 
 flowchart LR
     A[Paciente] --> B{Canal}
@@ -210,317 +126,89 @@ flowchart LR
     B -->|Telefone| C
     B -->|Presencial| C
     B -->|E-mail| C
-    B -->|SMS| C
 
-    C --> D[Triagem administrativa]
-    D --> E[Cadastro + Convênio + Especialidade]
-    E --> F[Agenda e disponibilidade]
-    F --> G[Agendamento]
-    G --> H[Confirmação e lembretes]
+    C --> D[Triagem]
+    D --> E[Agenda]
+    E --> F[Agendamento]
+    F --> G[Confirmação]
 
-    H -->|Confirmar| I[Consulta]
-    H -->|Remarcar| F
-    H -->|Cancelar| J[Lista de espera]
-    J --> F
+    G -->|Confirmado| H[Consulta]
+    G -->|Remarcar| E
+    G -->|Cancelar| I[Lista de espera]
+    I --> E
 
-    I --> K[Histórico + Auditoria + Indicadores]
+    H --> J[Histórico e indicadores]
 
-A mesma solicitação acompanha o paciente desde o primeiro contato até a confirmação, evitando que a informação se perca ao trocar de canal ou atendente.
-
-🚀 Principais funcionalidades
-
-Solicitações e triagem
-
-entrada padronizada de solicitações;
-
-identificação do canal de origem;
-
-associação com paciente, especialidade e médico;
-
-triagem administrativa;
-
-validação de convênio e elegibilidade;
-
-preferências de data e período;
-
-pendências e observações;
-
-responsável pela triagem;
-
-histórico dos estados da solicitação;
-
-liberação excepcional com justificativa e auditoria.
-
-Agenda médica
-
-cadastro de médicos e especialidades;
-
-agenda semanal por médico;
-
-múltiplas sessões por dia;
-
-disponibilidades;
-
-exceções e bloqueios;
-
-prevenção de conflito de horário;
-
-consulta de vagas reais;
-
-busca por médico ou especialidade;
-
-agenda geral para equipe interna.
-
-Consultas
-
-criação de consulta;
-
-consulta pelo paciente ou pela equipe;
-
-confirmação;
-
-remarcação;
-
-cancelamento;
-
-registro de ausência;
-
-manutenção do mesmo médico na remarcação quando exigido pelo fluxo;
-
-histórico do paciente.
-
-Convênios
-
-cadastro dos dados de convênio do paciente;
-
-validade;
-
-matriz Convênio × Especialidade;
-
-checagem de elegibilidade durante a triagem;
-
-atendimento particular quando aplicável.
-
-Central de Atendimento
-
-caixa de entrada centralizada;
-
-conversas por canal;
-
-IA no primeiro atendimento;
-
-atendimento humano;
-
-assumir conversa;
-
-devolver atendimento para IA;
-
-encerrar e reabrir conversa;
-
-acesso ao contexto do paciente durante o atendimento;
-
-envio por canal configurado.
-
-Confirmações e lembretes
-
-lembretes automáticos de consulta;
-
-confirmação de presença;
-
-suporte a cancelamento e remarcação;
-
-processamento em segundo plano;
-
-canal preferido do paciente.
-
-Lista de espera
-
-entrada voluntária na fila;
-
-preferência por médico e especialidade;
-
-data e período preferidos;
-
-detecção de vagas;
-
-oferta de vaga;
-
-aceite pelo paciente;
-
-revalidação da disponibilidade antes da reserva.
-
-Pacientes
-
-cadastro administrativo;
-
-CPF, contato e dados pessoais;
-
-convênio;
-
-canal preferido;
-
-histórico de consultas;
-
-solicitações e atendimentos relacionados;
-
-status ativo/inativo.
-
-Auditoria e relatórios
-
-registro de eventos relevantes;
-
-identificação de alterações;
-
-rastreabilidade administrativa;
-
-indicadores operacionais;
-
-métricas relacionadas à confirmação e absenteísmo;
-
-distribuição por canal;
-
-acompanhamento de solicitações pendentes.
-
-👥 Perfis e permissões
-
-A autenticação é feita com ASP.NET Core Identity e utiliza quatro roles principais.
+Perfis do sistema
 
 Perfil
 
-Principais acessos
+Principais recursos
 
 Paciente
 
-Home/PWA, próprias consultas, agendamento, confirmações, lista de espera, conta e assistente.
+Agendar, consultar, confirmar, remarcar/cancelar quando permitido, lista de espera, conta e assistente
 
 Médico
 
-Painel e agenda relacionados ao atendimento médico.
+Painel e agenda relacionados ao atendimento médico
 
 Funcionário
 
-Pacientes, médicos, agenda, consultas, solicitações, triagem, Central de Atendimento e relatórios.
+Pacientes, médicos, agenda, triagem, consultas, Central de Atendimento e relatórios
 
-Admin
+Administrador
 
-Todos os recursos administrativos, funcionários, especialidades, convênios, integrações, auditoria e configurações.
+Recursos administrativos, funcionários, convênios, especialidades, integrações, auditoria e configurações
 
-A aplicação não depende apenas de botões escondidos na interface: os Controllers possuem regras de autorização por role no servidor.
+A autorização é validada no servidor com ASP.NET Core Identity + Roles.
 
-📅 Fluxo de marcação
+Arquitetura
 
-1. Solicitação
+A V21.6 foi reorganizada para separar responsabilidades e manter o projeto simples de entender e evoluir.
 
-O paciente entra em contato por um dos canais disponíveis.
+flowchart LR
+    UI[Views / PWA] --> C[Controllers]
+    C --> V[ViewModels / DTOs]
+    C --> S[Services]
+    S --> D[EF Core / MKSANContext]
+    D --> DB[(PostgreSQL / Neon)]
 
-2. Triagem administrativa
+    S --> AI[Gemini]
+    S --> WA[Evolution API]
+    S --> MAIL[SMTP]
+    S --> SMS[SMS HTTP]
 
-A equipe verifica:
+Organização das camadas
 
-identificação do paciente;
+CallMed/
+├── CallMedCrud/
+│   ├── Areas/Identity/          # Login, cadastro e recuperação
+│   ├── Controllers/             # Entrada HTTP/MVC por domínio
+│   ├── Data/                    # DbContext, Identity e configurações EF
+│   ├── DTOs/                    # Contratos de APIs e integrações
+│   ├── Extensions/              # DI, pipeline e endpoints
+│   ├── Middleware/              # Middlewares próprios
+│   ├── Migrations/              # Migrations do Entity Framework
+│   ├── Models/                  # Entidades, enums e constantes
+│   ├── Options/                 # Configurações tipadas
+│   ├── Services/                # Regras de negócio e integrações
+│   ├── ViewModels/              # Modelos específicos das telas
+│   ├── Views/                   # Razor Views
+│   └── wwwroot/                 # CSS, JS, PWA, imagens e ícones
+│
+├── CallMedTWA/                  # Aplicativo Android via TWA
+├── PlayStore/                   # Materiais de publicação
+├── docs/                        # Documentação técnica
+├── .github/workflows/           # Automação de build
+├── Dockerfile
+└── CallMed.sln
 
-situação cadastral;
+Para detalhes, consulte docs/ARQUITETURA.md.
 
-convênio;
+Tecnologias
 
-validade;
-
-especialidade solicitada;
-
-elegibilidade;
-
-preferências e observações.
-
-3. Disponibilidade
-
-O backend cruza:
-
-Especialidade
-+ Médico
-+ Agenda semanal
-+ Disponibilidades
-+ Exceções / bloqueios
-+ Consultas existentes
-= Vagas realmente disponíveis
-
-4. Agendamento
-
-A vaga escolhida é gravada no sistema e vinculada ao fluxo do paciente.
-
-5. Confirmação
-
-O paciente pode confirmar, remarcar ou cancelar.
-
-6. Lista de espera
-
-Uma vaga cancelada pode voltar ao fluxo e ser oferecida a um paciente compatível da lista de espera.
-
-7. Histórico e indicadores
-
-O resultado alimenta o histórico administrativo, a auditoria e os indicadores operacionais.
-
-🏗️ Arquitetura
-
-A V21.6 foi reorganizada para separar responsabilidades sem introduzir complexidade desnecessária para o tamanho atual da aplicação.
-
-flowchart TD
-    UI[Views / PWA] --> CTL[Controllers]
-    CTL --> VM[ViewModels / DTOs]
-    CTL --> SVC[Services]
-    SVC --> DB[MKSANContext / EF Core]
-    DB --> PG[(PostgreSQL / Neon)]
-
-    SVC --> GEMINI[Gemini]
-    SVC --> EVO[Evolution API]
-    SVC --> SMTP[SMTP]
-    SVC --> SMS[Gateway SMS]
-
-    API[API / Webhooks] --> SVC
-    LEGADO[HIS / Sistema legado] --> API
-
-Responsabilidades
-
-Controller
-   ↓
-Service
-   ↓
-Data / DbContext
-   ↓
-PostgreSQL
-
-Para a camada de interface:
-
-Controller
-   ↓
-ViewModel
-   ↓
-View
-
-Regras importantes da organização:
-
-Controllers contêm apenas Controllers;
-
-Entities representam dados persistidos;
-
-DTOs representam contratos externos;
-
-ViewModels representam dados específicos de telas;
-
-Services concentram regras reutilizáveis;
-
-Options representam configurações tipadas;
-
-Data/Configurations contém os mapeamentos do EF Core;
-
-workers ficam em Background;
-
-interfaces ficam em Contracts.
-
-Mais detalhes em docs/ARQUITETURA.md.
-
-🧰 Tecnologias
-
-Camada
+Área
 
 Tecnologia
 
@@ -534,11 +222,7 @@ Entity Framework Core 8
 
 Banco
 
-PostgreSQL
-
-Banco em nuvem
-
-Neon
+PostgreSQL / Neon
 
 Autenticação
 
@@ -546,7 +230,7 @@ ASP.NET Core Identity + Roles
 
 Front-end
 
-Razor Views, HTML, CSS e JavaScript
+Razor, HTML, CSS e JavaScript
 
 PWA
 
@@ -558,7 +242,7 @@ Trusted Web Activity (TWA)
 
 IA
 
-Google Gemini via API HTTP
+Google Gemini
 
 WhatsApp
 
@@ -580,639 +264,192 @@ Deploy
 
 Render
 
-CI Android
-
-GitHub Actions
-
-Pacotes principais
-
-Microsoft.AspNetCore.Identity.EntityFrameworkCore 8.0.20
-Microsoft.AspNetCore.Identity.UI 8.0.20
-Microsoft.EntityFrameworkCore.Design 8.0.20
-Microsoft.EntityFrameworkCore.Tools 8.0.20
-Npgsql.EntityFrameworkCore.PostgreSQL 8.0.11
-
-📁 Estrutura do projeto
-
-CallMed/
-│
-├── CallMedCrud/                         # Aplicação ASP.NET Core MVC
-│   ├── Areas/
-│   │   └── Identity/                    # Login, cadastro e recuperação de conta
-│   │
-│   ├── Controllers/
-│   │   ├── Admin/                       # Auditoria, configurações e integrações
-│   │   ├── Agenda/                      # Consultas, agenda e disponibilidade
-│   │   ├── Api/                         # Webhooks e integração legada
-│   │   ├── Atendimento/                 # Central, IA, confirmações e solicitações
-│   │   ├── Cadastros/                   # Paciente, médico, funcionário e convênio
-│   │   ├── Conta/                       # Minha Conta
-│   │   └── Paineis/                     # Home, dashboards e relatórios
-│   │
-│   ├── Data/
-│   │   ├── Configurations/              # IEntityTypeConfiguration do EF Core
-│   │   ├── Identity/                    # Usuario do Identity
-│   │   └── MKSANContext.cs
-│   │
-│   ├── DTOs/
-│   │   ├── Agente/
-│   │   ├── Atendimento/
-│   │   └── Integracao/
-│   │
-│   ├── Extensions/                      # DI, middleware e endpoints
-│   ├── Middleware/
-│   ├── Migrations/
-│   │
-│   ├── Models/
-│   │   ├── Constants/
-│   │   ├── Entities/
-│   │   │   ├── Agente/
-│   │   │   ├── Atendimento/
-│   │   │   └── Clinica/
-│   │   └── Enums/
-│   │
-│   ├── Options/                         # Configurações fortemente tipadas
-│   │
-│   ├── Services/
-│   │   ├── Agendamento/
-│   │   ├── Agente/
-│   │   ├── Atendimento/
-│   │   ├── Clinica/
-│   │   │   └── Background/              # Lembretes, agenda e lista de espera
-│   │   ├── Database/
-│   │   │   └── Initializers/            # Patches idempotentes
-│   │   ├── Email/
-│   │   ├── Startup/
-│   │   └── Usuarios/
-│   │
-│   ├── ViewModels/
-│   ├── Views/
-│   ├── ViewComponents/
-│   │
-│   └── wwwroot/
-│       ├── css/
-│       ├── icons/
-│       ├── images/
-│       ├── js/
-│       ├── manifest.json
-│       ├── offline.html
-│       └── service-worker.js
-│
-├── CallMedTWA/                           # Wrapper Android da PWA
-├── PlayStore/                            # Materiais para publicação
-├── docs/                                 # Documentação técnica
-├── .github/workflows/                    # Builds Android
-├── .env.example                          # Referência das variáveis
-├── Dockerfile
-├── CallMed.sln
-└── README.md
-
-🗄️ Banco de dados
+Banco de dados
 
-A aplicação utiliza MKSANContext, baseado em IdentityDbContext, com PostgreSQL através do provider Npgsql.
+O projeto utiliza MKSANContext, baseado em IdentityDbContext, com provider Npgsql para PostgreSQL.
 
-Principais entidades
+Entre as principais entidades estão:
 
-O contexto possui 16 conjuntos principais:
+Paciente · Medico · Funcionario · Especialidade · Consulta · Disponibilidade · MedicoHorarioSemanal · ListaEspera · AgendaExcecao · SolicitacaoAtendimento · ConvenioEspecialidade · AuditoriaEvento · ConversaAtendimento · MensagemAtendimento
 
-Paciente
-Funcionario
-Medico
-Especialidade
-Disponibilidade
-MedicoHorarioSemanal
-Consulta
-ConversaAgente
-MensagemConversaAgente
-ConversaAtendimento
-MensagemAtendimento
-ListaEspera
-AgendaExcecao
-SolicitacaoAtendimento
-ConvenioEspecialidade
-AuditoriaEvento
+Os mapeamentos do Entity Framework ficam separados em:
 
-Cada entidade persistida possui configuração do Entity Framework em Data/Configurations.
+CallMedCrud/Data/Configurations/
 
-Os namespaces originais das entidades e do Identity foram preservados na reorganização da V21.6 para evitar alterações artificiais no snapshot das migrations e no banco Neon existente.
+Assistente com IA
 
-🤖 Inteligência artificial
+A CallMed utiliza Google Gemini como apoio ao atendimento administrativo.
 
-A CallMed possui um assistente baseado em Google Gemini, utilizado como recepcionista virtual e apoio ao fluxo de atendimento.
+O agente pode consultar ferramentas internas para trabalhar com dados reais do sistema, por exemplo:
 
-O agente não utiliza memória textual como fonte de verdade para disponibilidade. Quando precisa de dados atuais, chama ferramentas internas da aplicação.
+médicos cadastrados;
 
-Entre as ações disponíveis para o agente estão:
+próximas vagas;
 
-listar médicos reais;
+horários disponíveis;
 
-consultar as consultas do paciente;
+consultas do paciente;
 
-localizar paciente por CPF quando o usuário autorizado é funcionário/admin;
+confirmação e cancelamento;
 
-buscar horários em uma data;
+remarcação;
 
-buscar próximas vagas;
+lista de espera;
 
-encontrar opções de agendamento;
+informações oficiais da clínica.
 
-preparar e efetivar agendamento após confirmação;
+Princípio: a IA pode ajudar a consultar e conduzir o fluxo, mas não deve inventar médicos, horários, elegibilidade ou disponibilidade.
 
-confirmar consulta;
+A IA é um recurso administrativo e não substitui avaliação médica nem realiza diagnóstico.
 
-preparar e efetivar remarcação;
+Central de Atendimento
 
-cancelar consulta após confirmação;
+A Central reúne conversas e contexto do paciente em um único local.
 
-entrar, consultar ou sair da lista de espera;
+Canais previstos:
 
-cadastrar paciente em fluxo administrativo autorizado;
+🌐 Web / PWA
 
-consultar informações oficiais da clínica.
+💬 WhatsApp
 
-Princípio do agente
+✉️ E-mail
 
-Proativo para consultar. Conservador para alterar.
+📱 SMS
 
-A IA não deve:
+☎️ Telefone
 
-inventar médicos ou horários;
+🏥 Presencial
 
-diagnosticar doenças;
+No WhatsApp, a integração é feita através da Evolution API. E-mail e SMS permanecem configuráveis para permitir troca de provedor sem acoplar o sistema a um único fornecedor.
 
-afirmar disponibilidade sem consultar o backend;
+PWA e acessibilidade
 
-alterar dados sem confirmação explícita;
+A aplicação pode ser instalada como Progressive Web App em navegadores compatíveis.
 
-pedir CPF do próprio paciente autenticado quando o sistema já conhece sua identidade.
+Principais recursos:
 
-Configuração
-
-Gemini__ApiKey=
-Gemini__Model=gemini-3.1-flash-lite
-Gemini__TimeoutSeconds=60
-Gemini__MaxToolRounds=8
-Gemini__MaxHistoryMessages=30
-
-💬 Atendimento omnichannel
-
-A Central de Atendimento foi projetada para reunir diferentes canais no mesmo histórico.
-
-Canais previstos pelo backend
-
-Web/PWA;
-
-WhatsApp;
-
-SMS;
-
-e-mail;
-
-telefone/presencial através da operação interna de solicitações.
-
-WhatsApp — Evolution API
-
-Atendimento__WhatsApp__Evolution__Enabled=true
-Atendimento__WhatsApp__Evolution__BaseUrl=
-Atendimento__WhatsApp__Evolution__ApiKey=
-Atendimento__WhatsApp__Evolution__InstanceName=mksan
-Atendimento__WhatsApp__Evolution__PublicNumber=
-Atendimento__WhatsApp__Evolution__WebhookSecret=
-
-Webhook:
-
-POST /api/atendimento/whatsapp/evolution?secret=SEU_SEGREDO
-
-Também é aceito o header:
-
-X-MKSAN-Webhook-Secret: SEU_SEGREDO
-
-SMS
-
-O SMS utiliza um sender HTTP genérico para permitir troca de provedor sem acoplar o domínio a um fornecedor específico.
-
-Atendimento__Sms__Http__Enabled=false
-Atendimento__Sms__Http__BaseUrl=
-Atendimento__Sms__Http__SendPath=/messages
-Atendimento__Sms__Http__ApiKey=
-Atendimento__Sms__Http__ApiKeyHeader=Authorization
-Atendimento__Sms__Http__ApiKeyScheme=Bearer
-Atendimento__Sms__Http__Sender=CallMed
-Atendimento__Sms__Http__WebhookSecret=
-
-Webhook inbound:
-
-POST /api/atendimento/sms?secret=SEU_SEGREDO
-
-E-mail
-
-O envio utiliza SMTP. O recebimento pode ser integrado por webhook de um provedor inbound.
-
-Atendimento__Email__Inbound__Enabled=false
-Atendimento__Email__Inbound__WebhookSecret=
-
-Webhook:
-
-POST /api/atendimento/email?secret=SEU_SEGREDO
-
-Status dos canais
-
-Funcionários e administradores podem consultar:
-
-GET /api/atendimento/status
-
-⏰ Lista de espera e redução de absenteísmo
-
-A redução de vagas ociosas acontece através da combinação de três recursos.
-
-1. Lembretes
-
-LembreteConsultaBackgroundService procura consultas próximas e processa os lembretes conforme o fluxo configurado.
-
-2. Confirmação
-
-O paciente pode confirmar presença. O sistema também registra cancelamento, remarcação e ausência para gerar indicadores reais.
-
-3. Lista de espera
-
-ListaEsperaBackgroundService processa os pedidos ativos e ajuda a reaproveitar vagas disponíveis.
-
-Antes de reservar, a disponibilidade é validada novamente para evitar que duas pessoas utilizem a mesma vaga.
-
-📱 PWA e acessibilidade
-
-A CallMed funciona como Progressive Web App.
-
-Arquivos principais
-
-CallMedCrud/wwwroot/manifest.json
-CallMedCrud/wwwroot/service-worker.js
-CallMedCrud/wwwroot/offline.html
-
-Cache atual da release
-
-callmed-static-v21-6-organized
-
-Recursos PWA
-
-instalação pelo navegador compatível;
-
-execução standalone;
-
-ícones normal e maskable;
-
-atalhos para consultas, agendamento e lista de espera;
+instalação em modo standalone;
 
 interface responsiva;
 
-tratamento de safe-area;
+navegação mobile;
+
+ícones normal e maskable;
 
 tela offline;
 
-cache apenas de assets adequados.
-
-Páginas clínicas autenticadas não são tratadas como banco offline. Marcar ou alterar uma consulta exige conexão porque a disponibilidade precisa ser validada em tempo real.
-
-Acessibilidade
-
-A interface inclui recursos voltados especialmente a idosos e pessoas com pouca familiaridade digital:
+safe-area para dispositivos móveis;
 
 Modo Fácil;
 
-aumento de texto;
+texto ampliado;
 
 alto contraste;
 
 redução de animações;
 
-suporte à leitura do conteúdo;
+suporte a leitura de conteúdo.
 
-botões com áreas de toque maiores;
+Operações de agenda não são tratadas como dados offline. Criar ou alterar uma consulta exige conexão para validar a disponibilidade em tempo real.
 
-fluxo simplificado no celular;
+Android / TWA
 
-linguagem direta;
-
-possibilidade de continuar o atendimento por telefone ou presencialmente.
-
-🤖 Android / TWA
-
-A PWA possui um wrapper Android baseado em Trusted Web Activity.
-
-Configuração atual
+O repositório também inclui um wrapper Android baseado em Trusted Web Activity.
 
 applicationId: com.callmed.app
 minSdk: 26
 targetSdk: 36
-versionCode: 2160
 versionName: 21.6.0
 
-Arquivos úteis
+Arquivos e instruções estão em CallMedTWA/README-TWA.md.
 
-CallMedTWA/GERAR-APK-DEBUG.bat
-CallMedTWA/GERAR-AAB-PLAY.bat
-CallMedTWA/GERAR-AAB-PLAY.sh
-CallMedTWA/README-TWA.md
+Como executar localmente
 
-A associação entre site e aplicativo é exposta dinamicamente em:
+Pré-requisitos
 
-/.well-known/assetlinks.json
+.NET SDK 8
 
-Configure as impressões SHA-256 da assinatura:
+PostgreSQL 14+ ou Neon
 
-Twa__Enabled=true
-Twa__PackageName=com.callmed.app
-Twa__Origin=https://callmed.onrender.com
-Twa__Sha256CertFingerprints__0=
-Twa__Sha256CertFingerprints__1=
+Git
 
-Nunca publique o keystore de produção. O debug.keystore existente serve somente para desenvolvimento e testes.
+1. Clone o projeto
 
-🔌 Integração com sistemas legados
+git clone https://github.com/Samuel-Ramos-Rodrigues/CallMed.git
+cd CallMed
 
-A CallMed possui uma API mínima para interoperabilidade com HIS, agendas ou cadastros externos.
+2. Restaure as dependências
 
-Ela só fica operacional quando uma chave é definida:
+dotnet restore CallMed.sln
 
-LegacyIntegration__ApiKey=UMA_CHAVE_LONGA_E_ALEATORIA
+3. Configure o banco
 
-Toda chamada deve enviar:
+PowerShell:
 
-X-CallMed-Integration-Key: SUA_CHAVE
+$env:ConnectionStrings__MKSANContextConnection="Host=HOST;Port=5432;Database=BANCO;Username=USUARIO;Password=SENHA;SSL Mode=Require"
 
-Endpoints
+Linux/macOS:
 
-GET  /api/integracao/v1/status
-GET  /api/integracao/v1/pacientes/cpf/{cpf}
-GET  /api/integracao/v1/disponibilidade?especialidade=...
-POST /api/integracao/v1/solicitacoes
+export ConnectionStrings__MKSANContextConnection='Host=HOST;Port=5432;Database=BANCO;Username=USUARIO;Password=SENHA;SSL Mode=Require'
 
-A API foi mantida propositalmente pequena: sistemas externos entram no mesmo fluxo da CallMed em vez de duplicarem a lógica de agenda.
+4. Execute
 
-Documentação completa: docs/integracoes/INTEGRACAO-LEGADO.md.
+dotnet run --project CallMedCrud/CallMedCrud.csproj
 
-🔐 Segurança
+Não publique senhas, tokens ou connection strings reais no repositório.
 
-Algumas proteções presentes no projeto:
+Configuração
 
-ASP.NET Core Identity;
+O arquivo .env.example lista as configurações disponíveis.
 
-roles no servidor;
+As principais são:
 
-senha mínima de 8 caracteres;
-
-bloqueio após 5 tentativas inválidas;
-
-lockout de 15 minutos;
-
-e-mail único por usuário;
-
-cookie HttpOnly;
-
-cookie Secure em produção;
-
-SameSite=Lax;
-
-expiração de sessão em 8 horas com sliding expiration;
-
-token de proteção com duração de 1 hora;
-
-HSTS fora do ambiente de desenvolvimento;
-
-HTTPS redirect;
-
-suporte a forwarded headers para reverse proxy;
-
-rate limiting para IA;
-
-rate limiting para webhooks e APIs;
-
-comparação em tempo constante para segredos de webhook/API;
-
-segredo separado para cada canal inbound;
-
-auditoria administrativa;
-
-páginas clínicas fora do cache offline;
-
-credenciais mantidas em variáveis de ambiente.
-
-Rate limiting
-
-Agente
-
-20 requisições / minuto por usuário/IP
-fila máxima: 2
-
-Webhooks e integração
-
-120 requisições / minuto por IP
-sem fila
-
-⚙️ Variáveis de ambiente
-
-Use .env.example como referência dos nomes.
-
-A aplicação utiliza o sistema padrão de configuração do ASP.NET Core. Credenciais devem ser configuradas como variáveis do ambiente ou em configuração local que não seja enviada ao Git.
-
-Banco
-
+# Banco
 ConnectionStrings__MKSANContextConnection=
 
-Database__AutoMigrate=false
-Database__ApplyV12Patch=true
-Database__ApplyV13Patch=true
-Database__ApplyV14Patch=true
-Database__ApplyV15Patch=true
-Database__ApplyV16Patch=true
-Database__ApplyV21Patch=true
-
-Clínica
-
-Clinica__Nome=CallMed
-Clinica__Endereco=
-Clinica__Telefone=
-Clinica__Whatsapp=
-Clinica__Email=
-Clinica__HorarioFuncionamento=
-Clinica__FormasPagamento=
-Clinica__ConveniosAceitos=
-
-Gemini
-
+# Gemini
 Gemini__ApiKey=
 Gemini__Model=gemini-3.1-flash-lite
-Gemini__TimeoutSeconds=60
-Gemini__MaxToolRounds=8
-Gemini__MaxHistoryMessages=30
 
-SMTP
+# WhatsApp / Evolution API
+Atendimento__WhatsApp__Evolution__Enabled=false
+Atendimento__WhatsApp__Evolution__BaseUrl=
+Atendimento__WhatsApp__Evolution__ApiKey=
+Atendimento__WhatsApp__Evolution__InstanceName=
 
+# SMTP
 Smtp__Host=
 Smtp__Port=587
 Smtp__Username=
 Smtp__Password=
-Smtp__FromEmail=
-Smtp__FromName=CallMed
-Smtp__EnableSsl=true
 
-Primeiro administrador
-
+# Primeiro administrador
 BootstrapAdmin__Enabled=false
 BootstrapAdmin__Email=
 BootstrapAdmin__Password=
 BootstrapAdmin__Name=
 
-Quando BootstrapAdmin__Enabled=true, o startup cria ou verifica o usuário, atribui a role Admin e cria/atualiza seu vínculo como funcionário administrador.
+Para produção, mantenha os segredos nas variáveis de ambiente da plataforma de hospedagem.
 
-Depois do primeiro deploy, desative essa opção.
+Deploy no Render
 
-Para todas as demais variáveis, consulte .env.example.
+O projeto possui Dockerfile pronto para publicação.
 
-💻 Executando localmente
+Fluxo básico:
 
-Pré-requisitos
+crie um Web Service no Render;
 
-.NET SDK 8;
+conecte este repositório;
 
-PostgreSQL 14+ ou banco Neon;
+selecione deploy via Docker;
 
-Git;
+configure as variáveis de ambiente;
 
-Visual Studio 2022, Rider ou VS Code opcionalmente.
+opcionalmente use /health como Health Check Path;
 
-1. Clone o repositório
+realize o deploy.
 
-git clone https://github.com/Samuel-Ramos-Rodrigues/CallMed.git
-cd CallMed
-
-2. Restaure os pacotes
-
-dotnet restore CallMed.sln
-
-3. Configure a conexão
-
-PowerShell:
-
-$env:ConnectionStrings__MKSANContextConnection="Host=SEU_HOST;Port=5432;Database=SEU_BANCO;Username=SEU_USUARIO;Password=SUA_SENHA;SSL Mode=Require"
-
-Linux/macOS:
-
-export ConnectionStrings__MKSANContextConnection='Host=SEU_HOST;Port=5432;Database=SEU_BANCO;Username=SEU_USUARIO;Password=SUA_SENHA;SSL Mode=Require'
-
-Não coloque uma senha real no repositório.
-
-4. Opcional: crie o primeiro administrador
-
-$env:BootstrapAdmin__Enabled="true"
-$env:BootstrapAdmin__Email="admin@exemplo.com"
-$env:BootstrapAdmin__Password="SenhaSegura123"
-$env:BootstrapAdmin__Name="Administrador CallMed"
-
-5. Execute
-
-dotnet run --project CallMedCrud/CallMedCrud.csproj
-
-Ou abra CallMed.sln no Visual Studio e execute o projeto CallMedCrud.
-
-🟢 Banco Neon e migrations
-
-Banco novo
-
-Para um ambiente totalmente novo, o projeto pode executar as migrations quando:
-
-Database__AutoMigrate=true
-
-Alternativamente, com dotnet-ef instalado:
-
-dotnet ef database update --project CallMedCrud/CallMedCrud.csproj
-
-Banco Neon existente
-
-Para um banco já utilizado pela CallMed, a configuração recomendada é:
-
-Database__AutoMigrate=false
-
-A aplicação possui initializers idempotentes para evolução de schema:
-
-V12
-V13
-V14
-V15
-V16
-V21
-
-Eles ficam em:
-
-CallMedCrud/Services/Database/Initializers/
-
-Isso reduz o risco de aplicar migrations antigas novamente sobre um banco que já evoluiu durante o desenvolvimento.
-
-Criar nova migration
-
-dotnet ef migrations add NomeDaMigration \
-  --project CallMedCrud/CallMedCrud.csproj
-
-Sempre revise a migration gerada antes de aplicá-la em produção.
-
-☁️ Deploy no Render
-
-O repositório possui um Dockerfile preparado para publicação.
-
-Dockerfile
-
-O build:
-
-usa o SDK .NET 8;
-
-restaura o CallMedCrud.csproj;
-
-executa dotnet publish -c Release;
-
-copia o resultado para a imagem ASP.NET Runtime;
-
-expõe a aplicação na porta 10000.
-
-Criando o serviço
-
-No Render:
-
-crie um Web Service;
-
-conecte o repositório;
-
-selecione o deploy via Docker;
-
-cadastre as variáveis de ambiente;
-
-use /health como Health Check Path, se desejar;
-
-faça o deploy.
-
-Variáveis essenciais em produção
-
-No mínimo:
-
-ConnectionStrings__MKSANContextConnection
-Gemini__ApiKey                  # se IA estiver ativa
-BootstrapAdmin__...             # somente no primeiro bootstrap
-LegacyIntegration__ApiKey       # somente se API legada estiver ativa
-Atendimento__...                # canais que forem utilizados
-
-Proteção para Render/Linux
-
-O projeto preserva a correção de um problema de FileSystemWatcher/inotify observado no Render:
-
-DOTNET_USE_POLLING_FILE_WATCHER=1
-DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false
-
-Além disso, as Views não utilizam asp-append-version, evitando que o Razor crie watchers adicionais para versionamento de assets.
-
-Mais detalhes: docs/deploy/V21.5.1-RENDER-HTTP500.md.
-
-❤️ Health check
-
-A aplicação possui um endpoint simples para monitoramento:
+Health check:
 
 GET /health
 
@@ -1223,218 +460,109 @@ Resposta esperada:
   "service": "CallMed"
 }
 
-🧪 Validação atual
+Render / Linux
 
-Na reorganização V21.6 foram executadas validações estáticas sobre o pacote.
+O projeto já inclui a correção utilizada para evitar excesso de FileSystemWatcher/inotify no Render:
 
-Verificação
+DOTNET_USE_POLLING_FILE_WATCHER=1
+DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false
 
-Resultado
+Mais detalhes em docs/deploy/V21.5.1-RENDER-HTTP500.md.
 
-JSON (appsettings.json / manifest)
+Integração com sistemas legados
 
-✅
+A CallMed expõe uma API mínima para integração com HIS, agendas ou cadastros externos.
 
-JavaScript / Service Worker (node --check)
+Exemplos:
 
-✅
+GET  /api/integracao/v1/status
+GET  /api/integracao/v1/pacientes/cpf/{cpf}
+GET  /api/integracao/v1/disponibilidade?especialidade=...
+POST /api/integracao/v1/solicitacoes
 
-CSS (tinycss2)
+Documentação completa: docs/integracoes/INTEGRACAO-LEGADO.md.
 
-✅
+Segurança
 
-Assets do Service Worker
+O projeto inclui, entre outras medidas:
 
-✅ 21/21
+ASP.NET Core Identity;
 
-Controllers apenas com classes Controller
+autorização por roles no servidor;
 
-✅
+cookies HttpOnly e Secure em produção;
 
-DTOs separados
+HTTPS e HSTS;
 
-✅
+lockout após tentativas inválidas;
 
-ViewModels separados
+rate limiting para IA e webhooks;
 
-✅
+segredos de integrações via configuração externa;
 
-Entidades separadas
+auditoria administrativa;
 
-✅
+páginas autenticadas fora do cache persistente do PWA.
 
-MKSANContext único
-
-✅
-
-Usuario único
-
-✅
-
-16 DbSets / 16 configurações EF
-
-✅
-
-asp-append-version
-
-✅ 0 ocorrências
-
-Docker com correção de watcher
-
-✅
-
-TWA
-
-✅ 21.6.0
-
-Cache PWA
-
-✅ callmed-static-v21-6-organized
-
-Limitação da validação realizada
-
-No ambiente em que a release foi organizada, o SDK .NET não estava disponível. Por isso, o comando dotnet build não pôde ser executado naquela etapa; a revisão utilizada foi estrutural e sintática.
-
-Em uma máquina com .NET SDK, antes de publicar uma alteração nova, execute:
-
-dotnet restore CallMed.sln
-dotnet build CallMed.sln -c Release
-
-🛠️ Solução de problemas
-
-HTTP 500 no Render com inotify
-
-Sintoma típico:
-
-System.IO.IOException: The configured user limit on the number of inotify instances has been reached
-
-A V21.6 já contém a correção:
-
-asp-append-version removido;
-
-versionamento de assets por query string fixa;
-
-polling file watcher habilitado;
-
-reload de configuração desabilitado no container.
-
-Não reintroduza asp-append-version="true" em massa nas Views durante futuras alterações.
-
-CSS/PWA continua mostrando uma versão antiga
-
-faça o deploy da nova versão;
-
-feche completamente o PWA;
-
-abra novamente;
-
-em ambiente de desenvolvimento, limpe o Service Worker/cache do site se necessário.
-
-O service-worker.js é servido com no-cache, no-store, must-revalidate para facilitar a atualização entre releases.
-
-API legada retorna 503
-
-A integração permanece desligada enquanto isto estiver vazio:
-
-LegacyIntegration__ApiKey=
-
-Isso é intencional.
-
-WhatsApp aparece como não configurado
-
-Confira:
-
-Atendimento__WhatsApp__Evolution__Enabled=true
-Atendimento__WhatsApp__Evolution__BaseUrl=
-Atendimento__WhatsApp__Evolution__ApiKey=
-Atendimento__WhatsApp__Evolution__InstanceName=
-Atendimento__WhatsApp__Evolution__WebhookSecret=
-
-Depois consulte, autenticado como funcionário/admin:
-
-/api/atendimento/status
-
-Não consigo entrar como administrador no primeiro deploy
-
-Ative temporariamente:
-
-BootstrapAdmin__Enabled=true
-
-Configure e-mail, senha e nome, faça o deploy e depois volte para:
-
-BootstrapAdmin__Enabled=false
-
-📚 Documentação complementar
+Documentação
 
 Documento
 
 Conteúdo
 
-docs/ARQUITETURA.md
+Arquitetura
 
-Organização técnica da V21.6
+Organização técnica e responsabilidades
 
-docs/DESAFIO-SENAI.md
+Desafio SENAI
 
-Relação entre o problema proposto e a solução
+Relação entre o problema e a solução
 
-docs/integracoes/INTEGRACAO-LEGADO.md
+Integração legada
 
-API para HIS/sistemas existentes
+API para sistemas existentes
 
-docs/deploy/V21.5.1-RENDER-HTTP500.md
+Deploy / Render
 
-Correção do problema de inotify no Render
+Correção e configuração para Render
 
-docs/deploy/PLAY-STORE-PUBLICACAO.md
+Play Store
 
-Publicação Android
+Processo de publicação Android
 
-docs/CHANGELOG-V21.6.md
+Validação
 
-Reorganização da release
+Checklist técnico da release
 
-docs/validacao/VALIDACAO.md
+Changelog V21.6
 
-Checklist de validação
+Reorganização da versão atual
 
-CallMedTWA/README-TWA.md
+Android / TWA
 
-Wrapper Android/TWA
+Geração e configuração do app Android
 
-🎓 Contexto acadêmico
+Contexto acadêmico
 
-A CallMed foi desenvolvida a partir de um desafio educacional sobre:
+A CallMed foi desenvolvida a partir de um desafio acadêmico do SENAI voltado à melhoria do processo de marcação de consultas.
 
-“Como tornar o processo de marcação de consultas mais eficiente e acessível.”
-
-Instituição do desafio: SENAI Vitória da Conquista — Bahia.
-
-A solução foi direcionada aos requisitos do problema original, priorizando:
+O projeto prioriza:
 
 acessibilidade;
 
-baixo custo;
-
 atendimento híbrido;
 
-integração com estruturas existentes;
-
-redução de tarefas manuais;
+baixo custo;
 
 padronização;
 
+redução de tarefas manuais;
+
 diminuição de absenteísmo;
 
-melhor aproveitamento da agenda médica.
+melhor aproveitamento da agenda;
 
-Funcionalidades que não contribuem diretamente para esse problema, como marketplace, pontos, clube de descontos ou recursos de “super app”, não fazem parte do escopo principal atual.
-
-⚕️ Observação sobre saúde
-
-A CallMed utiliza IA como assistente administrativo de atendimento e agendamento.
-
-O assistente não substitui avaliação médica e não deve ser utilizado para diagnóstico.
+integração com estruturas existentes.
 
 <p align="center">
   <strong>CallMed</strong><br>
