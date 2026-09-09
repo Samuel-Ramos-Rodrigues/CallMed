@@ -1,0 +1,12 @@
+CallMed V21.5 — validação estática
+
+- JSON: OK
+- CSS: OK (tinycss2)
+- JavaScript: OK (node --check)
+- MKSANContext: 1 declaração
+- Usuario: 1 declaração
+- Logo mobile: 1 marca compacta / 0 logo horizontal duplicada
+- Service Worker: 22 assets / 0 ausentes
+- Cache PWA: callmed-static-v21-5-mobile-polish
+- TWA: versionCode 2150 / versionName 21.5.0
+- dotnet build: não executado; SDK .NET indisponível no ambiente

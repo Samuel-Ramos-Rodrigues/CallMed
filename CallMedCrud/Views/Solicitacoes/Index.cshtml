@@ -1,0 +1,109 @@
+@model MKSANCrud.ViewModels.SolicitacoesPainelViewModel
+@using MKSANCrud.Models
+@using MKSANCrud.Models.Atendimento
+@{
+    ViewData["Title"] = "Fluxo de solicitações";
+    string CanalNome(CanalAtendimento c) => c switch
+    {
+        CanalAtendimento.WhatsApp => "WhatsApp",
+        CanalAtendimento.Sms => "SMS",
+        CanalAtendimento.Email => "E-mail",
+        CanalAtendimento.Telefone => "Telefone",
+        CanalAtendimento.Presencial => "Presencial",
+        _ => "Site/PWA"
+    };
+    string StatusNome(StatusSolicitacaoAtendimento s) => s switch
+    {
+        StatusSolicitacaoAtendimento.Nova => "Nova solicitação",
+        StatusSolicitacaoAtendimento.EmTriagem => "Em triagem",
+        StatusSolicitacaoAtendimento.BuscandoHorario => "Buscando horário",
+        StatusSolicitacaoAtendimento.AguardandoPaciente => "Aguardando paciente",
+        StatusSolicitacaoAtendimento.Confirmada => "Confirmada",
+        StatusSolicitacaoAtendimento.Cancelada => "Cancelada",
+        _ => "Encerrada"
+    };
+    var colunas = new[]
+    {
+        StatusSolicitacaoAtendimento.Nova,
+        StatusSolicitacaoAtendimento.EmTriagem,
+        StatusSolicitacaoAtendimento.BuscandoHorario,
+        StatusSolicitacaoAtendimento.AguardandoPaciente,
+        StatusSolicitacaoAtendimento.Confirmada
+    };
+}
+<section class="cm21-request-page">
+    <header class="cm21-page-head">
+        <div><span class="v16-eyebrow">PROCESSO PADRONIZADO</span><h1>Solicitações de consulta</h1><p>WhatsApp, PWA, telefone, presencial, SMS e e-mail entram no mesmo fluxo.</p></div>
+        <a class="btn" asp-action="Create">+ Nova solicitação</a>
+    </header>
+
+    <form method="get" class="cm21-filterbar">
+        <input type="search" name="busca" value="@Model.Busca" placeholder="Paciente, CPF, telefone ou e-mail" />
+        <select name="canal">
+            <option value="">Todos os canais</option>
+            @foreach (var c in Enum.GetValues<CanalAtendimento>())
+            {
+                <option value="@c" selected="@(Model.Canal == c.ToString() ? "selected" : null)">@CanalNome(c)</option>
+            }
+        </select>
+        <button class="btn secondary" type="submit">Filtrar</button>
+    </form>
+
+    <div class="cm21-request-kpis">
+        <article><small>Novas</small><strong>@Model.TotalNovas</strong></article>
+        <article><small>Em triagem</small><strong>@Model.TotalTriagem</strong></article>
+        <article><small>Buscando vaga</small><strong>@Model.TotalBuscando</strong></article>
+        <article><small>Aguardando paciente</small><strong>@Model.TotalAguardando</strong></article>
+        <article><small>Confirmadas</small><strong>@Model.TotalConfirmadas</strong></article>
+    </div>
+
+    <div class="cm21-kanban">
+        @foreach (var coluna in colunas)
+        {
+            var itens = Model.Itens.Where(x => x.Status == coluna).ToList();
+            <section class="cm21-kanban-column status-@coluna.ToString().ToLowerInvariant()">
+                <header><strong>@StatusNome(coluna)</strong><span>@itens.Count</span></header>
+                <div class="cm21-kanban-list">
+                    @if (itens.Count == 0)
+                    {
+                        <div class="cm21-kanban-empty">Nenhuma solicitação.</div>
+                    }
+                    @foreach (var item in itens)
+                    {
+                        <article class="cm21-request-card">
+                            <div class="cm21-request-meta"><span class="cm21-channel">@CanalNome(item.Canal)</span><time>@ClinicaClock.ConverterUtc(item.CriadoEm).ToString("dd/MM HH:mm")</time></div>
+                            <h2>@(item.Paciente?.Nome ?? item.NomeContato ?? "Contato não identificado")</h2>
+                            <p>@(item.Especialidade?.Nome ?? "Especialidade ainda não definida")</p>
+                            @if (!string.IsNullOrWhiteSpace(item.PendenciaTriagem))
+                            {
+                                <div class="cm21-warning">@item.PendenciaTriagem</div>
+                            }
+                            @if (item.Consulta is not null)
+                            {
+                                <div class="cm21-success">Consulta #@item.Consulta.Id · @item.Consulta.Data.ToString("dd/MM") às @item.Consulta.Horario</div>
+                            }
+                            <div class="cm21-card-actions">
+                                <a asp-action="Triagem" asp-route-id="@item.Id">Abrir</a>
+                                @if (item.ConversaAtendimentoId.HasValue)
+                                {
+                                    <a asp-controller="Atendimento" asp-action="Index" asp-route-id="@item.ConversaAtendimentoId">Conversa</a>
+                                }
+                            </div>
+                        </article>
+                    }
+                </div>
+            </section>
+        }
+    </div>
+
+    @{ var encerradas = Model.Itens.Where(x => x.Status is StatusSolicitacaoAtendimento.Cancelada or StatusSolicitacaoAtendimento.Encerrada).Take(20).ToList(); }
+    @if (encerradas.Any())
+    {
+        <details class="cm21-closed-list"><summary>Ver canceladas/encerradas recentes (@encerradas.Count)</summary>
+            @foreach (var item in encerradas)
+            {
+                <a asp-action="Triagem" asp-route-id="@item.Id"><strong>#@item.Id · @(item.Paciente?.Nome ?? item.NomeContato)</strong><span>@StatusNome(item.Status) · @CanalNome(item.Canal)</span></a>
+            }
+        </details>
+    }
+</section>

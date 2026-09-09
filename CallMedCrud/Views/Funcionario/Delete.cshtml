@@ -1,0 +1,19 @@
+@model Funcionario
+@{
+    ViewData["Title"] = "Desativar funcionário";
+}
+<div class="page-head">
+    <h1>Desativar funcionário</h1>
+</div>
+<div class="details-card">
+    <div class="danger-box">
+        <strong>@Model.Nome</strong> será desativado e terá o login bloqueado. O cadastro será preservado para auditoria.
+    </div>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="form-actions">
+            <button type="submit" class="btn danger">Desativar</button>
+            <a class="btn secondary" asp-action="Index">Cancelar</a>
+        </div>
+    </form>
+</div>

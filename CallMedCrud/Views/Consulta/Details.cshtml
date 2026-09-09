@@ -1,0 +1,27 @@
+@model Consulta
+@{
+    ViewData["Title"] = "Detalhes da consulta";
+    var ehEquipe = User.IsInRole("Funcionario") || User.IsInRole("Admin");
+    var hojeClinica = ViewBag.HojeClinica is DateTime h ? h.Date : DateTime.Today;
+    var podeRemarcar = ConsultaStatus.PodeRemarcar(Model.Status);
+    var podeCancelar = ConsultaStatus.PodeCancelar(Model.Status);
+    var podeConfirmar = ConsultaStatus.PodeConfirmar(Model.Status);
+    var podeRealizar = ConsultaStatus.PodeRealizar(Model.Status);
+    var podeAusente = ConsultaStatus.PodeMarcarAusente(Model.Status) && Model.Data.Date <= hojeClinica;
+}
+<section class="v16-page">
+    <div class="v16-page-head compact-head"><div><span class="v16-eyebrow">CONSULTA #@Model.Id</span><h1>Detalhes da consulta</h1><p>@Model.Data.ToString("dddd, dd/MM/yyyy") às @Model.Horario.</p></div><span class="status-pill status-@Model.Status.ToLowerInvariant()">@Model.Status</span></div>
+    <div class="consultation-detail-grid-v16">
+        <section class="v16-card consultation-main-v16"><div class="v16-card-head"><div><h2>Atendimento</h2><p>Profissional e paciente.</p></div></div><div class="detail-info-stack"><div><span>Paciente</span><strong>@Model.Paciente?.Nome</strong></div><div><span>Médico</span><strong>@Model.Medico?.Nome</strong></div><div><span>Especialidade</span><strong>@Model.Medico?.Especialidade</strong></div><div><span>Data</span><strong>@Model.Data.ToString("dd/MM/yyyy")</strong></div><div><span>Horário</span><strong>@Model.Horario</strong></div></div></section>
+        <section class="v16-card"><div class="v16-card-head"><div><h2>Financeiro e observações</h2></div></div><div class="detail-info-stack"><div><span>Pagamento</span><strong>@Model.TipoPagamento</strong></div><div><span>Convênio</span><strong>@(string.IsNullOrWhiteSpace(Model.ConvenioUsado) ? "—" : Model.ConvenioUsado)</strong></div><div><span>Observação</span><strong>@(string.IsNullOrWhiteSpace(Model.Observacao) ? "—" : Model.Observacao)</strong></div></div></section>
+    </div>
+    <div class="v16-sticky-actions">
+        @if(podeConfirmar){<form asp-action="Confirmar" asp-route-id="@Model.Id" method="post"><button class="btn" type="submit">Confirmar presença</button></form>}
+        @if(ehEquipe && podeRealizar){<form asp-action="Realizar" asp-route-id="@Model.Id" method="post"><button class="btn" type="submit">Marcar realizada</button></form>}
+        @if(ehEquipe && podeAusente){<form asp-action="Ausente" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Confirmar ausência deste paciente?');"><button class="btn secondary" type="submit">Marcar ausência</button></form>}
+        @if(podeRemarcar){<a class="btn secondary" asp-action="Remarcar" asp-route-id="@Model.Id">Remarcar</a>}
+        @if(ehEquipe && podeRemarcar){<a class="btn secondary" asp-action="Edit" asp-route-id="@Model.Id">Editar</a>}
+        @if(podeCancelar){<form asp-action="Cancelar" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Deseja cancelar esta consulta?');"><button class="btn danger" type="submit">Cancelar</button></form>}
+        <a class="btn secondary" asp-action="Index">Voltar</a>
+    </div>
+</section>

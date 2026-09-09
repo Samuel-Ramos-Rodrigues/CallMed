@@ -1,0 +1,146 @@
+@model MKSANCrud.ViewModels.MedicoFormViewModel
+@{
+    var horarios = (IReadOnlyList<string>)(ViewBag.HorariosPadrao ?? Array.Empty<string>());
+}
+
+<div asp-validation-summary="ModelOnly" class="validation"></div>
+
+<div class="doctor-form-v16">
+    <section class="v16-card doctor-form-section-v16">
+        <div class="doctor-section-head-v16">
+            <span>01</span>
+            <div><h2>Dados profissionais</h2><p>Identificação e especialidade do médico.</p></div>
+        </div>
+        <div class="form-grid v16-form-grid">
+            <div class="field full">
+                <label asp-for="Nome">Nome completo</label>
+                <input asp-for="Nome" autocomplete="off" placeholder="Ex.: Dra. Ana Souza" />
+                <span asp-validation-for="Nome" class="validation"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Especialidade"></label>
+                <input asp-for="Especialidade" placeholder="Ex.: Pediatria" autocomplete="off" />
+                <span asp-validation-for="Especialidade" class="validation"></span>
+                <small class="field-help">Uma nova especialidade é criada automaticamente ao salvar.</small>
+            </div>
+            <div class="field">
+                <label asp-for="Crm"></label>
+                <input asp-for="Crm" autocomplete="off" placeholder="Ex.: CRM/SE 12345" />
+                <span asp-validation-for="Crm" class="validation"></span>
+            </div>
+            <div class="field full">
+                <label class="v16-switch-row">
+                    <input asp-for="Ativo" />
+                    <span class="v16-switch"></span>
+                    <div><strong>Médico ativo</strong><small>Profissionais inativos não recebem novas disponibilidades.</small></div>
+                </label>
+            </div>
+        </div>
+    </section>
+
+    <section class="v16-card doctor-form-section-v16">
+        <div class="doctor-section-head-v16">
+            <span>02</span>
+            <div><h2>Agenda semanal</h2><p>Ative os dias de atendimento e adicione horários pelo seletor.</p></div>
+        </div>
+
+        <div class="weekly-schedule-v16">
+            @for (var i = 0; i < Model.Agenda.Count; i++)
+            {
+                var agendaDia = Model.Agenda[i];
+                <article class="schedule-day-v16 @(agendaDia.Trabalha ? "enabled" : "")" data-schedule-day data-index="@i">
+                    <input type="hidden" asp-for="Agenda[i].DiaSemana" />
+                    <input type="hidden" asp-for="Agenda[i].Nome" />
+                    <div class="schedule-day-v16-head">
+                        <label class="schedule-day-toggle-v16">
+                            <input asp-for="Agenda[i].Trabalha" data-schedule-toggle />
+                            <span class="schedule-toggle-ui"></span>
+                            <strong>@agendaDia.Nome</strong>
+                        </label>
+                        <small data-schedule-count>@agendaDia.Horarios.Count horário@(agendaDia.Horarios.Count == 1 ? "" : "s")</small>
+                    </div>
+
+                    <div class="schedule-day-v16-body">
+                        <div class="schedule-add-time">
+                            <select data-time-picker aria-label="Adicionar horário em @agendaDia.Nome">
+                                <option value="">Selecione um horário</option>
+                                @foreach (var horario in horarios)
+                                {
+                                    <option value="@horario">@horario</option>
+                                }
+                            </select>
+                            <button type="button" class="btn secondary small" data-add-time>+ Adicionar</button>
+                        </div>
+
+                        <div class="schedule-chip-list" data-chip-list>
+                            @foreach (var horario in agendaDia.Horarios.OrderBy(x => x))
+                            {
+                                <span class="schedule-time-chip" data-time="@horario">
+                                    <input type="hidden" name="Agenda[@i].Horarios" value="@horario" />
+                                    <b>@horario</b>
+                                    <button type="button" data-remove-time aria-label="Remover @horario">×</button>
+                                </span>
+                            }
+                        </div>
+                        <span asp-validation-for="Agenda[i].Horarios" class="validation"></span>
+                        <div class="schedule-empty-hint" data-empty-hint>Adicione ao menos um horário para este dia.</div>
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-schedule-day]').forEach(day => {
+        const toggle = day.querySelector('[data-schedule-toggle]');
+        const picker = day.querySelector('[data-time-picker]');
+        const add = day.querySelector('[data-add-time]');
+        const list = day.querySelector('[data-chip-list]');
+        const count = day.querySelector('[data-schedule-count]');
+        const hint = day.querySelector('[data-empty-hint]');
+        const index = day.dataset.index;
+
+        const values = () => [...list.querySelectorAll('[data-time]')].map(x => x.dataset.time);
+
+        const refresh = () => {
+            const active = !!toggle.checked;
+            const total = values().length;
+            day.classList.toggle('enabled', active);
+            picker.disabled = !active;
+            add.disabled = !active;
+            count.textContent = `${total} horário${total === 1 ? '' : 's'}`;
+            hint.hidden = !active || total > 0;
+            [...picker.options].forEach(opt => {
+                if (!opt.value) return;
+                opt.disabled = values().includes(opt.value);
+            });
+        };
+
+        const addTime = value => {
+            if (!value || values().includes(value)) return;
+            const chip = document.createElement('span');
+            chip.className = 'schedule-time-chip';
+            chip.dataset.time = value;
+            chip.innerHTML = `<input type="hidden" name="Agenda[${index}].Horarios" value="${value}"><b>${value}</b><button type="button" data-remove-time aria-label="Remover ${value}">×</button>`;
+            list.appendChild(chip);
+            picker.value = '';
+            refresh();
+        };
+
+        add.addEventListener('click', () => addTime(picker.value));
+        picker.addEventListener('change', () => {
+            if (picker.value) addTime(picker.value);
+        });
+        list.addEventListener('click', event => {
+            const button = event.target.closest('[data-remove-time]');
+            if (!button) return;
+            button.closest('[data-time]')?.remove();
+            refresh();
+        });
+        toggle.addEventListener('change', refresh);
+        refresh();
+    });
+});
+</script>

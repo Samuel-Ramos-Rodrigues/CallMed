@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#063f35">
+  <title>CallMed · Sem conexão</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#12372f;background:linear-gradient(145deg,#e8f5ef,#d7eee6)}
+    body{min-height:100dvh;display:grid;place-items:center;padding:max(20px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
+    main{width:min(520px,100%);background:rgba(250,253,251,.97);border:1px solid #bfdcd1;border-radius:24px;padding:30px;text-align:center;box-shadow:0 20px 60px rgba(6,63,53,.12)}
+    img{width:80px;height:80px;object-fit:contain;margin-bottom:8px}h1{font-size:clamp(25px,7vw,30px);margin:6px 0 10px}p{color:#4d6c63;line-height:1.6;margin:0 0 14px;font-size:16px}.notice{padding:14px;border-radius:14px;background:#eef8f4;text-align:left;margin:18px 0;line-height:1.5}.actions{display:grid;gap:10px}button{min-height:48px;border:0;border-radius:14px;background:#078b67;color:white;font-weight:800;padding:13px 18px;font-size:16px;cursor:pointer;touch-action:manipulation}.secondary{background:#fff;color:#075e48;border:1px solid #9acbbb}.status{min-height:22px;margin-top:12px;color:#58736a;font-size:13px}
+    button:focus-visible{outline:3px solid #ffbf00;outline-offset:3px}
+    @media(prefers-color-scheme:dark){html,body{color:#edf9f4;background:linear-gradient(145deg,#071711,#0b251d)}main{background:#102820;border-color:#315248;box-shadow:0 20px 60px rgba(0,0,0,.35)}p,.status{color:#b8d0c6}.notice{background:#15372d;color:#dcefe7}.secondary{background:#142f27;color:#9ce9ca;border-color:#376254}}
+  </style>
+</head>
+<body>
+  <main role="main">
+    <img src="/icons/icon-192.png" alt="CallMed">
+    <h1>Você está sem internet</h1>
+    <p>Para consultar vagas, confirmar, remarcar ou cancelar uma consulta, a CallMed precisa falar com o servidor para não mostrar informações desatualizadas.</p>
+    <div class="notice"><strong>Seu atendimento continua disponível.</strong><br>Se a conexão estiver ruim, utilize o atendimento presencial ou telefônico da clínica. Quando a internet voltar, você pode continuar pelo aplicativo.</div>
+    <div class="actions">
+      <button type="button" id="retry">Tentar novamente</button>
+      <button type="button" class="secondary" id="back">Voltar</button>
+    </div>
+    <div class="status" id="status" role="status" aria-live="polite">Aguardando conexão.</div>
+  </main>
+  <script>
+    const status=document.getElementById('status');
+    const retry=()=>{status.textContent=navigator.onLine?'Conexão detectada. Tentando abrir…':'Ainda sem conexão. Tente novamente em alguns instantes.'; if(navigator.onLine) location.reload();};
+    document.getElementById('retry').addEventListener('click',retry);
+    document.getElementById('back').addEventListener('click',()=>history.length>1?history.back():retry());
+    addEventListener('online',()=>{status.textContent='Internet disponível novamente. Atualizando…'; setTimeout(()=>location.reload(),350);});
+    addEventListener('offline',()=>{status.textContent='A conexão continua indisponível.';});
+  </script>
+</body>
+</html>

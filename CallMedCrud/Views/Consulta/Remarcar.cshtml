@@ -1,0 +1,93 @@
+@model MKSANCrud.Models.Consulta
+@{
+    ViewData["Title"] = "Remarcar consulta";
+}
+
+<div class="page-head">
+    <div>
+        <h1>Remarcar consulta</h1>
+        <p>Altere apenas a data e o horário. O médico da consulta será mantido.</p>
+    </div>
+</div>
+
+<form asp-action="Remarcar" asp-route-id="@Model.Id" method="post" class="form-card">
+    <div asp-validation-summary="ModelOnly" class="validation"></div>
+
+    <div class="form-group">
+        <label>Médico</label>
+        <div class="readonly-field">@Model.Medico?.Nome</div>
+        <small class="field-help">O médico não pode ser alterado durante uma remarcação.</small>
+    </div>
+
+    <div class="form-group">
+        <label>Nova data disponível</label>
+        <select name="data" class="form-control" id="dataSelect" data-atual="@Model.Data.ToString("yyyy-MM-dd")">
+            <option value="">Carregando datas...</option>
+        </select>
+        <span class="validation">@Html.ValidationMessage("Data")</span>
+    </div>
+
+    <div class="form-group">
+        <label>Novo horário disponível</label>
+        <select name="horario" class="form-control" id="horarioSelect" data-atual="@Model.Horario">
+            <option value="">Selecione uma data primeiro</option>
+        </select>
+        <span class="validation">@Html.ValidationMessage("Horario")</span>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn" type="submit">Remarcar</button>
+        <a class="btn secondary" asp-action="Index">Voltar</a>
+    </div>
+</form>
+
+<script>
+(function () {
+    const medicoId = '@Model.MedicoId';
+    const data = document.getElementById('dataSelect');
+    const horario = document.getElementById('horarioSelect');
+    let dataAtual = data.dataset.atual || '';
+    let horarioAtual = horario.dataset.atual || '';
+
+    async function carregarDatas() {
+        data.disabled = true;
+        data.innerHTML = '<option value="">Carregando datas...</option>';
+        horario.innerHTML = '<option value="">Selecione uma data primeiro</option>';
+        try {
+            const resposta = await fetch(`/Consulta/DatasDisponiveis?medicoId=${encodeURIComponent(medicoId)}&ignorarConsultaId=@Model.Id`);
+            const itens = await resposta.json();
+            data.innerHTML = '<option value="">Selecione uma data disponível</option>';
+            if (!Array.isArray(itens) || itens.length === 0) {
+                data.innerHTML = '<option value="">Nenhuma data disponível</option>';
+                horario.innerHTML = '<option value="">Nenhum horário disponível</option>';
+                return;
+            }
+            itens.forEach(item => data.add(new Option(item.text, item.value, false, item.value === dataAtual)));
+            if (data.value) await carregarHorarios();
+        } catch {
+            data.innerHTML = '<option value="">Erro ao carregar datas</option>';
+        } finally { data.disabled = false; }
+    }
+
+    async function carregarHorarios() {
+        if (!data.value) { horario.innerHTML = '<option value="">Selecione uma data primeiro</option>'; return; }
+        horario.disabled = true;
+        horario.innerHTML = '<option value="">Carregando horários...</option>';
+        try {
+            const resposta = await fetch(`/Consulta/HorariosDisponiveis?medicoId=${encodeURIComponent(medicoId)}&data=${encodeURIComponent(data.value)}&ignorarConsultaId=@Model.Id`);
+            const itens = await resposta.json();
+            horario.innerHTML = '<option value="">Selecione um horário</option>';
+            if (!Array.isArray(itens) || itens.length === 0) {
+                horario.innerHTML = '<option value="">Nenhum horário disponível</option>';
+                return;
+            }
+            itens.forEach(item => horario.add(new Option(item, item, false, item === horarioAtual)));
+        } catch {
+            horario.innerHTML = '<option value="">Erro ao carregar horários</option>';
+        } finally { horario.disabled = false; }
+    }
+
+    data.addEventListener('change', async () => { horarioAtual = ''; await carregarHorarios(); });
+    carregarDatas();
+})();
+</script>

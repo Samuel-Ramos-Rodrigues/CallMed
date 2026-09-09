@@ -1,0 +1,55 @@
+@model IEnumerable<Medico>
+@{
+    ViewData["Title"] = "Médicos";
+    var lista = Model.ToList();
+    var especialidades = lista.Where(x => x.Ativo).Select(x => x.Especialidade).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.OrdinalIgnoreCase).Count();
+}
+<section class="v16-page crud-v16">
+    <div class="v16-page-head">
+        <div><span class="v16-eyebrow">CADASTROS</span><h1>Médicos</h1><p>Profissionais, especialidades, acesso e agenda semanal.</p></div>
+        <a class="btn" asp-action="Create">+ Novo médico</a>
+    </div>
+
+    <div class="agenda-summary compact-summary">
+        <div class="v16-stat"><span>Profissionais</span><strong>@lista.Count</strong><small>cadastrados</small></div>
+        <div class="v16-stat"><span>Ativos</span><strong>@lista.Count(x => x.Ativo)</strong><small>recebendo agenda</small></div>
+        <div class="v16-stat"><span>Especialidades</span><strong>@especialidades</strong><small>em atendimento</small></div>
+        <div class="v16-stat"><span>Com acesso</span><strong>@lista.Count(x => !string.IsNullOrWhiteSpace(x.UsuarioId))</strong><small>área do médico</small></div>
+    </div>
+
+    <div class="v16-card table-card">
+        <div class="v16-card-head"><div><h2>Profissionais</h2><p>Abra a agenda ou edite as informações do médico.</p></div></div>
+        <div class="table-scroll">
+            <table class="table modern-table v16-table">
+                <thead><tr><th>Profissional</th><th>Especialidade</th><th>CRM</th><th>Acesso</th><th>Situação</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var item in lista)
+                {
+                    <tr>
+                        <td><div class="entity-cell"><span class="entity-avatar doctor">@(item.Nome?.Substring(0,1).ToUpper() ?? "M")</span><div><strong>@item.Nome</strong><small class="entity-sub">@(string.IsNullOrWhiteSpace(item.Email) ? "Sem e-mail de acesso" : item.Email)</small></div></div></td>
+                        <td><span class="soft-pill">@item.Especialidade</span></td>
+                        <td>@(string.IsNullOrWhiteSpace(item.Crm) ? "—" : item.Crm)</td>
+                        <td><span class="access-pill @(!string.IsNullOrWhiteSpace(item.UsuarioId) ? "linked" : "unlinked")">@(!string.IsNullOrWhiteSpace(item.UsuarioId) ? "Vinculado" : "Não configurado")</span></td>
+                        <td><span class="status-dot-pill @(item.Ativo ? "active" : "inactive")"><i></i>@(item.Ativo ? "Ativo" : "Inativo")</span></td>
+                        <td>
+                            <details class="row-menu">
+                                <summary aria-label="Ações">•••</summary>
+                                <div>
+                                    <a asp-controller="Agenda" asp-action="Index" asp-route-medicoId="@item.Id">Ver agenda</a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id">Editar médico</a>
+                                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes e acesso</a>
+                                    <a class="danger" asp-action="Delete" asp-route-id="@item.Id">Excluir / desativar</a>
+                                </div>
+                            </details>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        @if (!lista.Any())
+        {
+            <div class="v16-empty"><span>✚</span><strong>Nenhum médico cadastrado.</strong><p>Cadastre o primeiro profissional e configure sua agenda.</p></div>
+        }
+    </div>
+</section>

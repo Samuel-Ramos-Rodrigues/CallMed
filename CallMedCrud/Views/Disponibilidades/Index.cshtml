@@ -1,0 +1,26 @@
+@model IEnumerable<MKSANCrud.Models.Medico>
+@{
+    ViewData["Title"] = "Disponibilidades";
+    var dias = new[] { "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb" };
+}
+<section class="cm19-availability-page">
+    <header class="cm19-page-head"><div><span>AGENDA</span><h1>Disponibilidades</h1><p>Agenda semanal configurada para cada médico ativo.</p></div><a class="btn" asp-controller="Medico" asp-action="Create">+ Novo médico</a></header>
+    <section class="cm19-card cm19-availability-table">
+        <div class="cm19-av-row header"><strong>Médico</strong>@for(var d=1;d<=6;d++){<span>@dias[d]</span>}<span>@dias[0]</span><b>Ações</b></div>
+        @foreach(var medico in Model)
+        {
+            <div class="cm19-av-row">
+                <div class="cm19-av-doctor"><span>@medico.Nome.Substring(0,1).ToUpper()</span><div><strong>@medico.Nome</strong><small>@(medico.EspecialidadeCadastro?.Nome ?? medico.Especialidade)</small></div></div>
+                @for(var d=1;d<=6;d++)
+                {
+                    var horarios=medico.HorariosSemanais.Where(h=>h.DiaSemana==d && h.Ativo).OrderBy(h=>h.Horario).Select(h=>h.Horario).ToList();
+                    <div class="cm19-av-day">@if(horarios.Any()){<strong>@horarios.First()</strong><small>@(horarios.Count>1 ? $"+{horarios.Count-1} horário(s)" : "1 horário")</small>}else{<span>—</span>}</div>
+                }
+                @{ var domingo=medico.HorariosSemanais.Where(h=>h.DiaSemana==0 && h.Ativo).OrderBy(h=>h.Horario).Select(h=>h.Horario).ToList(); }
+                <div class="cm19-av-day">@if(domingo.Any()){<strong>@domingo.First()</strong><small>@(domingo.Count>1 ? $"+{domingo.Count-1} horário(s)" : "1 horário")</small>}else{<span>—</span>}</div>
+                <a class="cm19-av-edit" asp-controller="Medico" asp-action="Edit" asp-route-id="@medico.Id">Editar agenda</a>
+            </div>
+        }
+        @if(!Model.Any()){<div class="cm19-empty">Nenhum médico ativo cadastrado.</div>}
+    </section>
+</section>

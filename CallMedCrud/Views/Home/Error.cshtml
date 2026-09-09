@@ -1,0 +1,23 @@
+@model MKSANCrud.ViewModels.ErrorViewModel
+@{
+    ViewData["Title"] = "Erro";
+}
+
+<section class="crud-page">
+    <div class="page-head">
+        <div>
+            <h1>Não foi possível concluir a operação</h1>
+            <p>Ocorreu um erro inesperado. Tente novamente em instantes.</p>
+        </div>
+    </div>
+
+    <div class="details-card">
+        @if (Model.ShowRequestId)
+        {
+            <p><strong>Código da solicitação:</strong> <code>@Model.RequestId</code></p>
+        }
+        <div class="form-actions">
+            <a class="btn" asp-controller="Home" asp-action="Index">Voltar ao início</a>
+        </div>
+    </div>
+</section>

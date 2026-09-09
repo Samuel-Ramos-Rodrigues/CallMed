@@ -1,0 +1,1437 @@
+/* CallMed V21.3 — estilos públicos consolidados. */
+
+:root {
+    /* Marca */
+    --mk-primary: #078451;
+    --mk-primary-500: #0a9660;
+    --mk-primary-600: #08784f;
+    --mk-primary-700: #06623f;
+    --mk-primary-800: #064d35;
+    --mk-primary-900: #043a2b;
+    --mk-primary-soft: #e9f8f0;
+    --mk-primary-softer: #f4fbf7;
+
+    /* Apoio */
+    --mk-blue: #3f6e9e;
+    --mk-blue-soft: #edf4fb;
+    --mk-purple: #715795;
+    --mk-purple-soft: #f4effa;
+    --mk-warning: #9a6719;
+    --mk-warning-soft: #fff7e7;
+    --mk-danger: #b24343;
+    --mk-danger-soft: #fff2f2;
+    --mk-success: #087a4b;
+
+    /* Superfícies */
+    --mk-bg: #f3f7f5;
+    --mk-bg-deep: #edf3f0;
+    --mk-surface: #ffffff;
+    --mk-surface-2: #f8fbf9;
+    --mk-surface-3: #f1f6f3;
+
+    /* Texto */
+    --mk-ink: #18271f;
+    --mk-ink-soft: #34473e;
+    --mk-muted: #687970;
+    --mk-muted-2: #89978f;
+
+    /* Bordas */
+    --mk-border: #dce7e1;
+    --mk-border-soft: #ebf1ee;
+    --mk-border-strong: #cedcd5;
+
+    /* Layout */
+    --mk-sidebar: 268px;
+    --mk-topbar: 70px;
+    --mk-page-max: 1480px;
+
+    /* Raios */
+    --mk-radius-xs: 8px;
+    --mk-radius-sm: 11px;
+    --mk-radius: 14px;
+    --mk-radius-lg: 18px;
+    --mk-radius-xl: 24px;
+    --mk-radius-2xl: 30px;
+
+    /* Sombras */
+    --mk-shadow-xs: 0 2px 8px rgba(17, 52, 39, 0.035);
+    --mk-shadow-sm: 0 7px 20px rgba(17, 52, 39, 0.055);
+    --mk-shadow: 0 14px 38px rgba(17, 52, 39, 0.075);
+    --mk-shadow-lg: 0 24px 60px rgba(14, 47, 34, 0.13);
+    --mk-shadow-green: 0 14px 30px rgba(7, 132, 81, 0.18);
+
+    /* Movimento */
+    --mk-ease: 160ms cubic-bezier(.2, .7, .3, 1);
+    --mk-ease-slow: 240ms cubic-bezier(.2, .7, .3, 1);
+}
+
+/* =========================================================
+   CallMed — experiência PWA / mobile instalada
+   ========================================================= */
+
+:root {
+    --cm-mobile-nav-h: 68px;
+    --cm-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.callmed-mobile-nav {
+    display: none;
+}
+
+/* Guia de instalação exibido apenas quando o navegador não fornece prompt nativo. */
+.callmed-install-guide {
+    position: fixed;
+    inset: 0;
+    z-index: 10050;
+    display: grid;
+    align-items: end;
+}
+
+.callmed-install-guide-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(2, 31, 25, .48);
+    backdrop-filter: blur(3px);
+}
+
+.callmed-install-guide-sheet {
+    position: relative;
+    width: min(540px, 100%);
+    margin: 0 auto;
+    padding: 12px 20px calc(22px + env(safe-area-inset-bottom));
+    border: 1px solid #bdd9cf;
+    border-radius: 24px 24px 0 0;
+    color: #163b32;
+    background: #f4fbf7;
+    box-shadow: 0 -24px 70px rgba(2, 43, 34, .24);
+}
+
+.callmed-install-guide-handle {
+    display: block;
+    width: 46px;
+    height: 5px;
+    margin: 0 auto 16px;
+    border-radius: 999px;
+    background: #bfd4cc;
+}
+
+.callmed-install-guide-brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 16px;
+}
+
+.callmed-install-guide-brand img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+}
+
+.callmed-install-guide-brand div {
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+}
+
+.callmed-install-guide-brand strong {
+    font-size: 18px;
+}
+
+.callmed-install-guide-brand small,
+.callmed-install-guide-sheet p,
+.callmed-install-guide-sheet li {
+    color: #5c746d;
+    line-height: 1.5;
+}
+
+.callmed-install-guide-sheet ol {
+    margin: 0 0 18px;
+    padding-left: 22px;
+}
+
+.callmed-install-guide-close {
+    width: 100%;
+    min-height: 46px;
+    border: 0;
+    border-radius: 13px;
+    color: #fff;
+    background: #078b67;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* Em modo instalado, elementos que só fazem sentido no navegador somem. */
+.callmed-pwa-installed #pwa-install-button,
+.callmed-pwa-installed [data-pwa-install],
+.callmed-twa-context #pwa-install-button,
+.callmed-twa-context [data-pwa-install] {
+    display: none !important;
+}
+
+@media (max-width: 700px) {
+    .callmed-mobile-nav {
+        position: fixed;
+        z-index: 1200;
+        right: 8px;
+        bottom: max(8px, env(safe-area-inset-bottom));
+        left: 8px;
+        min-height: var(--cm-mobile-nav-h);
+        padding: 7px 7px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
+        gap: 3px;
+        border: 1px solid rgba(116, 159, 145, .36);
+        border-radius: 20px;
+        background: rgba(247, 252, 249, .94);
+        box-shadow: 0 12px 34px rgba(4, 61, 50, .18);
+        backdrop-filter: blur(18px) saturate(145%);
+    }
+
+    .callmed-mobile-nav > :is(a, button) {
+        min-width: 0;
+        min-height: 52px;
+        padding: 5px 2px;
+        border: 0;
+        border-radius: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        color: #5b736c;
+        background: transparent;
+        text-decoration: none;
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .callmed-mobile-nav > :is(a, button).active {
+        color: #08785d;
+        background: #e0f4ec;
+    }
+
+    .callmed-mobile-nav svg {
+        width: 21px;
+        height: 21px;
+        fill: none;
+        stroke: currentColor;
+    }
+
+    .callmed-mobile-nav span {
+        max-width: 100%;
+        overflow: hidden;
+        font-size: 9px;
+        font-weight: 750;
+        line-height: 1;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .v18-shell .v16-app-page {
+        padding-bottom: calc(var(--cm-mobile-nav-h) + 34px + env(safe-area-inset-bottom)) !important;
+    }
+
+    .v18-shell .v18-topbar {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 800 !important;
+        background: rgba(241, 249, 245, .92) !important;
+        backdrop-filter: blur(18px) saturate(140%) !important;
+    }
+
+    .mksan-floating-actions {
+        right: 14px !important;
+        bottom: calc(var(--cm-mobile-nav-h) + 28px + env(safe-area-inset-bottom)) !important;
+    }
+
+    .mksan-fab {
+        width: 54px !important;
+        height: 54px !important;
+    }
+
+    .mksan-fab-logo {
+        width: 42px !important;
+        height: 42px !important;
+    }
+
+    /* Popovers acionáveis viram sheets mais fáceis de usar com uma mão. */
+    .v18-shell :is(.cm-confirm-popover, .v18-popover, .v18-profile-menu) {
+        position: fixed !important;
+        top: auto !important;
+        right: 8px !important;
+        bottom: calc(var(--cm-mobile-nav-h) + 18px + env(safe-area-inset-bottom)) !important;
+        left: 8px !important;
+        width: auto !important;
+        max-height: min(70dvh, 590px) !important;
+        border-radius: 20px !important;
+        box-shadow: 0 20px 60px rgba(2, 43, 34, .24) !important;
+    }
+
+    /* Tabelas continuam navegáveis com o dedo e não alargam a página inteira. */
+    .v18-shell :is(.table-responsive, .responsive-table, .table-card) {
+        overflow-x: auto !important;
+        scrollbar-width: thin;
+    }
+}
+
+@media (max-width: 420px) {
+    .callmed-mobile-nav {
+        right: 5px;
+        bottom: max(5px, env(safe-area-inset-bottom));
+        left: 5px;
+        padding-inline: 4px;
+        border-radius: 18px;
+    }
+
+    .callmed-mobile-nav span {
+        font-size: 8px;
+    }
+}
+
+/* PWA/TWA: evita gesto elástico e mantém app com sensação nativa. */
+@media (display-mode: standalone) {
+    html,
+    body {
+        min-height: 100dvh;
+        overscroll-behavior-y: none;
+    }
+
+    body {
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+
+/* Tema escuro do guia de instalação (também usado na landing pública). */
+:root[data-theme="dark"] .callmed-install-guide-sheet {
+    background:#102820;
+    border-color:#315248;
+    color:#effaf5;
+}
+:root[data-theme="dark"] .callmed-install-guide-brand small,
+:root[data-theme="dark"] .callmed-install-guide-sheet p,
+:root[data-theme="dark"] .callmed-install-guide-sheet li { color:#b8d0c6; }
+:root[data-theme="dark"] .callmed-install-guide-handle { background:#315248; }
+
+* {
+    box-sizing:border-box
+}
+html,body {
+    margin:0;
+    min-height:100%;
+    font-family:Inter,"Segoe UI",system-ui,Arial,sans-serif
+}
+body.public-body {
+    background:#f4f8f6;
+    color:#1b2923
+}
+.public-header {
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:rgba(255,255,255,.93);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid #e1e9e5
+}
+.public-nav {
+    width:min(1180px,92%);
+    min-height:76px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px
+}
+.public-logo img {
+    width:132px;
+    height:55px;
+    object-fit:contain
+}
+.public-links {
+    display:flex;
+    align-items:center;
+    gap:7px
+}
+.public-links a {
+    padding:9px 11px;
+    border-radius:10px;
+    text-decoration:none;
+    color:#53635b;
+    font-size:12px;
+    font-weight:800
+}
+.public-links a:hover {
+    background:#f0f6f3
+}
+.public-links .primary {
+    background:#087a50;
+    color:#fff;
+    padding-inline:16px
+}
+.public-main {
+    width:min(1180px,92%);
+    margin:auto;
+    padding:54px 0 65px
+}
+.public-hero {
+    display:grid;
+    grid-template-columns:1.08fr .92fr;
+    gap:30px;
+    align-items:center
+}
+.public-kicker {
+    display:inline-flex;
+    background:#e9f7f0;
+    color:#08764e;
+    border:1px solid #d3ebdf;
+    border-radius:999px;
+    padding:7px 11px;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.14em
+}
+.public-hero h1 {
+    font-size:clamp(42px,6vw,72px);
+    line-height:1.02;
+    letter-spacing:-.055em;
+    margin:17px 0 18px;
+    color:#17352b
+}
+.public-hero p {
+    font-size:17px;
+    line-height:1.7;
+    color:#697871;
+    max-width:670px;
+    margin:0
+}
+.public-actions {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:25px
+}
+.public-btn {
+    min-height:45px;
+    border-radius:11px;
+    padding:0 16px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    border:1px solid #087a50;
+    background:#087a50;
+    color:#fff;
+    font-weight:850;
+    font-size:12px;
+    cursor:pointer
+}
+.public-btn.secondary {
+    background:#fff;
+    color:#52635a;
+    border-color:#d5dfda
+}
+.how-card {
+    background:#fff;
+    border:1px solid #dde7e2;
+    border-radius:25px;
+    padding:26px;
+    box-shadow:0 22px 55px rgba(18,55,41,.1)
+}
+.how-card-header {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:16px
+}
+.how-icon {
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    background:#e9f7f0;
+    display:grid;
+    place-items:center;
+    color:#08764e;
+    font-size:20px
+}
+.how-card h2 {
+    margin:0;
+    font-size:23px
+}
+.how-step {
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:12px;
+    padding:14px 0;
+    border-bottom:1px solid #edf2ef
+}
+.how-step:last-child {
+    border-bottom:0
+}
+.how-step>span {
+    width:31px;
+    height:31px;
+    border-radius:10px;
+    background:#087a50;
+    color:#fff;
+    display:grid;
+    place-items:center;
+    font-size:11px;
+    font-weight:900
+}
+.how-step strong,.how-step small {
+    display:block
+}
+.how-step small {
+    color:#7b8982;
+    margin-top:3px;
+    line-height:1.45
+}
+.public-section {
+    padding-top:66px
+}
+.public-section-head {
+    text-align:center;
+    max-width:650px;
+    margin:0 auto 24px
+}
+.public-section-head h2 {
+    font-size:34px;
+    margin:7px 0 9px
+}
+.public-section-head p {
+    color:#718079;
+    margin:0;
+    line-height:1.6
+}
+.public-cards {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px
+}
+.public-card {
+    background:#fff;
+    border:1px solid #dde7e2;
+    border-radius:18px;
+    padding:21px;
+    text-decoration:none;
+    box-shadow:0 9px 26px rgba(20,55,42,.055);
+    transition:.16s transform,.16s box-shadow
+}
+.public-card:hover {
+    transform:translateY(-3px);
+    box-shadow:0 16px 34px rgba(20,55,42,.1)
+}
+.public-card-icon {
+    width:45px;
+    height:45px;
+    border-radius:13px;
+    background:#e9f7f0;
+    display:grid;
+    place-items:center;
+    font-size:19px
+}
+.public-card h3 {
+    margin:14px 0 7px;
+    font-size:18px
+}
+.public-card p {
+    margin:0;
+    color:#74817b;
+    font-size:12px;
+    line-height:1.55
+}
+.public-app {
+    margin-top:65px;
+    background:linear-gradient(120deg,#07543e,#087a50);
+    border-radius:26px;
+    padding:34px;
+    color:#fff;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:20px;
+    align-items:center;
+    box-shadow:0 22px 50px rgba(7,83,62,.18)
+}
+.public-app h2 {
+    font-size:31px;
+    margin:8px 0
+}
+.public-app p {
+    color:#d4ece2;
+    margin:0;
+    max-width:650px;
+    line-height:1.6
+}
+.public-app-actions {
+    display:flex;
+    gap:9px;
+    flex-wrap:wrap
+}
+.public-app .public-btn {
+    background:#fff;
+    color:#07583e;
+    border-color:#fff
+}
+.public-footer {
+    text-align:center;
+    color:#849189;
+    font-size:11px;
+    padding:25px;
+    border-top:1px solid #e0e9e5;
+    background:#fff
+}
+@media(max-width:850px) {
+    .public-hero {
+        grid-template-columns:1fr
+    }
+    .public-cards {
+        grid-template-columns:1fr 1fr
+    }
+    .public-app {
+        grid-template-columns:1fr
+    }
+    .public-links a:not(.primary) {
+        display:none
+    }
+}
+@media(max-width:560px) {
+    .public-main {
+        padding-top:34px
+    }
+    .public-hero h1 {
+        font-size:42px
+    }
+    .public-cards {
+        grid-template-columns:1fr
+    }
+    .public-app {
+        padding:25px
+    }
+    .public-links .primary {
+        padding-inline:12px
+    }
+}
+
+
+/* =========================================================
+   V8 — Site público refinado
+   ========================================================= */
+
+body.public-body {
+    background:
+        radial-gradient(circle at 70% 2%, rgba(14,143,87,.05), transparent 24%),
+        #f4f8f6;
+}
+
+.public-header {
+    box-shadow: 0 4px 22px rgba(20,50,39,.035);
+}
+
+.public-links a {
+    transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.public-links a:hover {
+    color: #27473a;
+    transform: translateY(-1px);
+}
+
+.public-links .primary {
+    box-shadow: 0 7px 16px rgba(8,122,80,.14);
+}
+
+.public-main {
+    padding-top: 60px;
+}
+
+.public-hero {
+    min-height: 540px;
+}
+
+.public-hero h1 {
+    max-width: 760px;
+    font-size: clamp(42px, 5.8vw, 70px);
+}
+
+.how-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    box-shadow: 0 25px 60px rgba(18,55,41,.11);
+}
+
+.how-card::after {
+    content: "";
+    position: absolute;
+    right: -70px;
+    top: -70px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(11,149,91,.05);
+}
+
+.public-card {
+    min-height: 176px;
+    transition:
+        transform 170ms ease,
+        box-shadow 170ms ease,
+        border-color 170ms ease;
+}
+
+.public-card:hover {
+    border-color: #cfe0d7;
+    transform: translateY(-4px);
+}
+
+.public-card-icon {
+    width: 47px;
+    height: 47px;
+    border-radius: 14px;
+}
+
+.public-app {
+    overflow: hidden;
+    position: relative;
+    background:
+        radial-gradient(circle at 90% 0%, rgba(255,255,255,.10), transparent 28%),
+        linear-gradient(120deg,#07543e,#098154);
+}
+
+.public-app::after {
+    content: "";
+    position: absolute;
+    right: -100px;
+    bottom: -110px;
+    width: 260px;
+    height: 260px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 50%;
+}
+
+@media (max-width: 850px) {
+    .public-hero {
+        min-height: 0;
+    }
+}
+
+
+/* =========================================================
+   V10 — landing mais limpa
+   ========================================================= */
+
+.public-header {
+    background: rgba(255, 255, 255, .96);
+    box-shadow: none;
+}
+
+.public-nav {
+    min-height: 70px;
+}
+
+.public-links {
+    gap: 3px;
+}
+
+.public-main {
+    padding-top: 48px;
+}
+
+.public-hero {
+    min-height: 480px;
+    gap: 42px;
+}
+
+.public-hero h1 {
+    max-width: 720px;
+    font-size: clamp(40px, 5.4vw, 64px);
+}
+
+.public-hero p {
+    max-width: 620px;
+    font-size: 16px;
+}
+
+.how-card {
+    border-radius: 20px;
+    box-shadow: 0 16px 42px rgba(18, 55, 41, .08);
+}
+
+.public-section {
+    padding-top: 56px;
+}
+
+.public-card {
+    min-height: 158px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(20, 55, 42, .04);
+}
+
+.public-app {
+    margin-top: 56px;
+    padding: 30px;
+    border-radius: 22px;
+    box-shadow: 0 16px 38px rgba(7, 83, 62, .14);
+}
+
+.public-footer {
+    padding: 21px;
+}
+
+@media (max-width: 850px) {
+    .public-main {
+        padding-top: 32px;
+    }
+
+    .public-hero {
+        gap: 24px;
+    }
+}
+
+/* CallMed V16 — transparent horizontal brand */
+.public-logo img {
+    width: 166px;
+    height: 58px;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    object-fit: contain;
+}
+
+
+
+/* CallMed V18 - logotipo histórico restaurado */
+.callmed-home-brand .public-brand-horizontal {
+    width: 190px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* =========================================================
+   Página pública responsiva para PWA/TWA
+   ========================================================= */
+@media (max-width: 720px) {
+    .public-header {
+        padding-top: env(safe-area-inset-top);
+    }
+    .public-nav {
+        min-height: 62px;
+        padding-inline: 14px;
+    }
+    .public-logo img,
+    .public-brand-horizontal {
+        width: 132px !important;
+        max-height: 42px !important;
+    }
+    .public-links {
+        gap: 6px;
+    }
+    .public-links > a:not(.primary) {
+        display: none;
+    }
+    .public-links .primary {
+        min-height: 38px;
+        padding: 0 12px;
+        display: inline-flex;
+        align-items: center;
+        font-size: 12px;
+    }
+    .public-main {
+        overflow-x: hidden;
+    }
+    .public-hero,
+    .public-section,
+    .public-app {
+        width: calc(100% - 20px) !important;
+        max-width: 100% !important;
+        margin-inline: auto !important;
+    }
+    .public-hero {
+        min-height: 0 !important;
+        padding: 36px 4px 26px !important;
+        grid-template-columns: 1fr !important;
+        gap: 22px !important;
+    }
+    .public-hero h1 {
+        font-size: clamp(34px, 11vw, 50px) !important;
+        line-height: 1.02 !important;
+    }
+    .public-hero p {
+        font-size: 15px !important;
+    }
+    .public-actions,
+    .public-app-actions {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+    }
+    .public-btn {
+        width: 100% !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+    .how-card {
+        width: 100% !important;
+        padding: 18px !important;
+    }
+    .public-cards {
+        grid-template-columns: 1fr !important;
+    }
+    .public-app {
+        padding: 22px !important;
+        grid-template-columns: 1fr !important;
+        gap: 18px !important;
+    }
+    .public-footer {
+        padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+    }
+}
+
+.callmed-pwa-installed .public-app { display:none !important; }
+
+/* V21.1: no celular, usuário recorrente precisa conseguir entrar sem abrir menu oculto. */
+@media (max-width: 720px) {
+    .public-links .public-login-link {
+        display: inline-flex !important;
+        align-items: center;
+        min-height: 38px;
+        padding: 0 10px;
+        color: #245b4b;
+        font-size: 12px;
+        font-weight: 800;
+        text-decoration: none;
+    }
+    :root[data-theme="dark"] .public-links .public-login-link { color:#cce7dc; }
+}
+
+/* =========================================================
+   CallMed V19.1 — Aparência / Dark Mode
+   - Corrige a logo escondida por CSS legado.
+   - Reduz o excesso de branco no tema claro.
+   - Adiciona temas Claro, Escuro e Sistema.
+   ========================================================= */
+
+:root {
+  color-scheme: light;
+  --cm-page-gradient:
+    radial-gradient(circle at 82% -8%, rgba(20, 169, 120, .10), transparent 30rem),
+    linear-gradient(145deg, #e8f2ed 0%, #f3f8f5 48%, #eaf4ef 100%);
+  --cm19-bg: #eaf3ef;
+  --cm19-surface: #fbfdfc;
+  --cm19-surface-soft: #f1f7f4;
+  --cm19-border: #d5e4dd;
+  --cm19-text: #14251f;
+  --cm19-muted: #657b72;
+  --cm19-green: #07885f;
+  --cm19-green-2: #0aa173;
+  --cm19-green-dark: #034f42;
+  --cm19-green-deep: #023b32;
+  --cm19-mint: #e0f4eb;
+  --cm19-shadow: 0 1px 2px rgba(9, 52, 39, .04), 0 12px 34px rgba(9, 52, 39, .075);
+  --cm-input: #f7fbf9;
+  --cm-input-border: #cfded7;
+  --cm-table-head: #f0f6f3;
+  --cm-row-hover: #f3f9f6;
+  --cm-divider: #e2ebe7;
+  --cm-overlay: rgba(7, 31, 24, .42);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --cm-page-gradient:
+    radial-gradient(circle at 82% -10%, rgba(34, 198, 143, .12), transparent 30rem),
+    linear-gradient(145deg, #07130f 0%, #0a1813 52%, #081611 100%);
+  --cm19-bg: #081611;
+  --cm19-surface: #10231c;
+  --cm19-surface-soft: #0c1d17;
+  --cm19-border: #244137;
+  --cm19-text: #edf8f3;
+  --cm19-muted: #96aea4;
+  --cm19-green: #29c592;
+  --cm19-green-2: #36d5a0;
+  --cm19-green-dark: #0e7659;
+  --cm19-green-deep: #032e27;
+  --cm19-mint: #14372b;
+  --cm19-amber: #f4aa42;
+  --cm19-amber-soft: #352716;
+  --cm19-red: #ff7072;
+  --cm19-red-soft: #341d20;
+  --cm19-blue: #62a7ea;
+  --cm19-shadow: 0 1px 2px rgba(0, 0, 0, .18), 0 15px 42px rgba(0, 0, 0, .24);
+  --cm-input: #0b1d17;
+  --cm-input-border: #29483d;
+  --cm-table-head: #0d2019;
+  --cm-row-hover: #132a22;
+  --cm-divider: #1d372e;
+  --cm-overlay: rgba(0, 0, 0, .64);
+}
+
+html,
+body.v18-shell,
+.v18-shell .v16-app-content {
+  background: var(--cm-page-gradient) fixed !important;
+  color: var(--cm19-text) !important;
+}
+
+/* A logo horizontal era ocultada em v16-1.css. */
+.v18-shell .v16-sidebar-brand > img,
+.v18-shell .v18-sidebar-logo {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.v18-shell .v18-sidebar-brand {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 5px 8px 10px !important;
+  min-height: 52px !important;
+}
+.v18-shell .v18-sidebar-logo {
+  width: 168px !important;
+  height: 42px !important;
+  max-height: 42px !important;
+  object-fit: contain !important;
+  object-position: left center !important;
+}
+
+/* Sidebar ganha mais profundidade sem perder a identidade verde. */
+.v18-shell .sidebar.v16-sidebar {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(42, 221, 166, .12), transparent 16rem),
+    linear-gradient(180deg, #034f42 0%, #023c33 56%, #022f29 100%) !important;
+  border-right: 1px solid rgba(255,255,255,.06) !important;
+}
+:root[data-theme="dark"] .v18-shell .sidebar.v16-sidebar {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(42, 221, 166, .09), transparent 16rem),
+    linear-gradient(180deg, #032f28 0%, #02251f 58%, #011d19 100%) !important;
+}
+
+/* Topbar / conteúdo */
+.v18-shell .v18-topbar {
+  background: rgba(248, 252, 250, .88) !important;
+  border-color: var(--cm19-border) !important;
+  box-shadow: 0 5px 24px rgba(9, 52, 39, .035) !important;
+}
+:root[data-theme="dark"] .v18-shell .v18-topbar {
+  background: rgba(10, 25, 20, .90) !important;
+  box-shadow: 0 5px 26px rgba(0,0,0,.20) !important;
+}
+.v18-shell .app-page { background: transparent !important; }
+.v18-shell .v18-topbar-title strong,
+.v18-shell .topbar-page-title strong { color: var(--cm19-text) !important; }
+.v18-shell .v18-icon-button,
+.v18-shell .v18-profile-button,
+.v18-shell .menu-toggle {
+  color: var(--cm19-text) !important;
+}
+.v18-shell .v18-icon-button:hover,
+.v18-shell .menu-toggle:hover {
+  background: var(--cm19-surface-soft) !important;
+}
+.v18-shell .user-avatar { background: linear-gradient(145deg, var(--cm19-green), var(--cm19-green-dark)) !important; color:#fff !important; }
+
+.cm19-global-search {
+  background: var(--cm-input) !important;
+  border-color: var(--cm-input-border) !important;
+}
+.cm19-global-search input { color: var(--cm19-text) !important; }
+.cm19-global-search input::placeholder { color: var(--cm19-muted) !important; }
+.cm19-global-search svg { color: var(--cm19-muted) !important; }
+
+/* Cards: mais contraste no claro e superfícies consistentes no escuro. */
+.cm19-card,
+.cm19-kpi,
+.cm19-date-chip,
+.v18-shell .v16-card,
+.v18-shell .table-card,
+.v18-shell .list-card,
+.v18-shell .form-card,
+.v18-shell .search-box,
+.v18-shell .filters-card,
+.v18-shell .details-card,
+.v18-shell .content-card,
+.v18-shell .dashboard-card,
+.v18-shell .stat-card,
+.v18-shell .panel,
+.v18-shell .widget {
+  background: var(--cm19-surface) !important;
+  border-color: var(--cm19-border) !important;
+  box-shadow: var(--cm19-shadow) !important;
+  color: var(--cm19-text) !important;
+}
+
+.cm19-kpi.green { background: linear-gradient(145deg, var(--cm19-surface), rgba(224,244,235,.55)) !important; }
+.cm19-kpi.green-soft { background: linear-gradient(145deg, var(--cm19-surface), rgba(229,246,239,.68)) !important; }
+.cm19-kpi.amber { background: linear-gradient(145deg, var(--cm19-surface), rgba(255,242,223,.68)) !important; }
+.cm19-kpi.red { background: linear-gradient(145deg, var(--cm19-surface), rgba(255,235,235,.66)) !important; }
+:root[data-theme="dark"] .cm19-kpi.green,
+:root[data-theme="dark"] .cm19-kpi.green-soft { background: linear-gradient(145deg, #10231c, #123127) !important; }
+:root[data-theme="dark"] .cm19-kpi.amber { background: linear-gradient(145deg, #10231c, #2a2217) !important; }
+:root[data-theme="dark"] .cm19-kpi.red { background: linear-gradient(145deg, #10231c, #2b1d1f) !important; }
+
+.cm19-welcome-row h1,
+.cm19-page-head h1,
+.cm19-card-head h2,
+.cm19-kpi,
+.cm19-kpi small,
+.cm19-kpi strong,
+.cm19-agenda-row,
+.cm19-agenda-row time,
+.cm19-person-copy strong,
+.cm19-donut strong,
+.cm19-live-legend,
+.cm19-live-footer strong,
+.cm19-ranking strong,
+.cm19-patient-welcome h1,
+.cm19-mobile-card-title strong,
+.cm19-next-copy strong,
+.cm19-quick-grid strong,
+.cm19-record-head h1,
+.cm19-record-card h2,
+.cm19-booking-card h1,
+.cm19-booking-card h2,
+.cm19-cal-doctor strong,
+.cm19-cal-day strong,
+.cm19-av-doctor strong {
+  color: var(--cm19-text) !important;
+}
+.cm19-welcome-row p,
+.cm19-page-head p,
+.cm19-card-head p,
+.cm19-kpi em,
+.cm19-person-copy small,
+.cm19-patient-welcome p,
+.cm19-next-copy small,
+.cm19-next-copy em,
+.cm19-record-card p,
+.cm19-empty,
+.cm19-av-doctor small,
+.cm19-av-day small { color: var(--cm19-muted) !important; }
+
+.cm19-agenda-row,
+.cm19-live-footer,
+.cm19-calendar-legend,
+.cm19-av-row,
+.cm19-av-day,
+.v16-inbox,
+.atendimento-context-v16 {
+  border-color: var(--cm-divider) !important;
+}
+.cm19-donut:before { background: var(--cm19-surface) !important; }
+
+/* Formulários, filtros e tabelas */
+.v18-shell input:not([type="checkbox"]):not([type="radio"]),
+.v18-shell select,
+.v18-shell textarea,
+.cm19-agenda-toolbar select,
+.cm19-line-card select {
+  background: var(--cm-input) !important;
+  border-color: var(--cm-input-border) !important;
+  color: var(--cm19-text) !important;
+}
+.v18-shell input::placeholder,
+.v18-shell textarea::placeholder { color: var(--cm19-muted) !important; }
+.v18-shell label,
+.v18-shell .form-label,
+.v18-shell .field > label,
+.v18-shell .field > .form-label { color: var(--cm19-text) !important; }
+.v18-shell table thead th,
+.cm19-av-row.header {
+  background: var(--cm-table-head) !important;
+  color: var(--cm19-muted) !important;
+  border-color: var(--cm-divider) !important;
+}
+.v18-shell table tbody td {
+  color: var(--cm19-text) !important;
+  border-color: var(--cm-divider) !important;
+}
+.v18-shell table tbody tr:hover { background: var(--cm-row-hover) !important; }
+.v18-shell .btn.secondary,
+.cm19-period-nav > a,
+.cm19-view-switch,
+.cm19-agenda-toolbar .today {
+  background: var(--cm19-surface-soft) !important;
+  border-color: var(--cm-input-border) !important;
+  color: var(--cm19-text) !important;
+}
+
+/* Agenda */
+.cm19-agenda-toolbar,
+.cm19-calendar,
+.cm19-cal-cell,
+.cm19-cal-corner,
+.cm19-cal-day,
+.cm19-cal-doctor {
+  background-color: var(--cm19-surface) !important;
+  border-color: var(--cm-divider) !important;
+  color: var(--cm19-text) !important;
+}
+.cm19-cal-cell.today,
+.cm19-cal-day.today { background: rgba(41,197,146,.07) !important; }
+.cm19-no-slot { color: var(--cm19-muted) !important; }
+:root[data-theme="dark"] .cm19-cal-event.free { background:#143a2d !important; color:#91e8c4 !important; border-color:#235440 !important; }
+:root[data-theme="dark"] .cm19-cal-event.busy { background:#162f43 !important; color:#acd4f7 !important; border-color:#244b68 !important; }
+:root[data-theme="dark"] .cm19-cal-event.blocked { background:#2a2424 !important; color:#d7b6b6 !important; border-color:#4a3434 !important; }
+
+/* Central de Atendimento */
+.v16-atendimento-shell,
+.v16-inbox,
+.v16-chat,
+.atendimento-context-v16,
+.v16-inbox-list,
+.v16-chat-header,
+.v16-chat-footer,
+.atendimento-compose,
+.atendimento-message,
+.v16-contact-card,
+.v16-atendimento-filters,
+.atendimento-stats-v16 > div {
+  background: var(--cm19-surface) !important;
+  border-color: var(--cm19-border) !important;
+  color: var(--cm19-text) !important;
+}
+.v16-inbox-item,
+.atendimento-list-item { border-color: var(--cm-divider) !important; color:var(--cm19-text) !important; }
+.v16-inbox-item:hover,
+.v16-inbox-item.active,
+.atendimento-list-item:hover,
+.atendimento-list-item.active { background: var(--cm-row-hover) !important; }
+:root[data-theme="dark"] .atendimento-message.inbound,
+:root[data-theme="dark"] .atendimento-message.paciente { background:#172a23 !important; color:var(--cm19-text) !important; }
+:root[data-theme="dark"] .atendimento-message.outbound,
+:root[data-theme="dark"] .atendimento-message.assistente { background:#12362a !important; color:#e6fff4 !important; }
+
+/* Popovers / menus */
+.v18-popover,
+.v18-profile-menu {
+  background: var(--cm19-surface) !important;
+  border: 1px solid var(--cm19-border) !important;
+  color: var(--cm19-text) !important;
+  box-shadow: 0 18px 46px rgba(0,0,0,.18) !important;
+}
+.v18-popover a,
+.v18-popover button,
+.v18-profile-menu a,
+.v18-profile-menu button { color: var(--cm19-text) !important; }
+.v18-popover a:hover,
+.v18-popover button:hover,
+.v18-profile-menu a:hover,
+.v18-profile-menu button:hover { background: var(--cm19-surface-soft) !important; }
+
+/* Seletor de tema */
+.cm-theme-button { position: relative; }
+.cm-theme-button svg { width:18px !important; height:18px !important; fill:none; stroke:currentColor; stroke-width:1.8; }
+.cm-theme-button .cm-theme-icon { display:none; }
+:root[data-theme-preference="light"] .cm-theme-button .cm-theme-icon-light,
+:root:not([data-theme-preference]) .cm-theme-button .cm-theme-icon-system,
+:root[data-theme-preference="system"] .cm-theme-button .cm-theme-icon-system,
+:root[data-theme-preference="dark"] .cm-theme-button .cm-theme-icon-dark { display:block; }
+.cm-theme-popover { width: 210px !important; padding: 8px !important; }
+.cm-theme-popover > strong { display:block; padding:7px 9px 8px; font-size:11px; color:var(--cm19-muted); }
+.cm-theme-option {
+  width:100%; min-height:40px; display:grid !important; grid-template-columns:30px 1fr 18px; align-items:center;
+  gap:7px; text-align:left; border:0 !important; border-radius:9px !important; background:transparent !important; padding:6px 8px !important;
+}
+.cm-theme-option > span:first-child { width:28px; height:28px; display:grid; place-items:center; border-radius:8px; background:var(--cm19-surface-soft); }
+.cm-theme-option b { font-size:11px; font-weight:700; }
+.cm-theme-option small { grid-column:2; margin-top:-9px; font-size:8px; color:var(--cm19-muted); }
+.cm-theme-option i { width:8px; height:8px; border-radius:50%; background:transparent; justify-self:center; }
+.cm-theme-option.active { background:var(--cm19-surface-soft) !important; }
+.cm-theme-option.active i { background:var(--cm19-green); box-shadow:0 0 0 3px color-mix(in srgb, var(--cm19-green) 18%, transparent); }
+
+/* Navegação PWA/mobile */
+@media (max-width:960px) {
+  .callmed-mobile-nav {
+    background: rgba(248,252,250,.94) !important;
+    border-color: var(--cm19-border) !important;
+    box-shadow: 0 14px 40px rgba(12,54,42,.16) !important;
+  }
+  :root[data-theme="dark"] .callmed-mobile-nav {
+    background: rgba(12,29,23,.95) !important;
+    box-shadow: 0 14px 40px rgba(0,0,0,.36) !important;
+  }
+  .callmed-mobile-nav > a,
+  .callmed-mobile-nav > button { color: var(--cm19-muted) !important; }
+  .callmed-mobile-nav > a.active { background: var(--cm19-mint) !important; color:var(--cm19-green) !important; }
+  .cm19-mobile-brand img { display:block !important; opacity:1 !important; visibility:visible !important; }
+  :root[data-theme="dark"] .cm19-mobile-brand {
+    background:#f7fbf9; border-radius:10px; padding:2px 8px; box-shadow:0 1px 4px rgba(0,0,0,.14);
+  }
+  .sidebar-backdrop.open { background:var(--cm-overlay) !important; }
+}
+
+/* Assistente flutuante */
+.mksan-ai-panel,
+.mksan-ai-header,
+.mksan-ai-body,
+.mksan-ai-footer,
+.mksan-ai-composer {
+  border-color: var(--cm19-border) !important;
+}
+:root[data-theme="dark"] .mksan-ai-panel,
+:root[data-theme="dark"] .mksan-ai-body,
+:root[data-theme="dark"] .mksan-ai-footer,
+:root[data-theme="dark"] .mksan-ai-composer { background:#0d2019 !important; color:var(--cm19-text) !important; }
+:root[data-theme="dark"] .mksan-ai-message.user { background:#154233 !important; color:#effff8 !important; }
+:root[data-theme="dark"] .mksan-ai-message.assistant { background:#172a23 !important; color:var(--cm19-text) !important; }
+:root[data-theme="dark"] .mksan-ai-composer textarea,
+:root[data-theme="dark"] .mksan-ai-composer input { background:#0a1914 !important; color:var(--cm19-text) !important; border-color:var(--cm-input-border) !important; }
+
+/* Telas públicas/Identity também respeitam a preferência salva. */
+:root[data-theme="dark"] body:not(.v18-shell) { background:#081611 !important; color:var(--cm19-text) !important; }
+:root[data-theme="dark"] .public-app-topbar,
+:root[data-theme="dark"] .identity-card,
+:root[data-theme="dark"] .login-card,
+:root[data-theme="dark"] .register-card,
+:root[data-theme="dark"] .public-card {
+  background:#10231c !important; color:var(--cm19-text) !important; border-color:var(--cm19-border) !important;
+}
+
+/* Transição curta somente depois que a página já carregou. */
+html.cm-theme-ready body,
+html.cm-theme-ready .v18-topbar,
+html.cm-theme-ready .v16-app-content,
+html.cm-theme-ready .cm19-card,
+html.cm-theme-ready .cm19-kpi,
+html.cm-theme-ready .callmed-mobile-nav {
+  transition: background-color .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.cm-theme-ready body,
+  html.cm-theme-ready .v18-topbar,
+  html.cm-theme-ready .v16-app-content,
+  html.cm-theme-ready .cm19-card,
+  html.cm-theme-ready .cm19-kpi,
+  html.cm-theme-ready .callmed-mobile-nav { transition:none !important; }
+}
+
+/* Standalone público / login */
+:root[data-theme="dark"] .public-body,
+:root[data-theme="dark"] .identity-body {
+  background: var(--cm-page-gradient) fixed !important;
+  color: var(--cm19-text) !important;
+}
+:root[data-theme="dark"] .public-header,
+:root[data-theme="dark"] .public-nav,
+:root[data-theme="dark"] .identity-panel {
+  background: rgba(10,25,20,.92) !important;
+  border-color: var(--cm19-border) !important;
+}
+:root[data-theme="dark"] .public-main,
+:root[data-theme="dark"] .public-section,
+:root[data-theme="dark"] .public-hero,
+:root[data-theme="dark"] .identity-shell {
+  color: var(--cm19-text) !important;
+}
+:root[data-theme="dark"] .public-card h3,
+:root[data-theme="dark"] .public-section h2,
+:root[data-theme="dark"] .public-hero h1,
+:root[data-theme="dark"] .identity-card h1,
+:root[data-theme="dark"] .identity-card h2,
+:root[data-theme="dark"] .identity-card label { color:var(--cm19-text) !important; }
+:root[data-theme="dark"] .public-card p,
+:root[data-theme="dark"] .public-section p,
+:root[data-theme="dark"] .public-hero p,
+:root[data-theme="dark"] .identity-card p { color:var(--cm19-muted) !important; }
+:root[data-theme="dark"] .identity-card input,
+:root[data-theme="dark"] .identity-card select,
+:root[data-theme="dark"] .identity-card textarea {
+  background:var(--cm-input) !important;
+  color:var(--cm19-text) !important;
+  border-color:var(--cm-input-border) !important;
+}
+
+/* Aparência dentro de Minha conta (especialmente útil no PWA). */
+.cm19-appearance-card { padding:16px; }
+.cm19-appearance-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:14px; }
+.cm19-appearance-option {
+  position:relative; display:grid; grid-template-columns:48px 1fr 16px; grid-template-rows:auto auto; gap:2px 10px;
+  align-items:center; min-height:70px; padding:10px; text-align:left; cursor:pointer;
+  background:var(--cm19-surface-soft); color:var(--cm19-text); border:1px solid var(--cm19-border); border-radius:12px;
+}
+.cm19-appearance-option:hover { border-color:var(--cm19-green); }
+.cm19-appearance-option .preview { grid-row:1/3; width:46px; height:46px; border-radius:10px; border:1px solid var(--cm19-border); box-shadow:inset 0 0 0 6px rgba(255,255,255,.08); }
+.cm19-appearance-option .preview.light { background:linear-gradient(135deg,#f9fcfb 0 56%,#dfeee7 56%); }
+.cm19-appearance-option .preview.dark { background:linear-gradient(135deg,#0c1e18 0 56%,#1c3b31 56%); }
+.cm19-appearance-option .preview.system { background:linear-gradient(135deg,#f8fbfa 0 49%,#0c1e18 50%); }
+.cm19-appearance-option strong { font-size:11px; color:var(--cm19-text); }
+.cm19-appearance-option small { font-size:8px; color:var(--cm19-muted); }
+.cm19-appearance-option i { grid-column:3; grid-row:1/3; width:9px; height:9px; border-radius:50%; background:transparent; }
+.cm19-appearance-option.active { border-color:var(--cm19-green); box-shadow:0 0 0 3px rgba(7,136,95,.08); }
+.cm19-appearance-option.active i { background:var(--cm19-green); }
+@media(max-width:700px){ .cm19-appearance-options{grid-template-columns:1fr}.cm19-appearance-option{min-height:66px} }
+
+/* Componentes V19 que não usam .cm19-card diretamente. */
+.cm19-quick-grid > a,
+.cm19-quick-grid > button,
+.cm19-specialty-option,
+.cm19-doctor-option,
+.cm19-date-option,
+.cm19-time-option,
+.cm19-agenda-metrics > span,
+.cm19-booking-card .form-control,
+.cm19-date-square,
+.cm19-integration-logo,
+.cm19-view-switch a.active,
+.v16-compose,
+.atendimento-message.incoming,
+.atendimento-message.outgoing,
+.atendimento-conversation {
+  background: var(--cm19-surface) !important;
+  color: var(--cm19-text) !important;
+  border-color: var(--cm19-border) !important;
+}
+.cm19-quick-grid > a:hover,
+.cm19-quick-grid > button:hover,
+.cm19-specialty-option:hover,
+.cm19-doctor-option:hover,
+.cm19-date-option:hover,
+.cm19-time-option:hover { background:var(--cm19-surface-soft) !important; }
+.cm19-specialty-option.active,
+.cm19-doctor-option.active,
+.cm19-date-option.active,
+.cm19-time-option.active,
+.cm19-specialty-option.selected,
+.cm19-doctor-option.selected,
+.cm19-date-option.selected,
+.cm19-time-option.selected { background:var(--cm19-green) !important; color:#fff !important; border-color:var(--cm19-green) !important; }
+.cm19-booking-steps b { background:var(--cm19-surface) !important; color:var(--cm19-muted) !important; border-color:var(--cm19-border) !important; }
+.cm19-booking-steps .active b,
+.cm19-booking-steps li.active b { background:var(--cm19-green) !important; color:#fff !important; }
+.cm19-line-chart circle { fill:var(--cm19-surface) !important; stroke:var(--cm19-green) !important; }
+.cm19-line-chart .line { stroke:var(--cm19-green) !important; }
+.cm19-chart-labels { color:var(--cm19-muted) !important; }
+.cm19-ranking > div > i { background:var(--cm-divider) !important; }
+.cm19-data-list > div,
+.cm19-record-appointments > a,
+.atendimento-conversation { border-color:var(--cm-divider) !important; }
+.cm19-data-list dt,
+.cm19-record-tabs a { color:var(--cm19-muted) !important; }
+.cm19-data-list dd,
+.cm19-record-appointments > a > span strong { color:var(--cm19-text) !important; }
+.cm19-integration-logo { background:var(--cm19-surface-soft) !important; color:var(--cm19-muted) !important; }
+:root[data-theme="dark"] .cm19-integration-logo.wa,
+:root[data-theme="dark"] .cm19-integration-logo.pwa { background:#14372b !important; color:#72dcaf !important; }
+:root[data-theme="dark"] .cm19-integration-logo.ai { background:#142b3d !important; color:#86bff5 !important; }
+:root[data-theme="dark"] .atendimento-conversation.active { background:#133126 !important; }
+:root[data-theme="dark"] .conversation-channel { background:#14372b !important; color:#75dcb2 !important; }
+:root[data-theme="dark"] .v16-chat { background:#0b1b16 !important; }
+:root[data-theme="dark"] .atendimento-message.incoming { background:#13251f !important; }
+:root[data-theme="dark"] .atendimento-message.outgoing { background:#14372b !important; }
+
+@media(max-width:480px){
+  .cm19-mobile-brand img{width:105px!important;height:30px!important}
+  .v18-shell .v18-topbar-tools{gap:0!important}
+  .v18-shell .v18-icon-button{width:34px!important;height:34px!important}
+  .v18-shell .user-avatar{width:39px!important;height:39px!important}
+  .cm-theme-popover{position:fixed!important;top:66px!important;right:10px!important;left:auto!important;width:min(220px,calc(100vw - 20px))!important}
+}
