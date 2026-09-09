@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v21-6-1-evolution-fix';
+const CACHE_NAME = 'callmed-static-v21-6-2-evolution-parser-fix';
 const OFFLINE_URL = '/offline.html';
 
 // Somente entrypoints e assets realmente usados. Os CSS de versões antigas foram

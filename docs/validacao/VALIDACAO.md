@@ -1,6 +1,6 @@
-# Validação — CallMed V21.6.1
+# Validação — CallMed V21.6.2
 
-Validação estática executada após a reorganização estrutural.
+Validação estática executada após a correção do parser Evolution/WhatsApp.
 
 ## Resultado
 
@@ -19,8 +19,8 @@ Validação estática executada após a reorganização estrutural.
 - `Usuario`: 1 declaração.
 - EF Core: 16 `DbSet`s e 16 tipos cobertos por `IEntityTypeConfiguration`.
 - Docker: polling de file watcher e reload de configuração desabilitado permanecem configurados.
-- TWA: `versionCode 2161`, `versionName 21.6.1`.
-- Cache PWA: `callmed-static-v21-6-1-evolution-fix`.
+- TWA: `versionCode 2162`, `versionName 21.6.2`.
+- Cache PWA: `callmed-static-v21-6-2-evolution-parser-fix`.
 
 ## Limitação do ambiente
 

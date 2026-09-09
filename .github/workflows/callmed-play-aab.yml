@@ -55,7 +55,7 @@ jobs:
       - name: Publicar AAB
         uses: actions/upload-artifact@v4
         with:
-          name: CallMed-v21.6.1-Play-AAB
+          name: CallMed-v21.6.2-Play-AAB
           path: CallMedTWA/app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
           retention-days: 14

@@ -116,12 +116,42 @@ public sealed class AtendimentoWebhookController : ControllerBase
             var evento = Texto(root, "event") ?? "desconhecido";
             var instancia = Texto(root, "instance") ?? _whatsapp.InstanceName;
 
-            if (!TentarExtrairEvolution(
+            bool extraido;
+            string id;
+            string telefone;
+            string texto;
+            bool fromMe;
+
+            try
+            {
+                extraido = TentarExtrairEvolution(
                     root,
-                    out var id,
-                    out var telefone,
-                    out var texto,
-                    out var fromMe))
+                    out id,
+                    out telefone,
+                    out texto,
+                    out fromMe);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                // Webhooks externos não podem derrubar o endpoint só porque uma
+                // versão da Evolution alterou o formato de algum campo. Quando o
+                // parser estruturado não reconhecer o payload, tenta um parser
+                // genérico e mantém o endpoint respondendo de forma controlada.
+                _logger.LogWarning(
+                    ex,
+                    "Parser estruturado da Evolution falhou. Evento={Evento}, instância={Instancia}. Tentando fallback compatível.",
+                    evento,
+                    instancia);
+
+                extraido = TentarExtrairEvolutionFallback(
+                    root,
+                    out id,
+                    out telefone,
+                    out texto,
+                    out fromMe);
+            }
+
+            if (!extraido)
             {
                 _logger.LogDebug(
                     "Webhook Evolution ignorado. Evento={Evento}, instância={Instancia}: payload sem mensagem de texto utilizável.",
@@ -551,50 +581,226 @@ public sealed class AtendimentoWebhookController : ControllerBase
         JsonElement? mensagem,
         int nivel = 0)
     {
-        if (mensagem is not JsonElement msg ||
-            msg.ValueKind != JsonValueKind.Object ||
-            nivel > 4)
+        if (mensagem is not JsonElement msg || nivel > 6)
             return string.Empty;
 
-        var direto = PrimeiroTexto(
-            Texto(msg, "conversation"),
-            Texto(msg, "text"),
-            Texto(msg, "caption"),
-            Texto(msg, "selectedDisplayText"),
-            Texto(msg, "selectedButtonId"),
-            Texto(msg, "selectedRowId"));
-
-        if (!string.IsNullOrWhiteSpace(direto))
-            return direto;
-
-        var nomesAninhados = new[]
+        try
         {
-            "extendedTextMessage",
-            "imageMessage",
-            "videoMessage",
-            "documentMessage",
-            "buttonsResponseMessage",
-            "templateButtonReplyMessage",
-            "listResponseMessage",
-            "singleSelectReply",
-            "ephemeralMessage",
-            "viewOnceMessage",
-            "viewOnceMessageV2",
-            "viewOnceMessageV2Extension",
-            "message"
-        };
+            if (msg.ValueKind == JsonValueKind.String)
+            {
+                var bruto = msg.GetString()?.Trim();
 
-        foreach (var nome in nomesAninhados)
+                // Algumas integrações encapsulam `message` como JSON serializado.
+                // Tenta interpretar sem transformar uma mudança externa em HTTP 500.
+                if (!string.IsNullOrWhiteSpace(bruto) &&
+                    (bruto.StartsWith('{') || bruto.StartsWith('[')))
+                {
+                    try
+                    {
+                        using var interno = JsonDocument.Parse(bruto);
+                        var extraido = ExtrairTextoMensagem(interno.RootElement, nivel + 1);
+                        if (!string.IsNullOrWhiteSpace(extraido))
+                            return extraido;
+                    }
+                    catch (JsonException)
+                    {
+                        // Se não for JSON de verdade, o próprio texto continua válido.
+                    }
+                }
+
+                return bruto ?? string.Empty;
+            }
+
+            if (msg.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var item in msg.EnumerateArray().Take(10))
+                {
+                    var extraido = ExtrairTextoMensagem(item, nivel + 1);
+                    if (!string.IsNullOrWhiteSpace(extraido))
+                        return extraido;
+                }
+
+                return string.Empty;
+            }
+
+            if (msg.ValueKind != JsonValueKind.Object)
+                return string.Empty;
+
+            var direto = PrimeiroTexto(
+                Texto(msg, "conversation"),
+                Texto(msg, "text"),
+                Texto(msg, "caption"),
+                Texto(msg, "body"),
+                Texto(msg, "contentText"),
+                Texto(msg, "selectedDisplayText"),
+                Texto(msg, "selectedButtonId"),
+                Texto(msg, "selectedRowId"));
+
+            if (!string.IsNullOrWhiteSpace(direto))
+                return direto;
+
+            var nomesAninhados = new[]
+            {
+                "extendedTextMessage",
+                "imageMessage",
+                "videoMessage",
+                "documentMessage",
+                "buttonsResponseMessage",
+                "templateButtonReplyMessage",
+                "listResponseMessage",
+                "singleSelectReply",
+                "ephemeralMessage",
+                "viewOnceMessage",
+                "viewOnceMessageV2",
+                "viewOnceMessageV2Extension",
+                "editedMessage",
+                "protocolMessage",
+                "message"
+            };
+
+            foreach (var nome in nomesAninhados)
+            {
+                var nested = Propriedade(msg, nome);
+                var extraido = ExtrairTextoMensagem(nested, nivel + 1);
+
+                if (!string.IsNullOrWhiteSpace(extraido))
+                    return extraido;
+            }
+
+            // Último fallback dentro do próprio objeto: procura apenas campos com
+            // nomes textuais conhecidos. Não lê messageSecret/chaves/base64.
+            foreach (var prop in msg.EnumerateObject())
+            {
+                if (!EhCampoTextoEvolution(prop.Name))
+                    continue;
+
+                var extraido = ExtrairTextoMensagem(prop.Value, nivel + 1);
+                if (!string.IsNullOrWhiteSpace(extraido))
+                    return extraido;
+            }
+
+            return string.Empty;
+        }
+        catch (Exception ex) when (ex is JsonException or InvalidOperationException or ArgumentException)
         {
-            var nested = Propriedade(msg, nome);
-            var texto = ExtrairTextoMensagem(nested, nivel + 1);
+            return string.Empty;
+        }
+    }
 
-            if (!string.IsNullOrWhiteSpace(texto))
-                return texto;
+    private static bool TentarExtrairEvolutionFallback(
+        JsonElement root,
+        out string id,
+        out string remoteJid,
+        out string texto,
+        out bool fromMe)
+    {
+        id = string.Empty;
+        remoteJid = string.Empty;
+        texto = string.Empty;
+        fromMe = false;
+
+        try
+        {
+            var dados = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            ExtrairStrings(root, dados, 0);
+
+            id = Primeiro(dados, "id", "messageId", "message_id") ?? string.Empty;
+
+            var principal = Primeiro(dados, "remoteJid", "remote_jid");
+            remoteJid = EscolherJidEvolution(
+                principal,
+                Primeiro(dados, "senderPn", "sender_pn"),
+                Primeiro(dados, "remoteJidAlt", "remote_jid_alt"),
+                Primeiro(dados, "sender"),
+                Primeiro(dados, "participant"),
+                Primeiro(dados, "from", "phone", "number"));
+
+            texto = Primeiro(
+                dados,
+                "conversation",
+                "text",
+                "caption",
+                "body",
+                "contentText",
+                "selectedDisplayText",
+                "selectedButtonId",
+                "selectedRowId") ?? string.Empty;
+
+            fromMe = ExtrairBooleanoRecursivo(root, "fromMe", 0) ?? false;
+
+            return !string.IsNullOrWhiteSpace(remoteJid) &&
+                   !string.IsNullOrWhiteSpace(texto);
+        }
+        catch (Exception ex) when (ex is JsonException or InvalidOperationException or ArgumentException)
+        {
+            id = string.Empty;
+            remoteJid = string.Empty;
+            texto = string.Empty;
+            fromMe = false;
+            return false;
+        }
+    }
+
+    private static bool? ExtrairBooleanoRecursivo(
+        JsonElement elemento,
+        string nome,
+        int nivel)
+    {
+        if (nivel > 6)
+            return null;
+
+        try
+        {
+            if (elemento.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var prop in elemento.EnumerateObject())
+                {
+                    if (string.Equals(prop.Name, nome, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (prop.Value.ValueKind == JsonValueKind.True)
+                            return true;
+                        if (prop.Value.ValueKind == JsonValueKind.False)
+                            return false;
+                        if (prop.Value.ValueKind == JsonValueKind.String &&
+                            bool.TryParse(prop.Value.GetString(), out var parsed))
+                            return parsed;
+                    }
+
+                    if (prop.Value.ValueKind is JsonValueKind.Object or JsonValueKind.Array)
+                    {
+                        var encontrado = ExtrairBooleanoRecursivo(prop.Value, nome, nivel + 1);
+                        if (encontrado.HasValue)
+                            return encontrado;
+                    }
+                }
+            }
+            else if (elemento.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var item in elemento.EnumerateArray().Take(10))
+                {
+                    var encontrado = ExtrairBooleanoRecursivo(item, nome, nivel + 1);
+                    if (encontrado.HasValue)
+                        return encontrado;
+                }
+            }
+        }
+        catch (Exception ex) when (ex is JsonException or InvalidOperationException or ArgumentException)
+        {
+            return null;
         }
 
-        return string.Empty;
+        return null;
     }
+
+    private static bool EhCampoTextoEvolution(string nome) =>
+        nome.Equals("conversation", StringComparison.OrdinalIgnoreCase) ||
+        nome.Equals("text", StringComparison.OrdinalIgnoreCase) ||
+        nome.Equals("caption", StringComparison.OrdinalIgnoreCase) ||
+        nome.Equals("body", StringComparison.OrdinalIgnoreCase) ||
+        nome.Equals("contentText", StringComparison.OrdinalIgnoreCase) ||
+        nome.Equals("selectedDisplayText", StringComparison.OrdinalIgnoreCase) ||
+        nome.Equals("selectedButtonId", StringComparison.OrdinalIgnoreCase) ||
+        nome.Equals("selectedRowId", StringComparison.OrdinalIgnoreCase);
 
     private static string? PrimeiroTexto(params string?[] valores) =>
         valores.FirstOrDefault(v => !string.IsNullOrWhiteSpace(v))?.Trim();

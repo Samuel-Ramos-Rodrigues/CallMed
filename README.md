@@ -265,7 +265,7 @@ O repositório também inclui um wrapper Android baseado em **Trusted Web Activi
 applicationId: com.callmed.app
 minSdk: 26
 targetSdk: 36
-versionName: 21.6.1
+versionName: 21.6.2
 ```
 
 Arquivos e instruções estão em **[CallMedTWA/README-TWA.md](./CallMedTWA/README-TWA.md)**.
@@ -438,6 +438,7 @@ O projeto inclui, entre outras medidas:
 | [Deploy / Render](./docs/deploy/V21.5.1-RENDER-HTTP500.md) | Correção e configuração para Render |
 | [Play Store](./docs/deploy/PLAY-STORE-PUBLICACAO.md) | Processo de publicação Android |
 | [Validação](./docs/validacao/VALIDACAO.md) | Checklist técnico da release |
+| [Changelog V21.6.2](./docs/CHANGELOG-V21.6.2.md) | Parser resiliente do webhook Evolution e fallback para payloads variantes |
 | [Changelog V21.6.1](./docs/CHANGELOG-V21.6.1.md) | Correções Evolution/WhatsApp e diagnóstico do webhook |
 | [Changelog V21.6](./docs/CHANGELOG-V21.6.md) | Reorganização estrutural da versão anterior |
 | [Android / TWA](./CallMedTWA/README-TWA.md) | Geração e configuração do app Android |
