@@ -7,8 +7,8 @@
     var pt = new CultureInfo("pt-BR");
     var hojeClinica = ViewBag.HojeClinica is DateTime h ? h.Date : DateTime.Today;
 }
-<section class="cm19-agenda-page">
-    <header class="cm19-page-head agenda-head">
+<section class="cm25-screen cm19-agenda-page" data-cm25-view="Agenda/Index.cshtml">
+    <header class="cm25-page-hero cm19-page-head agenda-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg></div>
         <div><span>AGENDA CLÍNICA</span><h1>Agenda geral</h1><p>Consultas, vagas e bloqueios em uma única visão.</p></div>
         <div class="cm19-head-actions"><a class="btn secondary" asp-controller="Disponibilidade" asp-action="Index">Exceções</a><a class="btn" asp-controller="Consulta" asp-action="Create">+ Nova consulta</a></div>
     </header>

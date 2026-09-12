@@ -3,17 +3,17 @@
     ViewData["Title"] = "Confirmações";
     ViewData["Subtitle"] = "Pendências que precisam da sua ação.";
 }
-<section class="cm-confirm-page">
-    <div class="cm-confirm-page-head">
+<section class="cm25-screen cm25-page cm-confirm-page" data-cm25-view="Confirmacoes/Index.cshtml">
+    <header class="cm25-page-hero cm-confirm-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#bell"></use></svg></div>
         <div>
-            <span class="v16-eyebrow">CENTRAL DE CONFIRMAÇÕES</span>
+            <span class="cm25-kicker v16-eyebrow">CENTRAL DE CONFIRMAÇÕES</span>
             <h1>Confirmações</h1>
             <p>Consultas e vagas que precisam de uma decisão ficam reunidas aqui.</p>
         </div>
         <button type="button" class="btn secondary cm-enable-device-alerts" data-enable-confirmation-notifications>
             Ativar avisos no dispositivo
         </button>
-    </div>
+    </header>
 
     @if (Model.Total == 0)
     {

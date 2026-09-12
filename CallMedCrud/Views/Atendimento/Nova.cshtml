@@ -1,102 +1,26 @@
 @using MKSANCrud.Models.Atendimento
 @model MKSANCrud.ViewModels.NovaConversaAtendimentoViewModel
-
-@{
-    ViewData["Title"] = "Novo atendimento";
-}
-
-<div class="dashboard-heading atendimento-heading">
-    <div>
-        <a asp-action="Index" class="btn-link-clean">← Central de Atendimento</a>
-        <h1>Novo atendimento</h1>
-        <p>Inicie uma conversa com um paciente pelo site, WhatsApp, SMS ou e-mail.</p>
+@{ ViewData["Title"] = "Novo atendimento"; }
+<section class="cm25-screen cm25-page cm25-new-attendance" data-cm25-view="Atendimento/Nova.cshtml">
+    <header class="cm25-page-hero"><div class="cm25-hero-mark"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#chat"></use></svg></div><div class="cm25-hero-copy"><span class="cm25-kicker">CENTRAL · NOVA CONVERSA</span><h1>Iniciar atendimento</h1><p>Escolha o paciente e o canal. A conversa passa a fazer parte do mesmo histórico da Central.</p></div><div class="cm25-hero-actions"><a class="btn secondary" asp-action="Index">Voltar à Central</a></div></header>
+    <div class="cm25-form-layout">
+        <form asp-action="Nova" method="post" class="cm25-form-main cm25-form-card atendimento-new-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="cm25-form-section-title"><span>01</span><div><h2>Destinatário e canal</h2><p>Selecione quem receberá a primeira mensagem e por onde ela será enviada.</p></div></div>
+            <div class="form-grid cm25-form-grid">
+                <div class="field full"><label asp-for="PacienteId">Paciente</label><select asp-for="PacienteId" id="atendimentoPaciente" required><option value="0">Selecione o paciente</option>@foreach (var paciente in Model.Pacientes){<option value="@paciente.Id" data-email="@paciente.Email" data-phone="@paciente.Telefone" data-web="@paciente.PossuiContaWeb.ToString().ToLowerInvariant()">@paciente.Nome — @paciente.Email</option>}</select><span asp-validation-for="PacienteId" class="text-danger"></span></div>
+                <div class="field full"><label asp-for="Canal">Canal de saída</label><select asp-for="Canal" id="atendimentoCanal"><option value="Web">Site / PWA</option><option value="WhatsApp">WhatsApp</option><option value="Sms">SMS</option><option value="Email">E-mail</option></select><span asp-validation-for="Canal" class="text-danger"></span><small id="atendimentoDestino">Selecione um paciente para conferir o contato disponível.</small></div>
+            </div>
+            <div class="cm25-form-section-title second"><span>02</span><div><h2>Mensagem inicial</h2><p>Escreva o conteúdo que abrirá a conversa.</p></div></div>
+            <div class="form-grid cm25-form-grid">
+                <div class="field full email-subject-field"><label asp-for="Assunto">Assunto</label><input asp-for="Assunto" maxlength="300" placeholder="Ex.: Atendimento CallMed"/><span asp-validation-for="Assunto" class="text-danger"></span><small>Usado principalmente no canal de e-mail.</small></div>
+                <div class="field full"><label asp-for="Mensagem">Mensagem</label><textarea asp-for="Mensagem" rows="7" maxlength="4000" required placeholder="Digite a mensagem inicial..."></textarea><span asp-validation-for="Mensagem" class="text-danger"></span></div>
+            </div>
+            <div class="cm25-actions atendimento-new-actions"><a asp-action="Index" class="btn secondary">Cancelar</a><button type="submit" class="btn">Iniciar atendimento</button></div>
+        </form>
+        <aside class="cm25-form-aside atendimento-new-help"><div class="cm25-aside-card"><span>↗</span><h2>Histórico único</h2><p>A mensagem sai pelo canal escolhido e a resposta retorna para a mesma Central de Atendimento.</p></div><div class="cm25-aside-card"><span>◈</span><h2>Canais</h2><div class="cm25-channel-grid"><b>Site / PWA</b><b>WhatsApp</b><b>SMS</b><b>E-mail</b></div></div><div class="cm25-aside-card subtle"><strong>Modo humano</strong><p>Conversas iniciadas manualmente começam sob controle da equipe. Depois, podem ser devolvidas à IA.</p></div></aside>
     </div>
-</div>
-
-<div class="atendimento-new-card">
-    <form asp-action="Nova" method="post" class="atendimento-new-form">
-        
-
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="form-field">
-            <label asp-for="PacienteId"></label>
-            <select asp-for="PacienteId" id="atendimentoPaciente" required>
-                <option value="0">Selecione o paciente</option>
-                @foreach (var paciente in Model.Pacientes)
-                {
-                    <option value="@paciente.Id"
-                            data-email="@paciente.Email"
-                            data-phone="@paciente.Telefone"
-                            data-web="@paciente.PossuiContaWeb.ToString().ToLowerInvariant()">
-                        @paciente.Nome — @paciente.Email
-                    </option>
-                }
-            </select>
-            <span asp-validation-for="PacienteId" class="text-danger"></span>
-        </div>
-
-        <div class="form-field">
-            <label asp-for="Canal"></label>
-            <select asp-for="Canal" id="atendimentoCanal">
-                <option value="Web">Site / PWA</option>
-                <option value="WhatsApp">WhatsApp</option>
-                <option value="Sms">SMS</option>
-                <option value="Email">E-mail</option>
-            </select>
-            <span asp-validation-for="Canal" class="text-danger"></span>
-            <small id="atendimentoDestino" class="field-hint">
-                Selecione um paciente para conferir o contato disponível.
-            </small>
-        </div>
-
-        <div class="form-field email-subject-field">
-            <label asp-for="Assunto"></label>
-            <input asp-for="Assunto"
-                   maxlength="300"
-                   placeholder="Ex.: Atendimento CallMed" />
-            <span asp-validation-for="Assunto" class="text-danger"></span>
-            <small class="field-hint">Usado principalmente no canal de e-mail.</small>
-        </div>
-
-        <div class="form-field">
-            <label asp-for="Mensagem"></label>
-            <textarea asp-for="Mensagem"
-                      rows="6"
-                      maxlength="4000"
-                      required
-                      placeholder="Digite a mensagem inicial..."></textarea>
-            <span asp-validation-for="Mensagem" class="text-danger"></span>
-        </div>
-
-        <div class="atendimento-new-actions">
-            <a asp-action="Index" class="btn secondary">Cancelar</a>
-            <button type="submit" class="btn">Iniciar atendimento</button>
-        </div>
-    </form>
-
-    <aside class="atendimento-new-help">
-        <span class="eyebrow">Como funciona</span>
-        <h2>Um único histórico</h2>
-        <p>
-            A mensagem sai pelo canal escolhido e a resposta do paciente retorna
-            para a mesma Central de Atendimento.
-        </p>
-
-        <div class="channel-mini-list">
-            <span>◈ Site / PWA</span>
-            <span>◉ WhatsApp</span>
-            <span>▤ SMS</span>
-            <span>✉ E-mail</span>
-        </div>
-
-        <p class="field-hint">
-            Ao iniciar manualmente, a conversa fica em modo humano. Você pode
-            devolvê-la ao Assistente CallMed depois.
-        </p>
-    </aside>
-</div>
-
+</section>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
@@ -105,53 +29,22 @@
             const channel = document.getElementById('atendimentoCanal');
             const destination = document.getElementById('atendimentoDestino');
             const subjectField = document.querySelector('.email-subject-field');
-
             if (!patient || !channel || !destination) return;
-
             const refresh = () => {
                 const option = patient.selectedOptions[0];
                 const selectedChannel = channel.value;
-
-                subjectField?.classList.toggle(
-                    'is-email',
-                    selectedChannel === 'Email'
-                );
-
-                if (!option || !option.value || option.value === '0') {
-                    destination.textContent = 'Selecione um paciente para conferir o contato disponível.';
-                    return;
-                }
-
-                let value = '';
-                let label = '';
-
+                subjectField?.classList.toggle('is-email', selectedChannel === 'Email');
+                if (!option || !option.value || option.value === '0') { destination.textContent = 'Selecione um paciente para conferir o contato disponível.'; return; }
+                let value = ''; let label = '';
                 switch (selectedChannel) {
-                    case 'Web':
-                        label = 'Conta do site';
-                        value = option.dataset.web === 'true' ? 'vinculada' : '';
-                        break;
-                    case 'WhatsApp':
-                        label = 'WhatsApp';
-                        value = option.dataset.phone || '';
-                        break;
-                    case 'Sms':
-                        label = 'SMS';
-                        value = option.dataset.phone || '';
-                        break;
-                    case 'Email':
-                        label = 'E-mail';
-                        value = option.dataset.email || '';
-                        break;
+                    case 'Web': label = 'Conta do site'; value = option.dataset.web === 'true' ? 'vinculada' : ''; break;
+                    case 'WhatsApp': label = 'WhatsApp'; value = option.dataset.phone || ''; break;
+                    case 'Sms': label = 'SMS'; value = option.dataset.phone || ''; break;
+                    case 'Email': label = 'E-mail'; value = option.dataset.email || ''; break;
                 }
-
-                destination.textContent = value
-                    ? `${label}: ${value}`
-                    : `${label}: contato não disponível para este paciente.`;
+                destination.textContent = value ? `${label}: ${value}` : `${label}: contato não disponível para este paciente.`;
             };
-
-            patient.addEventListener('change', refresh);
-            channel.addEventListener('change', refresh);
-            refresh();
+            patient.addEventListener('change', refresh); channel.addEventListener('change', refresh); refresh();
         })();
     </script>
 }

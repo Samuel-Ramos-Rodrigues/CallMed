@@ -15,10 +15,10 @@
     };
 }
 
-<section class="v16-page exceptions-page">
-    <div class="v16-page-head">
+<section class="cm25-screen cm25-page v16-page exceptions-page" data-cm25-view="Disponibilidade/Index.cshtml">
+    <div class="cm25-page-hero v16-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#flag"></use></svg></div>
         <div>
-            <span class="v16-eyebrow">AJUSTES PONTUAIS</span>
+            <span class="cm25-kicker v16-eyebrow">AJUSTES PONTUAIS</span>
             <h1>Exceções da Agenda</h1>
             <p>A agenda normal vem dos horários semanais do médico. Use esta área só para bloqueios, ausências e encaixes extras.</p>
         </div>
@@ -28,20 +28,20 @@
         </div>
     </div>
 
-    <div class="agenda-summary exception-summary">
-        <div class="v16-stat"><span>Ativas</span><strong>@Model.TotalAtivas</strong><small>exceções futuras</small></div>
-        <div class="v16-stat"><span>Encaixes</span><strong>@Model.TotalEncaixes</strong><small>vagas extras</small></div>
-        <div class="v16-stat"><span>Bloqueios</span><strong>@Model.TotalBloqueios</strong><small>horários fechados</small></div>
-        <div class="v16-stat"><span>Ausências</span><strong>@Model.TotalAusencias</strong><small>dias indisponíveis</small></div>
+    <div class="cm25-kpi-grid agenda-summary exception-summary">
+        <div class="cm25-kpi v16-stat"><span>Ativas</span><strong>@Model.TotalAtivas</strong><small>exceções futuras</small></div>
+        <div class="cm25-kpi v16-stat"><span>Encaixes</span><strong>@Model.TotalEncaixes</strong><small>vagas extras</small></div>
+        <div class="cm25-kpi v16-stat"><span>Bloqueios</span><strong>@Model.TotalBloqueios</strong><small>horários fechados</small></div>
+        <div class="cm25-kpi v16-stat"><span>Ausências</span><strong>@Model.TotalAusencias</strong><small>dias indisponíveis</small></div>
     </div>
 
-    <div class="v16-card exception-guide">
+    <div class="cm25-panel v16-card exception-guide">
         <div><span class="exception-guide-icon extra">+</span><div><strong>Encaixe extra</strong><p>Abre uma vaga fora da agenda semanal.</p></div></div>
         <div><span class="exception-guide-icon block">×</span><div><strong>Bloquear horário</strong><p>Fecha um horário ou intervalo específico.</p></div></div>
         <div><span class="exception-guide-icon away">—</span><div><strong>Ausência</strong><p>Fecha o dia inteiro, sem apagar a agenda semanal.</p></div></div>
     </div>
 
-    <div class="v16-card table-card exception-table-card">
+    <div class="cm25-panel v16-card table-card exception-table-card">
         <div class="v16-card-head">
             <div><h2>Exceções cadastradas</h2><p>Somente exceções futuras são exibidas aqui.</p></div>
         </div>
@@ -94,7 +94,7 @@
 
     @if (Model.BloqueiosDoMedico.Any())
     {
-        <div class="v16-card table-card exception-table-card">
+        <div class="cm25-panel v16-card table-card exception-table-card">
             <div class="v16-card-head">
                 <div><h2>Bloqueios feitos pelos médicos</h2><p>Horários fechados diretamente pela área do profissional.</p></div>
             </div>

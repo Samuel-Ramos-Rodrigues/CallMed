@@ -20,7 +20,7 @@
     if (!agendaHoje.Any()) agendaHoje = Model.ProximasConsultas.Take(5).ToList();
 }
 
-<section class="cm19-dashboard">
+<section class="cm25-screen cm19-dashboard" data-cm25-view="FuncionarioPainel/Index.cshtml">
     <header class="cm19-welcome-row">
         <div>
             <h1>Bom dia, @primeiroNome! <span aria-hidden="true">👋</span></h1>
@@ -75,7 +75,7 @@
     </section>
 
     <div class="cm19-dashboard-grid two">
-        <section class="cm19-card cm19-today-card">
+        <section class="cm25-panel cm19-card cm19-today-card">
             <div class="cm19-card-head">
                 <div><h2>Agenda de hoje</h2><p>Próximos atendimentos da clínica.</p></div>
                 <a asp-controller="Agenda" asp-action="Index">Ver agenda completa</a>
@@ -99,7 +99,7 @@
             }
         </section>
 
-        <section class="cm19-card cm19-live-card">
+        <section class="cm25-panel cm19-card cm19-live-card">
             <div class="cm19-card-head"><div><h2>Atendimento em tempo real</h2><p>Distribuição das conversas abertas.</p></div><a asp-controller="Atendimento" asp-action="Index">Abrir Central</a></div>
             <div class="cm19-live-body">
                 <div class="cm19-donut" style="--ia:@iaPct.ToString("0.##", CultureInfo.InvariantCulture);--humano:@humanoPct.ToString("0.##", CultureInfo.InvariantCulture)">
@@ -116,7 +116,7 @@
     </div>
 
     <div class="cm19-dashboard-grid two bottom">
-        <section class="cm19-card cm19-line-card">
+        <section class="cm25-panel cm19-card cm19-line-card">
             <div class="cm19-card-head">
                 <div><h2>Consultas nos últimos @Model.PeriodoDias dias</h2><p>Evolução dos agendamentos.</p></div>
                 <form method="get"><select name="dias" onchange="this.form.submit()"><option value="7" selected="@(Model.PeriodoDias == 7 ? "selected" : null)">7 dias</option><option value="14" selected="@(Model.PeriodoDias == 14 ? "selected" : null)">14 dias</option><option value="30" selected="@(Model.PeriodoDias == 30 ? "selected" : null)">30 dias</option></select></form>
@@ -139,7 +139,7 @@
             </div>
         </section>
 
-        <section class="cm19-card cm19-specialties">
+        <section class="cm25-panel cm19-card cm19-specialties">
             <div class="cm19-card-head"><div><h2>Principais especialidades</h2><p>Demanda do mês.</p></div><a asp-controller="Relatorios" asp-action="Index">Relatório</a></div>
             @if (!Model.EspecialidadesMaisProcuradas.Any())
             {

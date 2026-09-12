@@ -1,26 +1,9 @@
 @model Disponibilidade
 <div asp-validation-summary="ModelOnly" class="validation"></div>
-<div class="form-grid">
-    <div class="field full">
-        <label asp-for="MedicoId">Médico</label>
-        <select asp-for="MedicoId" asp-items="ViewBag.MedicoId">
-            <option value="">Selecione um médico</option>
-        </select>
-        <span asp-validation-for="MedicoId" class="validation"></span>
-    </div>
-    <div class="field">
-        <label asp-for="Data">Data disponível</label>
-        <input asp-for="Data" type="hidden" id="dataDisponibilidade"  />
-        <div class="date-select" data-date-select data-target="dataDisponibilidade" data-mode="future"></div>
-        <span asp-validation-for="Data" class="validation"></span>
-    </div>
-    <div class="field">
-        <label asp-for="Horario">Horário disponível</label>
-        <input asp-for="Horario" type="time"  />
-        <span asp-validation-for="Horario" class="validation"></span>
-    </div>
-    <div class="field full check">
-        <input asp-for="Ativo"  />
-        <label asp-for="Ativo">Ativo</label>
-    </div>
+<div class="cm25-form-section-title"><span>01</span><div><h2>Vaga de atendimento</h2><p>Defina profissional, data e horário de forma explícita.</p></div></div>
+<div class="form-grid cm25-form-grid">
+    <div class="field full"><label asp-for="MedicoId">Médico</label><select asp-for="MedicoId" asp-items="ViewBag.MedicoId"><option value="">Selecione um médico</option></select><span asp-validation-for="MedicoId" class="validation"></span></div>
+    <div class="field"><label asp-for="Data">Data disponível</label><input asp-for="Data" type="hidden" id="dataDisponibilidade"/><div class="date-select" data-date-select data-target="dataDisponibilidade" data-mode="future"></div><span asp-validation-for="Data" class="validation"></span></div>
+    <div class="field"><label asp-for="Horario">Horário disponível</label><input asp-for="Horario" type="time"/><span asp-validation-for="Horario" class="validation"></span></div>
+    <div class="field full"><span class="cm25-field-label">Situação da vaga</span><label class="cm25-toggle-row"><input asp-for="Ativo"/><span><strong>Disponibilidade ativa</strong><small>Desative sem excluir o registro.</small></span></label></div>
 </div>

@@ -3,8 +3,8 @@
 @{
     var especialidades = ViewBag.Especialidades as IEnumerable<Especialidade> ?? Enumerable.Empty<Especialidade>();
 }
-<section class="cm21-rules-page">
-    <header class="cm21-page-head"><div><span class="v16-eyebrow">REGRAS DE ELEGIBILIDADE</span><h1>Convênios × Especialidades</h1><p>A triagem usa esta matriz para reduzir conferências manuais e inconsistências.</p></div></header>
+<section class="cm25-screen cm21-rules-page" data-cm25-view="Convenios/Index.cshtml">
+    <header class="cm25-page-hero cm21-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#card"></use></svg></div><div><span class="cm25-kicker v16-eyebrow">REGRAS DE ELEGIBILIDADE</span><h1>Convênios × Especialidades</h1><p>A triagem usa esta matriz para reduzir conferências manuais e inconsistências.</p></div></header>
     <div class="cm21-rules-grid">
         <form asp-action="Salvar" method="post" class="cm21-form-card">
             <h2>Adicionar/atualizar regra</h2>

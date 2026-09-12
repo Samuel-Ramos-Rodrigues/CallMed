@@ -1,14 +1,6 @@
 @model Paciente
-@{
-    ViewData["Title"] = "Editar paciente";
-}
-<section class="v16-page patient-editor-page">
-    <form asp-action="Edit" method="post" class="patient-form-shell">
-        <input type="hidden" asp-for="Id" />
-        <partial name="_Form" model="Model" />
-        <div class="patient-form-actions">
-            <a class="btn secondary" asp-action="Index">← Voltar</a>
-            <button class="btn" type="submit">Salvar alterações</button>
-        </div>
-    </form>
+@{ ViewData["Title"] = "Editar paciente"; }
+<section class="cm25-screen cm25-page patient-editor-page" data-cm25-view="Paciente/Edit.cshtml">
+    <header class="cm25-page-hero"><div class="cm25-hero-mark"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg></div><div class="cm25-hero-copy"><span class="cm25-kicker">PACIENTES · PERFIL</span><h1>Editar @Model.Nome</h1><p>Atualize informações pessoais, contato, convênio e situação do cadastro.</p></div><div class="cm25-hero-actions"><a class="btn secondary" asp-action="Details" asp-route-id="@Model.Id">Ver perfil</a></div></header>
+    <form asp-action="Edit" method="post" class="patient-form-shell cm25-editor-shell"><input type="hidden" asp-for="Id" /><partial name="_Form" model="Model" /><div class="cm25-sticky-actions"><span>O histórico de consultas não será alterado.</span><div><a class="btn secondary" asp-action="Index">Cancelar</a><button class="btn" type="submit">Salvar alterações</button></div></div></form>
 </section>

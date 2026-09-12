@@ -1,3 +1,11 @@
+
+## V21.6.5 — Aurora Interface System
+- refatoração estrutural de 56 telas navegáveis em Razor/HTML;
+- novo app shell, page heroes, cards, formulários e grids de detalhe;
+- redesign completo da Central de Atendimento, Identity, PWA e dashboards;
+- nova identidade índigo/violeta/azul;
+- nenhuma alteração nas regras de negócio C# nesta release visual.
+
 # CallMed V21.6 — organização estrutural
 
 - Controllers separados por domínio/área sem alterar rotas.

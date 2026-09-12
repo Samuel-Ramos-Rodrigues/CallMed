@@ -2,17 +2,17 @@
 @{
     ViewData["Title"] = "Nova exceção";
 }
-<section class="v16-page exception-create-page">
-    <div class="v16-page-head compact-head">
+<section class="cm25-screen cm25-page v16-page exception-create-page" data-cm25-view="Disponibilidade/Create.cshtml">
+    <div class="cm25-page-hero v16-page-head compact-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#flag"></use></svg></div>
         <div>
-            <span class="v16-eyebrow">AGENDA</span>
+            <span class="cm25-kicker v16-eyebrow">AGENDA</span>
             <h1>Nova exceção</h1>
             <p>Faça um ajuste pontual sem alterar os horários semanais do médico.</p>
         </div>
         <a class="btn secondary" asp-action="Index">Voltar</a>
     </div>
 
-    <form asp-action="Create" method="post" class="v16-card exception-form" id="exceptionForm">
+    <form asp-action="Create" method="post" class="cm25-panel v16-card exception-form" id="exceptionForm">
         <div asp-validation-summary="ModelOnly" class="validation"></div>
 
         <div class="exception-type-picker" role="radiogroup" aria-label="Tipo de exceção">
@@ -87,7 +87,7 @@
 
         <div class="exception-form-note" id="exceptionNote"></div>
 
-        <div class="form-actions">
+        <div class="cm25-actions form-actions">
             <button class="btn" type="submit">Salvar exceção</button>
             <a class="btn secondary" asp-action="Index">Cancelar</a>
         </div>

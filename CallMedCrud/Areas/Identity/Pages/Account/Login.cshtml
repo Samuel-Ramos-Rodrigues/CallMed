@@ -9,7 +9,7 @@
     <head>
         <meta charset="utf-8"  />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
-        <meta name="theme-color" content="#eef2ff"  />
+        <meta name="theme-color" content="#f6f7fc"  />
         <script>
             (function () {
                 var pref = 'system';
@@ -22,7 +22,7 @@
                 document.documentElement.dataset.theme = dark ? 'dark' : 'light';
                 document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
                 var themeMeta = document.querySelector('meta[name="theme-color"]');
-                if (themeMeta) themeMeta.setAttribute('content', dark ? '#080b1a' : '#eef2ff');
+                if (themeMeta) themeMeta.setAttribute('content', dark ? '#0a0b16' : '#f6f7fc');
             })();
         </script>
         <meta name="mobile-web-app-capable" content="yes" />
@@ -33,14 +33,14 @@
         <link rel="manifest" href="~/manifest.json" />
         <link rel="apple-touch-icon" sizes="180x180" href="~/icons/apple-touch-icon.png" />
         <title>Entrar | CallMed</title>
-        <link rel="stylesheet" href="~/css/identity.css?v=2164"  />
-        <link rel="stylesheet" href="~/css/design-v2164.css?v=2164" />
+        <link rel="stylesheet" href="~/css/identity.css?v=2165"  />
+        <link rel="stylesheet" href="~/css/design-v2165.css?v=2165" />
     </head>
-    <body class="identity-body cm24-design cm23-design">
-        <main class="identity-shell">
-            <section class="identity-showcase">
+    <body data-cm25-view="Identity/Login" class="identity-body cm25-design cm24-design cm23-design">
+        <main class="identity-shell cm25-identity-shell">
+            <section class="identity-showcase cm25-identity-showcase">
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="identity-brand" aria-label="CallMed">
-                    <img src="~/images/logo-callmed-horizontal.png?v=2164" alt="CallMed" class="identity-brand-horizontal" />
+                    <img src="~/images/logo-callmed-horizontal.png?v=2165" alt="CallMed" class="identity-brand-horizontal" />
                 </a>
 
                 <div class="identity-copy">
@@ -68,11 +68,11 @@
                 <small style="position:relative;z-index:1;color:#bbc3d9">CallMed · Atendimento digital</small>
             </section>
 
-            <section class="identity-panel">
-                <div class="identity-card">
+            <section class="identity-panel cm25-identity-panel">
+                <div class="identity-card cm25-identity-card">
                     <a asp-area="" asp-controller="Home" asp-action="Index" class="identity-back">← Voltar ao início</a>
 
-                    <div class="identity-card-header">
+                    <div class="identity-card-header cm25-identity-card-header">
                         <h2>Bem-vindo de volta</h2>
                         <p>Use seu CPF ou e-mail e sua senha para continuar.</p>
                     </div>
@@ -145,7 +145,7 @@
     });
 })();
 </script>
-            <script src="~/js/theme.js?v=2164"></script>
-            <script src="~/js/pwa.js?v=2164"></script>
+            <script src="~/js/theme.js?v=2165"></script>
+            <script src="~/js/pwa.js?v=2165"></script>
     </body>
 </html>

@@ -1,13 +1,7 @@
 @model MKSANCrud.Models.Especialidade
 <div asp-validation-summary="ModelOnly" class="validation"></div>
-<div class="form-grid">
-    <div class="field full">
-        <label asp-for="Nome">Nome da especialidade</label>
-        <input asp-for="Nome" placeholder="Ex.: Pediatria" />
-        <span asp-validation-for="Nome" class="validation"></span>
-    </div>
-    <div class="field full check">
-        <input asp-for="Ativo" />
-        <label asp-for="Ativo">Especialidade ativa</label>
-    </div>
+<div class="cm25-form-section-title"><span>01</span><div><h2>Identificação da especialidade</h2><p>Nome exibido para pacientes, médicos e equipe.</p></div></div>
+<div class="form-grid cm25-form-grid">
+    <div class="field full"><label asp-for="Nome">Nome da especialidade</label><input asp-for="Nome" placeholder="Ex.: Pediatria" autocomplete="off"/><span asp-validation-for="Nome" class="validation"></span></div>
+    <div class="field full"><span class="cm25-field-label">Disponibilidade no catálogo</span><label class="cm25-toggle-row"><input asp-for="Ativo"/><span><strong>Especialidade ativa</strong><small>Quando ativa, pode aparecer nos fluxos de agenda e cadastro.</small></span></label></div>
 </div>

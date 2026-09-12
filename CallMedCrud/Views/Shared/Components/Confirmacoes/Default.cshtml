@@ -2,7 +2,7 @@
 @{
     var primeiro = Model.Itens.FirstOrDefault();
 }
-<div class="v18-tool-wrap cm-confirm-wrap">
+<div class="v18-tool-wrap cm-confirm-wrap cm25-confirm-wrap">
     <button type="button"
             class="v18-icon-button v18-notification-button cm-confirm-trigger"
             data-popover-trigger="confirmacoes"
@@ -18,7 +18,7 @@
         }
     </button>
 
-    <div class="v18-popover cm-confirm-popover" data-popover="confirmacoes" hidden>
+    <div class="v18-popover cm-confirm-popover cm25-confirm-popover" data-popover="confirmacoes" hidden>
         <div class="cm-confirm-popover-head">
             <div>
                 <strong>Confirmações</strong>
@@ -42,7 +42,7 @@
             <div class="cm-confirm-mini-list">
                 @foreach (var item in Model.Itens.Take(3))
                 {
-                    <article class="cm-confirm-mini-item">
+                    <article class="cm-confirm-mini-item cm25-confirm-mini-item">
                         <div class="cm-confirm-mini-icon">
                             <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#@(item.Tipo == "lista-espera" ? "clock" : item.Tipo == "solicitacao" ? "chat" : "calendar")"></use></svg>
                         </div>

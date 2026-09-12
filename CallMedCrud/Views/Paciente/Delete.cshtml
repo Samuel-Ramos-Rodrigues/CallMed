@@ -1,19 +1,6 @@
 @model Paciente
-@{
-    ViewData["Title"] = "Desativar paciente";
-}
-<div class="page-head">
-    <h1>Desativar paciente</h1>
-</div>
-<div class="details-card">
-    <div class="danger-box">
-        <strong>@Model.Nome</strong> será desativado. O login será bloqueado, mas o cadastro e todo o histórico de consultas serão preservados.
-    </div>
-    <form asp-action="Delete" method="post">
-        <input type="hidden" asp-for="Id" />
-        <div class="form-actions">
-            <button type="submit" class="btn danger">Desativar</button>
-            <a class="btn secondary" asp-action="Index">Cancelar</a>
-        </div>
-    </form>
-</div>
+@{ ViewData["Title"] = "Desativar paciente"; }
+<section class="cm25-screen cm25-page cm25-confirm-page" data-cm25-view="Paciente/Delete.cshtml">
+    <header class="cm25-page-hero"><div class="cm25-hero-mark danger"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg></div><div class="cm25-hero-copy"><span class="cm25-kicker">PACIENTE · ACESSO</span><h1>Desativar cadastro</h1><p>Bloqueie o acesso sem apagar consultas, mensagens ou histórico.</p></div></header>
+    <div class="cm25-confirm-card"><div class="cm25-confirm-icon">!</div><h2>Desativar @Model.Nome?</h2><p>O paciente deixará de acessar a conta, mas todos os registros clínico-administrativos permanecem preservados.</p><form asp-action="Delete" method="post"><input type="hidden" asp-for="Id" /><div class="cm25-actions"><a class="btn secondary" asp-action="Index">Cancelar</a><button type="submit" class="btn danger">Desativar paciente</button></div></form></div>
+</section>

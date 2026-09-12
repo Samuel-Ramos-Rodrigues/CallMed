@@ -3,8 +3,8 @@
 @{
     ViewData["Title"] = "Nova solicitação";
 }
-<section class="cm21-form-page">
-    <header class="cm21-page-head"><div><span class="v16-eyebrow">ENTRADA HÍBRIDA</span><h1>Registrar solicitação</h1><p>Use esta tela para telefone, presencial ou qualquer solicitação que precise entrar manualmente no fluxo.</p></div><a class="btn secondary" asp-action="Index">Voltar</a></header>
+<section class="cm25-screen cm21-form-page" data-cm25-view="Solicitacoes/Create.cshtml">
+    <header class="cm25-page-hero cm21-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#flag"></use></svg></div><div><span class="cm25-kicker v16-eyebrow">ENTRADA HÍBRIDA</span><h1>Registrar solicitação</h1><p>Use esta tela para telefone, presencial ou qualquer solicitação que precise entrar manualmente no fluxo.</p></div><a class="btn secondary" asp-action="Index">Voltar</a></header>
     <form asp-action="Create" method="post" class="cm21-form-card">
         <div asp-validation-summary="All" class="validation"></div>
         <div class="cm21-form-grid">

@@ -20,7 +20,7 @@
 
 @if (autenticado)
 {
-    <section class="cm19-patient-home">
+    <section class="cm25-screen cm19-patient-home" data-cm25-view="Home/Index.cshtml">
         <section class="cm21-simple-home" aria-label="Modo simplificado">
             <header>
                 <h1>Olá, @Model.NomePaciente!</h1>
@@ -81,13 +81,13 @@
         </section>
 
         <section class="cm19-patient-details-row">
-            <a asp-controller="MinhaConta" asp-action="Index" class="cm19-card"><span><svg><use href="/icons/callmed-ui.svg#card"></use></svg></span><div><small>Seu atendimento</small><strong>@Model.Convenio</strong></div><b>›</b></a>
-            <a asp-controller="ListaEspera" asp-action="Index" class="cm19-card"><span><svg><use href="/icons/callmed-ui.svg#clock"></use></svg></span><div><small>Precisa de outro horário?</small><strong>Lista de espera</strong></div><b>›</b></a>
+            <a asp-controller="MinhaConta" asp-action="Index" class="cm25-panel cm19-card"><span><svg><use href="/icons/callmed-ui.svg#card"></use></svg></span><div><small>Seu atendimento</small><strong>@Model.Convenio</strong></div><b>›</b></a>
+            <a asp-controller="ListaEspera" asp-action="Index" class="cm25-panel cm19-card"><span><svg><use href="/icons/callmed-ui.svg#clock"></use></svg></span><div><small>Precisa de outro horário?</small><strong>Lista de espera</strong></div><b>›</b></a>
         </section>
 
         @if (Model.SolicitacoesRecentes.Any())
         {
-            <section class="cm19-card cm21-patient-requests">
+            <section class="cm25-panel cm19-card cm21-patient-requests">
                 <div class="cm19-mobile-card-title"><strong>Seus pedidos recentes</strong><small>Acompanhe o andamento sem precisar ligar.</small></div>
                 <div class="cm21-patient-request-list">
                     @foreach (var pedido in Model.SolicitacoesRecentes)
@@ -103,7 +103,7 @@
 
         @if (proximas.Skip(1).Any())
         {
-            <section class="cm19-card cm19-more-patient">
+            <section class="cm25-panel cm19-card cm19-more-patient">
                 <div class="cm19-mobile-card-title"><strong>Outras consultas</strong><a asp-controller="Consulta" asp-action="Index">Ver todas</a></div>
                 @foreach (var item in proximas.Skip(1).Take(3))
                 {
@@ -120,7 +120,7 @@ else
         <head>
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
-            <meta name="theme-color" content="#eef2ff" />
+            <meta name="theme-color" content="#f6f7fc" />
         <script>
             (function () {
                 var pref = 'system';
@@ -142,13 +142,13 @@ else
             <link rel="manifest" href="~/manifest.json" />
             <link rel="apple-touch-icon" sizes="180x180" href="~/icons/apple-touch-icon.png" />
             <title>CallMed | Agendamento de Consultas</title>
-            <link rel="stylesheet" href="~/css/public.css?v=2164" />
-            <link rel="stylesheet" href="~/css/design-v2164.css?v=2164" />
+            <link rel="stylesheet" href="~/css/public.css?v=2165" />
+            <link rel="stylesheet" href="~/css/design-v2165.css?v=2165" />
         </head>
-        <body class="public-body cm24-design cm23-design">
-            <header class="public-header">
-                <nav class="public-nav">
-                    <a asp-controller="Home" asp-action="Index" class="public-logo callmed-home-brand"><img src="~/images/logo-callmed-horizontal.png?v=2164" alt="CallMed" class="public-brand-horizontal" /></a>
+        <body class="public-body cm25-design cm24-design cm23-design">
+            <header class="public-header cm25-public-header">
+                <nav class="public-nav cm25-public-nav">
+                    <a asp-controller="Home" asp-action="Index" class="public-logo callmed-home-brand"><img src="~/images/logo-callmed-horizontal.png?v=2165" alt="CallMed" class="public-brand-horizontal" /></a>
                     <div class="public-links">
                         <a href="#inicio">Início</a>
                         <a href="#servicos">Serviços</a>
@@ -159,7 +159,7 @@ else
             </header>
 
             <main class="public-main">
-                <section class="public-hero" id="inicio">
+                <section class="public-hero cm25-public-hero" id="inicio">
                     <div>
                         <span class="public-kicker">CALLMED</span>
                         <h1>Todos os canais. Uma única agenda.</h1>
@@ -243,8 +243,8 @@ else
                 </section>
             </main>
             <footer class="public-footer">CallMed © 2026 · Sistema de agendamento de consultas · <a href="/privacidade">Política de Privacidade</a></footer>
-            <script src="~/js/theme.js?v=2164"></script>
-            <script src="~/js/pwa.js?v=2164"></script>
+            <script src="~/js/theme.js?v=2165"></script>
+            <script src="~/js/pwa.js?v=2165"></script>
         </body>
     </html>
 }

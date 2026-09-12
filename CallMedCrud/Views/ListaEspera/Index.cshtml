@@ -7,24 +7,24 @@
     var ofertas = ViewBag.Ofertas as IDictionary<int, MKSANCrud.Models.Disponibilidade>
         ?? new Dictionary<int, MKSANCrud.Models.Disponibilidade>();
 }
-<section class="v16-page">
-    <div class="v16-page-head">
+<section class="cm25-screen cm25-page v16-page" data-cm25-view="ListaEspera/Index.cshtml">
+    <div class="cm25-page-hero v16-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#clock"></use></svg></div>
         <div>
-            <span class="v16-eyebrow">VAGAS INTELIGENTES</span>
+            <span class="cm25-kicker v16-eyebrow">VAGAS INTELIGENTES</span>
             <h1>Lista de espera</h1>
             <p>A CallMed acompanha vagas reais e avisa pelo canal preferido. Se o canal digital não estiver disponível, a equipe pode receber uma tarefa para contato telefônico.</p>
         </div>
         <a class="btn" asp-action="Create">+ Entrar na lista</a>
     </div>
 
-    <div class="agenda-summary">
-        <div class="v16-stat"><span>Pedidos</span><strong>@lista.Count</strong><small>total exibido</small></div>
-        <div class="v16-stat"><span>Ativos</span><strong>@ativas</strong><small>aguardando vaga</small></div>
-        <div class="v16-stat"><span>Encerrados</span><strong>@(lista.Count - ativas)</strong><small>concluídos/cancelados</small></div>
-        <div class="v16-stat"><span>Automação</span><strong class="stat-date">15 min</strong><small>verificação de novas vagas</small></div>
+    <div class="cm25-kpi-grid agenda-summary">
+        <div class="cm25-kpi v16-stat"><span>Pedidos</span><strong>@lista.Count</strong><small>total exibido</small></div>
+        <div class="cm25-kpi v16-stat"><span>Ativos</span><strong>@ativas</strong><small>aguardando vaga</small></div>
+        <div class="cm25-kpi v16-stat"><span>Encerrados</span><strong>@(lista.Count - ativas)</strong><small>concluídos/cancelados</small></div>
+        <div class="cm25-kpi v16-stat"><span>Automação</span><strong class="stat-date">15 min</strong><small>verificação de novas vagas</small></div>
     </div>
 
-    <div class="v16-card table-card">
+    <div class="cm25-panel v16-card table-card">
         @if (!lista.Any())
         {
             <div class="v16-empty">

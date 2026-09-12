@@ -4,20 +4,20 @@
     var lista = Model.ToList();
     var especialidades = lista.Where(x => x.Ativo).Select(x => x.Especialidade).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.OrdinalIgnoreCase).Count();
 }
-<section class="v16-page crud-v16">
-    <div class="v16-page-head">
-        <div><span class="v16-eyebrow">CADASTROS</span><h1>Médicos</h1><p>Profissionais, especialidades, acesso e agenda semanal.</p></div>
+<section class="cm25-screen cm25-page v16-page crud-v16" data-cm25-view="Medico/Index.cshtml">
+    <div class="cm25-page-hero v16-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#doctor"></use></svg></div>
+        <div><span class="cm25-kicker v16-eyebrow">CADASTROS</span><h1>Médicos</h1><p>Profissionais, especialidades, acesso e agenda semanal.</p></div>
         <a class="btn" asp-action="Create">+ Novo médico</a>
     </div>
 
-    <div class="agenda-summary compact-summary">
-        <div class="v16-stat"><span>Profissionais</span><strong>@lista.Count</strong><small>cadastrados</small></div>
-        <div class="v16-stat"><span>Ativos</span><strong>@lista.Count(x => x.Ativo)</strong><small>recebendo agenda</small></div>
-        <div class="v16-stat"><span>Especialidades</span><strong>@especialidades</strong><small>em atendimento</small></div>
-        <div class="v16-stat"><span>Com acesso</span><strong>@lista.Count(x => !string.IsNullOrWhiteSpace(x.UsuarioId))</strong><small>área do médico</small></div>
+    <div class="cm25-kpi-grid agenda-summary compact-summary">
+        <div class="cm25-kpi v16-stat"><span>Profissionais</span><strong>@lista.Count</strong><small>cadastrados</small></div>
+        <div class="cm25-kpi v16-stat"><span>Ativos</span><strong>@lista.Count(x => x.Ativo)</strong><small>recebendo agenda</small></div>
+        <div class="cm25-kpi v16-stat"><span>Especialidades</span><strong>@especialidades</strong><small>em atendimento</small></div>
+        <div class="cm25-kpi v16-stat"><span>Com acesso</span><strong>@lista.Count(x => !string.IsNullOrWhiteSpace(x.UsuarioId))</strong><small>área do médico</small></div>
     </div>
 
-    <div class="v16-card table-card">
+    <div class="cm25-panel v16-card table-card">
         <div class="v16-card-head"><div><h2>Profissionais</h2><p>Abra a agenda ou edite as informações do médico.</p></div></div>
         <div class="table-scroll">
             <table class="table modern-table v16-table">

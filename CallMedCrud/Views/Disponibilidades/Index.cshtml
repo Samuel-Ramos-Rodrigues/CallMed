@@ -3,9 +3,9 @@
     ViewData["Title"] = "Disponibilidades";
     var dias = new[] { "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb" };
 }
-<section class="cm19-availability-page">
-    <header class="cm19-page-head"><div><span>AGENDA</span><h1>Disponibilidades</h1><p>Agenda semanal configurada para cada médico ativo.</p></div><a class="btn" asp-controller="Medico" asp-action="Create">+ Novo médico</a></header>
-    <section class="cm19-card cm19-availability-table">
+<section class="cm25-screen cm19-availability-page" data-cm25-view="Disponibilidades/Index.cshtml">
+    <header class="cm25-page-hero cm19-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#clock"></use></svg></div><div><span>AGENDA</span><h1>Disponibilidades</h1><p>Agenda semanal configurada para cada médico ativo.</p></div><a class="btn" asp-controller="Medico" asp-action="Create">+ Novo médico</a></header>
+    <section class="cm25-panel cm19-card cm19-availability-table">
         <div class="cm19-av-row header"><strong>Médico</strong>@for(var d=1;d<=6;d++){<span>@dias[d]</span>}<span>@dias[0]</span><b>Ações</b></div>
         @foreach(var medico in Model)
         {

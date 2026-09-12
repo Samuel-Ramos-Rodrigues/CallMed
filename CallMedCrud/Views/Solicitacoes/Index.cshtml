@@ -31,13 +31,13 @@
         StatusSolicitacaoAtendimento.Confirmada
     };
 }
-<section class="cm21-request-page">
-    <header class="cm21-page-head">
-        <div><span class="v16-eyebrow">PROCESSO PADRONIZADO</span><h1>Solicitações de consulta</h1><p>WhatsApp, PWA, telefone, presencial, SMS e e-mail entram no mesmo fluxo.</p></div>
+<section class="cm25-screen cm21-request-page" data-cm25-view="Solicitacoes/Index.cshtml">
+    <header class="cm25-page-hero cm21-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#flag"></use></svg></div>
+        <div><span class="cm25-kicker v16-eyebrow">PROCESSO PADRONIZADO</span><h1>Solicitações de consulta</h1><p>WhatsApp, PWA, telefone, presencial, SMS e e-mail entram no mesmo fluxo.</p></div>
         <a class="btn" asp-action="Create">+ Nova solicitação</a>
     </header>
 
-    <form method="get" class="cm21-filterbar">
+    <form method="get" class="cm25-filterbar cm21-filterbar">
         <input type="search" name="busca" value="@Model.Busca" placeholder="Paciente, CPF, telefone ou e-mail" />
         <select name="canal">
             <option value="">Todos os canais</option>
@@ -49,7 +49,7 @@
         <button class="btn secondary" type="submit">Filtrar</button>
     </form>
 
-    <div class="cm21-request-kpis">
+    <div class="cm25-kpi-grid cm21-request-kpis">
         <article><small>Novas</small><strong>@Model.TotalNovas</strong></article>
         <article><small>Em triagem</small><strong>@Model.TotalTriagem</strong></article>
         <article><small>Buscando vaga</small><strong>@Model.TotalBuscando</strong></article>

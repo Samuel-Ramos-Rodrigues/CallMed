@@ -3,9 +3,9 @@
     ViewData["Title"] = "Pacientes";
     var lista = Model.ToList();
 }
-<section class="v16-page crud-v16">
-    <div class="v16-page-head">
-        <div><span class="v16-eyebrow">CADASTROS</span><h1>Pacientes</h1><p>Dados, contato, convênio e histórico de atendimento em um só cadastro.</p></div>
+<section class="cm25-screen cm25-page v16-page crud-v16" data-cm25-view="Paciente/Index.cshtml">
+    <div class="cm25-page-hero v16-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#user"></use></svg></div>
+        <div><span class="cm25-kicker v16-eyebrow">CADASTROS</span><h1>Pacientes</h1><p>Dados, contato, convênio e histórico de atendimento em um só cadastro.</p></div>
         <a class="btn" asp-action="Create">+ Novo paciente</a>
     </div>
 
@@ -19,14 +19,14 @@
         <a class="filter-toggle-link" asp-action="Index" asp-route-busca="@ViewBag.Busca" asp-route-incluirInativos="@(ViewBag.IncluirInativos != true)">@(ViewBag.IncluirInativos == true ? "Ocultar inativos" : "Mostrar inativos")</a>
     </div>
 
-    <div class="agenda-summary compact-summary">
-        <div class="v16-stat"><span>Resultados</span><strong>@lista.Count</strong><small>na busca atual</small></div>
-        <div class="v16-stat"><span>Ativos</span><strong>@lista.Count(x => x.Ativo)</strong><small>com acesso disponível</small></div>
-        <div class="v16-stat"><span>Convênio</span><strong>@lista.Count(x => x.Ativo && x.TemConvenio)</strong><small>pacientes conveniados</small></div>
-        <div class="v16-stat"><span>Particular</span><strong>@lista.Count(x => x.Ativo && !x.TemConvenio)</strong><small>atendimento particular</small></div>
+    <div class="cm25-kpi-grid agenda-summary compact-summary">
+        <div class="cm25-kpi v16-stat"><span>Resultados</span><strong>@lista.Count</strong><small>na busca atual</small></div>
+        <div class="cm25-kpi v16-stat"><span>Ativos</span><strong>@lista.Count(x => x.Ativo)</strong><small>com acesso disponível</small></div>
+        <div class="cm25-kpi v16-stat"><span>Convênio</span><strong>@lista.Count(x => x.Ativo && x.TemConvenio)</strong><small>pacientes conveniados</small></div>
+        <div class="cm25-kpi v16-stat"><span>Particular</span><strong>@lista.Count(x => x.Ativo && !x.TemConvenio)</strong><small>atendimento particular</small></div>
     </div>
 
-    <div class="v16-card table-card">
+    <div class="cm25-panel v16-card table-card">
         <div class="v16-card-head"><div><h2>Pacientes</h2><p>@lista.Count registro@(lista.Count == 1 ? "" : "s") encontrado@(lista.Count == 1 ? "" : "s").</p></div></div>
         <div class="table-scroll">
             <table class="table modern-table v16-table">

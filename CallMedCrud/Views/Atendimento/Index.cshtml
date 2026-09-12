@@ -34,9 +34,9 @@
     };
 }
 
-<section class="v16-page atendimento-v16-page">
-    <div class="v16-page-head">
-        <div><span class="v16-eyebrow">OMNICHANNEL</span><h1>Central de Atendimento</h1><p>Site, WhatsApp, SMS e e-mail em uma caixa de entrada única.</p></div>
+<section class="cm25-screen cm25-page v16-page atendimento-v16-page" data-cm25-view="Atendimento/Index.cshtml">
+    <div class="cm25-page-hero v16-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#chat"></use></svg></div>
+        <div><span class="cm25-kicker v16-eyebrow">OMNICHANNEL</span><h1>Central de Atendimento</h1><p>Site, WhatsApp, SMS e e-mail em uma caixa de entrada única.</p></div>
         <div class="v16-head-actions">
             <button type="button" class="btn secondary" id="channelStatusButton">Situação dos canais</button>
             <a asp-action="Nova" class="btn">+ Novo atendimento</a>
@@ -69,7 +69,7 @@
         { <a asp-action="Index" class="btn-link-clean">Limpar</a> }
     </form>
 
-    <div class="atendimento-shell v16-atendimento-shell @(Model.ConversaSelecionada is null ? "no-context" : "")">
+    <div class="cm25-atendimento-shell atendimento-shell v16-atendimento-shell @(Model.ConversaSelecionada is null ? "no-context" : "")">
         <aside class="atendimento-inbox v16-inbox">
             <div class="atendimento-inbox-title"><div><strong>Conversas</strong><small>Mais recentes primeiro</small></div><span>@Model.Conversas.Count</span></div>
             @if (!Model.Conversas.Any())
@@ -248,7 +248,7 @@
 <dialog id="channelStatusDialog" class="channel-status-dialog" aria-labelledby="channelStatusTitle">
     <div class="channel-status-head">
         <div>
-            <span class="v16-eyebrow">CANAIS</span>
+            <span class="cm25-kicker v16-eyebrow">CANAIS</span>
             <h2 id="channelStatusTitle">Situação dos canais</h2>
             <p>Disponibilidade de entrada e saída configurada no CallMed.</p>
         </div>
@@ -260,5 +260,5 @@
 </dialog>
 
 @section Scripts {
-    <script src="~/js/atendimento.js?v=2164"></script>
+    <script src="~/js/atendimento.js?v=2165"></script>
 }

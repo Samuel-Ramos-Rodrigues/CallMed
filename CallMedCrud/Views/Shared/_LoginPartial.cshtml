@@ -3,12 +3,12 @@
 @inject SignInManager<Usuario> SignInManager
 @inject UserManager<Usuario> UserManager
 
-<div class="login-links">
+<div class="login-links cm25-login-links">
     @if (SignInManager.IsSignedIn(User))
     {
         <span>Olá, @User.Identity?.Name</span>
         <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
-            <button type="submit" class="link-button">Sair</button>
+            <button type="submit" class="link-button cm25-link-button">Sair</button>
         </form>
     }
     else

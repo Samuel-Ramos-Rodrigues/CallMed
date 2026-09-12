@@ -1,7 +1,7 @@
 @model Consulta
 @{ ViewData["Title"] = "Agendar consulta"; }
-<section class="cm19-booking-page">
-    <header class="cm19-page-head booking-head">
+<section class="cm25-screen cm19-booking-page" data-cm25-view="Consulta/Create.cshtml">
+    <header class="cm25-page-hero cm19-page-head booking-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg></div>
         <div><span>AGENDAMENTO</span><h1>Agendar consulta</h1><p>Escolha especialidade, médico, data e horário. A CallMed mostra somente vagas disponíveis.</p></div>
         @if(User.IsInRole("Funcionario") || User.IsInRole("Admin")){<a class="btn secondary" asp-controller="Agenda" asp-action="Index">Ver agenda</a>}
     </header>

@@ -6,7 +6,7 @@
     var solicitacoes = ViewBag.Solicitacoes as IEnumerable<MKSANCrud.Models.SolicitacaoAtendimento> ?? Enumerable.Empty<MKSANCrud.Models.SolicitacaoAtendimento>();
     var listaEspera = ViewBag.ListaEspera as IEnumerable<MKSANCrud.Models.ListaEspera> ?? Enumerable.Empty<MKSANCrud.Models.ListaEspera>();
 }
-<section class="cm19-patient-record">
+<section class="cm25-screen cm19-patient-record" data-cm25-view="Paciente/Details.cshtml">
     <header class="cm19-record-head cm19-card">
         <div class="cm19-record-profile"><span class="cm19-record-avatar">@iniciais</span><div><h1>@Model.Nome <span class="cm19-status-dot @(Model.Ativo ? "on" : "off")">@(Model.Ativo ? "Ativo" : "Inativo")</span></h1><p>@(Model.Ativo ? "Paciente ativo na CallMed" : "Cadastro inativo")</p></div></div>
         <div class="cm19-head-actions"><a class="btn secondary" asp-action="Index">Voltar</a><a class="btn" asp-action="Edit" asp-route-id="@Model.Id">Editar perfil</a></div>
@@ -15,7 +15,7 @@
     <nav class="cm19-record-tabs"><a href="#dados" class="active">Dados</a><a href="#consultas">Consultas</a><a href="#solicitacoes">Solicitações</a><a href="#espera">Lista de espera</a><a asp-controller="Atendimento" asp-action="Index">Atendimentos</a></nav>
 
     <div class="cm19-record-grid" id="dados">
-        <section class="cm19-card cm19-data-card">
+        <section class="cm25-panel cm19-card cm19-data-card">
             <div class="cm19-card-head"><div><h2>Dados pessoais</h2><p>Informações principais do paciente.</p></div></div>
             <dl class="cm19-data-list">
                 <div><dt><svg><use href="/icons/callmed-ui.svg#mail"></use></svg>E-mail</dt><dd>@Model.Email</dd></div>
@@ -25,7 +25,7 @@
                 <div><dt><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg>Data de nascimento</dt><dd>@(Model.DataNascimento?.ToString("dd/MM/yyyy") ?? "Não informada")</dd></div>
             </dl>
         </section>
-        <section class="cm19-card cm19-data-card">
+        <section class="cm25-panel cm19-card cm19-data-card">
             <div class="cm19-card-head"><div><h2>Convênio e atendimento</h2><p>Dados utilizados no agendamento.</p></div></div>
             <dl class="cm19-data-list">
                 <div><dt><svg><use href="/icons/callmed-ui.svg#card"></use></svg>Atendimento</dt><dd>@(Model.TemConvenio ? "Convênio" : "Particular")</dd></div>
@@ -36,7 +36,7 @@
         </section>
     </div>
 
-    <section class="cm19-card cm19-history-card" id="consultas">
+    <section class="cm25-panel cm19-card cm19-history-card" id="consultas">
         <div class="cm19-card-head"><div><h2>Consultas</h2><p>Atendimentos recentes deste paciente.</p></div><a class="btn small" asp-controller="Consulta" asp-action="Create" asp-route-pacienteId="@Model.Id">+ Nova consulta</a></div>
         @if (!consultas.Any()) { <div class="cm19-empty">Nenhuma consulta registrada.</div> }
         else
@@ -49,7 +49,7 @@
             </div>
         }
     </section>
-    <section class="cm19-card cm19-history-card" id="solicitacoes">
+    <section class="cm25-panel cm19-card cm19-history-card" id="solicitacoes">
         <div class="cm19-card-head"><div><h2>Solicitações e triagens</h2><p>Histórico integrado de pedidos recebidos por todos os canais.</p></div><a class="btn small secondary" asp-controller="Solicitacoes" asp-action="Create">+ Nova solicitação</a></div>
         @if (!solicitacoes.Any()) { <div class="cm19-empty">Nenhuma solicitação registrada.</div> }
         else {
@@ -60,7 +60,7 @@
             </div>
         }
     </section>
-    <section class="cm19-card cm19-history-card" id="espera">
+    <section class="cm25-panel cm19-card cm19-history-card" id="espera">
         <div class="cm19-card-head"><div><h2>Lista de espera</h2><p>Pedidos de antecipação e vagas monitoradas.</p></div></div>
         @if (!listaEspera.Any()) { <div class="cm19-empty">Nenhum pedido de lista de espera.</div> }
         else {

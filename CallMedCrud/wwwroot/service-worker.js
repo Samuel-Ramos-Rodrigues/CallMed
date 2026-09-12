@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v21-6-4-indigo-horizon';
+const CACHE_NAME = 'callmed-static-v21-6-5-aurora-ui';
 const OFFLINE_URL = '/offline.html';
 
 // Somente entrypoints e assets realmente usados. Os CSS de versões antigas foram
@@ -8,7 +8,7 @@ const STATIC_ASSETS = [
     '/css/site.css',
     '/css/public.css',
     '/css/identity.css',
-    '/css/design-v2164.css',
+    '/css/design-v2165.css',
     '/js/theme.js',
     '/js/accessibility.js',
     '/js/mobile-final.js',

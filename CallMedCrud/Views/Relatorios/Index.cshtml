@@ -23,7 +23,7 @@
     @if (Model.SolicitacoesPorCanal.Any())
     {
         var totalCanais = Math.Max(1, Model.SolicitacoesPorCanal.Sum(x => x.Total));
-        <section class="v18-card cm21-report-channels">
+        <section class="cm25-screen v18-card cm21-report-channels" data-cm25-view="Relatorios/Index.cshtml">
             <header class="v18-card-header"><div><h2>Solicitações por canal</h2><p>Visão omnichannel do mês atual.</p></div></header>
             <div class="cm21-channel-strip">
                 @foreach (var item in Model.SolicitacoesPorCanal)
