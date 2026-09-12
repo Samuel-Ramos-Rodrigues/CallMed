@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using MKSANCrud.Data;
 using MKSANCrud.Models;
 using MKSANCrud.Services.Agendamento;
+using MKSANCrud.Services.Atendimento;
 using MKSANCrud.Services.Clinica;
 
 namespace MKSANCrud.Services.Agente;
@@ -26,6 +27,7 @@ public sealed class AgenteToolsService
     private readonly IClinicaClock _clock;
     private readonly ListaEsperaService _listaEspera;
     private readonly SolicitacaoAtendimentoService _solicitacoes;
+    private readonly AtendimentoConversaService _conversas;
     private readonly ILogger<AgenteToolsService> _logger;
 
     public AgenteToolsService(
@@ -38,6 +40,7 @@ public sealed class AgenteToolsService
         IClinicaClock clock,
         ListaEsperaService listaEspera,
         SolicitacaoAtendimentoService solicitacoes,
+        AtendimentoConversaService conversas,
         ILogger<AgenteToolsService> logger)
     {
         _context = context;
@@ -49,6 +52,7 @@ public sealed class AgenteToolsService
         _clock = clock;
         _listaEspera = listaEspera;
         _solicitacoes = solicitacoes;
+        _conversas = conversas;
         _logger = logger;
     }
 
@@ -61,10 +65,15 @@ public sealed class AgenteToolsService
     {
         try
         {
+            var bloqueioIdentidade = BloqueioPorIdentidade(nome, usuario);
+            if (bloqueioIdentidade is not null)
+                return bloqueioIdentidade;
+
             return nome switch
             {
                 "listar_medicos" => await ListarMedicos(cancellationToken),
                 "buscar_paciente_cpf" => await BuscarPacienteCpf(Texto(args, "cpf"), usuario, cancellationToken),
+                "identificar_paciente" => await IdentificarPaciente(args, usuario, cancellationToken),
                 "consultar_minhas_consultas" => await ConsultarMinhasConsultas(usuario, cancellationToken),
                 "consultar_consultas_paciente" => await ConsultarConsultasPaciente(Texto(args, "cpf"), usuario, cancellationToken),
                 "consultar_horarios_data" => await ConsultarHorariosData(args, cancellationToken),
@@ -96,6 +105,124 @@ public sealed class AgenteToolsService
                 ["mensagem"] = "Não foi possível concluir a operação agora."
             };
         }
+    }
+
+    private static JsonObject? BloqueioPorIdentidade(
+        string nome,
+        AgenteUsuarioContexto usuario)
+    {
+        if (!usuario.PrecisaIdentificarPaciente)
+            return null;
+
+        // Consultas públicas de agenda e informações da clínica continuam disponíveis.
+        // Qualquer operação que leia dados pessoais ou altere o estado do paciente
+        // exige vínculo real da conversa com um Paciente do banco.
+        var exigePaciente = nome is
+            "consultar_minhas_consultas" or
+            "agendar_consulta" or
+            "confirmar_consulta" or
+            "remarcar_consulta" or
+            "cancelar_consulta" or
+            "entrar_lista_espera" or
+            "consultar_lista_espera" or
+            "cancelar_lista_espera";
+
+        if (!exigePaciente)
+            return null;
+
+        return IdentificacaoNecessaria();
+    }
+
+    private static JsonObject IdentificacaoNecessaria() =>
+        new()
+        {
+            ["sucesso"] = false,
+            ["identificacaoNecessaria"] = true,
+            ["mensagem"] =
+                "Antes de concluir essa ação, preciso identificar o paciente. " +
+                "Se você já possui cadastro na CallMed, envie seu CPF e sua data de nascimento. " +
+                "Se ainda não possui cadastro, use a opção Criar conta no site ou peça atendimento humano.",
+            ["dadosNecessarios"] = new JsonArray(JsonValue.Create("cpf"), JsonValue.Create("dataNascimento"))
+        };
+
+    private async Task<JsonObject> IdentificarPaciente(
+        JsonObject args,
+        AgenteUsuarioContexto usuario,
+        CancellationToken ct)
+    {
+        if (usuario.PodeGerenciarOutrosPacientes)
+            return Falha("Funcionários devem usar a busca administrativa de paciente.");
+
+        if (usuario.PacienteId.HasValue)
+        {
+            return Sucesso(new
+            {
+                identificado = true,
+                pacienteId = usuario.PacienteId.Value,
+                paciente = usuario.PacienteNome,
+                mensagem = "Paciente já identificado nesta conversa."
+            });
+        }
+
+        if (!usuario.ConversaAtendimentoId.HasValue)
+            return IdentificacaoNecessaria();
+
+        var cpf = CadastroValidator.SomenteNumeros(Texto(args, "cpf"));
+        if (!CadastroValidator.CpfValido(cpf))
+            return Falha("CPF inválido. Confira os 11 números informados.");
+
+        if (!Data(args, "dataNascimento", out var dataNascimento) ||
+            !CadastroValidator.DataNascimentoValida(dataNascimento.Date, _clock.Hoje))
+        {
+            return Falha("Data de nascimento inválida. Informe dia, mês e ano.");
+        }
+
+        // Não informa qual dos dois dados falhou. Isso reduz enumeração de cadastro
+        // em canais externos e exige a combinação CPF + data de nascimento.
+        var paciente = await _context.Pacientes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                p => p.Ativo &&
+                     p.Cpf == cpf &&
+                     p.DataNascimento.HasValue &&
+                     p.DataNascimento.Value.Date == dataNascimento.Date,
+                ct);
+
+        if (paciente is null)
+        {
+            return new JsonObject
+            {
+                ["sucesso"] = false,
+                ["identificacaoFalhou"] = true,
+                ["mensagem"] =
+                    "Não consegui confirmar o cadastro com os dados informados. " +
+                    "Confira CPF e data de nascimento ou peça atendimento humano."
+            };
+        }
+
+        var conversa = await _context.ConversasAtendimento
+            .Include(c => c.Paciente)
+            .FirstOrDefaultAsync(c => c.Id == usuario.ConversaAtendimentoId.Value, ct);
+
+        if (conversa is null)
+            return Falha("Não foi possível localizar esta conversa para concluir a identificação.");
+
+        var vinculou = await _conversas.VincularPacienteAsync(
+            conversa,
+            paciente.Id,
+            ct);
+
+        if (!vinculou)
+            return Falha("Não foi possível vincular o paciente a esta conversa.");
+
+        return Sucesso(new
+        {
+            identificado = true,
+            paciente = paciente.Nome,
+            mensagem =
+                "Identidade confirmada e conversa vinculada ao paciente. " +
+                "Por segurança, continue a operação na próxima mensagem para que o contexto seja recarregado."
+        });
     }
 
     private async Task<JsonObject> ListarMedicos(CancellationToken ct)
@@ -862,7 +989,8 @@ public sealed class AgenteToolsService
             "sim", "s", "ss", "simm", "cin", "cim", "si",
             "confirmo", "confirmado", "confirma", "pode", "pode sim",
             "pode fazer", "pode marcar", "pode agendar", "pode remarcar",
-            "pode cancelar", "pode cadastrar", "isso", "isso mesmo", "ok",
+            "pode cancelar", "pode cadastrar", "agende", "agenda", "marque", "marca",
+            "faca", "faz", "faca isso", "pode fazer isso", "isso", "isso mesmo", "ok",
             "okay", "claro", "beleza", "blz"
         };
 

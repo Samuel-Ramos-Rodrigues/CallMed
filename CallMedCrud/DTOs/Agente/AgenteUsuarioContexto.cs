@@ -7,6 +7,11 @@ public sealed class AgenteUsuarioContexto
     public string Canal { get; init; } = "Site";
     public bool PodeGerenciarOutrosPacientes { get; init; }
 
+    // Identifica a conversa de atendimento que originou o contexto.
+    // É preenchido apenas pelo backend e permite vincular um contato externo
+    // após validação de identidade, sem confiar em IDs enviados pelo modelo.
+    public long? ConversaAtendimentoId { get; init; }
+
     // Contexto resolvido pelo backend a cada mensagem.
     // Evita que o agente peça dados que o sistema já conhece.
     public int? PacienteId { get; init; }
@@ -17,4 +22,7 @@ public sealed class AgenteUsuarioContexto
     public string? PacienteNomeConvenio { get; init; }
 
     public bool EhPacienteAutenticado => PacienteId.HasValue && !PodeGerenciarOutrosPacientes;
+
+    public bool PrecisaIdentificarPaciente =>
+        !PodeGerenciarOutrosPacientes && !PacienteId.HasValue;
 }

@@ -38,8 +38,8 @@ android {
         minSdk 26
         // Google Play: novos apps/atualizações precisam mirar API 36 a partir de 31/08/2026.
         targetSdk 36
-        versionCode 2162
-        versionName '21.6.2'
+        versionCode 2163
+        versionName '21.6.3'
     }
 
     signingConfigs {

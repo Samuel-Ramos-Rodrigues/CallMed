@@ -60,15 +60,16 @@
     <link rel="icon" type="image/png" href="~/icons/icon-192.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="~/icons/apple-touch-icon.png" />
     <title>@ViewData["Title"] - CallMed</title>
-    <link rel="stylesheet" href="~/css/site.css?v=2162" />
+    <link rel="stylesheet" href="~/css/site.css?v=2163" />
+    <link rel="stylesheet" href="~/css/design-v2163.css?v=2163" />
 </head>
-<body class="@(autenticado ? "app-shell v16-shell v17-shell v18-shell" : "v17-public-shell v18-public-shell") @(User.IsInRole("Paciente") ? "cm21-patient-context" : "") @bodyPageClass">
+<body class="cm23-design @(autenticado ? "app-shell v16-shell v17-shell v18-shell" : "v17-public-shell v18-public-shell") @(User.IsInRole("Paciente") ? "cm21-patient-context" : "") @bodyPageClass">
 @if (autenticado)
 {
     <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
     <aside class="sidebar v16-sidebar" id="sidebar">
         <a class="sidebar-brand v16-sidebar-brand v18-sidebar-brand" asp-controller="Home" asp-action="Index" aria-label="CallMed - Início">
-            <img src="~/images/logo-callmed-horizontal.png?v=2162" alt="CallMed" class="v18-sidebar-logo" />
+            <img src="~/images/logo-callmed-horizontal.png?v=2163" alt="CallMed" class="v18-sidebar-logo" />
         </a>
 
         <nav class="sidebar-nav v16-sidebar-nav">
@@ -195,7 +196,7 @@
             <button type="button" class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#menu"></use></svg></button>
             @if (User.IsInRole("Paciente"))
             {
-                <a class="cm19-mobile-brand" asp-controller="Home" asp-action="Index" aria-label="CallMed"><img src="~/images/logo-callmed-mark.png?v=2162" alt="CallMed" class="cm21-mobile-logo-mark" /></a>
+                <a class="cm19-mobile-brand" asp-controller="Home" asp-action="Index" aria-label="CallMed"><img src="~/images/logo-callmed-mark.png?v=2163" alt="CallMed" class="cm21-mobile-logo-mark" /></a>
             }
             <div class="topbar-page-title v18-topbar-title @(User.IsInRole("Paciente") ? "cm19-patient-title" : "")">
                 <strong>@(ViewData["Title"] ?? "Painel")</strong>
@@ -329,7 +330,7 @@ else
 {
     <header class="topbar public-app-topbar">
         <div class="container nav-wrap">
-            <a class="brand callmed-public-brand v18-public-brand" asp-controller="Home" asp-action="Index" aria-label="CallMed - Início"><img src="~/images/logo-callmed-horizontal.png?v=2162" alt="CallMed" /></a>
+            <a class="brand callmed-public-brand v18-public-brand" asp-controller="Home" asp-action="Index" aria-label="CallMed - Início"><img src="~/images/logo-callmed-horizontal.png?v=2163" alt="CallMed" /></a>
             <partial name="_LoginPartial" />
         </div>
     </header>
@@ -338,7 +339,7 @@ else
 
 <partial name="_AssistenteFlutuante" />
 
-<script src="~/js/date-select.js?v=2162"></script>
+<script src="~/js/date-select.js?v=2163"></script>
 <script>
 (function () {
     const toggle = document.getElementById('menuToggle');
@@ -423,13 +424,13 @@ else
 </script>
 @if (User.IsInRole("Paciente"))
 {
-    <script src="~/js/accessibility.js?v=2162"></script>
+    <script src="~/js/accessibility.js?v=2163"></script>
 }
-<script src="~/js/mobile-final.js?v=2162"></script>
-<script src="~/js/theme.js?v=2162"></script>
-<script src="~/js/pwa.js?v=2162"></script>
-<script src="~/js/confirmacoes.js?v=2162"></script>
-<script src="~/js/assistente-flutuante.js?v=2162"></script>
+<script src="~/js/mobile-final.js?v=2163"></script>
+<script src="~/js/theme.js?v=2163"></script>
+<script src="~/js/pwa.js?v=2163"></script>
+<script src="~/js/confirmacoes.js?v=2163"></script>
+<script src="~/js/assistente-flutuante.js?v=2163"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

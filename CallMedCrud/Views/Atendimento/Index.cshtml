@@ -140,7 +140,17 @@
                         }
                     </div>
                 </header>
-                <div class="atendimento-messages" id="atendimentoMessages" data-conversa-id="@conversa.Id" data-last-id="@(Model.Mensagens.LastOrDefault()?.Id ?? 0)" data-mode="@conversa.Modo" data-active="@conversa.Ativa.ToString().ToLowerInvariant()" data-responsavel-id="@conversa.ResponsavelUsuarioId">
+                @if (conversa.Paciente is null)
+                {
+                    <div class="cm23-identity-warning" role="status">
+                        <span class="cm23-identity-warning-icon" aria-hidden="true">!</span>
+                        <div>
+                            <strong>Contato ainda não identificado</strong>
+                            <p>A IA pode informar médicos e horários, mas agendamento, remarcação, cancelamento, consultas pessoais e lista de espera ficam bloqueados até a conversa ser vinculada a um paciente.</p>
+                        </div>
+                    </div>
+                }
+                <div class="atendimento-messages" id="atendimentoMessages" data-conversa-id="@conversa.Id" data-last-id="@(Model.Mensagens.LastOrDefault()?.Id ?? 0)" data-mode="@conversa.Modo" data-active="@conversa.Ativa.ToString().ToLowerInvariant()" data-responsavel-id="@conversa.ResponsavelUsuarioId" data-paciente-id="@(conversa.PacienteId?.ToString() ?? string.Empty)">
                     @if (!Model.Mensagens.Any())
                     {
                         <div class="empty-state">Ainda não há mensagens nessa conversa.</div>
@@ -250,5 +260,5 @@
 </dialog>
 
 @section Scripts {
-    <script src="~/js/atendimento.js?v=2162"></script>
+    <script src="~/js/atendimento.js?v=2163"></script>
 }

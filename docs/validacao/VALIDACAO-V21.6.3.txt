@@ -1,0 +1,27 @@
+CallMed V21.6.3 — validação estática
+
+IDENTIDADE / IA
+[OK] AgenteUsuarioContexto inclui ConversaAtendimentoId confiável do backend.
+[OK] Contato sem PacienteId é bloqueado para agendar/confirmar/remarcar/cancelar/lista de espera/dados pessoais.
+[OK] identificar_paciente exige CPF válido + data de nascimento válida.
+[OK] Vínculo é feito na conversa real carregada pelo backend.
+[OK] Falha de identificação não revela qual credencial isolada existe.
+[OK] Sucesso de mutação é formatado a partir do resultado real da tool.
+[OK] Central informa visualmente quando o contato não está identificado.
+[OK] Polling detecta mudança de PacienteId e atualiza a tela via reload.
+
+VISUAL
+[OK] design-v2163.css carregado após os estilos legados no app autenticado.
+[OK] design-v2163.css carregado em Login/Register/ForgotPassword/AccessDenied/Logout.
+[OK] design-v2163.css carregado no site público.
+[OK] tema claro/escuro possui tokens próprios.
+[OK] Central possui regras responsivas para desktop/tablet/mobile.
+[OK] formulários, tabelas, cards e botões recebem estilo transversal.
+
+PWA/TWA
+[OK] novo stylesheet incluído em STATIC_ASSETS.
+[OK] CACHE_NAME alterado para invalidar a versão anterior.
+[OK] TWA versionCode 2163 / versionName 21.6.3.
+
+OBSERVAÇÃO
+O ambiente de edição desta release não possui .NET SDK instalado. Portanto, esta validação é estática/estrutural e não substitui `dotnet build` no CI/Visual Studio.

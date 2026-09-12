@@ -16,6 +16,12 @@ public static class AgenteToolDefinitions
                 "Localiza paciente por CPF SOMENTE para funcionário/admin atendendo outra pessoa. Para paciente autenticado, nunca peça CPF: use o paciente padrão do contexto ou consultar_minhas_consultas.",
                 Objeto(["cpf"], ("cpf", String("CPF do paciente, preferencialmente 11 números.")))),
 
+            Funcao("identificar_paciente",
+                "Identifica com segurança um contato externo ainda não vinculado. Use SOMENTE quando o contexto não tiver PacienteId e o próprio contato informar CPF + data de nascimento. A ferramenta valida os dois dados e vincula a conversa ao paciente real; depois do sucesso, peça ao usuário para continuar a operação na próxima mensagem.",
+                Objeto(["cpf", "dataNascimento"],
+                    ("cpf", String("CPF do próprio paciente, com 11 números.")),
+                    ("dataNascimento", String("Data de nascimento do próprio paciente em YYYY-MM-DD.")))),
+
             Funcao("consultar_minhas_consultas",
                 "Lista consultas do paciente autenticado e retorna pacienteId/pacienteNome. O backend já identifica o paciente atual; use esta função para agenda, remarcação ou cancelamento, nunca para pedir CPF do próprio usuário.",
                 Objeto()),

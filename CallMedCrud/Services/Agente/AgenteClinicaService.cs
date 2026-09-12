@@ -165,6 +165,13 @@ public sealed class AgenteClinicaService : IAgenteClinicaService
                     if (string.IsNullOrWhiteSpace(texto))
                         texto = GerarFallbackPeloEstado(sessao);
 
+                    if (usuario.PrecisaIdentificarPaciente &&
+                        PareceDeclararAlteracaoConcluida(texto))
+                    {
+                        texto = MensagemIdentificacaoObrigatoria();
+                        LimparMutacaoPendente(sessao);
+                    }
+
                     LimparSessoesAntigas();
 
                     return new AgenteResposta
@@ -176,6 +183,7 @@ public sealed class AgenteClinicaService : IAgenteClinicaService
 
                 var responseParts =
                     new JsonArray();
+                string? respostaDiretaFerramenta = null;
 
                 foreach (var call in calls)
                 {
@@ -267,6 +275,12 @@ public sealed class AgenteClinicaService : IAgenteClinicaService
                                         }
                                 }
                         });
+
+                    respostaDiretaFerramenta =
+                        CriarRespostaDiretaFerramenta(call.Nome, resultado);
+
+                    if (!string.IsNullOrWhiteSpace(respostaDiretaFerramenta))
+                        break;
                 }
 
                 sessao.Historico.Add(
@@ -275,6 +289,21 @@ public sealed class AgenteClinicaService : IAgenteClinicaService
                         ["role"] = "user",
                         ["parts"] = responseParts
                     });
+
+                if (!string.IsNullOrWhiteSpace(respostaDiretaFerramenta))
+                {
+                    sessao.Historico.Add(
+                        ConteudoTexto("model", respostaDiretaFerramenta));
+
+                    ApararHistorico(sessao.Historico);
+                    LimparSessoesAntigas();
+
+                    return new AgenteResposta
+                    {
+                        Resposta = respostaDiretaFerramenta,
+                        SessionId = sid
+                    };
+                }
 
                 ApararHistorico(sessao.Historico);
             }
@@ -519,7 +548,8 @@ public sealed class AgenteClinicaService : IAgenteClinicaService
             "sim", "s", "ss", "simm", "cin", "cim", "si",
             "confirmo", "confirmado", "confirma", "pode", "pode sim",
             "pode fazer", "pode marcar", "pode agendar", "pode remarcar",
-            "pode cancelar", "pode cadastrar", "isso", "isso mesmo", "ok",
+            "pode cancelar", "pode cadastrar", "agende", "agenda", "marque", "marca",
+            "faca", "faz", "faca isso", "pode fazer isso", "isso", "isso mesmo", "ok",
             "okay", "claro", "beleza", "blz"
         };
 
@@ -533,6 +563,94 @@ public sealed class AgenteClinicaService : IAgenteClinicaService
         var texto = NormalizarTexto(mensagem);
         return texto is "nao" or "n" or "não" or "cancela" or "cancelar" or
             "deixa" or "deixa pra la" or "esquece" or "nao quero";
+    }
+
+    private static string? CriarRespostaDiretaFerramenta(
+        string nome,
+        JsonObject resultado)
+    {
+        if (resultado["identificacaoNecessaria"]?.GetValue<bool?>() == true)
+            return resultado["mensagem"]?.GetValue<string?>() ?? MensagemIdentificacaoObrigatoria();
+
+        if (nome == "identificar_paciente")
+        {
+            if (resultado["sucesso"]?.GetValue<bool?>() == true)
+            {
+                var dados = resultado["dados"] as JsonObject;
+                var paciente = dados?["paciente"]?.GetValue<string?>();
+                return string.IsNullOrWhiteSpace(paciente)
+                    ? "Identidade confirmada. Agora posso continuar o atendimento com segurança. Envie novamente a ação que deseja concluir."
+                    : $"Identidade confirmada para {paciente}. Agora posso continuar o atendimento com segurança. Envie novamente a ação que deseja concluir.";
+            }
+
+            if (resultado["identificacaoFalhou"]?.GetValue<bool?>() == true)
+                return resultado["mensagem"]?.GetValue<string?>();
+        }
+
+        if (resultado["sucesso"]?.GetValue<bool?>() != true)
+            return null;
+
+        var dadosSucesso = resultado["dados"] as JsonObject;
+        if (dadosSucesso is null)
+            return null;
+
+        return nome switch
+        {
+            "agendar_consulta" => FormatarAgendamentoConcluido(dadosSucesso),
+            "confirmar_consulta" => "Presença confirmada com sucesso.",
+            "remarcar_consulta" => FormatarRemarcacaoConcluida(dadosSucesso),
+            "cancelar_consulta" => "Consulta cancelada com sucesso.",
+            _ => null
+        };
+    }
+
+    private static string FormatarAgendamentoConcluido(JsonObject dados)
+    {
+        var paciente = dados["paciente"]?.GetValue<string?>();
+        var medico = dados["medico"]?.GetValue<string?>() ?? "médico selecionado";
+        var data = FormatarData(dados["data"]?.GetValue<string?>() ?? string.Empty);
+        var horario = dados["Horario"]?.GetValue<string?>() ??
+                      dados["horario"]?.GetValue<string?>() ?? string.Empty;
+
+        return string.IsNullOrWhiteSpace(paciente)
+            ? $"Pronto. A consulta com {medico} em {data} às {horario} foi agendada com sucesso."
+            : $"Pronto, {paciente}. Sua consulta com {medico} em {data} às {horario} foi agendada com sucesso.";
+    }
+
+    private static string FormatarRemarcacaoConcluida(JsonObject dados)
+    {
+        var medico = dados["medico"]?.GetValue<string?>() ?? "médico selecionado";
+        var data = FormatarData(dados["data"]?.GetValue<string?>() ?? string.Empty);
+        var horario = dados["Horario"]?.GetValue<string?>() ??
+                      dados["horario"]?.GetValue<string?>() ?? string.Empty;
+        return $"Consulta remarcada com sucesso com {medico} para {data} às {horario}.";
+    }
+
+    private static string MensagemIdentificacaoObrigatoria() =>
+        "Antes de concluir essa ação, preciso identificar o paciente. " +
+        "Se você já possui cadastro na CallMed, envie seu CPF e sua data de nascimento. " +
+        "Se ainda não possui cadastro, crie sua conta no site ou peça atendimento humano.";
+
+    private static bool PareceDeclararAlteracaoConcluida(string texto)
+    {
+        var normalizado = NormalizarTexto(texto);
+        if (normalizado.Length == 0)
+            return false;
+
+        var falaDeAlteracao =
+            normalizado.Contains("agendad", StringComparison.Ordinal) ||
+            normalizado.Contains("remarcad", StringComparison.Ordinal) ||
+            normalizado.Contains("cancelad", StringComparison.Ordinal) ||
+            normalizado.Contains("lista de espera", StringComparison.Ordinal);
+
+        var declaraSucesso =
+            normalizado.Contains("sucesso", StringComparison.Ordinal) ||
+            normalizado.StartsWith("pronto", StringComparison.Ordinal) ||
+            normalizado.Contains("foi agendada", StringComparison.Ordinal) ||
+            normalizado.Contains("foi remarcada", StringComparison.Ordinal) ||
+            normalizado.Contains("foi cancelada", StringComparison.Ordinal);
+
+        return falaDeAlteracao && declaraSucesso;
     }
 
     private static string FormatarResultadoReconsulta(

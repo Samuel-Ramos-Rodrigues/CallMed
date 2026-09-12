@@ -9,6 +9,7 @@
         let currentMode = messages.dataset.mode || '';
         let currentActive = messages.dataset.active === 'true';
         let currentResponsible = messages.dataset.responsavelId || '';
+        let currentPatientId = messages.dataset.pacienteId || '';
         let polling = false;
 
         const formatDate = value => {
@@ -93,11 +94,14 @@
 
                 const data = await response.json();
                 const nextResponsible = data.responsavelUsuarioId || '';
+                const nextPatientId = data.pacienteId == null ? '' : String(data.pacienteId);
 
-                // Atualiza também quando outro atendente assume/transfere a conversa.
+                // Atualiza também quando outro atendente assume/transfere a conversa
+                // ou quando a IA/equipe identifica e vincula o paciente.
                 if ((data.modo && data.modo !== currentMode) ||
                     (typeof data.ativa === 'boolean' && data.ativa !== currentActive) ||
-                    nextResponsible !== currentResponsible) {
+                    nextResponsible !== currentResponsible ||
+                    nextPatientId !== currentPatientId) {
                     window.location.reload();
                     return;
                 }
@@ -105,6 +109,7 @@
                 currentMode = data.modo || currentMode;
                 if (typeof data.ativa === 'boolean') currentActive = data.ativa;
                 currentResponsible = nextResponsible;
+                currentPatientId = nextPatientId;
 
                 const items = Array.isArray(data.mensagens) ? data.mensagens : [];
 

@@ -113,6 +113,7 @@ public sealed class AtendimentoOrquestradorService
                            : null),
             Canal = NomeCanal(entrada.Canal),
             PodeGerenciarOutrosPacientes = false,
+            ConversaAtendimentoId = conversa.Id,
             PacienteId = paciente?.Id,
             PacienteNome = paciente?.Nome,
             PacienteCpfMascarado = paciente is null

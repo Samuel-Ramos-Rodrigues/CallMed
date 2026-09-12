@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v21-6-2-evolution-parser-fix';
+const CACHE_NAME = 'callmed-static-v21-6-3-identity-design';
 const OFFLINE_URL = '/offline.html';
 
 // Somente entrypoints e assets realmente usados. Os CSS de versões antigas foram
@@ -8,6 +8,7 @@ const STATIC_ASSETS = [
     '/css/site.css',
     '/css/public.css',
     '/css/identity.css',
+    '/css/design-v2163.css',
     '/js/theme.js',
     '/js/accessibility.js',
     '/js/mobile-final.js',

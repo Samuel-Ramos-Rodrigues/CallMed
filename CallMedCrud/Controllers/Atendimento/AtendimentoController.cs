@@ -537,6 +537,7 @@ public sealed class AtendimentoController : Controller
             modo = conversa.Modo.ToString(),
             ativa = conversa.Ativa,
             responsavelUsuarioId = conversa.ResponsavelUsuarioId,
+            pacienteId = conversa.PacienteId,
             mensagens
         });
     }
