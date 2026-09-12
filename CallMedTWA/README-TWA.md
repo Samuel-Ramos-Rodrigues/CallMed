@@ -4,8 +4,8 @@ Wrapper Android da PWA CallMed usando Trusted Web Activity.
 
 ## Versão
 
-- `versionCode`: 2163
-- `versionName`: `21.6.3`
+- `versionCode`: 2164
+- `versionName`: `21.6.4`
 - `applicationId`: `com.callmed.app`
 - `minSdk`: 26
 - `targetSdk`: 36

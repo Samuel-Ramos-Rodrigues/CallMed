@@ -9,7 +9,7 @@
     <head>
         <meta charset="utf-8"  />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
-        <meta name="theme-color" content="#eef6f2"  />
+        <meta name="theme-color" content="#eef2ff"  />
         <script>
             (function () {
                 var pref = 'system';
@@ -22,7 +22,7 @@
                 document.documentElement.dataset.theme = dark ? 'dark' : 'light';
                 document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
                 var themeMeta = document.querySelector('meta[name="theme-color"]');
-                if (themeMeta) themeMeta.setAttribute('content', dark ? '#071611' : '#eef6f2');
+                if (themeMeta) themeMeta.setAttribute('content', dark ? '#080b1a' : '#eef2ff');
             })();
         </script>
         <meta name="mobile-web-app-capable" content="yes" />
@@ -33,14 +33,14 @@
         <link rel="manifest" href="~/manifest.json" />
         <link rel="apple-touch-icon" sizes="180x180" href="~/icons/apple-touch-icon.png" />
         <title>Criar conta | CallMed</title>
-        <link rel="stylesheet" href="~/css/identity.css?v=2163"  />
-        <link rel="stylesheet" href="~/css/design-v2163.css?v=2163" />
+        <link rel="stylesheet" href="~/css/identity.css?v=2164"  />
+        <link rel="stylesheet" href="~/css/design-v2164.css?v=2164" />
     </head>
-    <body class="identity-body cm23-design">
+    <body class="identity-body cm24-design cm23-design">
         <main class="identity-shell register-shell">
             <section class="identity-showcase">
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="identity-brand">
-                    <img src="~/images/logo-callmed-horizontal.png?v=2163" alt="CallMed" class="identity-brand-horizontal" />
+                    <img src="~/images/logo-callmed-horizontal.png?v=2164" alt="CallMed" class="identity-brand-horizontal" />
                 </a>
                 <div class="identity-copy">
                     <span class="identity-kicker">Novo paciente</span>
@@ -69,7 +69,7 @@
                         </div>
                     </div>
                 </div>
-                <small style="position:relative;z-index:1;color:#bcd8ce">Cadastro protegido · CallMed</small>
+                <small style="position:relative;z-index:1;color:#bbc3d9">Cadastro protegido · CallMed</small>
             </section>
 
             <section class="identity-panel register-panel">
@@ -188,9 +188,9 @@
                 </div>
             </section>
         </main>
-        <script src="~/js/date-select.js?v=2163"></script>
-        <script src="~/js/identity-register.js?v=2163"></script>
-            <script src="~/js/theme.js?v=2163"></script>
-            <script src="~/js/pwa.js?v=2163"></script>
+        <script src="~/js/date-select.js?v=2164"></script>
+        <script src="~/js/identity-register.js?v=2164"></script>
+            <script src="~/js/theme.js?v=2164"></script>
+            <script src="~/js/pwa.js?v=2164"></script>
     </body>
 </html>

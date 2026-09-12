@@ -1,0 +1,17 @@
+CallMed V21.6.4 — validação estática do redesign
+
+[OK] V21.6.3 preservada como base funcional.
+[OK] Novo design-v2164.css carregado após site.css.
+[OK] Login/Register/ForgotPassword/AccessDenied/Logout carregam identity.css + design-v2164.css.
+[OK] Página pública carrega public.css + design-v2164.css.
+[OK] Paleta visual principal migrada de verde/teal para azul/índigo/ciano.
+[OK] Tema claro e tema escuro possuem tokens próprios.
+[OK] Sidebar, topbar, cards, KPIs, tabelas, formulários e Central de Atendimento receberam overrides globais.
+[OK] Página do paciente e assistente flutuante receberam tratamento visual específico.
+[OK] PWA manifest atualizado para a paleta V21.6.4.
+[OK] Service Worker usa novo cache e inclui design-v2164.css.
+[OK] TWA versionCode 2164 / versionName 21.6.4.
+[OK] Nenhum arquivo CSS carregado contém cores saturadas na faixa verde/teal da identidade anterior.
+
+Observação: validação de compilação .NET depende de ambiente com SDK .NET 8.
+[OK] design-v2163.css permanece apenas como shim de compatibilidade apontando para design-v2164.css.

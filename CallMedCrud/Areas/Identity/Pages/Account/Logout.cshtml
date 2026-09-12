@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
-        <meta name="theme-color" content="#eef6f2"  />
+        <meta name="theme-color" content="#eef2ff"  />
         <script>
             (function () {
                 var pref = 'system';
@@ -21,7 +21,7 @@
                 document.documentElement.dataset.theme = dark ? 'dark' : 'light';
                 document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
                 var themeMeta = document.querySelector('meta[name="theme-color"]');
-                if (themeMeta) themeMeta.setAttribute('content', dark ? '#071611' : '#eef6f2');
+                if (themeMeta) themeMeta.setAttribute('content', dark ? '#080b1a' : '#eef2ff');
             })();
         </script>
         <meta name="mobile-web-app-capable" content="yes" />
@@ -31,14 +31,22 @@
         <meta name="application-name" content="CallMed" />
         <link rel="manifest" href="~/manifest.json" />
         <link rel="apple-touch-icon" sizes="180x180" href="~/icons/apple-touch-icon.png" />
-        <link rel="stylesheet" href="~/css/identity.css?v=2163" />
-        <link rel="stylesheet" href="~/css/design-v2163.css?v=2163" />
+        <link rel="stylesheet" href="~/css/identity.css?v=2164" />
+        <link rel="stylesheet" href="~/css/design-v2164.css?v=2164" />
     
     <title>Saindo | CallMed</title>
 </head>
-<body>
-    <p>Encerrando sua sessão...</p>
-        <script src="~/js/theme.js?v=2163"></script>
-            <script src="~/js/pwa.js?v=2163"></script>
+<body class="identity-body cm24-design cm23-design">
+    <main class="identity-shell" style="grid-template-columns:1fr;max-width:620px;min-height:auto">
+        <section class="identity-panel" style="min-height:420px">
+            <div class="identity-card" style="text-align:center">
+                <img src="~/images/logo-callmed-horizontal.png?v=2164" alt="CallMed" style="width:170px;height:auto;margin:0 auto 28px" />
+                <div class="identity-state-icon" aria-hidden="true">↗</div>
+                <div class="identity-card-header"><h2>Encerrando sua sessão</h2><p>Estamos finalizando seu acesso com segurança.</p></div>
+            </div>
+        </section>
+    </main>
+        <script src="~/js/theme.js?v=2164"></script>
+            <script src="~/js/pwa.js?v=2164"></script>
     </body>
 </html>

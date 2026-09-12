@@ -10,8 +10,8 @@ Esta versão mantém o projeto Android TWA preparado para gerar um **Android App
 - `compileSdk`: **36**
 - `targetSdk`: **36 (Android 16)**
 - `minSdk`: **26 (Android 8)**
-- `versionCode`: **2163**
-- `versionName`: **21.6.3**
+- `versionCode`: **2164**
+- `versionName`: **21.6.4**
 
 > O package name é permanente depois que o app é criado no Play Console. Não crie o app no Play Console com outro package se pretende usar esta base.
 

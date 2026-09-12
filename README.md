@@ -265,7 +265,7 @@ O repositório também inclui um wrapper Android baseado em **Trusted Web Activi
 applicationId: com.callmed.app
 minSdk: 26
 targetSdk: 36
-versionName: 21.6.3
+versionName: 21.6.4
 ```
 
 Arquivos e instruções estão em **[CallMedTWA/README-TWA.md](./CallMedTWA/README-TWA.md)**.
@@ -438,6 +438,7 @@ O projeto inclui, entre outras medidas:
 | [Deploy / Render](./docs/deploy/V21.5.1-RENDER-HTTP500.md) | Correção e configuração para Render |
 | [Play Store](./docs/deploy/PLAY-STORE-PUBLICACAO.md) | Processo de publicação Android |
 | [Validação](./docs/validacao/VALIDACAO.md) | Checklist técnico da release |
+| [Changelog V21.6.4](./docs/CHANGELOG-V21.6.4.md) | Redesign Indigo Horizon e nova identidade visual azul/índigo |
 | [Changelog V21.6.3](./docs/CHANGELOG-V21.6.3.md) | Trava de identidade para canais externos e refatoração visual global |
 | [Changelog V21.6.2](./docs/CHANGELOG-V21.6.2.md) | Parser resiliente do webhook Evolution e fallback para payloads variantes |
 | [Changelog V21.6.1](./docs/CHANGELOG-V21.6.1.md) | Correções Evolution/WhatsApp e diagnóstico do webhook |
