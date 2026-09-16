@@ -27,6 +27,7 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
             var clock = scope.ServiceProvider.GetRequiredService<IClinicaClock>();
             var conversas = scope.ServiceProvider.GetRequiredService<AtendimentoConversaService>();
             var envio = scope.ServiceProvider.GetRequiredService<AtendimentoEnvioService>();
+            var orientacoes = scope.ServiceProvider.GetRequiredService<OrientacoesConsultaService>();
             var agora = clock.Agora;
             var limite = agora.AddHours(26).Date.AddDays(1);
             var consultas = await db.Consultas.Include(c => c.Paciente).Include(c => c.Medico)
@@ -64,8 +65,8 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
                             TelefoneContato = c.Paciente.Telefone,
                             ConvenioInformado = c.Paciente.NomeConvenio,
                             Observacao = tipo24
-                                ? $"Ligar para confirmar a consulta de amanhã ({c.Data:dd/MM} às {c.Horario})."
-                                : $"Ligar sobre a consulta de hoje às {c.Horario}.",
+                                ? $"Ligar para confirmar a consulta de {c.Data:dd/MM} às {c.Horario}."
+                                : $"Ligar sobre a consulta de {c.Data:dd/MM} às {c.Horario}.",
                             CriadoEm = DateTime.UtcNow,
                             AtualizadoEm = DateTime.UtcNow
                         });
@@ -92,8 +93,9 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
                 }
                 var conversa = await conversas.ObterOuCriarAsync(destino.Value.Canal, destino.Value.Identificador, c.PacienteId, "Lembrete de consulta CallMed", ct: ct);
                 var texto = tipo24
-                    ? $"Olá, {c.Paciente.Nome}! Lembrete CallMed: sua consulta com {c.Medico?.Nome} é amanhã, {c.Data:dd/MM}, às {c.Horario}. Responda CONFIRMAR para confirmar presença, REMARCAR para escolher outro horário ou CANCELAR para liberar a vaga."
-                    : $"Olá, {c.Paciente.Nome}! Sua consulta CallMed com {c.Medico?.Nome} será hoje às {c.Horario}. Se estiver tudo certo, responda CONFIRMAR. Se precisar, responda REMARCAR ou CANCELAR.";
+                    ? $"Olá, {c.Paciente.Nome}! Lembrete CallMed: sua consulta com {c.Medico?.Nome} está marcada para {c.Data:dd/MM} às {c.Horario}. Responda CONFIRMAR para confirmar presença, REMARCAR para escolher outro horário ou CANCELAR para liberar a vaga."
+                    : $"Olá, {c.Paciente.Nome}! Sua consulta CallMed com {c.Medico?.Nome} será em {c.Data:dd/MM} às {c.Horario}. Se estiver tudo certo, responda CONFIRMAR. Se precisar, responda REMARCAR ou CANCELAR.";
+                texto += "\n\n" + orientacoes.Texto(c);
                 var msg = await envio.EnviarAsync(conversa, texto, AutorMensagemAtendimento.Sistema, ct: ct);
                 if (msg.Status == StatusMensagemAtendimento.Enviada)
                 {
@@ -131,8 +133,8 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
                 EmailContato = c.Paciente.Email,
                 ConvenioInformado = c.Paciente.NomeConvenio,
                 Observacao = tipo24
-                    ? $"Ligar para confirmar a consulta de amanhã ({c.Data:dd/MM} às {c.Horario})."
-                    : $"Ligar sobre a consulta de hoje às {c.Horario}.",
+                    ? $"Ligar para confirmar a consulta de {c.Data:dd/MM} às {c.Horario}."
+                    : $"Ligar sobre a consulta de {c.Data:dd/MM} às {c.Horario}.",
                 CriadoEm = DateTime.UtcNow,
                 AtualizadoEm = DateTime.UtcNow
             });

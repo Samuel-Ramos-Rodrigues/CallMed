@@ -1,3 +1,5 @@
+> Atualização V22: veja [escopo implementado](ENTREGA-V22.md), [roteiro do piloto](ROTEIRO-HOMOLOGACAO-V22.md) e [validação](validacao/VALIDACAO-V22.md). A aderência funcional não comprova redução real de custos/faltas nem integração com o HIS da empresa; esses resultados dependem de homologação.
+
 # CallMed — solução do desafio de marcação de consultas
 
 ## Objetivo
@@ -42,7 +44,7 @@ Consulta / Ausência / Histórico / Indicadores
 - **Visão integrada:** paciente, histórico, solicitações, consultas e atendimento em uma base única.
 - **Padronização:** triagem, regras de convênio, status e auditoria.
 - **Recursos humanos:** IA auxilia no primeiro contato e o humano assume quando necessário.
-- **Baixa conectividade:** PWA com tela offline sem prometer reserva de vaga sem conexão.
+- **Baixa conectividade:** PWA com fila local protegida para pedidos da recepção, reconciliação autenticada e triagem posterior; não reserva vagas offline.
 - **Integração:** API protegida para HIS/agendas/cadastros legados.
 
 ## Fluxo de triagem

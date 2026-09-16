@@ -10,6 +10,7 @@ public sealed class SolicitacaoAtendimentoConfiguration : IEntityTypeConfigurati
     public void Configure(EntityTypeBuilder<SolicitacaoAtendimento> entity)
     {
         entity.ToTable("SolicitacoesAtendimento");
+        entity.HasIndex(x => x.ChaveContingencia).IsUnique();
         entity.Property(x => x.Canal).HasConversion<string>().HasMaxLength(20);
         entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
         entity.Property(x => x.DataPreferida).HasColumnType("date");

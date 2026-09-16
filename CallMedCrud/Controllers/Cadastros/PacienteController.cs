@@ -39,7 +39,7 @@ public class PacienteController : Controller
 
             query = query.Where(p =>
                 p.Nome.ToLower().Contains(termo) ||
-                p.Email.ToLower().Contains(termo) ||
+                (p.Email != null && p.Email.ToLower().Contains(termo)) ||
                 (!string.IsNullOrEmpty(cpf) && p.Cpf.Contains(cpf)));
         }
 
@@ -93,7 +93,8 @@ public class PacienteController : Controller
         paciente.CriadoEm = DateTime.UtcNow;
         paciente.Ativo = true;
 
-        var usuarioExistente = await _userManager.FindByEmailAsync(paciente.Email);
+        var usuarioExistente = string.IsNullOrWhiteSpace(paciente.Email)
+            ? null : await _userManager.FindByEmailAsync(paciente.Email);
         await using var tx = await _context.Database.BeginTransactionAsync();
 
         if (usuarioExistente is not null)
@@ -133,7 +134,9 @@ public class PacienteController : Controller
         }
 
         TempData["Sucesso"] = usuarioExistente is null
-            ? "Paciente cadastrado. Ele poderá criar a própria senha usando o mesmo CPF e e-mail na tela de cadastro."
+            ? (string.IsNullOrWhiteSpace(paciente.Email)
+                ? "Paciente cadastrado para atendimento presencial ou telefônico. O acesso digital é opcional."
+                : "Paciente cadastrado. Ele poderá criar a própria senha usando o mesmo CPF e e-mail na tela de cadastro.")
             : "Paciente cadastrado e vinculado à conta existente.";
 
         return RedirectToAction(nameof(Index));
@@ -170,12 +173,17 @@ public class PacienteController : Controller
 
         var user = !string.IsNullOrWhiteSpace(atual.UsuarioId)
             ? await _userManager.FindByIdAsync(atual.UsuarioId)
-            : await _userManager.FindByEmailAsync(atual.Email);
+            : string.IsNullOrWhiteSpace(atual.Email) ? null : await _userManager.FindByEmailAsync(atual.Email);
+        if (user is not null && string.IsNullOrWhiteSpace(model.Email))
+        {
+            ModelState.AddModelError(nameof(Paciente.Email), "Este paciente possui acesso digital. Mantenha um e-mail válido para o login.");
+            return View(model);
+        }
         var estavaAtivo = atual.Ativo;
 
         await using var tx = await _context.Database.BeginTransactionAsync();
 
-        if (user is not null &&
+        if (user is not null && !string.IsNullOrWhiteSpace(model.Email) &&
             !string.Equals(atual.Email, model.Email, StringComparison.OrdinalIgnoreCase))
         {
             var outroUsuario = await _userManager.FindByEmailAsync(model.Email);
@@ -285,7 +293,7 @@ public class PacienteController : Controller
 
         var user = !string.IsNullOrWhiteSpace(paciente.UsuarioId)
             ? await _userManager.FindByIdAsync(paciente.UsuarioId)
-            : await _userManager.FindByEmailAsync(paciente.Email);
+            : string.IsNullOrWhiteSpace(paciente.Email) ? null : await _userManager.FindByEmailAsync(paciente.Email);
 
         if (user is not null)
         {
@@ -315,7 +323,7 @@ public class PacienteController : Controller
     {
         paciente.Cpf = CadastroValidator.SomenteNumeros(paciente.Cpf);
         paciente.Nome = paciente.Nome?.Trim() ?? string.Empty;
-        paciente.Email = paciente.Email?.Trim() ?? string.Empty;
+        paciente.Email = string.IsNullOrWhiteSpace(paciente.Email) ? null : paciente.Email.Trim();
         paciente.Telefone = paciente.Telefone?.Trim();
         paciente.DataNascimento = paciente.DataNascimento?.Date;
         paciente.CanalPreferido = paciente.CanalPreferido?.Trim().ToLowerInvariant() switch
@@ -348,6 +356,9 @@ public class PacienteController : Controller
         if (!CadastroValidator.DataNascimentoValida(paciente.DataNascimento, _clock.Hoje))
             ModelState.AddModelError(nameof(Paciente.DataNascimento), "Informe uma data de nascimento válida.");
 
+        if (paciente.CanalPreferido == "Email" && string.IsNullOrWhiteSpace(paciente.Email))
+            ModelState.AddModelError(nameof(Paciente.CanalPreferido), "Informe um e-mail ou escolha outro canal de contato.");
+
         if (paciente.TemConvenio)
         {
             if (string.IsNullOrWhiteSpace(paciente.NomeConvenio))
@@ -364,14 +375,14 @@ public class PacienteController : Controller
             ModelState.AddModelError(nameof(Paciente.Cpf), "Já existe outro paciente cadastrado com esse CPF.");
         }
 
-        if (await _context.Pacientes.AnyAsync(p =>
-                p.Email.ToLower() == paciente.Email.ToLower() &&
+        if (!string.IsNullOrWhiteSpace(paciente.Email) && await _context.Pacientes.AnyAsync(p =>
+                (p.Email != null && p.Email.ToLower() == paciente.Email.ToLower()) &&
                 (!ignorarId.HasValue || p.Id != ignorarId.Value)))
         {
             ModelState.AddModelError(nameof(Paciente.Email), "Já existe outro paciente cadastrado com esse e-mail.");
         }
 
-        if (await _context.Medicos.AnyAsync(m => m.Email != null && m.Email.ToLower() == paciente.Email.ToLower()))
+        if (!string.IsNullOrWhiteSpace(paciente.Email) && await _context.Medicos.AnyAsync(m => m.Email != null && m.Email.ToLower() == paciente.Email.ToLower()))
         {
             ModelState.AddModelError(nameof(Paciente.Email), "Esse e-mail está reservado para um acesso médico.");
         }

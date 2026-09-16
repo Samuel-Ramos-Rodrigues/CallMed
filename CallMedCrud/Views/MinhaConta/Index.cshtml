@@ -44,4 +44,5 @@
         <div class="cm21-a11y-read-actions"><button type="button" class="btn secondary" data-a11y-read>🔊 Ouvir esta tela</button><button type="button" class="btn secondary" data-a11y-stop-read>Parar leitura</button></div>
     </section>
     <section class="cm25-panel cm19-card cm19-profile-danger"><div><strong>Remover meu acesso</strong><p>Seu histórico de consultas será preservado, mas o acesso ficará inativo.</p></div><form asp-action="Delete" method="post" onsubmit="return confirm('Deseja realmente remover seu acesso?');"><button class="btn secondary" type="submit">Remover acesso</button></form></section>
+<p><a class="btn secondary" asp-controller="HistoricoExames" asp-action="Index" asp-route-pacienteId="@Model.Id">Histórico de exames realizados</a></p>
 </section>

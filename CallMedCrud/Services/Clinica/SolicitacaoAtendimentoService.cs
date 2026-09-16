@@ -33,7 +33,9 @@ public sealed class SolicitacaoAtendimentoService
         string? telefoneContato = null,
         string? emailContato = null,
         long? conversaId = null,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        Guid? chaveContingencia = null,
+        DateTime? capturadaEm = null)
     {
         Paciente? paciente = null;
         if (pacienteId.HasValue)
@@ -56,6 +58,8 @@ public sealed class SolicitacaoAtendimentoService
             EspecialidadeId = especialidadeId,
             MedicoId = medicoId,
             ConversaAtendimentoId = conversaId,
+            ChaveContingencia = chaveContingencia,
+            RecebidaNoServidorEm = chaveContingencia.HasValue ? DateTime.UtcNow : null,
             Canal = canal,
             Status = StatusSolicitacaoAtendimento.Nova,
             NomeContato = Limitar(nomeContato ?? paciente?.Nome, 160),
@@ -65,7 +69,7 @@ public sealed class SolicitacaoAtendimentoService
             DataPreferida = dataPreferida?.Date,
             PeriodoPreferido = NormalizarPeriodo(periodo),
             Observacao = Limitar(observacao, 1200),
-            CriadoEm = DateTime.UtcNow,
+            CriadoEm = capturadaEm ?? DateTime.UtcNow,
             AtualizadoEm = DateTime.UtcNow
         };
 

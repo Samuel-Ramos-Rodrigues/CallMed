@@ -626,7 +626,7 @@ public sealed class AtendimentoController : Controller
             {
                 Id = p.Id,
                 Nome = p.Nome,
-                Email = p.Email,
+                Email = p.Email ?? string.Empty,
                 Telefone = p.Telefone,
                 PossuiContaWeb = p.UsuarioId != null && p.UsuarioId != ""
             })

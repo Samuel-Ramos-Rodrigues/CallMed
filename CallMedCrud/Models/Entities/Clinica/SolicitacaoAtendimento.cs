@@ -8,6 +8,9 @@ public class SolicitacaoAtendimento
 {
     public int Id { get; set; }
 
+    public Guid? ChaveContingencia { get; set; }
+    public DateTime? RecebidaNoServidorEm { get; set; }
+
     public int? PacienteId { get; set; }
     public Paciente? Paciente { get; set; }
 

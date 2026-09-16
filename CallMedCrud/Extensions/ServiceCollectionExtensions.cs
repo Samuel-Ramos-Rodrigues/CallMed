@@ -92,6 +92,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AuditoriaService>();
         services.AddScoped<SolicitacaoAtendimentoService>();
         services.AddScoped<AgendamentoService>();
+        services.AddScoped<OrientacoesConsultaService>();
         services.AddScoped<UsuarioVinculoService>();
 
         services.AddHostedService<AgendaRenovacaoBackgroundService>();
@@ -163,6 +164,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<DatabaseSchemaV15Initializer>();
         services.AddScoped<DatabaseSchemaV16Initializer>();
         services.AddScoped<DatabaseSchemaV21Initializer>();
+        services.AddScoped<DatabaseSchemaV22Initializer>();
         return services;
     }
 

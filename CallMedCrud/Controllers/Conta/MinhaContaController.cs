@@ -81,7 +81,7 @@ public class MinhaContaController : Controller
 
         if (await _context.Pacientes.AnyAsync(p =>
                 p.Id != atual.Id &&
-                p.Email.ToLower() == model.Email.ToLower()))
+                (p.Email != null && p.Email.ToLower() == model.Email.ToLower())))
         {
             ModelState.AddModelError(nameof(model.Email), "E-mail já cadastrado.");
             return View(model);
@@ -176,7 +176,7 @@ public class MinhaContaController : Controller
         Id = paciente.Id,
         Nome = paciente.Nome,
         Cpf = paciente.Cpf,
-        Email = paciente.Email,
+        Email = paciente.Email ?? string.Empty,
         Telefone = paciente.Telefone,
         DataNascimento = paciente.DataNascimento,
         TemConvenio = paciente.TemConvenio,

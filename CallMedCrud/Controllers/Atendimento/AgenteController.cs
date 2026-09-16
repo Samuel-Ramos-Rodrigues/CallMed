@@ -179,7 +179,7 @@ public class AgenteController : Controller
             .TakeLast(20)
             .Select(h => new MensagemHistoricoAgente
             {
-                Papel = (h.Papel ?? string.Empty).Length > 20 ? h.Papel[..20] : h.Papel,
+                Papel = h.Papel is { Length: > 20 } ? h.Papel[..20] : h.Papel ?? string.Empty,
                 Texto = h.Texto.Length > 700 ? h.Texto[..700] : h.Texto
             })
             .ToList();

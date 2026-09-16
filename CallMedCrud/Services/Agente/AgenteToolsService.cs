@@ -606,7 +606,8 @@ public sealed class AgenteToolsService
             consulta.Horario,
             consulta.Status,
             consulta.TipoPagamento,
-            consulta.ConvenioUsado
+            consulta.ConvenioUsado,
+            orientacoes = new OrientacoesConsultaService(_configuration).Obter(consulta)
         });
     }
 
@@ -815,7 +816,7 @@ public sealed class AgenteToolsService
             return Falha("Nome inválido.");
         if (!CadastroValidator.CpfValido(cpf))
             return Falha("CPF inválido.");
-        if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
+        if (!string.IsNullOrWhiteSpace(email) && !new System.ComponentModel.DataAnnotations.EmailAddressAttribute().IsValid(email))
             return Falha("E-mail inválido.");
         if (!CadastroValidator.DataNascimentoValida(dataNascimento, _clock.Hoje))
             return Falha("Data de nascimento inválida.");
@@ -831,12 +832,12 @@ public sealed class AgenteToolsService
 
         if (await _context.Pacientes.AnyAsync(p => p.Cpf == cpf, ct))
             return Falha("CPF já cadastrado.");
-        if (await _context.Pacientes.AnyAsync(p => p.Email.ToLower() == email, ct))
+        if (await _context.Pacientes.AnyAsync(p => (p.Email != null && p.Email != null && p.Email.ToLower() == email), ct))
             return Falha("E-mail já cadastrado.");
         if (await _context.Medicos.AnyAsync(m => m.Email != null && m.Email.ToLower() == email, ct))
             return Falha("Esse e-mail está reservado para um acesso médico.");
 
-        var user = await _userManager.FindByEmailAsync(email);
+        var user = string.IsNullOrWhiteSpace(email) ? null : await _userManager.FindByEmailAsync(email);
         if (user is not null)
         {
             if (await _userManager.IsInRoleAsync(user, "Funcionario") ||
@@ -859,7 +860,7 @@ public sealed class AgenteToolsService
             UsuarioId = user?.Id,
             Nome = nome,
             Cpf = cpf,
-            Email = email,
+            Email = string.IsNullOrWhiteSpace(email) ? null : email,
             Telefone = string.IsNullOrWhiteSpace(telefone) ? null : telefone,
             DataNascimento = dataNascimento,
             TemConvenio = temConvenio,
@@ -905,7 +906,9 @@ public sealed class AgenteToolsService
             paciente.NomeConvenio,
             contaJaExistia = user is not null,
             proximoPasso = user is null
-                ? "O paciente deve usar a tela de cadastro do site com o mesmo CPF/e-mail para criar a própria senha."
+                ? (string.IsNullOrWhiteSpace(paciente.Email)
+                    ? "Cadastro presencial concluído. Acesso digital é opcional; a recepção pode conferir a identidade e adicionar e-mail depois."
+                    : "O paciente pode usar a tela de cadastro do site com o mesmo CPF/e-mail para criar a própria senha.")
                 : "Conta existente vinculada ao cadastro."
         });
     }
@@ -942,7 +945,7 @@ public sealed class AgenteToolsService
             var email = usuario.Email.Trim().ToLowerInvariant();
             return await _context.Pacientes
                 .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Ativo && p.Email.ToLower() == email, ct);
+                .FirstOrDefaultAsync(p => p.Ativo && p.Email != null && p.Email.ToLower() == email, ct);
         }
 
         return null;

@@ -1,10 +1,13 @@
-const CACHE_NAME = 'callmed-static-v21-6-5-aurora-ui';
+const CACHE_NAME = 'callmed-static-v22-inclusao-contingencia';
 const OFFLINE_URL = '/offline.html';
 
 // Somente entrypoints e assets realmente usados. Os CSS de versões antigas foram
 // consolidados em site.css/public.css/identity.css na V21.3.
 const STATIC_ASSETS = [
     OFFLINE_URL,
+    '/contingencia.html',
+    '/js/contingencia.js',
+    '/css/contingencia.css',
     '/css/site.css',
     '/css/public.css',
     '/css/identity.css',
@@ -34,7 +37,7 @@ const DYNAMIC_PREFIXES = [
     '/FuncionarioPainel', '/Medico', '/MedicoAcesso', '/MedicoPainel', '/Especialidade',
     '/Disponibilidade', '/Disponibilidades', '/MinhaConta', '/Atendimento', '/Agenda',
     '/ListaEspera', '/Confirmacoes', '/Configuracoes', '/Integracoes', '/Solicitacoes',
-    '/Convenios', '/Auditoria', '/Relatorios'
+    '/Convenios', '/Auditoria', '/Relatorios', '/HistoricoExames'
 ];
 
 const isDynamicPath = pathname => DYNAMIC_PREFIXES.some(prefix => pathname.startsWith(prefix));
@@ -83,7 +86,8 @@ self.addEventListener('fetch', event => {
             try {
                 return await fetch(request);
             } catch {
-                return (await caches.match(OFFLINE_URL)) || Response.error();
+                const fallback = url.pathname === '/contingencia.html' ? '/contingencia.html' : OFFLINE_URL;
+                return (await caches.match(fallback)) || Response.error();
             }
         })());
         return;

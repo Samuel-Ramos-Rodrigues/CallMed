@@ -338,9 +338,9 @@ public sealed class AtendimentoWebhookController : ControllerBase
             return false;
         }
 
-        var header =
-            Request.Headers["X-MKSAN-Webhook-Secret"]
-                .ToString();
+        var header = Request.Headers["X-CallMed-Webhook-Secret"].ToString();
+        if (string.IsNullOrWhiteSpace(header))
+            header = Request.Headers["X-MKSAN-Webhook-Secret"].ToString();
 
         var recebido =
             !string.IsNullOrWhiteSpace(header)

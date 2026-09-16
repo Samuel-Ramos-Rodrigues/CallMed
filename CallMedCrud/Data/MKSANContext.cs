@@ -11,6 +11,7 @@ public class MKSANContext : IdentityDbContext<Usuario>
     {
     }
 
+    public DbSet<ExameHistorico> ExamesHistorico => Set<ExameHistorico>();
     public DbSet<Paciente> Pacientes => Set<Paciente>();
     public DbSet<Funcionario> Funcionarios => Set<Funcionario>();
     public DbSet<Medico> Medicos => Set<Medico>();

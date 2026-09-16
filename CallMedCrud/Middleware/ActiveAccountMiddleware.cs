@@ -37,7 +37,7 @@ public sealed class ActiveAccountMiddleware
             ativo = await db.Pacientes.AsNoTracking().AnyAsync(p =>
                 p.Ativo &&
                 ((!string.IsNullOrWhiteSpace(userId) && p.UsuarioId == userId) ||
-                 (p.UsuarioId == null && email != null && p.Email.ToLower() == email.ToLower())));
+                 (p.UsuarioId == null && email != null && p.Email != null && p.Email.ToLower() == email.ToLower())));
         }
         else if (context.User.IsInRole("Admin"))
         {

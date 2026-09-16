@@ -38,7 +38,7 @@ public sealed class UsuarioVinculoService
             return null;
 
         var paciente = await _context.Pacientes
-            .FirstOrDefaultAsync(p => p.Email.ToLower() == email.ToLower(), ct);
+            .FirstOrDefaultAsync(p => (p.Email != null && p.Email.ToLower() == email.ToLower()), ct);
 
         if (paciente is not null &&
             string.IsNullOrWhiteSpace(paciente.UsuarioId) &&

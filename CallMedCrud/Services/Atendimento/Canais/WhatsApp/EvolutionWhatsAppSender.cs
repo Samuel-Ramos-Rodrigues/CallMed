@@ -28,9 +28,43 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
 
     public bool Configurado =>
         _options.Enabled &&
-        Uri.TryCreate(_options.BaseUrl, UriKind.Absolute, out _) &&
+        Uri.TryCreate(_options.BaseUrl, UriKind.Absolute, out var url) &&
+        (url.Scheme == Uri.UriSchemeHttp || url.Scheme == Uri.UriSchemeHttps) &&
         !string.IsNullOrWhiteSpace(_options.ApiKey) &&
         !string.IsNullOrWhiteSpace(_options.InstanceName);
+
+    public async Task<(bool Conectado, string Mensagem)> VerificarConexaoAsync(CancellationToken ct = default)
+    {
+        if (!Configurado) return (false, "Configure URL, chave e nome da instância da Evolution no servidor.");
+        using var limite = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        limite.CancelAfter(TimeSpan.FromSeconds(8));
+        using var request = new HttpRequestMessage(HttpMethod.Get,
+            $"{_options.BaseUrl.TrimEnd('/')}/instance/connectionState/{Uri.EscapeDataString(_options.InstanceName)}");
+        request.Headers.TryAddWithoutValidation("apikey", _options.ApiKey);
+        try
+        {
+            using var response = await _http.SendAsync(request, limite.Token);
+            if (!response.IsSuccessStatusCode)
+                return (false, $"Evolution respondeu HTTP {(int)response.StatusCode}. Confira a chave e a instância.");
+            using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync(limite.Token));
+            var root = json.RootElement;
+            if (root.ValueKind != JsonValueKind.Object ||
+                !root.TryGetProperty("instance", out var instance) || instance.ValueKind != JsonValueKind.Object ||
+                !instance.TryGetProperty("state", out var state) || state.ValueKind != JsonValueKind.String)
+                return (false, "Evolution respondeu, mas o estado da instância não foi reconhecido.");
+            return string.Equals(state.GetString(), "open", StringComparison.OrdinalIgnoreCase)
+                ? (true, "WhatsApp conectado à instância. O recebimento do webhook ainda deve ser testado.")
+                : (false, "A instância está desconectada ou conectando. Confira o QR Code no painel da Evolution.");
+        }
+        catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+        {
+            return (false, "Evolution não respondeu em até 8 segundos.");
+        }
+        catch (Exception ex) when (ex is HttpRequestException or JsonException)
+        {
+            return (false, "Não foi possível consultar a Evolution. Confira o endereço e a rede do servidor.");
+        }
+    }
 
     public async Task<CanalEnvioResultado> EnviarAsync(
         string destinatario,

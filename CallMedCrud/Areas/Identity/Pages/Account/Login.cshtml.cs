@@ -118,7 +118,7 @@ public class LoginModel : PageModel
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p =>
                     p.UsuarioId == user.Id ||
-                    p.Email.ToLower() == email.ToLower());
+                    (p.Email != null && p.Email.ToLower() == email.ToLower()));
 
             if (paciente is null || !paciente.Ativo)
                 return LoginInvalido();

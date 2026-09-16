@@ -386,3 +386,8 @@ CallMedTWA/app/release.keystore
 CallMedTWA/keystore.properties
 CallMedTWA/*.jks
 CallMedTWA/*.keystore
+
+# CallMed: credenciais e dados de homologacao local
+.env.evolution
+qr-evolution.html
+**/test-results/

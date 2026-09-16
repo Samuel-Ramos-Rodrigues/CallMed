@@ -4,6 +4,11 @@
 
 <h1 align="center">CallMed</h1>
 
+> **V22 — inclusão e continuidade do atendimento.** Cadastro presencial sem e-mail, fila offline protegida, reconciliação com triagem, orientações/comprovante, histórico de exames e diagnóstico da Evolution.
+>
+> [Entrega e atualização do banco](docs/ENTREGA-V22.md) · [Evolution junto do projeto](docs/integracoes/EVOLUTION-NO-PROPRIO-PROJETO.md) · [Roteiro de homologação e custos](docs/ROTEIRO-HOMOLOGACAO-V22.md) · [Validação executada](docs/validacao/VALIDACAO-V22.md)
+
+
 <p align="center">
   <strong>Todos os canais. Uma única agenda.</strong>
 </p>

@@ -1,0 +1,11 @@
+@model Consulta
+@inject MKSANCrud.Services.Clinica.OrientacoesConsultaService Orientacoes
+<section class="cm25-panel v16-card" aria-labelledby="orientacoes-title">
+    <h2 id="orientacoes-title">Prepare-se para a consulta</h2>
+    <ul>
+        @foreach (var item in Orientacoes.Obter(Model))
+        {
+            <li>@item</li>
+        }
+    </ul>
+</section>

@@ -62,7 +62,7 @@ public class MedicoAcessoController : Controller
             return View(model);
         }
 
-        if (await _context.Pacientes.AnyAsync(p => p.Email.ToLower() == email) ||
+        if (await _context.Pacientes.AnyAsync(p => (p.Email != null && p.Email.ToLower() == email)) ||
             await _context.Funcionarios.AnyAsync(f => f.Email.ToLower() == email))
         {
             ModelState.AddModelError(nameof(model.Email), "Esse e-mail já pertence a um paciente ou funcionário.");

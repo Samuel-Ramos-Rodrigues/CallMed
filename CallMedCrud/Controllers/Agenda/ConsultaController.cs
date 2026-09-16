@@ -304,9 +304,9 @@ public class ConsultaController : Controller
         }
 
         TempData["Sucesso"] = resultado.Mensagem;
-        if (solicitacaoId.HasValue && !ehPaciente)
-            return RedirectToAction("Triagem", "Solicitacoes", new { id = solicitacaoId.Value });
-        return RedirectToAction(nameof(Index));
+        return resultado.Consulta is not null
+            ? RedirectToAction(nameof(Details), new { id = resultado.Consulta.Id })
+            : RedirectToAction(nameof(Index));
     }
 
     [Authorize(Roles = "Funcionario,Admin")]
@@ -431,7 +431,7 @@ public class ConsultaController : Controller
         if (resultado.Consulta is not null)
             await _auditoria.RegistrarAsync("Remarcar", "Consulta", id, $"Consulta remarcada para {resultado.Consulta.Data:dd/MM/yyyy} às {resultado.Consulta.Horario}.", ct: HttpContext.RequestAborted);
         TempData["Sucesso"] = resultado.Mensagem + " O médico foi mantido.";
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Details), new { id });
     }
 
     [HttpPost]

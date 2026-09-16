@@ -125,7 +125,13 @@ public class RegisterModel : PageModel
             .FirstOrDefaultAsync(p => p.Cpf == cpf);
 
         var pacienteEmail = await _context.Pacientes
-            .FirstOrDefaultAsync(p => p.Email.ToLower() == email.ToLower());
+            .FirstOrDefaultAsync(p => (p.Email != null && p.Email.ToLower() == email.ToLower()));
+
+        if (pacienteCpf is not null && string.IsNullOrWhiteSpace(pacienteCpf.Email))
+        {
+            ModelState.AddModelError("Input.Cpf", "Você já possui cadastro presencial. Peça à recepção para conferir sua identidade e adicionar seu e-mail antes de criar o acesso.");
+            return Page();
+        }
 
         if (pacienteCpf is not null &&
             !string.Equals(pacienteCpf.Email, email, StringComparison.OrdinalIgnoreCase))

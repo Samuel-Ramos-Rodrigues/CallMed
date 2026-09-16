@@ -19,11 +19,10 @@ public class Paciente
     [StringLength(11, MinimumLength = 11)]
     public string Cpf { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Informe o e-mail.")]
     [EmailAddress(ErrorMessage = "Informe um e-mail válido.")]
     [StringLength(256)]
     [Display(Name = "E-mail")]
-    public string Email { get; set; } = string.Empty;
+    public string? Email { get; set; }
 
     [NotMapped]
     [DataType(DataType.Password)]

@@ -1,0 +1,7 @@
+@media print {
+    body * { visibility: hidden; }
+    .comprovante-consulta, .comprovante-consulta * { visibility: visible; }
+    .comprovante-consulta { position: absolute; left: 0; top: 0; width: 100%; background: white!important; color: black!important; }
+    .comprovante-consulta .cm25-sticky-actions, .comprovante-consulta .cm25-sticky-actions * { display: none!important; }
+    .comprovante-consulta section { break-inside: avoid; box-shadow: none!important; }
+}

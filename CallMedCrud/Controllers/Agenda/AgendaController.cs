@@ -76,7 +76,7 @@ public sealed class AgendaController : Controller
             : await _context.Disponibilidades
                 .AsNoTracking()
                 .Include(d => d.Medico)!
-                    .ThenInclude(m => m.EspecialidadeCadastro)
+                    .ThenInclude(m => m!.EspecialidadeCadastro)
                 .Include(d => d.AgendaExcecao)
                 .Where(d =>
                     ids.Contains(d.MedicoId) &&
@@ -94,7 +94,7 @@ public sealed class AgendaController : Controller
                 .AsNoTracking()
                 .Include(c => c.Paciente)
                 .Include(c => c.Medico)!
-                    .ThenInclude(m => m.EspecialidadeCadastro)
+                    .ThenInclude(m => m!.EspecialidadeCadastro)
                 .Where(c =>
                     ids.Contains(c.MedicoId) &&
                     c.Data.Date >= inicio &&

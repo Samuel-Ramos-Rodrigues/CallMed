@@ -29,7 +29,7 @@ public sealed class AtendimentoIdentidadeService
             return await _context.Pacientes
                 .AsNoTracking()
                 .FirstOrDefaultAsync(
-                    p => p.Ativo && p.Email.ToLower() == email,
+                    p => p.Ativo && p.Email != null && p.Email.ToLower() == email,
                     ct);
         }
 

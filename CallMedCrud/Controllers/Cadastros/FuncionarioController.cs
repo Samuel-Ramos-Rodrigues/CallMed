@@ -59,7 +59,7 @@ public class FuncionarioController : Controller
         if (await _context.Funcionarios.AnyAsync(f => f.Email.ToLower() == funcionario.Email.ToLower()))
             ModelState.AddModelError(nameof(Funcionario.Email), "E-mail já cadastrado.");
         if (await _context.Medicos.AnyAsync(m => m.Email != null && m.Email.ToLower() == funcionario.Email.ToLower()) ||
-            await _context.Pacientes.AnyAsync(p => p.Email.ToLower() == funcionario.Email.ToLower()))
+            await _context.Pacientes.AnyAsync(p => (p.Email != null && p.Email.ToLower() == funcionario.Email.ToLower())))
             ModelState.AddModelError(nameof(Funcionario.Email), "Esse e-mail já pertence a um médico ou paciente.");
 
         if (await _userManager.FindByEmailAsync(funcionario.Email) is not null)
@@ -150,7 +150,7 @@ public class FuncionarioController : Controller
         }
 
         if (await _context.Medicos.AnyAsync(m => m.Email != null && m.Email.ToLower() == model.Email.ToLower()) ||
-            await _context.Pacientes.AnyAsync(p => p.Email.ToLower() == model.Email.ToLower()))
+            await _context.Pacientes.AnyAsync(p => (p.Email != null && p.Email.ToLower() == model.Email.ToLower())))
         {
             ModelState.AddModelError(nameof(Funcionario.Email), "Esse e-mail já pertence a um médico ou paciente.");
         }

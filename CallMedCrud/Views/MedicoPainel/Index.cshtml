@@ -49,7 +49,7 @@
                     {
                         <div class="doctor-timeline-row">
                             <div class="doctor-time-dot"><strong>@c.Horario</strong><i></i></div>
-                            <div class="doctor-patient-v16"><strong>@c.Paciente?.Nome</strong><small>@c.Status</small></div>
+                            <div class="doctor-patient-v16"><strong>@c.Paciente?.Nome</strong><small>@c.Status</small><a asp-controller="HistoricoExames" asp-action="Index" asp-route-pacienteId="@c.PacienteId">Exames realizados</a></div>
                             <div class="doctor-actions-v16">
                                 @if (c.Status == MKSANCrud.Models.ConsultaStatus.Pendente)
                                 { <form asp-action="Confirmar" method="post"><input type="hidden" name="consultaId" value="@c.Id"/><button class="btn small" type="submit">Confirmar</button></form> }

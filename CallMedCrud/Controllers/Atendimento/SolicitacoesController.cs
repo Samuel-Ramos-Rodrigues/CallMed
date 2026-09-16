@@ -63,6 +63,52 @@ public sealed class SolicitacoesController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    public IActionResult Contingencia() => View();
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [RequestSizeLimit(16_384)]
+    public async Task<IActionResult> ImportarContingencia(
+        [FromBody] ContingenciaImportacaoViewModel model, CancellationToken ct)
+    {
+        if (model is null) return BadRequest(new { mensagem = "Pedido inválido." });
+        if (model.Chave == Guid.Empty)
+            ModelState.AddModelError(nameof(model.Chave), "Protocolo inválido.");
+        if (string.IsNullOrWhiteSpace(model.Nome) || string.IsNullOrWhiteSpace(model.Especialidade))
+            ModelState.AddModelError(string.Empty, "Informe o nome e a especialidade desejada.");
+        if (model.CapturadaEm == default || model.CapturadaEm > DateTimeOffset.UtcNow.AddMinutes(5))
+            ModelState.AddModelError(nameof(model.CapturadaEm), "Confira a data e a hora do dispositivo.");
+        if (!ModelState.IsValid)
+            return BadRequest(new { mensagem = "Revise o pedido.", erros = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) });
+
+        // A mesma chave nunca cria duas solicitações, mesmo em abas simultâneas ou
+        // quando a resposta se perde depois do commit. O índice é a segunda proteção.
+        await using var tx = await _context.Database.BeginTransactionAsync(ct);
+        var chave = model.Chave.ToString("D");
+        await _context.Database.ExecuteSqlInterpolatedAsync(
+            $"SELECT pg_advisory_xact_lock(hashtextextended({chave}, 22))", ct);
+        var existente = await _context.SolicitacoesAtendimento.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.ChaveContingencia == model.Chave, ct);
+        if (existente is not null)
+        {
+            await tx.CommitAsync(ct);
+            return Ok(new { id = existente.Id, chave = model.Chave, mensagem = "Pedido já recebido anteriormente." });
+        }
+
+        var capturada = model.CapturadaEm.UtcDateTime;
+        if (capturada > DateTime.UtcNow) capturada = DateTime.UtcNow;
+        var item = await _service.CriarAsync(
+            model.Canal == "Telefone" ? CanalAtendimento.Telefone : CanalAtendimento.Presencial,
+            null, null, null, model.DataPreferida, model.Periodo,
+            $"Pedido registrado durante contingência. Especialidade solicitada: {model.Especialidade.Trim()}. Conferir cadastro, cobertura e disponibilidade antes de agendar.",
+            model.Nome.Trim(), model.Telefone, model.Email, ct: ct,
+            chaveContingencia: model.Chave, capturadaEm: capturada);
+        await tx.CommitAsync(ct);
+        return Ok(new { id = item.Id, chave = model.Chave, mensagem = "Pedido recebido para triagem. Nenhuma vaga foi reservada." });
+    }
+
+    [HttpGet]
     public async Task<IActionResult> Create(CancellationToken ct)
     {
         await PrepararSeletoresAsync(ct);

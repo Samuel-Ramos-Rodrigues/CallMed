@@ -55,8 +55,9 @@
     <div class="patient-form-section-body">
         <div class="form-grid">
             <div class="field">
-                <label asp-for="Email">E-mail</label>
-                <input asp-for="Email" autocomplete="email" placeholder="paciente@email.com" />
+                <label asp-for="Email">E-mail (opcional sem acesso digital)</label>
+                <input asp-for="Email" autocomplete="email" placeholder="Preencha se o paciente utilizar e-mail" aria-describedby="email-ajuda" />
+                <small id="email-ajuda">O atendimento presencial e telefônico não exige conta. Para criar acesso depois, a recepção deve conferir a identidade e adicionar o e-mail.</small>
                 <span asp-validation-for="Email" class="validation"></span>
             </div>
 

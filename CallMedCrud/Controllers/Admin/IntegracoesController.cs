@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MKSANCrud.Data;
+using MKSANCrud.Services.Atendimento.Canais.WhatsApp;
 
 namespace MKSANCrud.Controllers;
 
@@ -15,6 +16,15 @@ public sealed class IntegracoesController : Controller
     {
         _configuration = configuration;
         _context = context;
+    }
+
+    [HttpGet]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    public async Task<IActionResult> EvolutionStatus(
+        [FromServices] EvolutionWhatsAppSender evolution, CancellationToken ct)
+    {
+        var resultado = await evolution.VerificarConexaoAsync(ct);
+        return Json(new { conectado = resultado.Conectado, mensagem = resultado.Mensagem });
     }
 
     [HttpGet]

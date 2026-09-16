@@ -99,10 +99,10 @@ public static class AgenteToolDefinitions
 
             Funcao("cadastrar_paciente",
                 "PREPARA ou cadastra somente o registro administrativo do paciente. NÃO recebe, solicita nem cria senha. Use apenas para funcionário/admin. Chame antes da confirmação para registrar o payload e novamente, com os MESMOS dados, após o usuário confirmar. Se ainda não houver conta, o próprio paciente cria sua senha na tela de cadastro usando o mesmo CPF/e-mail.",
-                Objeto(["nome", "cpf", "email", "temConvenio"],
+                Objeto(["nome", "cpf", "temConvenio"],
                     ("nome", String("Nome completo.")),
                     ("cpf", String("CPF válido com 11 números.")),
-                    ("email", String("E-mail válido que o paciente poderá usar no login.")),
+                    ("email", String("Opcional: e-mail válido ou string vazia para atendimento sem acesso digital.")),
                     ("telefone", String("Telefone ou string vazia.")),
                     ("dataNascimento", String("Data YYYY-MM-DD ou string vazia.")),
                     ("temConvenio", Boolean("true se possui convênio.")),
