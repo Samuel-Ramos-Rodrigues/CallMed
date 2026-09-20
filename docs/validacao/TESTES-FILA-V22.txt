@@ -1,0 +1,9 @@
+Saída registrada na execução de 15/09/2026 (DOM e rede simulados):
+PASS cifra AES-GCM sem contato legível no armazenamento
+PASS recuperação após recarga e senha inválida preservam dados
+PASS resposta perdida preserva pedido; reenvio mantém protocolo e remove só após confirmação
+PASS acesso negado conserva pedido local
+PASS aba desatualizada não sobrescreve a fila
+PASS falha de armazenamento não apaga nem confirma gravação
+PASS bloqueio limpa dados da tela e permite recuperação
+PASS service worker usa formulário público offline e não guarda página de paciente

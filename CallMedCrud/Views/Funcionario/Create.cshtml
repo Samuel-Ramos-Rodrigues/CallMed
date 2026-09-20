@@ -1,0 +1,14 @@
+@model Funcionario
+@{ ViewData["Title"] = "Novo funcionário"; }
+<section class="cm25-screen cm25-page" data-cm25-view="Funcionario/Create.cshtml">
+    <header class="cm25-page-hero">
+        <div class="cm25-hero-mark"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#team"></use></svg></div>
+        <div class="cm25-hero-copy"><span class="cm25-kicker">EQUIPE · NOVO ACESSO</span><h1>Cadastrar funcionário</h1><p>Crie o perfil da equipe e defina os dados usados no acesso à CallMed.</p></div>
+        <div class="cm25-hero-actions"><a class="btn secondary" asp-action="Index">Voltar para equipe</a></div>
+    </header>
+    <form asp-action="Create" method="post" class="cm25-form-layout">
+        <div class="cm25-form-main cm25-form-card"><partial name="_Form" model="Model" /></div>
+        <aside class="cm25-form-aside"><div class="cm25-aside-card"><span>01</span><h2>Acesso da equipe</h2><p>Use um e-mail válido. O cargo define como o funcionário será apresentado no sistema.</p></div><div class="cm25-aside-card subtle"><strong>Dica</strong><p>Prefira contas individuais para manter a auditoria confiável.</p></div></aside>
+        <div class="cm25-sticky-actions"><span>Revise os dados antes de criar o acesso.</span><div><a class="btn secondary" asp-action="Index">Cancelar</a><button class="btn" type="submit">Cadastrar funcionário</button></div></div>
+    </form>
+</section>

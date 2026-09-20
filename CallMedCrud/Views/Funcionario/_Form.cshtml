@@ -1,0 +1,13 @@
+@model Funcionario
+<div asp-validation-summary="ModelOnly" class="validation"></div>
+<div class="cm25-form-section-title"><span>01</span><div><h2>Dados de acesso</h2><p>Informações usadas para identificar o integrante da equipe.</p></div></div>
+<div class="form-grid cm25-form-grid">
+    <div class="field full"><label asp-for="Nome">Nome completo</label><input asp-for="Nome" autocomplete="name" placeholder="Nome do funcionário"/><span asp-validation-for="Nome" class="validation"></span></div>
+    <div class="field full"><label asp-for="Email">E-mail</label><input asp-for="Email" autocomplete="email" placeholder="equipe@clinica.com"/><span asp-validation-for="Email" class="validation"></span></div>
+    @if (Model == null || Model.Id == 0)
+    {
+        <div class="field full"><label asp-for="Senha">Senha de acesso</label><input asp-for="Senha" autocomplete="new-password" placeholder="Mínimo de 8 caracteres, com letra e número"/><span asp-validation-for="Senha" class="validation"></span><small>Use uma senha inicial temporária e individual.</small></div>
+    }
+    <div class="field"><label asp-for="Cargo">Perfil operacional</label><select asp-for="Cargo"><option>Atendente</option><option>Recepcionista</option><option>Administrador</option></select></div>
+    <div class="field"><span class="cm25-field-label">Situação</span><label class="cm25-toggle-row compact"><input asp-for="Ativo"/><span><strong>Acesso ativo</strong><small>Permite entrar no sistema.</small></span></label></div>
+</div>

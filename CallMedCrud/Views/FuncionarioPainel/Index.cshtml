@@ -1,0 +1,113 @@
+@model MKSANCrud.ViewModels.FuncionarioPainelViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Turno";
+    var cultura = new CultureInfo("pt-BR");
+    var primeiroNome = string.IsNullOrWhiteSpace(Model.NomeUsuario) ? "Equipe" : Model.NomeUsuario.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "Equipe";
+    var agenda = Model.ProximasConsultas.Where(x => x.Data.Date == Model.Hoje.Date).Take(8).ToList();
+    if (!agenda.Any()) agenda = Model.ProximasConsultas.Take(8).ToList();
+    var aguardandoHumano = Math.Max(0, Model.ConversasAbertas - Model.ConversasHumano - Model.ConversasIA);
+}
+
+<section class="shiftboard-home" data-shiftboard-view="turno">
+    <section class="shiftboard-lead">
+        <article class="shiftboard-lead-main">
+            <div>
+                <span class="shiftboard-overline">TURNO DE @Model.Hoje.ToString("dddd", cultura).ToUpperInvariant()</span>
+                <h1>@primeiroNome, organize o próximo movimento.</h1>
+                <p>Esta versão prioriza o que precisa acontecer agora: entrada, triagem, agenda e atendimento aparecem como um fluxo contínuo, não como um painel de números soltos.</p>
+            </div>
+            <div class="shiftboard-lead-actions">
+                <a asp-controller="Solicitacoes" asp-action="Index">Abrir fluxo</a>
+                <a class="secondary" asp-controller="Atendimento" asp-action="Index">Ver conversas</a>
+                <a class="secondary" asp-controller="Consulta" asp-action="Create">Nova consulta</a>
+            </div>
+        </article>
+
+        <aside class="shiftboard-now">
+            <header><strong>Agora</strong><small>@Model.Hoje.ToString("dd 'de' MMMM", cultura)</small></header>
+            <div><span class="big">@Model.ConsultasHoje</span><p>consultas previstas no dia</p></div>
+            <div class="shiftboard-now-grid">
+                <div><strong>@Model.AguardandoHoje</strong><span>aguardando</span></div>
+                <div><strong>@Model.ConfirmadasHoje</strong><span>confirmadas</span></div>
+                <div><strong>@Model.SolicitacoesPendentes</strong><span>em triagem</span></div>
+                <div><strong>@Model.ConversasAbertas</strong><span>conversas abertas</span></div>
+            </div>
+        </aside>
+    </section>
+
+    <section class="shiftboard-board">
+        <div class="shiftboard-lanes">
+            <header class="shiftboard-lanes-head">
+                <div><h2>Quadro do turno</h2><p>Da entrada até o cuidado, acompanhe onde o trabalho está concentrado.</p></div>
+                <a asp-controller="Solicitacoes" asp-action="Index">Abrir solicitações →</a>
+            </header>
+            <div class="shiftboard-lanes-grid">
+                <section class="shiftboard-lane shiftboard-lane-entry">
+                    <div class="shiftboard-lane-title"><b>Entrada</b><span>@Model.SolicitacoesHoje</span></div>
+                    <a class="shiftboard-lane-card" asp-controller="Solicitacoes" asp-action="Index"><strong>Solicitações recebidas</strong><small>@Model.SolicitacoesHoje registro(s) hoje</small></a>
+                    <a class="shiftboard-lane-card" asp-controller="Atendimento" asp-action="Index"><strong>Canais ativos</strong><small>@Model.ConversasAbertas conversa(s) abertas</small></a>
+                </section>
+                <section class="shiftboard-lane shiftboard-lane-triage">
+                    <div class="shiftboard-lane-title"><b>Triagem</b><span>@Model.SolicitacoesPendentes</span></div>
+                    <a class="shiftboard-lane-card" asp-controller="Solicitacoes" asp-action="Index"><strong>Pendentes</strong><small>@Model.SolicitacoesPendentes aguardando análise</small></a>
+                    <a class="shiftboard-lane-card" asp-controller="Solicitacoes" asp-action="Index"><strong>Acima de 30 min</strong><small>@Model.SolicitacoesAtrasadas precisam de atenção</small></a>
+                </section>
+                <section class="shiftboard-lane shiftboard-lane-wait">
+                    <div class="shiftboard-lane-title"><b>Preparação</b><span>@Model.AguardandoHoje</span></div>
+                    <a class="shiftboard-lane-card" asp-controller="Consulta" asp-action="Index" asp-route-status="Pendente"><strong>Aguardando ação</strong><small>@Model.AguardandoHoje consulta(s)</small></a>
+                    <a class="shiftboard-lane-card" asp-controller="ListaEspera" asp-action="Index"><strong>Lista de espera</strong><small>@Model.ListaEsperaAtiva pessoa(s) ativa(s)</small></a>
+                </section>
+                <section class="shiftboard-lane shiftboard-lane-care">
+                    <div class="shiftboard-lane-title"><b>Cuidado</b><span>@Model.ConfirmadasHoje</span></div>
+                    <a class="shiftboard-lane-card" asp-controller="Consulta" asp-action="Index" asp-route-status="Confirmada"><strong>Confirmadas</strong><small>@Model.ConfirmadasHoje consulta(s) prontas</small></a>
+                    <a class="shiftboard-lane-card" asp-controller="ListaEspera" asp-action="Index"><strong>Vagas recuperadas</strong><small>@Model.VagasRecuperadasListaEspera reaproveitada(s)</small></a>
+                </section>
+            </div>
+        </div>
+
+        <div class="shiftboard-stack">
+            <section class="shiftboard-attention">
+                <h3>Fila de atenção</h3>
+                <a asp-controller="Solicitacoes" asp-action="Index"><i>!</i><div><strong>Triagens atrasadas</strong><small>Processos que podem travar o fluxo.</small></div><b>@Model.SolicitacoesAtrasadas</b></a>
+                <a asp-controller="Atendimento" asp-action="Index"><i>↗</i><div><strong>Aguardando humano</strong><small>Conversas ainda sem responsável.</small></div><b>@aguardandoHumano</b></a>
+                <a asp-controller="Consulta" asp-action="Index" asp-route-status="Pendente"><i>◷</i><div><strong>Consultas pendentes</strong><small>Confirmação ou ajuste necessário.</small></div><b>@Model.AguardandoHoje</b></a>
+            </section>
+            <section>
+                <h3>Atendimento em canais</h3>
+                <div class="shiftboard-now-grid">
+                    <div><strong>@Model.ConversasIA</strong><span>com IA</span></div>
+                    <div><strong>@Model.ConversasHumano</strong><span>com equipe</span></div>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <section class="shiftboard-agenda">
+        <header class="shiftboard-agenda-head"><div><small>AGENDA EM LINHA</small><h2>Próximos movimentos</h2></div><a asp-controller="Agenda" asp-action="Index">Agenda completa →</a></header>
+        @if (!agenda.Any())
+        {
+            <p>Nenhuma consulta encontrada para o período.</p>
+        }
+        else
+        {
+            <div class="shiftboard-strip">
+                @foreach (var item in agenda)
+                {
+                    <a class="shiftboard-slot" asp-controller="Consulta" asp-action="Details" asp-route-id="@item.Id">
+                        <time>@item.Horario</time>
+                        <strong>@(item.Paciente?.Nome ?? "Paciente")</strong>
+                        <small>@(item.Medico?.Especialidade ?? "Consulta") · @(item.Medico?.Nome ?? "Médico")</small>
+                    </a>
+                }
+            </div>
+        }
+    </section>
+
+    <section class="shiftboard-signals" aria-label="Sinais operacionais">
+        <div class="shiftboard-signal"><small>Taxa de confirmação</small><strong>@Model.TaxaConfirmacaoSolicitacoes.ToString("0.0")%</strong><span>solicitação → consulta</span></div>
+        <div class="shiftboard-signal"><small>Tempo até confirmar</small><strong>@(Model.TempoMedioConfirmacaoMinutos <= 0 ? "—" : $"{Model.TempoMedioConfirmacaoMinutos:0} min")</strong><span>média do período</span></div>
+        <div class="shiftboard-signal"><small>Absenteísmo</small><strong>@Model.TaxaAbsenteismo.ToString("0.0")%</strong><span>@Model.AusenciasMes ausência(s)</span></div>
+        <div class="shiftboard-signal"><small>Lista de espera</small><strong>@Model.ListaEsperaAtiva</strong><span>@Model.VagasRecuperadasListaEspera vaga(s) recuperada(s)</span></div>
+    </section>
+</section>

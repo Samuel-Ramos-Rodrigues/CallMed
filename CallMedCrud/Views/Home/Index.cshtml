@@ -1,0 +1,245 @@
+@model MKSANCrud.ViewModels.HomeViewModel
+@{
+    var autenticado = Model.Autenticado;
+    var pacienteId = Model.PacienteId;
+    var proximas = Model.ProximasConsultas;
+    var proxima = proximas.FirstOrDefault();
+    Layout = autenticado ? "_Layout" : null;
+    ViewData["Title"] = autenticado ? "Início" : "CallMed";
+    string StatusSolicitacao(MKSANCrud.Models.StatusSolicitacaoAtendimento status) => status switch
+    {
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.Nova => "Recebida",
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.EmTriagem => "Em triagem",
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.BuscandoHorario => "Buscando horário",
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.AguardandoPaciente => "Aguardando sua resposta",
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.Confirmada => "Consulta marcada",
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.Cancelada => "Cancelada",
+        _ => "Encerrada"
+    };
+}
+
+@if (autenticado)
+{
+    <section class="flow-patient-home" data-flow-view="patient-home">
+        <section class="cm21-simple-home" aria-label="Modo simplificado">
+            <header><h1>Olá, @Model.NomePaciente!</h1><p>O que você deseja fazer?</p></header>
+            <div class="cm21-simple-actions">
+                <a asp-controller="Consulta" asp-action="Create"><svg><use href="/icons/callmed-ui.svg#plus"></use></svg><span>MARCAR CONSULTA</span></a>
+                <a asp-controller="Consulta" asp-action="Index"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg><span>MINHAS CONSULTAS</span></a>
+                <button type="button" data-open-callmed-ai><svg><use href="/icons/callmed-ui.svg#chat"></use></svg><span>FALAR COM ATENDIMENTO</span></button>
+                <a asp-controller="ListaEspera" asp-action="Index"><svg><use href="/icons/callmed-ui.svg#clock"></use></svg><span>LISTA DE ESPERA</span></a>
+            </div>
+            <button type="button" class="btn secondary cm21-simple-exit" data-a11y-toggle="simple">Sair do modo simplificado</button>
+        </section>
+
+        <header class="flow-patient-hero">
+            <div>
+                <span class="flow-eyebrow">SEU ESPAÇO CALLMED</span>
+                <h1>Olá, @Model.NomePaciente.</h1>
+                <p>Acompanhe seu cuidado como uma jornada: próximo passo, pedidos em andamento e histórico em um só lugar.</p>
+            </div>
+            <button type="button" class="flow-easy-button" data-a11y-toggle="simple"><strong>Aa</strong><span>Modo fácil</span></button>
+        </header>
+
+        <nav class="flow-patient-actions" aria-label="Ações rápidas do paciente">
+            <a asp-controller="Consulta" asp-action="Create"><svg><use href="/icons/callmed-ui.svg#plus"></use></svg><span><strong>Marcar</strong><small>nova consulta</small></span></a>
+            <a asp-controller="Consulta" asp-action="Index"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg><span><strong>Consultas</strong><small>ver agenda</small></span></a>
+            <a asp-controller="ListaEspera" asp-action="Index"><svg><use href="/icons/callmed-ui.svg#clock"></use></svg><span><strong>Lista de espera</strong><small>acompanhar</small></span></a>
+            <button type="button" data-open-callmed-ai><svg><use href="/icons/callmed-ui.svg#chat"></use></svg><span><strong>Atendimento</strong><small>falar agora</small></span></button>
+        </nav>
+
+        <div class="flow-patient-grid">
+            <section class="flow-patient-next flow-panel">
+                <div class="flow-panel-head"><div><span>PRÓXIMO PASSO</span><h2>Sua agenda</h2></div><a asp-controller="Consulta" asp-action="Index">Ver todas →</a></div>
+                @if (proxima is not null)
+                {
+                    <a class="flow-next-appointment" asp-controller="Consulta" asp-action="Details" asp-route-id="@proxima.Id">
+                        <div class="flow-next-date"><strong>@proxima.Data.ToString("dd")</strong><span>@proxima.Data.ToString("MMM").ToUpperInvariant()</span><small>@proxima.Horario</small></div>
+                        <div class="flow-next-copy"><span>@proxima.Medico?.Especialidade</span><h3>@proxima.Medico?.Nome</h3><p>Confira seus dados e orientações antes do atendimento.</p><b class="flow-status status-@proxima.Status.ToLowerInvariant()">@proxima.Status</b></div>
+                        <span class="flow-next-arrow">→</span>
+                    </a>
+                }
+                else
+                {
+                    <div class="flow-patient-empty"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg><div><strong>Você não tem consulta marcada.</strong><p>Encontre uma especialidade e escolha um horário disponível.</p></div><a class="btn" asp-controller="Consulta" asp-action="Create">Agendar</a></div>
+                }
+            </section>
+
+            <section class="flow-patient-journey flow-panel">
+                <div class="flow-panel-head"><div><span>ACOMPANHAMENTO</span><h2>Seus pedidos</h2></div></div>
+                @if (Model.SolicitacoesRecentes.Any())
+                {
+                    <div class="flow-request-path">
+                        @foreach (var pedido in Model.SolicitacoesRecentes.Take(4))
+                        {
+                            <div class="flow-request-node">
+                                <i></i>
+                                <div><strong>@(pedido.Especialidade?.Nome ?? "Solicitação de consulta")</strong><small>@ClinicaClock.ConverterUtc(pedido.CriadoEm).ToString("dd/MM HH:mm") · @pedido.Canal</small></div>
+                                <em>@StatusSolicitacao(pedido.Status)</em>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="flow-patient-empty compact"><svg><use href="/icons/callmed-ui.svg#flag"></use></svg><div><strong>Nenhum pedido em andamento.</strong><p>Quando você solicitar uma consulta, o progresso aparece aqui.</p></div></div>
+                }
+            </section>
+        </div>
+
+        <section class="flow-patient-support">
+            <a asp-controller="MinhaConta" asp-action="Index"><span><svg><use href="/icons/callmed-ui.svg#card"></use></svg></span><div><small>Seu atendimento</small><strong>@Model.Convenio</strong><em>Dados e preferências →</em></div></a>
+            <a asp-controller="ListaEspera" asp-action="Index"><span><svg><use href="/icons/callmed-ui.svg#clock"></use></svg></span><div><small>Horário não serviu?</small><strong>Lista de espera</strong><em>Buscar outra oportunidade →</em></div></a>
+            <button type="button" data-open-callmed-ai><span><svg><use href="/icons/callmed-ui.svg#spark"></use></svg></span><div><small>Precisa de ajuda?</small><strong>Assistente CallMed</strong><em>Conversar agora →</em></div></button>
+        </section>
+
+        @if (proximas.Skip(1).Any())
+        {
+            <section class="flow-patient-more flow-panel">
+                <div class="flow-panel-head"><div><span>DEPOIS</span><h2>Outras consultas</h2></div><a asp-controller="Consulta" asp-action="Index">Ver todas →</a></div>
+                <div class="flow-patient-more-list">
+                    @foreach (var item in proximas.Skip(1).Take(3))
+                    {
+                        <a asp-controller="Consulta" asp-action="Details" asp-route-id="@item.Id"><time><strong>@item.Data.ToString("dd")</strong><small>@item.Data.ToString("MMM")</small></time><span><strong>@item.Medico?.Nome</strong><small>@item.Medico?.Especialidade · @item.Horario</small></span><b>→</b></a>
+                    }
+                </div>
+            </section>
+        }
+    </section>
+}
+else
+{
+    <!DOCTYPE html>
+    <html lang="pt-br">
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+            <meta name="theme-color" content="#f6f7fc" />
+        <script>
+            (function () {
+                var pref = 'system';
+                try {
+                    var saved = localStorage.getItem('callmed-theme');
+                    if (saved === 'light' || saved === 'dark' || saved === 'system') pref = saved;
+                } catch { }
+                var dark = pref === 'dark' || (pref === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.dataset.themePreference = pref;
+                document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+                document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+            })();
+        </script>
+            <meta name="mobile-web-app-capable" content="yes" />
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+            <meta name="apple-mobile-web-app-title" content="CallMed" />
+            <meta name="application-name" content="CallMed" />
+            <link rel="manifest" href="~/manifest.json" />
+            <link rel="apple-touch-icon" sizes="180x180" href="~/icons/apple-touch-icon.png" />
+            <title>CallMed | Agendamento de Consultas</title>
+            <link rel="stylesheet" href="~/css/public.css?v=2165" />
+            <link rel="stylesheet" href="~/css/design-v2165.css?v=2165" />
+            <link rel="stylesheet" href="~/css/flow-v221.css?v=2210" />
+        </head>
+        <body class="public-body cm-flow-public cm25-design cm24-design cm23-design">
+            <header class="public-header cm25-public-header">
+                <nav class="public-nav cm25-public-nav">
+                    <a asp-controller="Home" asp-action="Index" class="public-logo callmed-home-brand"><img src="~/images/logo-callmed-horizontal.png?v=2165" alt="CallMed" class="public-brand-horizontal" /></a>
+                    <div class="public-links">
+                        <a href="#inicio">Início</a>
+                        <a href="#servicos">Serviços</a>
+                        <a asp-area="Identity" asp-page="/Account/Login" class="public-login-link">Entrar</a>
+                        <a asp-area="Identity" asp-page="/Account/Register" class="primary">Criar conta</a>
+                    </div>
+                </nav>
+            </header>
+
+            <main class="public-main">
+                <section class="public-hero cm25-public-hero" id="inicio">
+                    <div>
+                        <span class="public-kicker">CALLMED</span>
+                        <h1>Todos os canais. Uma única agenda.</h1>
+                        <p>
+                            Agendamento mais rápido, acessível e conectado. Solicite pelo PWA, acompanhe confirmações e continue contando com telefone, atendimento presencial e outros canais da clínica.
+                        </p>
+                        <div class="public-actions">
+                            <a asp-area="Identity" asp-page="/Account/Register" class="public-btn">Criar minha conta</a>
+                            <a asp-area="Identity" asp-page="/Account/Login" class="public-btn secondary">Já tenho conta</a>
+                        </div>
+                    </div>
+                    <aside class="how-card">
+                        <div class="how-card-header">
+                            <div class="how-icon">✓</div>
+                            <div>
+                                <span class="public-kicker">PASSO A PASSO</span>
+                                <h2>Como funciona</h2>
+                            </div>
+                        </div>
+                        <div class="how-step">
+                            <span>1</span>
+                            <div>
+                                <strong>Entre ou crie sua conta</strong>
+                                <small>Seu acesso reúne consultas e dados do paciente.</small>
+                            </div>
+                        </div>
+                        <div class="how-step">
+                            <span>2</span>
+                            <div>
+                                <strong>Escolha especialidade, médico e horário</strong>
+                                <small>O sistema exibe apenas disponibilidades cadastradas.</small>
+                            </div>
+                        </div>
+                        <div class="how-step">
+                            <span>3</span>
+                            <div>
+                                <strong>Acompanhe sua agenda</strong>
+                                <small>Consulte detalhes e faça alterações permitidas.</small>
+                            </div>
+                        </div>
+                    </aside>
+                </section>
+
+                <section class="public-section" id="servicos">
+                    <div class="public-section-head">
+                        <span class="public-kicker">SERVIÇOS</span>
+                        <h2>Da solicitação à consulta, tudo conectado</h2>
+                        <p>Agende, acompanhe e confirme suas consultas com informações claras e menos etapas manuais.</p>
+                    </div>
+                    <div class="public-cards">
+                        <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="/Consulta/Create" class="public-card">
+                            <div class="public-card-icon">＋</div>
+                            <h3>Agendar consulta</h3>
+                            <p>Escolha profissional, data e horário disponível.</p>
+                        </a>
+                        <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="/Consulta" class="public-card">
+                            <div class="public-card-icon">▣</div>
+                            <h3>Minhas consultas</h3>
+                            <p>Veja seus próximos atendimentos e histórico.</p>
+                        </a>
+                        <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="/MinhaConta" class="public-card">
+                            <div class="public-card-icon">♙</div>
+                            <h3>Minha conta</h3>
+                            <p>Mantenha seus dados e convênio organizados.</p>
+                        </a>
+                    </div>
+                </section>
+
+                <section class="public-app" id="app">
+                    <div>
+                        <span class="public-kicker" style="background:rgba(255,255,255,.11);color:#fff;border-color:rgba(255,255,255,.16)">PWA</span>
+                        <h2>Leve a CallMed para sua tela inicial.</h2>
+                        <p>
+                            Instale como aplicativo quando o navegador oferecer suporte ou continue usando normalmente pelo site.
+                        </p>
+                    </div>
+                    <div class="public-app-actions">
+                        <button type="button" class="public-btn" id="public-install-card" data-pwa-install>Instalar agora</button>
+                        <a asp-area="Identity" asp-page="/Account/Login" class="public-btn">Continuar no navegador</a>
+                    </div>
+                </section>
+            </main>
+            <footer class="public-footer">CallMed © 2026 · Sistema de agendamento de consultas · <a href="/privacidade">Política de Privacidade</a></footer>
+            <script src="~/js/theme.js?v=2165"></script>
+            <script src="~/js/pwa.js?v=2165"></script>
+        </body>
+    </html>
+}

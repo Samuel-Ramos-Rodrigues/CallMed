@@ -1,0 +1,36 @@
+@model MKSANCrud.ViewModels.HistoricoExamesViewModel
+@{ ViewData["Title"] = "Histórico de exames"; var equipe = User.IsInRole("Funcionario") || User.IsInRole("Admin"); }
+<section class="cm25-screen">
+    <h1>Histórico de exames</h1>
+    <p>@Model.Paciente.Nome · Registro dos exames realizados. Laudos e interpretações permanecem com o serviço responsável.</p>
+    @if (equipe)
+    {
+        <form asp-action="Create" method="post" class="cm25-panel v16-card">
+            <h2>Registrar exame realizado</h2>
+            <div asp-validation-summary="All" class="validation"></div>
+            <input asp-for="Novo.PacienteId" type="hidden" />
+            <div class="form-grid">
+                <div class="field"><label asp-for="Novo.Nome">Nome do exame</label><input asp-for="Novo.Nome" /></div>
+                <div class="field"><label asp-for="Novo.DataRealizacao">Data de realização</label><input asp-for="Novo.DataRealizacao" type="date" /></div>
+                <div class="field"><label asp-for="Novo.LocalRealizacao">Local (opcional)</label><input asp-for="Novo.LocalRealizacao" /></div>
+            </div>
+            <button class="btn" type="submit">Adicionar ao histórico</button>
+        </form>
+    }
+    @if (Model.Exames.Count == 0) { <p>Nenhum exame registrado.</p> }
+    @foreach (var exame in Model.Exames)
+    {
+        <article class="cm25-panel v16-card">
+            <h2>@exame.Nome</h2>
+            <p>@exame.DataRealizacao.ToString("dd/MM/yyyy") · @(exame.LocalRealizacao ?? "Local não informado")</p>
+            @if (equipe)
+            {
+                <form asp-action="Desativar" method="post" onsubmit="return confirm('Retirar este registro da lista? A auditoria será preservada.');">
+                    <input type="hidden" name="id" value="@exame.Id" />
+                    <button class="btn secondary" type="submit">Desativar registro</button>
+                </form>
+            }
+        </article>
+    }
+    @if (Model.Exames.Count == 200) { <p>Exibindo os 200 registros mais recentes.</p> }
+</section>

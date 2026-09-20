@@ -1,0 +1,79 @@
+# Ambiente local com CallMed + Evolution no mesmo servidor.
+# Copie .env.evolution.example para .env.evolution antes de executar.
+services:
+  callmed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:10000:10000"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${CALLMED_ENVIRONMENT:-Development}
+      ConnectionStrings__MKSANContextConnection: ${CALLMED_DATABASE_CONNECTION:?Informe a conexao do CallMed}
+      Database__AutoMigrate: ${CALLMED_AUTO_MIGRATE:-false}
+      Database__ApplyV22Patch: "true"
+      Atendimento__WhatsApp__Evolution__Enabled: "true"
+      Atendimento__WhatsApp__Evolution__BaseUrl: http://evolution-api:8080
+      Atendimento__WhatsApp__Evolution__ApiKey: ${EVOLUTION_API_KEY:?Informe a chave da Evolution}
+      Atendimento__WhatsApp__Evolution__InstanceName: ${EVOLUTION_INSTANCE:-callmed}
+      Atendimento__WhatsApp__Evolution__WebhookSecret: ${CALLMED_WEBHOOK_SECRET:?Informe o segredo do webhook}
+      Atendimento__WhatsApp__Evolution__PublicNumber: ${WHATSAPP_NUMBER:-}
+      Gemini__ApiKey: ${GEMINI_API_KEY:-}
+      Clinica__Endereco: ${CLINICA_ENDERECO:-}
+      Clinica__Telefone: ${CLINICA_TELEFONE:-}
+      BootstrapAdmin__Enabled: ${BOOTSTRAP_ADMIN_ENABLED:-false}
+      BootstrapAdmin__Email: ${BOOTSTRAP_ADMIN_EMAIL:-}
+      BootstrapAdmin__Password: ${BOOTSTRAP_ADMIN_PASSWORD:-}
+    volumes:
+      - callmed_keys:/root/.aspnet/DataProtection-Keys
+  evolution-api:
+    image: ${EVOLUTION_IMAGE:?Informe a imagem e a versao da Evolution}
+    restart: unless-stopped
+    depends_on:
+      evolution-postgres:
+        condition: service_healthy
+      evolution-redis:
+        condition: service_started
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      SERVER_URL: ${EVOLUTION_PUBLIC_URL:-http://localhost:8080}
+      AUTHENTICATION_API_KEY: ${EVOLUTION_API_KEY:?Informe a chave da Evolution}
+      AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES: "false"
+      DATABASE_ENABLED: "true"
+      DATABASE_PROVIDER: postgresql
+      DATABASE_CONNECTION_URI: postgresql://evolution:${EVOLUTION_DB_PASSWORD:?Informe a senha do banco Evolution}@evolution-postgres:5432/evolution
+      DATABASE_CONNECTION_CLIENT_NAME: callmed_evolution
+      CACHE_REDIS_ENABLED: "true"
+      CACHE_REDIS_URI: redis://evolution-redis:6379/0
+      CACHE_REDIS_PREFIX_KEY: callmed_evolution
+      CACHE_REDIS_SAVE_INSTANCES: "false"
+      CACHE_LOCAL_ENABLED: "false"
+    volumes:
+      - evolution_instances:/evolution/instances
+  evolution-postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: evolution
+      POSTGRES_DB: evolution
+      POSTGRES_PASSWORD: ${EVOLUTION_DB_PASSWORD:?Informe a senha do banco Evolution}
+    volumes:
+      - evolution_database:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U evolution -d evolution"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  evolution-redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - evolution_cache:/data
+volumes:
+  callmed_keys:
+  evolution_instances:
+  evolution_database:
+  evolution_cache:

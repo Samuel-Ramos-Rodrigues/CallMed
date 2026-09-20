@@ -1,0 +1,18 @@
+CallMed V21.4 — validação CSS/CRUD
+
+Correções principais:
+- KPIs/v16-stat seguem tema escuro.
+- Menus de ações e dropdowns seguem tema escuro.
+- Avatares/chips/status seguem tema escuro.
+- Busca da tela Pacientes ganhou layout próprio.
+- Tabelas CRUD tiveram escala de leitura aumentada no desktop.
+- Toolbars/resumos responsivos no PWA.
+- Cache do Service Worker atualizado.
+
+Validações executadas:
+- tinycss2: 0 erros de CSS
+- node --check: JS OK
+- JSON: OK
+- MKSANContext: 1 declaração
+- Usuario: 1 declaração
+- dotnet build: não executado (SDK .NET indisponível no ambiente)

@@ -1,0 +1,12 @@
+@{ ViewData["Title"] = "Pedidos sem internet"; }
+<link rel="stylesheet" href="~/css/contingencia.css" asp-append-version="true" />
+<section class="cm25-screen">
+    <h1>Pedidos registrados sem internet</h1>
+    <p>Abra a fila deste navegador, confira cada contato e envie para a triagem. O agendamento continua dependendo da disponibilidade.</p>
+    @Html.AntiForgeryToken()
+    <div id="contingencia" data-sync-url="@Url.Action("ImportarContingencia", "Solicitacoes")"></div>
+    <a asp-action="Index">Voltar às solicitações</a>
+</section>
+@section Scripts {
+    <script src="~/js/contingencia.js" asp-append-version="true"></script>
+}

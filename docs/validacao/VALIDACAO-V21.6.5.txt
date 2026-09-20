@@ -1,0 +1,13 @@
+CallMed V21.6.5 — VALIDACAO ESTRUTURAL
+
+[OK] 56 telas navegáveis possuem marcador data-cm25-view e estrutura visual V21.6.5.
+[OK] 66 arquivos Razor/CSHTML foram alterados em relação à V21.6.4; somente imports/start/validation sem UI permaneceram inalterados.
+[OK] Nenhum arquivo .cs de regra de negócio/controller/service foi alterado nesta refatoração visual.
+[OK] design-v2165.css validado com parser CSS sem erros de sintaxe.
+[OK] Balanceamento estrutural de tags HTML principais validado em todas as views Razor.
+[OK] Layout, Identity, Home pública, Central de Atendimento, dashboards, CRUDs, formulários, detalhes, confirmações e PWA usam a identidade Aurora.
+[OK] Cor principal migrada para índigo/violeta/azul, sem verde como identidade principal.
+[OK] Service Worker atualizado para callmed-static-v21-6-5-aurora-ui e design-v2165.css.
+[OK] Manifest atualizado para theme_color #5b5cf0 e background_color #f6f7fc.
+[OK] TWA atualizado para versionCode 2165 / versionName 21.6.5.
+[INFO] O ambiente de geração não possui o SDK .NET; o build final deve ser confirmado no CI/Render/ambiente local com dotnet restore + dotnet build.
