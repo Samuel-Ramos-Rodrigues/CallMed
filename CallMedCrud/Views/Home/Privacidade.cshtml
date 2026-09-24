@@ -1,42 +1,12 @@
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
-    Layout = null;
+    Layout = "_PublicLayout";
     var contato = Configuration["PlayStore:SupportEmail"]?.Trim();
     if (string.IsNullOrWhiteSpace(contato))
         contato = Configuration["Clinica:Email"]?.Trim();
     var possuiContato = !string.IsNullOrWhiteSpace(contato);
 }
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
-    <meta name="theme-color" content="#f6f7fc" />
-        <script>
-            (function () {
-                var pref = 'system';
-                try {
-                    var saved = localStorage.getItem('callmed-theme');
-                    if (saved === 'light' || saved === 'dark' || saved === 'system') pref = saved;
-                } catch { }
-                var dark = pref === 'dark' || (pref === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-                document.documentElement.dataset.themePreference = pref;
-                document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-                document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
-            })();
-        </script>
-    <title>Política de Privacidade - CallMed</title>
-    <link rel="icon" type="image/png" href="~/icons/icon-192.png" />
-    <link rel="stylesheet" href="~/css/public.css?v=2165" />
-    <link rel="stylesheet" href="~/css/design-v2165.css?v=2165" />
-    <style>
-        .privacy-shell{width:min(920px,calc(100% - 24px));margin:32px auto 64px;padding:clamp(20px,4vw,38px);border:1px solid #c7cddd;border-radius:24px;background:rgba(247, 248, 252,.96);box-shadow:0 22px 60px rgba(6, 24, 63,.09)}
-        .privacy-shell h1{margin:.2em 0 .35em;color:#111e3e;font-size:clamp(30px,5vw,46px);letter-spacing:-.045em}.privacy-shell h2{margin:1.6em 0 .45em;color:#14244b;font-size:19px}.privacy-shell p,.privacy-shell li{color:#434f6d;line-height:1.7;font-size:14px}.privacy-shell ul{padding-left:20px}.privacy-meta{color:#5f6f9a;font-size:12px}.privacy-brand{display:inline-flex;align-items:center;gap:10px;color:#132040;text-decoration:none;font-size:22px;font-weight:850}.privacy-brand img{width:150px;height:auto}.privacy-note{margin-top:24px;padding:16px;border:1px solid #b8c0d9;border-radius:15px;background:#e8ebf6}.privacy-actions{margin-top:28px;display:flex;flex-wrap:wrap;gap:10px}.privacy-actions a{padding:11px 15px;border-radius:11px;text-decoration:none;font-weight:800}.privacy-actions .primary{color:#fff;background:#042881}.privacy-actions .secondary{color:#142856;border:1px solid #bbc2d7;background:#f4f5fa}
-        @@media(max-width:560px){.privacy-shell{margin:12px auto 40px;border-radius:18px}.privacy-actions{display:grid}.privacy-actions a{text-align:center}}
-    </style>
-</head>
-<body class="public-body cm25-design cm24-design cm23-design" data-cm25-view="Home/Privacidade.cshtml">
-    <main class="privacy-shell cm25-privacy-shell"><header class="cm25-privacy-head">
+<section class="privacy-shell cm25-privacy-shell"><header class="cm25-privacy-head">
         <a class="privacy-brand" href="/"><img src="~/images/logo-callmed-horizontal.png" alt="CallMed" /></a>
         <p class="privacy-meta">Última atualização: 29/08/2026</p><span class="cm25-kicker">PRIVACIDADE E LGPD</span><h1>Política de Privacidade</h1></header>
         <p>Esta política explica como o CallMed trata informações necessárias ao cadastro, agendamento de consultas, atendimento e recursos digitais da clínica. A organização que opera o CallMed é responsável por usar o sistema de acordo com a LGPD e demais normas aplicáveis.</p>
@@ -85,7 +55,4 @@
                 <a class="secondary" href="@("mailto:" + contato)">Falar com o suporte</a>
             }
         </div>
-    </main>
-<script src="~/js/theme.js?v=2165"></script>
-</body>
-</html>
+    </section>

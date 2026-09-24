@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><partial name="_DocumentHead" /><link rel="stylesheet" href="~/css/public.css" asp-append-version="true" /></head>
+<body class="public-body">
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<header class="public-header"><nav class="public-nav"><a asp-controller="Home" asp-action="Index" class="app-brand"><img src="~/images/logo-callmed-mark.png" alt="" /><span>CallMed<small>CUIDADO EM CONEXÃO</small></span></a><div class="public-links"><a href="/#como-funciona">Como funciona</a><a asp-area="Identity" asp-page="/Account/Login">Entrar</a><a class="btn" asp-area="Identity" asp-page="/Account/Register">Criar conta <span aria-hidden="true">↗</span></a></div></nav></header>
+<main id="conteudo">@RenderBody()</main>
+<footer class="public-footer"><span>CallMed · Sua saúde, mais perto.</span><a href="/privacidade">Política de privacidade</a></footer>
+<script src="~/js/theme.js" asp-append-version="true"></script>
+<script src="~/js/pwa.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

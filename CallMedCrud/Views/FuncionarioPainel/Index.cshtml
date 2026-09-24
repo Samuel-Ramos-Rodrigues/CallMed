@@ -1,113 +1,50 @@
 @model MKSANCrud.ViewModels.FuncionarioPainelViewModel
-@using System.Globalization
 @{
-    ViewData["Title"] = "Turno";
-    var cultura = new CultureInfo("pt-BR");
-    var primeiroNome = string.IsNullOrWhiteSpace(Model.NomeUsuario) ? "Equipe" : Model.NomeUsuario.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "Equipe";
-    var agenda = Model.ProximasConsultas.Where(x => x.Data.Date == Model.Hoje.Date).Take(8).ToList();
-    if (!agenda.Any()) agenda = Model.ProximasConsultas.Take(8).ToList();
-    var aguardandoHumano = Math.Max(0, Model.ConversasAbertas - Model.ConversasHumano - Model.ConversasIA);
+    ViewData["Title"] = "Visão geral";
+    var nome = Model.NomeUsuario.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "equipe";
+    var agenda = Model.ProximasConsultas.OrderBy(c => c.Data).ThenBy(c => c.Horario).ToList();
+    var percentual = Math.Clamp(Model.OcupacaoAgenda, 0, 100).ToString("0", System.Globalization.CultureInfo.InvariantCulture);
 }
-
-<section class="shiftboard-home" data-shiftboard-view="turno">
-    <section class="shiftboard-lead">
-        <article class="shiftboard-lead-main">
-            <div>
-                <span class="shiftboard-overline">TURNO DE @Model.Hoje.ToString("dddd", cultura).ToUpperInvariant()</span>
-                <h1>@primeiroNome, organize o próximo movimento.</h1>
-                <p>Esta versão prioriza o que precisa acontecer agora: entrada, triagem, agenda e atendimento aparecem como um fluxo contínuo, não como um painel de números soltos.</p>
-            </div>
-            <div class="shiftboard-lead-actions">
-                <a asp-controller="Solicitacoes" asp-action="Index">Abrir fluxo</a>
-                <a class="secondary" asp-controller="Atendimento" asp-action="Index">Ver conversas</a>
-                <a class="secondary" asp-controller="Consulta" asp-action="Create">Nova consulta</a>
-            </div>
-        </article>
-
-        <aside class="shiftboard-now">
-            <header><strong>Agora</strong><small>@Model.Hoje.ToString("dd 'de' MMMM", cultura)</small></header>
-            <div><span class="big">@Model.ConsultasHoje</span><p>consultas previstas no dia</p></div>
-            <div class="shiftboard-now-grid">
-                <div><strong>@Model.AguardandoHoje</strong><span>aguardando</span></div>
-                <div><strong>@Model.ConfirmadasHoje</strong><span>confirmadas</span></div>
-                <div><strong>@Model.SolicitacoesPendentes</strong><span>em triagem</span></div>
-                <div><strong>@Model.ConversasAbertas</strong><span>conversas abertas</span></div>
-            </div>
-        </aside>
+<section class="workspace-home">
+    <header class="workspace-heading"><div><span class="eyebrow">VISÃO GERAL DA CLÍNICA</span><h1>Olá, @nome<span class="heading-dot">.</span></h1><p>Um novo dia para cuidar de cada detalhe.</p></div><a class="btn" asp-controller="Consulta" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg>Agendar consulta</a></header>
+    <section class="day-overview" aria-label="Resumo de hoje">
+        <div class="day-stamp"><span>@Model.Hoje.ToString("dddd")</span><strong>@Model.Hoje.ToString("dd")<small>@Model.Hoje.ToString("MMM").ToUpperInvariant()<br />@Model.Hoje.Year</small></strong></div>
+        <div class="day-title"><span class="eyebrow">SEU DIA, EM FOCO</span><h2>O cuidado<br />começa aqui.</h2><a asp-controller="Agenda" asp-action="Index">Abrir agenda <span aria-hidden="true">↗</span></a></div>
+        <div class="day-numbers"><div><strong>@Model.ConsultasHoje.ToString("00")</strong><span>consultas hoje</span></div><div><strong>@Model.ConfirmadasHoje.ToString("00")</strong><span>confirmadas</span></div><div><strong>@Model.AguardandoHoje.ToString("00")</strong><span>aguardando confirmação</span></div></div>
     </section>
-
-    <section class="shiftboard-board">
-        <div class="shiftboard-lanes">
-            <header class="shiftboard-lanes-head">
-                <div><h2>Quadro do turno</h2><p>Da entrada até o cuidado, acompanhe onde o trabalho está concentrado.</p></div>
-                <a asp-controller="Solicitacoes" asp-action="Index">Abrir solicitações →</a>
-            </header>
-            <div class="shiftboard-lanes-grid">
-                <section class="shiftboard-lane shiftboard-lane-entry">
-                    <div class="shiftboard-lane-title"><b>Entrada</b><span>@Model.SolicitacoesHoje</span></div>
-                    <a class="shiftboard-lane-card" asp-controller="Solicitacoes" asp-action="Index"><strong>Solicitações recebidas</strong><small>@Model.SolicitacoesHoje registro(s) hoje</small></a>
-                    <a class="shiftboard-lane-card" asp-controller="Atendimento" asp-action="Index"><strong>Canais ativos</strong><small>@Model.ConversasAbertas conversa(s) abertas</small></a>
-                </section>
-                <section class="shiftboard-lane shiftboard-lane-triage">
-                    <div class="shiftboard-lane-title"><b>Triagem</b><span>@Model.SolicitacoesPendentes</span></div>
-                    <a class="shiftboard-lane-card" asp-controller="Solicitacoes" asp-action="Index"><strong>Pendentes</strong><small>@Model.SolicitacoesPendentes aguardando análise</small></a>
-                    <a class="shiftboard-lane-card" asp-controller="Solicitacoes" asp-action="Index"><strong>Acima de 30 min</strong><small>@Model.SolicitacoesAtrasadas precisam de atenção</small></a>
-                </section>
-                <section class="shiftboard-lane shiftboard-lane-wait">
-                    <div class="shiftboard-lane-title"><b>Preparação</b><span>@Model.AguardandoHoje</span></div>
-                    <a class="shiftboard-lane-card" asp-controller="Consulta" asp-action="Index" asp-route-status="Pendente"><strong>Aguardando ação</strong><small>@Model.AguardandoHoje consulta(s)</small></a>
-                    <a class="shiftboard-lane-card" asp-controller="ListaEspera" asp-action="Index"><strong>Lista de espera</strong><small>@Model.ListaEsperaAtiva pessoa(s) ativa(s)</small></a>
-                </section>
-                <section class="shiftboard-lane shiftboard-lane-care">
-                    <div class="shiftboard-lane-title"><b>Cuidado</b><span>@Model.ConfirmadasHoje</span></div>
-                    <a class="shiftboard-lane-card" asp-controller="Consulta" asp-action="Index" asp-route-status="Confirmada"><strong>Confirmadas</strong><small>@Model.ConfirmadasHoje consulta(s) prontas</small></a>
-                    <a class="shiftboard-lane-card" asp-controller="ListaEspera" asp-action="Index"><strong>Vagas recuperadas</strong><small>@Model.VagasRecuperadasListaEspera reaproveitada(s)</small></a>
-                </section>
-            </div>
-        </div>
-
-        <div class="shiftboard-stack">
-            <section class="shiftboard-attention">
-                <h3>Fila de atenção</h3>
-                <a asp-controller="Solicitacoes" asp-action="Index"><i>!</i><div><strong>Triagens atrasadas</strong><small>Processos que podem travar o fluxo.</small></div><b>@Model.SolicitacoesAtrasadas</b></a>
-                <a asp-controller="Atendimento" asp-action="Index"><i>↗</i><div><strong>Aguardando humano</strong><small>Conversas ainda sem responsável.</small></div><b>@aguardandoHumano</b></a>
-                <a asp-controller="Consulta" asp-action="Index" asp-route-status="Pendente"><i>◷</i><div><strong>Consultas pendentes</strong><small>Confirmação ou ajuste necessário.</small></div><b>@Model.AguardandoHoje</b></a>
-            </section>
-            <section>
-                <h3>Atendimento em canais</h3>
-                <div class="shiftboard-now-grid">
-                    <div><strong>@Model.ConversasIA</strong><span>com IA</span></div>
-                    <div><strong>@Model.ConversasHumano</strong><span>com equipe</span></div>
-                </div>
-            </section>
-        </div>
-    </section>
-
-    <section class="shiftboard-agenda">
-        <header class="shiftboard-agenda-head"><div><small>AGENDA EM LINHA</small><h2>Próximos movimentos</h2></div><a asp-controller="Agenda" asp-action="Index">Agenda completa →</a></header>
-        @if (!agenda.Any())
-        {
-            <p>Nenhuma consulta encontrada para o período.</p>
-        }
-        else
-        {
-            <div class="shiftboard-strip">
+    <div class="workspace-columns">
+        <section class="panel appointment-panel">
+            <header class="panel-heading"><div><span class="eyebrow">AGENDA</span><h2>Próximos atendimentos</h2></div><a class="text-link" asp-controller="Agenda" asp-action="Index">Ver agenda <span aria-hidden="true">↗</span></a></header>
+            @if (agenda.Any())
+            {
+                <div class="appointment-labels"><span>QUANDO</span><span>PACIENTE / PROFISSIONAL</span><span>SITUAÇÃO</span></div>
+                <div class="appointment-list">
                 @foreach (var item in agenda)
                 {
-                    <a class="shiftboard-slot" asp-controller="Consulta" asp-action="Details" asp-route-id="@item.Id">
-                        <time>@item.Horario</time>
-                        <strong>@(item.Paciente?.Nome ?? "Paciente")</strong>
-                        <small>@(item.Medico?.Especialidade ?? "Consulta") · @(item.Medico?.Nome ?? "Médico")</small>
+                    var pacienteNome = item.Paciente?.Nome ?? "Paciente";
+                    var inicial = string.IsNullOrWhiteSpace(pacienteNome) ? "P" : pacienteNome[..1].ToUpperInvariant();
+                    <a class="appointment-item" asp-controller="Consulta" asp-action="Details" asp-route-id="@item.Id">
+                        <time datetime="@item.Data.ToString("yyyy-MM-dd")"><strong>@item.Horario</strong><small>@(item.Data.Date == Model.Hoje.Date ? "Hoje" : item.Data.ToString("dd/MM"))</small></time>
+                        <div class="appointment-person"><span class="person-avatar">@inicial</span><div><strong>@pacienteNome</strong><small>@item.Medico?.Nome · @item.Medico?.Especialidade</small></div></div>
+                        <span class="status-pill status-@item.Status.ToLowerInvariant()">@item.Status</span><span class="row-arrow" aria-hidden="true">↗</span>
                     </a>
                 }
-            </div>
-        }
-    </section>
-
-    <section class="shiftboard-signals" aria-label="Sinais operacionais">
-        <div class="shiftboard-signal"><small>Taxa de confirmação</small><strong>@Model.TaxaConfirmacaoSolicitacoes.ToString("0.0")%</strong><span>solicitação → consulta</span></div>
-        <div class="shiftboard-signal"><small>Tempo até confirmar</small><strong>@(Model.TempoMedioConfirmacaoMinutos <= 0 ? "—" : $"{Model.TempoMedioConfirmacaoMinutos:0} min")</strong><span>média do período</span></div>
-        <div class="shiftboard-signal"><small>Absenteísmo</small><strong>@Model.TaxaAbsenteismo.ToString("0.0")%</strong><span>@Model.AusenciasMes ausência(s)</span></div>
-        <div class="shiftboard-signal"><small>Lista de espera</small><strong>@Model.ListaEsperaAtiva</strong><span>@Model.VagasRecuperadasListaEspera vaga(s) recuperada(s)</span></div>
-    </section>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><h3>Sua agenda está livre.</h3><p>As próximas consultas aparecerão aqui.</p><a class="btn secondary" asp-controller="Consulta" asp-action="Create">Marcar uma consulta</a></div>
+            }
+            <footer class="panel-footer"><span>@Model.MedicosAtivos profissionais ativos</span><a asp-controller="Disponibilidades" asp-action="Index">Gerenciar horários →</a></footer>
+        </section>
+        <aside class="workspace-aside">
+            <section class="attention-panel"><header class="panel-heading"><div><span class="eyebrow">PRÓXIMAS AÇÕES</span><h2>Precisa de atenção</h2></div><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg></header>
+                <a class="attention-item" asp-controller="Solicitacoes" asp-action="Index"><span class="attention-number">@Model.SolicitacoesPendentes.ToString("00")</span><div><strong>Solicitações pendentes</strong><small>@Model.SolicitacoesAtrasadas aguardam há mais de 30 min</small></div><span aria-hidden="true">↗</span></a>
+                <a class="attention-item" asp-controller="Atendimento" asp-action="Index"><span class="attention-number">@Model.ConversasAbertas.ToString("00")</span><div><strong>Conversas abertas</strong><small>@Model.ConversasIA com IA · @Model.ConversasHumano com equipe</small></div><span aria-hidden="true">↗</span></a>
+                <a class="attention-item" asp-controller="ListaEspera" asp-action="Index"><span class="attention-number">@Model.ListaEsperaAtiva.ToString("00")</span><div><strong>Na lista de espera</strong><small>Acompanhar novas oportunidades</small></div><span aria-hidden="true">↗</span></a>
+            </section>
+            <section class="occupancy-panel"><div class="occupancy-ring" style="--progress:@(percentual)%" role="img" aria-label="Ocupação mensal de @percentual por cento"><strong>@percentual<small>%</small></strong></div><div><span class="eyebrow">NESTE MÊS</span><h3>Ocupação da agenda</h3><p>@Model.ConsultasMes consultas registradas</p><a class="text-link" asp-controller="Relatorios" asp-action="Index">Acompanhar indicadores ↗</a></div></section>
+        </aside>
+    </div>
+    <section class="shortcut-strip" aria-label="Acessos rápidos"><div><span class="eyebrow">VAMOS FACILITAR?</span><h2>O próximo passo.</h2></div><a asp-controller="Paciente" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg><span>Cadastrar paciente</span><b aria-hidden="true">↗</b></a><a asp-controller="Solicitacoes" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg><span>Registrar solicitação</span><b aria-hidden="true">↗</b></a><a asp-controller="Relatorios" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg><span>Ver relatórios</span><b aria-hidden="true">↗</b></a></section>
 </section>

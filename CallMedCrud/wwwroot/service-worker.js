@@ -1,18 +1,19 @@
-const CACHE_NAME = 'callmed-static-v22-2-shiftboard';
+const CACHE_NAME = 'callmed-static-v23-layout';
 const OFFLINE_URL = '/offline.html';
 
-// Somente entrypoints e assets realmente usados. Os CSS de versões antigas foram
-// consolidados em site.css/public.css/identity.css na V21.3.
+// Recursos atuais da interface. As páginas autenticadas não são persistidas.
 const STATIC_ASSETS = [
     OFFLINE_URL,
     '/contingencia.html',
     '/js/contingencia.js',
     '/css/contingencia.css',
     '/css/site.css',
+    '/css/modules.css',
+    '/js/preferences.js',
+    '/js/shell.js',
+    '/js/login.js',
     '/css/public.css',
     '/css/identity.css',
-    '/css/design-v2165.css',
-    '/css/flow-v221.css',
     '/js/theme.js',
     '/js/accessibility.js',
     '/js/mobile-final.js',

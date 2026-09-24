@@ -1,52 +1,14 @@
 @page
 @model MKSANCrud.Areas.Identity.Pages.Account.LogoutModel
 @{
-    Layout = null;
+    Layout = "_AuthLayout";
 }
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
-        <meta name="theme-color" content="#f6f7fc"  />
-        <script>
-            (function () {
-                var pref = 'system';
-                try {
-                    var saved = localStorage.getItem('callmed-theme');
-                    if (saved === 'light' || saved === 'dark' || saved === 'system') pref = saved;
-                } catch { }
-                var dark = pref === 'dark' || (pref === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-                document.documentElement.dataset.themePreference = pref;
-                document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-                document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
-                var themeMeta = document.querySelector('meta[name="theme-color"]');
-                if (themeMeta) themeMeta.setAttribute('content', dark ? '#0a0b16' : '#f6f7fc');
-            })();
-        </script>
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="CallMed" />
-        <meta name="application-name" content="CallMed" />
-        <link rel="manifest" href="~/manifest.json" />
-        <link rel="apple-touch-icon" sizes="180x180" href="~/icons/apple-touch-icon.png" />
-        <link rel="stylesheet" href="~/css/identity.css?v=2165" />
-        <link rel="stylesheet" href="~/css/design-v2165.css?v=2165" />
-    
-    <title>Saindo | CallMed</title>
-</head>
-<body data-cm25-view="Identity/Logout" class="identity-body cm25-design cm24-design cm23-design">
-    <main class="identity-shell cm25-identity-shell" style="grid-template-columns:1fr;max-width:620px;min-height:auto">
+<main class="identity-shell cm25-identity-shell" style="grid-template-columns:1fr;max-width:620px;min-height:auto">
         <section class="identity-panel cm25-identity-panel" style="min-height:420px">
             <div class="identity-card cm25-identity-card" style="text-align:center">
-                <img src="~/images/logo-callmed-horizontal.png?v=2165" alt="CallMed" style="width:170px;height:auto;margin:0 auto 28px" />
+                <img src="~/images/logo-callmed-horizontal.png" alt="CallMed" style="width:170px;height:auto;margin:0 auto 28px" />
                 <div class="identity-state-icon" aria-hidden="true">↗</div>
                 <div class="identity-card-header cm25-identity-card-header"><h2>Encerrando sua sessão</h2><p>Estamos finalizando seu acesso com segurança.</p></div>
             </div>
         </section>
     </main>
-        <script src="~/js/theme.js?v=2165"></script>
-            <script src="~/js/pwa.js?v=2165"></script>
-    </body>
-</html>

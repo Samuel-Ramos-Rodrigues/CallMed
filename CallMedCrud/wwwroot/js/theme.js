@@ -24,7 +24,7 @@
         document.querySelectorAll('[data-theme-choice]').forEach(button => {
             const active = button.getAttribute('data-theme-choice') === preference;
             button.classList.toggle('active', active);
-            button.setAttribute('aria-checked', active ? 'true' : 'false');
+            button.setAttribute(button.getAttribute('role') === 'radio' ? 'aria-checked' : 'aria-pressed', String(active));
         });
 
         document.querySelectorAll('[data-theme-toggle]').forEach(button => {
@@ -40,7 +40,7 @@
 
     const updateMeta = theme => {
         const meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute('content', theme === 'dark' ? '#071611' : '#eef6f2');
+        if (meta) meta.setAttribute('content', theme === 'dark' ? '#0e1c2d' : '#102b49');
     };
 
     const apply = (preference, persist = true) => {

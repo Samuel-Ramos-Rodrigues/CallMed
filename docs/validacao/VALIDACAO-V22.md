@@ -11,7 +11,7 @@ Data: 15/09/2026. Base: ZIP V21.6.5 enviado pelo usuário.
 - Sintaxe JavaScript do formulário e service worker conferida.
 - YAML do Docker Compose analisado: quatro serviços definidos, sem erro de estrutura YAML.
 
-Os testes da fila usam armazenamento, locks e respostas HTTP simulados; não comprovam a transação/índice em um PostgreSQL real. O teste de service worker também é simulado. Saídas dos testes estão nos arquivos `TESTES-CODIGO-V22.txt` e `TESTES-FILA-V22.txt`.
+Os testes da fila usam armazenamento, locks e respostas HTTP simulados; não comprovam a transação/índice em um PostgreSQL real. O teste de service worker também é simulado. Saídas dos testes estão nos arquivos `HISTORICO.txt`, nas seções originais.
 
 ## Não executado neste ambiente
 

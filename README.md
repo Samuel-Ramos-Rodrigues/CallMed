@@ -4,7 +4,9 @@
 
 <h1 align="center">CallMed</h1>
 
-> **V22 — inclusão e continuidade do atendimento.** Cadastro presencial sem e-mail, fila offline protegida, reconciliação com triagem, orientações/comprovante, histórico de exames e diagnóstico da Evolution.
+> **Layout atualizado e projeto organizado.** [Veja a limpeza, o visual e as verificações](docs/LAYOUT-E-ORGANIZACAO.md).
+>
+> **Recursos V22 preservados:** Cadastro presencial sem e-mail, fila offline protegida, reconciliação com triagem, orientações/comprovante, histórico de exames e diagnóstico da Evolution.
 >
 > [Entrega e atualização do banco](docs/ENTREGA-V22.md) · [Evolution junto do projeto](docs/integracoes/EVOLUTION-NO-PROPRIO-PROJETO.md) · [Roteiro de homologação e custos](docs/ROTEIRO-HOMOLOGACAO-V22.md) · [Validação executada](docs/validacao/VALIDACAO-V22.md)
 
@@ -35,8 +37,6 @@
   &nbsp;•&nbsp;
   <a href="./docs/validacao/VALIDACAO.md">Validação</a>
 </p>
-
-> **V22.1 DualFlow Edition:** variante visual e de experiência que preserva a lógica, banco, serviços, integrações e rotas da V22, mas separa claramente a experiência do paciente da operação da equipe. A navegação desktop deixa de usar sidebar persistente e passa a trabalhar com barra superior, ribbon contextual, drawer de módulos e dock de ações rápidas.
 
 
 ---
@@ -122,7 +122,7 @@ A autorização é validada no servidor com **ASP.NET Core Identity + Roles**.
 
 ## Arquitetura
 
-A V21.6 foi reorganizada para separar responsabilidades e manter o projeto simples de entender e evoluir.
+A aplicação é organizada para separar responsabilidades e manter o projeto simples de entender e evoluir.
 
 ```mermaid
 flowchart LR
@@ -446,12 +446,7 @@ O projeto inclui, entre outras medidas:
 | [Deploy / Render](./docs/deploy/V21.5.1-RENDER-HTTP500.md) | Correção e configuração para Render |
 | [Play Store](./docs/deploy/PLAY-STORE-PUBLICACAO.md) | Processo de publicação Android |
 | [Validação](./docs/validacao/VALIDACAO.md) | Checklist técnico da release |
-| [Changelog V21.6.5](./docs/CHANGELOG-V21.6.5.md) | Refatoração estrutural de todas as views e novo design system Aurora |
-| [Changelog V21.6.4](./docs/CHANGELOG-V21.6.4.md) | Redesign Indigo Horizon e nova identidade visual azul/índigo |
-| [Changelog V21.6.3](./docs/CHANGELOG-V21.6.3.md) | Trava de identidade para canais externos e refatoração visual global |
-| [Changelog V21.6.2](./docs/CHANGELOG-V21.6.2.md) | Parser resiliente do webhook Evolution e fallback para payloads variantes |
-| [Changelog V21.6.1](./docs/CHANGELOG-V21.6.1.md) | Correções Evolution/WhatsApp e diagnóstico do webhook |
-| [Changelog V21.6](./docs/CHANGELOG-V21.6.md) | Reorganização estrutural da versão anterior |
+| [Histórico consolidado](./docs/CHANGELOG.md) | Histórico das versões anteriores, reunido em um documento |
 | [Android / TWA](./CallMedTWA/README-TWA.md) | Geração e configuração do app Android |
 
 ---

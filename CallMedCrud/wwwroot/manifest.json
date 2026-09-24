@@ -10,8 +10,8 @@
     "standalone",
     "minimal-ui"
   ],
-  "background_color": "#f6f7fc",
-  "theme_color": "#5b5cf0",
+  "background_color": "#e8eef3",
+  "theme_color": "#102b49",
   "lang": "pt-BR",
   "dir": "ltr",
   "categories": [
