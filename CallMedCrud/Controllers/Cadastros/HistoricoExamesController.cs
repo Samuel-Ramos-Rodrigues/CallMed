@@ -17,10 +17,16 @@ public sealed class HistoricoExamesController(
     private bool Equipe => User.IsInRole("Funcionario") || User.IsInRole("Admin");
 
     [HttpGet]
-    public async Task<IActionResult> Index(int pacienteId, CancellationToken ct)
+    public async Task<IActionResult> Index(int? pacienteId, CancellationToken ct)
     {
-        if (!await PodeAcessarAsync(pacienteId, ct)) return Forbid();
-        return await PaginaAsync(pacienteId, new ExameHistorico { PacienteId = pacienteId, DataRealizacao = clock.Hoje }, ct);
+        // Os atalhos "Meus exames" não precisam expor um ID na URL.
+        // IDs informados explicitamente continuam sujeitos à validação de acesso.
+        if (pacienteId is null && User.IsInRole("Paciente") && !Equipe)
+            pacienteId = (await vinculos.ObterPacienteAsync(User, ct))?.Id;
+
+        if (pacienteId is not > 0 || !await PodeAcessarAsync(pacienteId.Value, ct)) return Forbid();
+        return await PaginaAsync(pacienteId.Value,
+            new ExameHistorico { PacienteId = pacienteId.Value, DataRealizacao = clock.Hoje }, ct);
     }
 
     [HttpPost]

@@ -6,6 +6,8 @@
 
 > **Layout atualizado e projeto organizado.** [Veja a limpeza, o visual e as verificações](docs/LAYOUT-E-ORGANIZACAO.md).
 >
+> **Correção de exames:** o atalho “Meus exames” identifica o paciente pela conta logada; acesso a históricos de outras pessoas permanece bloqueado.
+>
 > **Recursos V22 preservados:** Cadastro presencial sem e-mail, fila offline protegida, reconciliação com triagem, orientações/comprovante, histórico de exames e diagnóstico da Evolution.
 >
 > [Entrega e atualização do banco](docs/ENTREGA-V22.md) · [Evolution junto do projeto](docs/integracoes/EVOLUTION-NO-PROPRIO-PROJETO.md) · [Roteiro de homologação e custos](docs/ROTEIRO-HOMOLOGACAO-V22.md) · [Validação executada](docs/validacao/VALIDACAO-V22.md)

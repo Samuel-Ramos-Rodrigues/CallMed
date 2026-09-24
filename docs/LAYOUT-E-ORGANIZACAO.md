@@ -41,9 +41,13 @@ As folhas de estilo passaram de 646.080 para 86.880 bytes (redução de aproxima
 
 Classes antigas ainda usadas pelos módulos foram mantidas para compatibilidade. Novas alterações de aparência devem entrar no arquivo responsável acima, sem criar outra camada de CSS por versão.
 
-## Backend preservado
+## Backend e correção do histórico de exames
 
-A comparação de conteúdo com a base confirmou que os 170 arquivos C# permaneceram idênticos. Controllers, modelos, serviços, autorização, integrações, migrações e regras de negócio não foram alterados nesta atualização. A identidade técnica `MKSANCrud` continua nos namespaces existentes.
+Na entrega inicial do layout, os 170 arquivos C# foram preservados. Nesta revisão, `HistoricoExamesController.Index` passou a aceitar a ausência de `pacienteId` e localizar o paciente pela conta autenticada. Os demais arquivos C# da aplicação continuam preservados. A suíte de testes recebeu verificações específicas para esse acesso. A identidade técnica `MKSANCrud` continua nos namespaces existentes.
+
+O paciente já possuía autorização para ler o próprio histórico. O erro estava nos atalhos “Meus exames”, que chamavam a página sem o ID exigido. Agora a página resolve esse vínculo no servidor, mantém a validação de IDs explícitos e continua bloqueando históricos de outras pessoas. Cadastro e desativação de registros permanecem restritos a Funcionário e Admin.
+
+O atalho genérico de exames do menu médico foi removido porque não indicava um paciente. Os links “Exames realizados” de cada consulta, na agenda médica, continuam disponíveis com o paciente selecionado.
 
 Não é necessária uma migração adicional de banco por causa do layout. Para preparar o ambiente e executar as migrações já existentes, siga o README e `docs/ENTREGA-V22.md`.
 
@@ -52,14 +56,16 @@ Não é necessária uma migração adicional de banco por causa do layout. Para 
 | Verificação | Resultado |
 |---|---|
 | Compilação Release da solução com .NET SDK 8.0.414 | Aprovada, sem erros ou avisos |
-| Verificações existentes em `tests/CallMed.Checks` | 11 aprovadas |
+| Verificações em `tests/CallMed.Checks` | 24 aprovadas: 11 existentes e 13 de acesso ao histórico |
 | Renderização de 15 telas/estados em 1440 e 390 px | 30 respostas HTTP 200; sem exceções JavaScript ou rolagem horizontal da página |
 | Menu, foco, tema, modo fácil, senha, etapas do cadastro, convênio e seleção de horários | Aprovados |
 | Painéis, login, cadastro, agendamento e cadastro de paciente em 320 px | Sem rolagem horizontal da página |
 | Referências locais a CSS, JavaScript e imagens | Nenhum arquivo ausente encontrado |
-| Comparação dos arquivos C# | 170 preservados |
+| Alteração de código da aplicação nesta revisão | Apenas `HistoricoExamesController.cs`; testes de regressão acrescentados |
 
-A revisão visual usou as views Razor e os arquivos estáticos do projeto em um ambiente isolado com dados fictícios. Para renderizar login e cadastro nesse ambiente, apenas as cópias de teste receberam rotas absolutas. A seleção de médicos, datas e horários foi exercitada com respostas simuladas.
+Os 13 novos testes de regressão usam EF Core InMemory apenas no projeto de testes. Exercitam duas contas distintas, histórico vazio, conta sem vínculo, ID de outro paciente, IDs inválidos, acesso da equipe/médico e as políticas ASP.NET de leitura/escrita. A dependência não foi adicionada à aplicação.
+
+A revisão visual da entrega inicial usou as views Razor e os arquivos estáticos do projeto em um ambiente isolado com dados fictícios. Para renderizar login e cadastro nesse ambiente, apenas as cópias de teste receberam rotas absolutas. A seleção de médicos, datas e horários foi exercitada com respostas simuladas.
 
 Essas verificações não equivalem à homologação com banco real, login real, gravação de consultas, envio de mensagens, Evolution, SMTP, SMS, IA, instalação PWA ou dispositivo Android. Nenhuma mensagem real foi enviada e nenhum ambiente de produção foi atualizado. O ambiente de testes visuais, SDK, navegador e dependências baixadas não fazem parte do ZIP.
 

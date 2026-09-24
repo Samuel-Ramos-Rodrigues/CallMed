@@ -41,6 +41,7 @@ handler.Status = HttpStatusCode.Unauthorized;
 Check(!(await sender.VerificarConexaoAsync()).Conectado, "Chave inválida não aparece como conexão ativa");
 handler.Status = HttpStatusCode.OK; handler.Body = "invalid";
 Check(!(await sender.VerificarConexaoAsync()).Conectado, "Resposta inválida é tratada");
+await HistoricoExamesChecks.RunAsync(Check);
 Console.WriteLine("Verificações concluídas. Nenhuma mensagem real foi enviada.");
 sealed class FakeHandler : HttpMessageHandler
 {

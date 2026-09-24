@@ -39,7 +39,6 @@
                 else if (User.IsInRole("Medico"))
                 {
                     <a class="@(Ativo("MedicoPainel") ? "active" : "")" asp-controller="MedicoPainel" asp-action="Index">Minha agenda</a>
-                    <a class="@(Ativo("HistoricoExames") ? "active" : "")" asp-controller="HistoricoExames" asp-action="Index">Histórico de exames</a>
                 }
             </nav>
             <div class="header-tools">

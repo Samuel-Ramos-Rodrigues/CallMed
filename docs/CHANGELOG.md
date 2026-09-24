@@ -1,5 +1,13 @@
 
 
+## Correção — acesso do paciente aos exames — 24/09/2026
+
+- Corrigido o acesso por “Meus exames” sem `pacienteId`: o controller identifica o paciente pela conta logada.
+- Mantido o bloqueio de IDs alheios e de alterações por pacientes.
+- Retirado o atalho médico genérico sem paciente; links de cada consulta permanecem disponíveis.
+- Adicionados 13 testes de regressão com dados fictícios em memória. Total: 24 testes aprovados; compilação Release sem erros ou avisos.
+
+
 ## Layout e organização — 24/09/2026
 
 - Nova identidade visual, navegação superior e menus por perfil.
