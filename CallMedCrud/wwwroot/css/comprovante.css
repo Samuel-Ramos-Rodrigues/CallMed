@@ -1,7 +1,71 @@
-@media print {
-    body * { visibility: hidden; }
-    .comprovante-consulta, .comprovante-consulta * { visibility: visible; }
-    .comprovante-consulta { position: absolute; left: 0; top: 0; width: 100%; background: white!important; color: black!important; }
-    .comprovante-consulta .cm25-sticky-actions, .comprovante-consulta .cm25-sticky-actions * { display: none!important; }
-    .comprovante-consulta section { break-inside: avoid; box-shadow: none!important; }
+/* Comprovante legível em papel, independentemente do tema escolhido. */
+@page  {
+    size:A4;
+    margin:16mm;
+}
+
+@media print  {
+    :root  {
+        --ink:#111;
+        --muted:#444;
+        --line:#ccc;
+        --surface:#fff;
+        --surface-alt:#fff;
+        --bg:#fff;
+        --brand:#111;
+    }
+    html,body  {
+        margin:0;
+        padding:0;
+        background:#fff!important;
+        color:#111!important;
+    }
+    body>header,body>footer,body>nav,body>dialog,.skip-link,.mksan-floating-actions,.mksan-ai-widget  {
+        display:none!important;
+    }
+    .app-main  {
+        max-width:none;
+        margin:0;
+        padding:0;
+    }
+    .comprovante-consulta  {
+        width:100%;
+        background:#fff!important;
+        color:#111!important;
+    }
+    .comprovante-consulta *  {
+        color:#111!important;
+        box-shadow:none!important;
+        text-shadow:none!important;
+    }
+    .comprovante-consulta .cm25-sticky-actions,.comprovante-consulta a,.comprovante-consulta button  {
+        display:none!important;
+    }
+    .comprovante-consulta section  {
+        break-inside:avoid;
+        background:#fff!important;
+        border-color:#ccc;
+    }
+    .comprovante-consulta .consultation-detail-grid-v16  {
+        grid-template-columns:1fr 1fr;
+        gap:16px;
+    }
+    .comprovante-consulta .cm25-page-hero  {
+        margin-bottom:24px;
+    }
+    .comprovante-consulta h1  {
+        font-size:26px;
+    }
+    .comprovante-consulta h2  {
+        font-size:18px;
+    }
+    .comprovante-consulta .detail-info-stack>div  {
+        grid-template-columns:1fr;
+        gap:4px;
+        padding:10px 0;
+    }
+    .comprovante-consulta .cm25-hero-mark,.comprovante-consulta .status-pill  {
+        background:#fff!important;
+        border:1px solid #ccc;
+    }
 }

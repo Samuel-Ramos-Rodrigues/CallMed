@@ -1,11 +1,10 @@
 @model MKSANCrud.ViewModels.HistoricoExamesViewModel
 @{ ViewData["Title"] = "Histórico de exames"; var equipe = User.IsInRole("Funcionario") || User.IsInRole("Admin"); }
-<section class="cm25-screen">
-    <h1>Histórico de exames</h1>
-    <p>@Model.Paciente.Nome · Registro dos exames realizados. Laudos e interpretações permanecem com o serviço responsável.</p>
+<section class="cm25-screen cm25-exams-page">
+    <header class="cm25-page-hero"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#clipboard"></use></svg></div><div><span class="cm25-kicker">ACOMPANHAMENTO</span><h1>Histórico de exames</h1><p>@Model.Paciente.Nome · Registro dos exames realizados. Laudos e interpretações permanecem com o serviço responsável.</p></div></header>
     @if (equipe)
     {
-        <form asp-action="Create" method="post" class="cm25-panel v16-card">
+        <form asp-action="Create" method="post" class="cm25-panel v16-card cm25-content-card">
             <h2>Registrar exame realizado</h2>
             <div asp-validation-summary="All" class="validation"></div>
             <input asp-for="Novo.PacienteId" type="hidden" />
@@ -17,12 +16,14 @@
             <button class="btn" type="submit">Adicionar ao histórico</button>
         </form>
     }
-    @if (Model.Exames.Count == 0) { <p>Nenhum exame registrado.</p> }
+    @if (Model.Exames.Count == 0) { <div class="cm25-panel v16-empty"><strong>Nenhum exame registrado.</strong><p>Os exames adicionados pela equipe aparecerão aqui.</p></div> }
     @foreach (var exame in Model.Exames)
     {
-        <article class="cm25-panel v16-card">
+        <article class="cm25-panel v16-card cm25-content-card cm25-exam-record">
+            <div>
             <h2>@exame.Nome</h2>
             <p>@exame.DataRealizacao.ToString("dd/MM/yyyy") · @(exame.LocalRealizacao ?? "Local não informado")</p>
+            </div>
             @if (equipe)
             {
                 <form asp-action="Desativar" method="post" onsubmit="return confirm('Retirar este registro da lista? A auditoria será preservada.');">

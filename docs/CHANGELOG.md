@@ -1,3 +1,11 @@
+## Revisão completa de CSS — 26/09/2026
+
+- Revisadas 58 páginas Razor, duas páginas offline e os componentes compartilhados.
+- Corrigidos componentes de triagem, exames, convênios, disponibilidade, relatórios, integrações, privacidade e conta.
+- Ajustados celular, tema escuro, menus em tabelas, formulários offline e impressão A4.
+- Seis arquivos CSS formatados e cache estático atualizado; código C# preservado nesta revisão.
+- Escopo e resultados em [REVISAO-CSS.md](REVISAO-CSS.md).
+
 
 
 ## Correção — acesso do paciente aos exames — 24/09/2026

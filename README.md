@@ -4,6 +4,8 @@
 
 <h1 align="center">CallMed</h1>
 
+> **CSS revisado em todo o site:** seis folhas de estilo, 58 páginas Razor e duas telas offline. [Correções e inventário página por página](docs/REVISAO-CSS.md).
+>
 > **Layout atualizado e projeto organizado.** [Veja a limpeza, o visual e as verificações](docs/LAYOUT-E-ORGANIZACAO.md).
 >
 > **Correção de exames:** o atalho “Meus exames” identifica o paciente pela conta logada; acesso a históricos de outras pessoas permanece bloqueado.

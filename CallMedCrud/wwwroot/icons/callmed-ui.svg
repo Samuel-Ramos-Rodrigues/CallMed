@@ -19,4 +19,6 @@
   <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <symbol id="bell" viewBox="0 0 24 24"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0c0 6 2.5 6.5 2.5 6.5H4s2.5-.5 2.5-6.5Z"/><path d="M10 19h4"/></symbol>
+<symbol id="chart" viewBox="0 0 24 24"><path d="M4 3v17h17M8 15v-4M13 15V7M18 15V4"/></symbol>
+<symbol id="clipboard" viewBox="0 0 24 24"><path d="M8 5H5v16h14V5h-3M9 10h6M9 14h6M9 18h3"/><rect x="8" y="2" width="8" height="5" rx="1"/></symbol>
 </svg>

@@ -20,7 +20,7 @@
             @foreach(var grupo in Model.Regras.GroupBy(x=>x.ConvenioNome))
             {
                 <article class="cm21-rule-group"><header><strong>@grupo.Key</strong><span>@grupo.Count() especialidade(s)</span></header>
-                    @foreach(var item in grupo){<div><span>@item.Especialidade?.Nome</span><b class="@(item.Coberta?"ok":"no")">@(item.Coberta?"Coberta":"Não coberta")</b><small>@item.Observacao</small><form asp-action="Desativar" method="post"><input type="hidden" name="id" value="@item.Id"/><button type="submit">Remover</button></form></div>}
+                    @foreach(var item in grupo){<div><span>@item.Especialidade?.Nome</span><b class="@(item.Coberta?"ok":"no")">@(item.Coberta?"Coberta":"Não coberta")</b><small>@item.Observacao</small><form asp-action="Desativar" method="post"><input type="hidden" name="id" value="@item.Id"/><button class="btn small danger" type="submit">Remover</button></form></div>}
                 </article>
             }
         </section>

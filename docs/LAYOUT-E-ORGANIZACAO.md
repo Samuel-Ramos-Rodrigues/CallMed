@@ -1,6 +1,8 @@
 # CallMed — novo layout e organização
 
-Base: CallMed V22.2. Atualização visual: 24/09/2026.
+Base: CallMed V22.2. Atualização visual inicial: 24/09/2026.
+
+Revisão completa posterior: [58 páginas, duas telas offline e os seis CSS](REVISAO-CSS.md).
 
 ## O que mudou
 
@@ -21,7 +23,7 @@ Foram removidos ou consolidados 23 arquivos:
 | Changelogs separados por versão | 8 | `docs/CHANGELOG.md` |
 | Relatórios antigos em TXT | 10 | `docs/validacao/HISTORICO.txt` |
 
-As folhas de estilo passaram de 646.080 para 86.880 bytes (redução de aproximadamente 86,6%, sem minificação). Há seis arquivos CSS, divididos por responsabilidade. Os scripts e estilos usam versionamento de conteúdo nos layouts Razor, e o cache estático do service worker recebeu uma nova versão.
+Na limpeza inicial, as folhas de estilo passaram de 646.080 para 86.880 bytes. Após completar os componentes e formatar os arquivos nesta revisão, somam 113.370 bytes (redução de aproximadamente 82.5% frente à base original, sem minificação). Há seis arquivos CSS, divididos por responsabilidade. Os scripts e estilos usam versionamento de conteúdo nos layouts Razor, e o cache estático do service worker recebeu uma nova versão.
 
 | Arquivo | Responsabilidade |
 |---|---|
@@ -51,7 +53,9 @@ O atalho genérico de exames do menu médico foi removido porque não indicava u
 
 Não é necessária uma migração adicional de banco por causa do layout. Para preparar o ambiente e executar as migrações já existentes, siga o README e `docs/ENTREGA-V22.md`.
 
-## Verificações realizadas
+## Verificações da entrega inicial e da correção de exames
+
+A cobertura completa posterior, com 332 renderizações e 23 verificações de interação, está em [REVISAO-CSS.md](REVISAO-CSS.md).
 
 | Verificação | Resultado |
 |---|---|

@@ -1,18 +1,219 @@
-.contingencia-page{margin:0;background:#f3f4fb;color:#20213b;font-family:system-ui,sans-serif;line-height:1.6}
-.contingencia-page main{max-width:800px;margin:32px auto;padding:24px;background:white;border:1px solid #d8dbea;border-radius:18px}
-#contingencia{max-width:800px;font-family:system-ui,sans-serif;color:inherit;line-height:1.6}
-#contingencia form,#contingencia article{display:grid;gap:14px;border:1px solid #9999b0;border-radius:14px;padding:20px;margin:18px 0;background:var(--surface,transparent)}
-#contingencia label{display:grid;gap:5px;font-weight:600}
-#contingencia input,#contingencia select{box-sizing:border-box;width:100%;min-height:46px;font:inherit;border:1px solid var(--line);border-radius:8px;padding:9px;background:var(--surface,#fff);color:inherit}
-#contingencia button{min-height:46px;font:inherit;font-weight:650;border:1px solid var(--brand);border-radius:8px;padding:10px 16px;background:var(--brand);color:white;cursor:pointer}
-#contingencia button.secondary{background:transparent;color:inherit;border-color:var(--line)}
-#contingencia button:disabled{opacity:.55;cursor:wait}
-#contingencia :focus-visible{outline:3px solid var(--brand);outline-offset:3px}
-#contingencia .offline-actions{display:flex;flex-wrap:wrap;gap:10px}
-#contingencia .offline-status{white-space:pre-line;font-weight:600;padding:12px;border-left:4px solid var(--brand);background:rgba(120,104,230,.1)}
-#contingencia small{font-weight:400}
-#contingencia [hidden]{display:none!important}
-@media(max-width:600px){.contingencia-page main{margin:0;border:0;border-radius:0;padding:18px}#contingencia form,#contingencia article{padding:14px}}
-@media(prefers-reduced-motion:reduce){#contingencia *{scroll-behavior:auto}}
+/* Páginas de baixa conectividade; usam as cores do tema compartilhado. */
+.contingencia-page main  {
+    max-width:800px;
+    margin:32px auto;
+    padding:30px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:18px;
+}
 
-.offline-page{min-height:100dvh;display:grid;place-items:center;padding:24px}.offline-page main{max-width:650px;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--surface)}.offline-page header{background:var(--navy);color:#fff;padding:30px}.offline-page header img{width:48px;border-radius:12px}.offline-page h1{font-size:34px;margin:15px 0}.offline-page header p,.offline-page header .eyebrow{color:#b4c9df}.offline-page .content{padding:28px}.offline-page .notice{display:flex;gap:15px;margin-bottom:22px}.offline-page .notice>span{color:var(--brand);font-size:24px}.offline-page .notice p{margin-top:9px;font-size:14px}.offline-page .actions{display:flex;gap:10px;flex-wrap:wrap}.offline-page .actions button{padding:13px 18px;border:1px solid var(--line);background:var(--brand);color:var(--surface);border-radius:10px}.offline-page .actions button.secondary{background:var(--surface);color:var(--ink)}.offline-page .status{font-size:12px;margin-top:20px;color:var(--muted)}.contingencia-page{background:var(--bg);color:var(--ink)}.contingencia-page main{background:var(--surface);border-color:var(--line)}
+.contingencia-page main>a  {
+    color:var(--brand);
+    font-weight:600;
+}
+
+.contingencia-page h1  {
+    margin:18px 0;
+    font-size:32px;
+}
+
+.contingencia-page main>p  {
+    margin-top:18px;
+}
+
+#contingencia  {
+    max-width:800px;
+    line-height:1.6;
+}
+
+#contingencia form,#contingencia article  {
+    display:grid;
+    gap:14px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+    margin:18px 0;
+    background:var(--surface);
+}
+
+#contingencia label  {
+    display:grid;
+    gap:6px;
+    margin:0;
+    font-weight:600;
+}
+
+#contingencia input,#contingencia select  {
+    width:100%;
+    min-height:46px;
+    font:inherit;
+    border:1px solid var(--line);
+    border-radius:9px;
+    padding:10px 13px;
+    background:var(--bg);
+    color:var(--ink);
+}
+
+#contingencia button  {
+    min-height:46px;
+    font:inherit;
+    font-weight:600;
+    border:1px solid var(--brand);
+    border-radius:9px;
+    padding:10px 16px;
+    background:var(--brand);
+    color:var(--surface);
+    cursor:pointer;
+}
+
+#contingencia button.secondary  {
+    background:var(--surface);
+    color:var(--ink);
+    border-color:var(--line);
+}
+
+#contingencia button:disabled  {
+    opacity:.55;
+    cursor:wait;
+}
+
+#contingencia .offline-actions  {
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+#contingencia .offline-status  {
+    white-space:pre-line;
+    font-weight:600;
+    padding:16px;
+    border-left:4px solid var(--brand);
+    border-radius:0 10px 10px 0;
+    background:var(--brand-soft);
+    color:var(--ink);
+    margin:24px 0;
+}
+
+#contingencia small  {
+    font-weight:400;
+}
+
+#contingencia article  {
+    overflow-wrap:anywhere;
+}
+
+.offline-page  {
+    min-height:100dvh;
+    display:grid;
+    place-items:center;
+    padding:24px;
+}
+
+.offline-page main  {
+    max-width:650px;
+    border:1px solid var(--line);
+    border-radius:22px;
+    overflow:hidden;
+    background:var(--surface);
+}
+
+.offline-page header  {
+    background:var(--navy);
+    color:#fff;
+    padding:30px;
+}
+
+.offline-page header img  {
+    background:#e5edf5;
+    padding:7px;
+    width:48px;
+    border-radius:12px;
+    margin-bottom:18px;
+}
+
+.offline-page h1  {
+    font-size:34px;
+    margin:15px 0;
+}
+
+.offline-page header p,.offline-page header .eyebrow  {
+    color:#b4c9df;
+}
+
+.offline-page .content  {
+    padding:28px;
+}
+
+.offline-page .notice  {
+    display:flex;
+    gap:15px;
+    margin-bottom:22px;
+}
+
+.offline-page .notice>span  {
+    color:var(--brand);
+    font-size:24px;
+}
+
+.offline-page .notice p  {
+    margin-top:9px;
+    font-size:14px;
+}
+
+.offline-page .actions  {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.offline-page .actions button  {
+    min-height:44px;
+    padding:12px 18px;
+    border:1px solid var(--brand);
+    background:var(--brand);
+    color:var(--surface);
+    border-radius:10px;
+}
+
+.offline-page .actions button.secondary  {
+    background:var(--surface);
+    color:var(--ink);
+    border-color:var(--line);
+}
+
+.offline-page .content>p  {
+    margin-top:24px;
+    font-size:13px;
+}
+
+.offline-page .content a  {
+    color:var(--brand);
+    text-decoration:underline;
+    text-underline-offset:3px;
+}
+
+.offline-page .status  {
+    font-size:12px;
+    margin-top:20px;
+    color:var(--muted);
+}
+
+@media(max-width:600px)  {
+    .contingencia-page main  {
+        margin:16px;
+        padding:20px;
+    }
+    .contingencia-page h1,.offline-page h1  {
+        font-size:28px;
+    }
+    #contingencia form,#contingencia article  {
+        padding:16px;
+    }
+    .offline-page  {
+        padding:16px;
+    }
+    .offline-page header,.offline-page .content  {
+        padding:22px;
+    }
+}
