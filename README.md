@@ -4,6 +4,8 @@
 
 <h1 align="center">CallMed</h1>
 
+> **Envio WhatsApp corrigido:** espera após HTTP 429, reenvio da mesma mensagem e avisos automáticos sem duplicação. [Correção, configuração e atualização do banco](docs/CORRECAO-ENVIO-WHATSAPP.md).
+>
 > **CSS revisado em todo o site:** seis folhas de estilo, 58 páginas Razor e duas telas offline. [Correções e inventário página por página](docs/REVISAO-CSS.md).
 >
 > **Layout atualizado e projeto organizado.** [Veja a limpeza, o visual e as verificações](docs/LAYOUT-E-ORGANIZACAO.md).

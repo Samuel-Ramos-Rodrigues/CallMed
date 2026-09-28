@@ -169,10 +169,11 @@ public sealed class ListaEsperaService
                 $"dia {vaga.Data!.Value:dd/MM/yyyy} às {vaga.Horario}. " +
                 "Entre no app para aceitar a vaga ou responda por aqui se precisar de ajuda. A vaga continua sujeita à disponibilidade.";
 
-            var msg = await _envio.EnviarAsync(conversa, texto, AutorMensagemAtendimento.Sistema, ct: ct);
+            var msg = await _envio.EnviarAvisoAsync(conversa, texto, $"lista-espera:{item.Id}:vaga:{vaga.Id}", ct);
             if (msg.Status == StatusMensagemAtendimento.Enviada)
             {
                 MarcarComoNotificado(item, vaga);
+                await _context.SaveChangesAsync(ct);
                 enviados++;
             }
         }

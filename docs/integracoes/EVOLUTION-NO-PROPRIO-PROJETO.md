@@ -1,3 +1,5 @@
+> Atualização de envio de 27/09/2026: [controle de HTTP 429, avisos e atualização do banco](../CORRECAO-ENVIO-WHATSAPP.md).
+
 # Evolution API junto do CallMed
 
 Sim: o CallMed pode integrar e hospedar a Evolution na mesma infraestrutura. O CallMed continua como aplicação C#/ASP.NET Core; a Evolution roda como outro serviço, comunicando-se por HTTP e webhook. Não é uma biblioteca C# para colar no Program.cs. O agente do CallMed já processa as mensagens, sem exigir n8n.

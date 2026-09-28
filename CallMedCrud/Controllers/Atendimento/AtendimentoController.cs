@@ -453,32 +453,20 @@ public sealed class AtendimentoController : Controller
             .Include(m => m.Conversa)
             .FirstOrDefaultAsync(m =>
                 m.Id == mensagemId &&
-                m.Direcao == DirecaoMensagemAtendimento.Saida &&
-                m.Status == StatusMensagemAtendimento.Falhou,
+                m.Direcao == DirecaoMensagemAtendimento.Saida,
                 ct);
 
         if (falha?.Conversa is null)
             return NotFound();
 
-        var userId =
-            User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        var nova = await _envio.EnviarAsync(
-            falha.Conversa,
-            falha.Texto,
-            falha.Autor,
-            falha.Autor == AutorMensagemAtendimento.Funcionario
-                ? userId
-                : null,
-            falha.Conversa.Assunto,
-            ct);
-
-        TempData[nova.Status == StatusMensagemAtendimento.Enviada
-            ? "Sucesso"
-            : "Erro"] =
-            nova.Status == StatusMensagemAtendimento.Enviada
-                ? "Mensagem reenviada."
-                : nova.Erro ?? "O reenvio falhou novamente.";
+        var atual = await _envio.ReenviarAsync(mensagemId, ct);
+        if (atual is null) return NotFound();
+        var enviada = atual.Status == StatusMensagemAtendimento.Enviada;
+        TempData[enviada ? "Sucesso" : "Erro"] = enviada
+            ? "Mensagem enviada."
+            : atual.Status == StatusMensagemAtendimento.Processando
+                ? "Esta mensagem já está em processamento. Aguarde a confirmação."
+                : atual.Erro ?? "Aguarde antes de tentar novamente.";
 
         return RedirectToAction(
             nameof(Index),
@@ -516,8 +504,18 @@ public sealed class AtendimentoController : Controller
                 texto = m.Texto,
                 status = m.Status.ToString(),
                 erro = m.Erro,
+                proximaTentativaEm = m.ProximaTentativaEm,
+                reenvioBloqueado = m.ReenvioBloqueado,
                 criadoEm = m.CriadoEm
             })
+            .ToListAsync(ct);
+
+        var estados = await _context.MensagensAtendimento.AsNoTracking()
+            .Where(m => m.ConversaAtendimentoId == id && m.Id <= Math.Max(0, afterId) &&
+                m.Direcao == DirecaoMensagemAtendimento.Saida)
+            .OrderByDescending(m => m.Id).Take(200)
+            .Select(m => new { id = m.Id, status = m.Status.ToString(), erro = m.Erro,
+                proximaTentativaEm = m.ProximaTentativaEm, reenvioBloqueado = m.ReenvioBloqueado })
             .ToListAsync(ct);
 
         if (mensagens.Count > 0)
@@ -538,6 +536,7 @@ public sealed class AtendimentoController : Controller
             ativa = conversa.Ativa,
             responsavelUsuarioId = conversa.ResponsavelUsuarioId,
             pacienteId = conversa.PacienteId,
+            estados,
             mensagens
         });
     }

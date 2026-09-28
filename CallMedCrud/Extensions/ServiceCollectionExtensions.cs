@@ -118,6 +118,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AtendimentoEnvioService>();
         services.AddScoped<AtendimentoOrquestradorService>();
 
+        services.AddSingleton(TimeProvider.System);
+        services.AddSingleton<EvolutionEnvioControle>();
         services.AddHttpClient<EvolutionWhatsAppSender>();
         services.AddScoped<ICanalAtendimentoSender>(
             sp => sp.GetRequiredService<EvolutionWhatsAppSender>());
@@ -165,6 +167,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<DatabaseSchemaV16Initializer>();
         services.AddScoped<DatabaseSchemaV21Initializer>();
         services.AddScoped<DatabaseSchemaV22Initializer>();
+        services.AddScoped<DatabaseSchemaV23Initializer>();
         return services;
     }
 

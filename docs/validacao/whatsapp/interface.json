@@ -1,0 +1,62 @@
+[
+  {
+    "theme": "light",
+    "width": 1440,
+    "status": "PASS",
+    "checks": [
+      "cooldown",
+      "retry available",
+      "unknown delivery blocked",
+      "no page overflow",
+      "poll enables retry",
+      "poll clears error without duplication",
+      "POST antiforgery",
+      "no JS errors"
+    ]
+  },
+  {
+    "theme": "light",
+    "width": 390,
+    "status": "PASS",
+    "checks": [
+      "cooldown",
+      "retry available",
+      "unknown delivery blocked",
+      "no page overflow",
+      "poll enables retry",
+      "poll clears error without duplication",
+      "POST antiforgery",
+      "no JS errors"
+    ]
+  },
+  {
+    "theme": "dark",
+    "width": 1440,
+    "status": "PASS",
+    "checks": [
+      "cooldown",
+      "retry available",
+      "unknown delivery blocked",
+      "no page overflow",
+      "poll enables retry",
+      "poll clears error without duplication",
+      "POST antiforgery",
+      "no JS errors"
+    ]
+  },
+  {
+    "theme": "dark",
+    "width": 390,
+    "status": "PASS",
+    "checks": [
+      "cooldown",
+      "retry available",
+      "unknown delivery blocked",
+      "no page overflow",
+      "poll enables retry",
+      "poll clears error without duplication",
+      "POST antiforgery",
+      "no JS errors"
+    ]
+  }
+]

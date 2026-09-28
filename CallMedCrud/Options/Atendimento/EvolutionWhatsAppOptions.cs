@@ -10,4 +10,6 @@ public sealed class EvolutionWhatsAppOptions
     public string InstanceName { get; set; } = "callmed";
     public string PublicNumber { get; set; } = string.Empty;
     public string WebhookSecret { get; set; } = string.Empty;
+    public int IntervaloMinimoEnvioMs { get; set; } = 2000;
+    public int EsperaApos429Segundos { get; set; } = 60;
 }

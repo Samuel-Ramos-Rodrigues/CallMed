@@ -65,6 +65,9 @@ public static class StartupInitializer
 
         if (configuration.GetValue("Database:ApplyV22Patch", true))
             await services.GetRequiredService<DatabaseSchemaV22Initializer>().AplicarAsync();
+
+        if (configuration.GetValue("Database:ApplyV23Patch", true))
+            await services.GetRequiredService<DatabaseSchemaV23Initializer>().AplicarAsync();
     }
 
     private static async Task GarantirRolesAsync(RoleManager<IdentityRole> roleManager)

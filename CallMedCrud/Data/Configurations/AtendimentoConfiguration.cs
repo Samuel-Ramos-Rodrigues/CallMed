@@ -33,6 +33,9 @@ public sealed class MensagemAtendimentoConfiguration : IEntityTypeConfiguration<
         entity.Property(m => m.Direcao).HasConversion<string>().HasMaxLength(20);
         entity.Property(m => m.Autor).HasConversion<string>().HasMaxLength(20);
         entity.Property(m => m.Status).HasConversion<string>().HasMaxLength(20);
+        entity.Property(m => m.VersaoEnvio).IsConcurrencyToken();
+        entity.HasIndex(m => m.ChaveEnvio).IsUnique()
+            .HasFilter("\"ChaveEnvio\" IS NOT NULL");
         entity.HasIndex(m => new { m.ConversaAtendimentoId, m.CriadoEm });
         entity.HasIndex(m => new { m.ConversaAtendimentoId, m.MensagemExternaId })
             .IsUnique()

@@ -1,3 +1,11 @@
+## Controle de envio Evolution — 27/09/2026
+
+- Respeitado Retry-After após HTTP 429, com intervalo mínimo compartilhado entre envios.
+- Reenvio da mesma mensagem, chave única para avisos e controle de concorrência no banco.
+- Corrigida repetição de avisos da lista de espera e de lembretes após falha.
+- Prazo de tentativa exibido na Central; envios parciais/incertos exigem conferência do canal.
+- Patch aditivo V23 incluído; 44 verificações aprovadas. [Detalhes e atualização](CORRECAO-ENVIO-WHATSAPP.md).
+
 ## Revisão completa de CSS — 26/09/2026
 
 - Revisadas 58 páginas Razor, duas páginas offline e os componentes compartilhados.

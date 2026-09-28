@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v24-css-review';
+const CACHE_NAME = 'callmed-static-v25-evolution-retry';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.

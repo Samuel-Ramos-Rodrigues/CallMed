@@ -5,6 +5,8 @@ public sealed class CanalEnvioResultado
     public bool Sucesso { get; init; }
     public string? MensagemExternaId { get; init; }
     public string? Erro { get; init; }
+    public DateTime? ProximaTentativaEm { get; init; }
+    public bool ReenvioBloqueado { get; init; }
 
     public static CanalEnvioResultado Ok(string? id = null) =>
         new() { Sucesso = true, MensagemExternaId = id };

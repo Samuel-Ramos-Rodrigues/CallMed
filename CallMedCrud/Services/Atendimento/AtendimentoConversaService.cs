@@ -501,7 +501,8 @@ public sealed class AtendimentoConversaService
     private async Task ApararAsync(long conversaId, CancellationToken ct)
     {
         var ids = await _context.MensagensAtendimento
-            .Where(m => m.ConversaAtendimentoId == conversaId)
+            .Where(m => m.ConversaAtendimentoId == conversaId && m.ChaveEnvio == null &&
+                m.Status != StatusMensagemAtendimento.Processando && m.ProximaTentativaEm == null)
             .OrderByDescending(m => m.CriadoEm)
             .ThenByDescending(m => m.Id)
             .Skip(LimiteMensagens)

@@ -10,6 +10,7 @@ namespace MKSANCrud.Services.Atendimento.Canais.WhatsApp;
 
 public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
 {
+    private readonly EvolutionEnvioControle _controle;
     private readonly HttpClient _http;
     private readonly EvolutionWhatsAppOptions _options;
     private readonly ILogger<EvolutionWhatsAppSender> _logger;
@@ -17,8 +18,10 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
     public EvolutionWhatsAppSender(
         HttpClient http,
         IOptions<EvolutionWhatsAppOptions> options,
-        ILogger<EvolutionWhatsAppSender> logger)
+        ILogger<EvolutionWhatsAppSender> logger,
+        EvolutionEnvioControle controle)
     {
+        _controle = controle;
         _http = http;
         _options = options.Value;
         _logger = logger;
@@ -44,6 +47,8 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
         try
         {
             using var response = await _http.SendAsync(request, limite.Token);
+            if (response.StatusCode == HttpStatusCode.TooManyRequests)
+                return (false, "Evolution limitou as consultas (HTTP 429). Aguarde antes de verificar novamente.");
             if (!response.IsSuccessStatusCode)
                 return (false, $"Evolution respondeu HTTP {(int)response.StatusCode}. Confira a chave e a instância.");
             using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync(limite.Token));
@@ -80,61 +85,64 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
         if (string.IsNullOrWhiteSpace(numero))
             return CanalEnvioResultado.Falha("Telefone inválido.");
 
-        string? ultimoId = null;
+        if (string.IsNullOrWhiteSpace(texto))
+            return CanalEnvioResultado.Falha("A mensagem está vazia.");
 
-        foreach (var parte in DividirMensagem(texto.Trim(), 3500))
+        await _controle.Fila.WaitAsync(ct);
+        try
         {
-            var endpoint =
-                $"{_options.BaseUrl.TrimEnd('/')}/message/sendText/{Uri.EscapeDataString(_options.InstanceName)}";
+            if (_controle.BloqueadoAte is DateTime ate)
+                return LimiteDeEnvio(ate);
 
-            try
+            string? ultimoId = null;
+            var partesEnviadas = 0;
+            foreach (var parte in DividirMensagem(texto.Trim(), 3500))
             {
-                // Evolution atual: { number, text }.
-                var tentativaAtual = await EnviarParteAsync(
-                    endpoint,
-                    numero,
-                    parte,
-                    payloadLegado: false,
-                    ct);
-
-                // Algumas instalações ainda esperam { number, textMessage: { text } }.
-                // O fallback também cobre HTTP 500 quando o corpo indica falha de
-                // interpretação do payload, cenário observado em builds da Evolution 2.x.
-                if (!tentativaAtual.Sucesso && tentativaAtual.PermiteFallbackLegado)
+                var endpoint = $"{_options.BaseUrl.TrimEnd('/')}/message/sendText/{Uri.EscapeDataString(_options.InstanceName)}";
+                TentativaEnvio tentativa;
+                try
                 {
-                    _logger.LogInformation(
-                        "Evolution rejeitou payload atual; tentando formato legado compatível.");
-
-                    tentativaAtual = await EnviarParteAsync(
-                        endpoint,
-                        numero,
-                        parte,
-                        payloadLegado: true,
-                        ct);
+                    tentativa = await EnviarParteAsync(endpoint, numero, parte, false, ct);
+                    if (!tentativa.Sucesso && tentativa.PermiteFallbackLegado)
+                        tentativa = await EnviarParteAsync(endpoint, numero, parte, true, ct);
+                }
+                catch (Exception ex) when (ex is HttpRequestException or OperationCanceledException)
+                {
+                    _logger.LogWarning(ex, "Evolution não confirmou o resultado do envio.");
+                    return new CanalEnvioResultado
+                    {
+                        Erro = "Envio sem confirmação da Evolution. Confira a conversa no WhatsApp antes de enviar outra mensagem.",
+                        ReenvioBloqueado = true
+                    };
                 }
 
-                if (!tentativaAtual.Sucesso)
+                if (!tentativa.Sucesso)
                 {
-                    _logger.LogWarning(
-                        "Evolution API retornou HTTP {Status} no envio. Resposta={Resposta}",
-                        (int)tentativaAtual.StatusCode,
-                        LimitarLog(tentativaAtual.Corpo));
-
-                    return CanalEnvioResultado.Falha(
-                        $"Evolution retornou HTTP {(int)tentativaAtual.StatusCode}.");
+                    _logger.LogWarning("Evolution API retornou HTTP {Status} no envio.", (int)tentativa.StatusCode);
+                    if (partesEnviadas > 0)
+                        return new CanalEnvioResultado
+                        {
+                            Erro = $"Envio parcial: {partesEnviadas} parte(s) confirmada(s), seguido de HTTP {(int)tentativa.StatusCode}. Confira o WhatsApp antes de enviar o trecho restante.",
+                            ReenvioBloqueado = true
+                        };
+                    return tentativa.ProximaTentativaEm is DateTime quando
+                        ? LimiteDeEnvio(quando)
+                        : CanalEnvioResultado.Falha($"Evolution retornou HTTP {(int)tentativa.StatusCode}. Confira a instância e a configuração do provedor.");
                 }
-
-                ultimoId ??= TentarExtrairId(tentativaAtual.Corpo);
+                _controle.RegistrarSucesso();
+                partesEnviadas++;
+                ultimoId ??= TentarExtrairId(tentativa.Corpo);
             }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                _logger.LogError(ex, "Falha ao enviar mensagem via Evolution API.");
-                return CanalEnvioResultado.Falha("Falha de comunicação com a Evolution API.");
-            }
+            return CanalEnvioResultado.Ok(ultimoId);
         }
-
-        return CanalEnvioResultado.Ok(ultimoId);
+        finally { _controle.Fila.Release(); }
     }
+
+    private static CanalEnvioResultado LimiteDeEnvio(DateTime ate) => new()
+    {
+        Erro = "Limite temporário da Evolution (HTTP 429). Aguarde o horário indicado para tentar novamente.",
+        ProximaTentativaEm = ate
+    };
 
     private async Task<TentativaEnvio> EnviarParteAsync(
         string endpoint,
@@ -158,14 +166,21 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
                 text = texto
             });
 
+        await _controle.AguardarIntervaloAsync(ct);
         using var response = await _http.SendAsync(request, ct);
+        DateTime? proximaTentativa = response.StatusCode == HttpStatusCode.TooManyRequests
+            ? _controle.RegistrarLimite(response.Headers.RetryAfter)
+            : null;
+        if (proximaTentativa.HasValue)
+            return new TentativaEnvio(false, response.StatusCode, string.Empty, false, proximaTentativa);
         var corpo = await response.Content.ReadAsStringAsync(ct);
 
         return new TentativaEnvio(
             response.IsSuccessStatusCode,
             response.StatusCode,
             corpo,
-            PermiteFallbackLegado(response.StatusCode, corpo));
+            PermiteFallbackLegado(response.StatusCode, corpo),
+            proximaTentativa);
     }
 
 
@@ -192,15 +207,6 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
 
         return pistas.Any(p =>
             corpo.Contains(p, StringComparison.OrdinalIgnoreCase));
-    }
-
-    private static string LimitarLog(string? valor)
-    {
-        if (string.IsNullOrWhiteSpace(valor))
-            return "(vazio)";
-
-        var limpo = valor.Replace("\r", " ").Replace("\n", " ").Trim();
-        return limpo.Length <= 600 ? limpo : limpo[..600] + "…";
     }
 
     private static string? TentarExtrairId(string json)
@@ -267,5 +273,6 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
         bool Sucesso,
         HttpStatusCode StatusCode,
         string Corpo,
-        bool PermiteFallbackLegado);
+        bool PermiteFallbackLegado,
+        DateTime? ProximaTentativaEm);
 }

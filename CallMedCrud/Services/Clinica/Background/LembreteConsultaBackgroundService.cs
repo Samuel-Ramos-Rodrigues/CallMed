@@ -96,7 +96,8 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
                     ? $"Olá, {c.Paciente.Nome}! Lembrete CallMed: sua consulta com {c.Medico?.Nome} está marcada para {c.Data:dd/MM} às {c.Horario}. Responda CONFIRMAR para confirmar presença, REMARCAR para escolher outro horário ou CANCELAR para liberar a vaga."
                     : $"Olá, {c.Paciente.Nome}! Sua consulta CallMed com {c.Medico?.Nome} será em {c.Data:dd/MM} às {c.Horario}. Se estiver tudo certo, responda CONFIRMAR. Se precisar, responda REMARCAR ou CANCELAR.";
                 texto += "\n\n" + orientacoes.Texto(c);
-                var msg = await envio.EnviarAsync(conversa, texto, AutorMensagemAtendimento.Sistema, ct: ct);
+                var chave = $"lembrete:{c.Id}:{(tipo24 ? "24h" : "2h")}:{c.MedicoId}:{c.Data:yyyyMMdd}:{c.Horario}";
+                var msg = await envio.EnviarAvisoAsync(conversa, texto, chave, ct);
                 if (msg.Status == StatusMensagemAtendimento.Enviada)
                 {
                     if (tipo24) c.Lembrete24hEnviadoEm = DateTime.UtcNow; else c.Lembrete2hEnviadoEm = DateTime.UtcNow;

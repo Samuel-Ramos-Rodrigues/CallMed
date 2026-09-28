@@ -29,4 +29,10 @@ public class MensagemAtendimento
 
     public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
     public DateTime? EnviadoEm { get; set; }
+
+    [StringLength(160)]
+    public string? ChaveEnvio { get; set; }
+    public DateTime? ProximaTentativaEm { get; set; }
+    public bool ReenvioBloqueado { get; set; }
+    public Guid VersaoEnvio { get; set; } = Guid.NewGuid();
 }

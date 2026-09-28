@@ -35,11 +35,45 @@
 
         const cleanMessageText = value => (value || '').replace(/\*\*/g, '');
 
+        const updateDelivery = (article, item) => {
+            let delivery = article.querySelector('.message-delivery');
+            if (!delivery) { delivery = document.createElement('div'); delivery.className = 'message-delivery'; article.append(delivery); }
+            delivery.replaceChildren();
+            if (item.status === 'Processando') {
+                const note = document.createElement('small');
+                note.textContent = 'Envio em processamento. Aguarde a confirmação.';
+                delivery.append(note);
+                return;
+            }
+            if (item.status !== 'Falhou') return;
+            const failure = document.createElement('div'); failure.className = 'message-failure';
+            const error = document.createElement('small'); error.className = 'message-error';
+            error.textContent = `Falha no envio: ${item.erro || 'erro não informado'}`;
+            failure.append(error);
+            const next = item.proximaTentativaEm ? new Date(item.proximaTentativaEm) : null;
+            const waiting = next && next.getTime() > Date.now();
+            if (waiting) {
+                const note = document.createElement('small');
+                note.textContent = `Nova tentativa a partir de ${next.toLocaleString('pt-BR')}.`;
+                failure.append(note);
+            }
+            const token = document.querySelector('input[name="__RequestVerificationToken"]');
+            if (!item.reenvioBloqueado && token) {
+                const form = document.createElement('form'); form.method = 'post'; form.action = '/Atendimento/Reenviar'; form.className = 'atendimento-retry-form';
+                const id = document.createElement('input'); id.type = 'hidden'; id.name = 'mensagemId'; id.value = String(item.id);
+                const button = document.createElement('button'); button.type = 'submit'; button.className = 'btn-link-clean';
+                button.disabled = Boolean(waiting); button.textContent = waiting ? 'Aguardando liberação' : 'Tentar novamente';
+                form.append(id, token.cloneNode(true), button); failure.append(form);
+            }
+            delivery.append(failure);
+        };
+
         const appendMessage = item => {
             messages.querySelector('.empty-state')?.remove();
 
             const article = document.createElement('article');
             article.className = `atendimento-message ${item.direcao === 'Entrada' ? 'incoming' : 'outgoing'}`;
+            article.dataset.messageId = String(item.id);
 
             const meta = document.createElement('div');
             meta.className = 'message-meta';
@@ -58,12 +92,7 @@
 
             article.append(meta, paragraph);
 
-            if (item.status === 'Falhou') {
-                const error = document.createElement('small');
-                error.className = 'message-error';
-                error.textContent = `Falha no envio: ${item.erro || 'erro não informado'}`;
-                article.appendChild(error);
-            }
+            updateDelivery(article, item);
 
             messages.appendChild(article);
             lastId = Math.max(lastId, Number(item.id || 0));
@@ -111,6 +140,11 @@
                 currentResponsible = nextResponsible;
                 currentPatientId = nextPatientId;
 
+                for (const item of (Array.isArray(data.estados) ? data.estados : [])) {
+                    const article = messages.querySelector(`[data-message-id="${Number(item.id)}"]`);
+                    if (article) updateDelivery(article, item);
+                }
+
                 const items = Array.isArray(data.mensagens) ? data.mensagens : [];
 
                 if (items.length > 0) {
@@ -130,6 +164,12 @@
 
         window.setInterval(poll, 3500);
     }
+
+    document.addEventListener('submit', event => {
+        if (!event.target.matches('.atendimento-retry-form')) return;
+        const button = event.target.querySelector('button[type="submit"]');
+        if (button) { button.disabled = true; button.textContent = 'Enviando...'; }
+    });
 
     // Ações de estado usam POST tradicional do navegador.
     // Assim Assumir/Devolver/Encerrar continuam funcionando mesmo se o fetch/polling falhar.

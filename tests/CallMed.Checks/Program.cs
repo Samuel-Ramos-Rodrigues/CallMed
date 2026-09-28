@@ -31,7 +31,7 @@ consulta.TipoPagamento = TipoPagamentoConsulta.Particular;
 Check(!service.Texto(consulta).Contains("carteirinha"), "Consulta particular não exige carteirinha");
 var options = Options.Create(new EvolutionWhatsAppOptions { Enabled = true, BaseUrl = "https://evolution.test", ApiKey = "test-only", InstanceName = "callmed" });
 var handler = new FakeHandler();
-var sender = new EvolutionWhatsAppSender(new HttpClient(handler), options, NullLogger<EvolutionWhatsAppSender>.Instance);
+var sender = new EvolutionWhatsAppSender(new HttpClient(handler), options, NullLogger<EvolutionWhatsAppSender>.Instance, new EvolutionEnvioControle(TimeProvider.System, options));
 handler.Body = "{\"instance\":{\"state\":\"open\"}}";
 Check((await sender.VerificarConexaoAsync()).Conectado, "Evolution open reconhecido");
 Check(handler.LastPath == "/instance/connectionState/callmed" && handler.LastMethod == HttpMethod.Get, "Diagnóstico consulta a instância sem enviar mensagens");
@@ -42,6 +42,7 @@ Check(!(await sender.VerificarConexaoAsync()).Conectado, "Chave inválida não a
 handler.Status = HttpStatusCode.OK; handler.Body = "invalid";
 Check(!(await sender.VerificarConexaoAsync()).Conectado, "Resposta inválida é tratada");
 await HistoricoExamesChecks.RunAsync(Check);
+await EvolutionEnvioChecks.RunAsync(Check);
 Console.WriteLine("Verificações concluídas. Nenhuma mensagem real foi enviada.");
 sealed class FakeHandler : HttpMessageHandler
 {

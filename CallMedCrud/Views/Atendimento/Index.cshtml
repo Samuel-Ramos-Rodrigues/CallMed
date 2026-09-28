@@ -160,16 +160,36 @@
                         @foreach (var mensagem in Model.Mensagens)
                         {
                             var entrada = mensagem.Direcao == DirecaoMensagemAtendimento.Entrada;
-                            <article class="atendimento-message @(entrada ? "incoming" : "outgoing")">
+                            <article class="atendimento-message @(entrada ? "incoming" : "outgoing")" data-message-id="@mensagem.Id">
                                 <div class="message-meta">
                                     <strong>@AutorLabel(mensagem.Autor)</strong>
                                     <time datetime="@mensagem.CriadoEm.ToString("O")">@ClinicaClock.ConverterUtc(mensagem.CriadoEm).ToString("dd/MM HH:mm")</time>
                                 </div>
                                 <p>@(mensagem.Texto?.Replace("**", string.Empty))</p>
-                                @if (mensagem.Status == StatusMensagemAtendimento.Falhou)
-                                {
-                                    <div class="message-failure"><small class="message-error">Falha no envio: @(mensagem.Erro ?? "erro não informado")</small><form asp-action="Reenviar" method="post"><input type="hidden" name="mensagemId" value="@mensagem.Id" /><button type="submit" class="btn-link-clean">Tentar novamente</button></form></div>
-                                }
+                                <div class="message-delivery">
+                                    @if (mensagem.Status == StatusMensagemAtendimento.Falhou)
+                                    {
+                                        var aguardando = mensagem.ProximaTentativaEm > DateTime.UtcNow;
+                                        <div class="message-failure">
+                                            <small class="message-error">Falha no envio: @(mensagem.Erro ?? "erro não informado")</small>
+                                            @if (aguardando)
+                                            {
+                                                <small>Nova tentativa a partir de @ClinicaClock.ConverterUtc(mensagem.ProximaTentativaEm!.Value).ToString("dd/MM HH:mm:ss").</small>
+                                            }
+                                            @if (!mensagem.ReenvioBloqueado)
+                                            {
+                                                <form asp-action="Reenviar" method="post" class="atendimento-retry-form">
+                                                    <input type="hidden" name="mensagemId" value="@mensagem.Id" />
+                                                    <button type="submit" class="btn-link-clean" disabled="@aguardando">@(aguardando ? "Aguardando liberação" : "Tentar novamente")</button>
+                                                </form>
+                                            }
+                                        </div>
+                                    }
+                                    else if (!entrada && mensagem.Status == StatusMensagemAtendimento.Processando)
+                                    {
+                                        <small>Envio em processamento. Aguarde a confirmação.</small>
+                                    }
+                                </div>
                             </article>
                         }
                     }
