@@ -1,0 +1,239 @@
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    var autenticado = User.Identity?.IsAuthenticated == true;
+    var usuarioNome = User.Identity?.Name ?? "Usuário";
+    var inicial = string.IsNullOrWhiteSpace(usuarioNome) ? "U" : usuarioNome[..1].ToUpperInvariant();
+    var equipe = User.IsInRole("Funcionario") || User.IsInRole("Admin");
+    var paciente = User.IsInRole("Paciente");
+    var papel = paciente ? "Paciente" : User.IsInRole("Medico") ? "Médico" : User.IsInRole("Admin") ? "Administrador" : "Atendente";
+    var loginUrl = MKSANCrud.Services.Usuarios.PortaisAcesso.DoUsuario(User).UrlLogin;
+    bool Ativo(string nome) => string.Equals(controller, nome, StringComparison.OrdinalIgnoreCase);
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <partial name="_DocumentHead" />
+    <link rel="stylesheet" href="~/css/modules.css" asp-append-version="true" />
+</head>
+<body class="callmed-app @(paciente ? "patient-context" : "staff-context")">
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+@if (autenticado)
+{
+    <header class="app-header">
+        <div class="app-header-inner">
+            <a class="app-brand" asp-controller="Home" asp-action="Index" aria-label="CallMed, início"><img src="~/images/logo-callmed-mark.png" alt="" /><span>CallMed<small>@(paciente ? "SEU ESPAÇO DE CUIDADO" : "CUIDADO EM CONEXÃO")</small></span></a>
+            <nav class="primary-nav" aria-label="Navegação principal">
+                @if (equipe)
+                {
+                    <a class="@(Ativo("FuncionarioPainel") ? "active" : "")" asp-controller="FuncionarioPainel" asp-action="Index">Visão geral</a>
+                    <a class="@(Ativo("Agenda") || Ativo("Consulta") ? "active" : "")" asp-controller="Agenda" asp-action="Index">Agenda</a>
+                    <a class="@(Ativo("Atendimento") || Ativo("Solicitacoes") ? "active" : "")" asp-controller="Atendimento" asp-action="Index">Atendimento</a>
+                    <a class="@(Ativo("Paciente") || Ativo("Medico") ? "active" : "")" asp-controller="Paciente" asp-action="Index">Pessoas</a>
+                }
+                else if (paciente)
+                {
+                    <a class="@(Ativo("Home") ? "active" : "")" asp-controller="Home" asp-action="Index">Meu início</a>
+                    <a class="@(Ativo("Consulta") ? "active" : "")" asp-controller="Consulta" asp-action="Index">Minhas consultas</a>
+                    <a class="@(Ativo("HistoricoExames") ? "active" : "")" asp-controller="HistoricoExames" asp-action="Index">Meus exames</a>
+                }
+                else if (User.IsInRole("Medico"))
+                {
+                    <a class="@(Ativo("MedicoPainel") ? "active" : "")" asp-controller="MedicoPainel" asp-action="Index">Minha agenda</a>
+                }
+            </nav>
+            <div class="header-tools">
+                <button type="button" class="modules-toggle" data-modules-open aria-controls="modulesDialog" aria-expanded="false"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#menu"></use></svg><span>Menu</span></button>
+                @if (!User.IsInRole("Medico"))
+                {
+                    @await Component.InvokeAsync("Confirmacoes")
+                }
+                @if (paciente)
+                {
+                    <div class="v18-tool-wrap cm-a11y-wrap">
+                        <button type="button" class="v18-icon-button" data-popover-trigger="accessibility" aria-expanded="false" aria-label="Acessibilidade" title="Acessibilidade"><strong>Aa</strong></button>
+                        <div class="v18-popover cm21-a11y-popover" data-popover="accessibility" hidden>
+                            <strong>Acessibilidade</strong>
+                            <button type="button" data-a11y-toggle="large">Texto maior <span data-a11y-status>Desativado</span></button>
+                            <button type="button" data-a11y-toggle="contrast">Alto contraste <span data-a11y-status>Desativado</span></button>
+                            <button type="button" data-a11y-toggle="motion">Reduzir animações <span data-a11y-status>Desativado</span></button>
+                            <button type="button" data-a11y-toggle="simple">Modo simplificado <span data-a11y-status>Desativado</span></button>
+                            <button type="button" data-a11y-read>🔊 Ouvir a tela</button>
+                        </div>
+                    </div>
+                }
+
+                <div class="v18-tool-wrap">
+                    <button type="button" class="v18-icon-button" data-theme-toggle data-popover-trigger="theme" aria-expanded="false" aria-label="Alterar aparência"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#spark"></use></svg></button>
+                    <div class="v18-popover" data-popover="theme" hidden>
+                        <strong>Aparência</strong>
+                        <button type="button" data-theme-choice="light" aria-pressed="false">Claro</button>
+                        <button type="button" data-theme-choice="dark" aria-pressed="false">Escuro</button>
+                        <button type="button" data-theme-choice="system" aria-pressed="false">Acompanhar o dispositivo</button>
+                    </div>
+                </div>
+                <div class="v18-profile-wrap">
+                    <button type="button" class="profile-trigger" data-popover-trigger="profile" aria-expanded="false" aria-label="Abrir menu da conta"><span class="user-avatar">@inicial</span><span class="profile-copy">@papel<small>Minha conta</small></span></button>
+                    <div class="v18-popover" data-popover="profile" hidden>
+                        <strong>@papel</strong><small class="account-email">@usuarioNome</small>
+                        @if (paciente) { <a asp-controller="MinhaConta" asp-action="Index">Dados e preferências</a> }
+                        <button type="button" data-pwa-install>Instalar aplicativo</button>
+                        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Content("~" + loginUrl)" method="post" data-mksan-logout><button type="submit">Sair da conta</button></form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <dialog class="modules-dialog" id="modulesDialog" aria-labelledby="modulesTitle">
+        <header><div><span class="eyebrow">CALLMED</span><h2 id="modulesTitle">O que você precisa fazer?</h2></div><button type="button" class="icon-button" data-modules-close aria-label="Fechar menu">×</button></header>
+        <nav class="module-grid" aria-label="Todos os módulos">
+            @if (User.IsInRole("Funcionario") || User.IsInRole("Admin"))
+            {
+                <span class="nav-section-label">Visão geral</span>
+                <a class="@(Ativo("FuncionarioPainel") ? "active" : "")" asp-controller="FuncionarioPainel" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#home"></use></svg></span><b>Visão geral</b>
+                </a>
+
+                <span class="nav-section-label">Atendimento</span>
+                <a class="@(Ativo("Atendimento") ? "active" : "")" asp-controller="Atendimento" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#chat"></use></svg></span><b>Central de Atendimento</b>
+                </a>
+                <a class="@(Ativo("Solicitacoes") ? "active" : "")" asp-controller="Solicitacoes" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg></span><b>Solicitações / Triagem</b>
+                </a>
+                <a class="@(Ativo("Consulta") ? "active" : "")" asp-controller="Consulta" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg></span><b>Consultas</b>
+                </a>
+                <a class="@(Ativo("ListaEspera") ? "active" : "")" asp-controller="ListaEspera" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#clock"></use></svg></span><b>Lista de espera</b>
+                </a>
+
+                <span class="nav-section-label">Cadastros</span>
+                <a class="@(Ativo("Paciente") ? "active" : "")" asp-controller="Paciente" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg></span><b>Pacientes</b>
+                </a>
+                <a class="@(Ativo("Medico") || Ativo("MedicoAcesso") ? "active" : "")" asp-controller="Medico" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#doctor"></use></svg></span><b>Médicos</b>
+                </a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="@(Ativo("Acessos") ? "active" : "")" asp-controller="Acessos" asp-action="Index">
+                        <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#shield"></use></svg></span><b>Acessos da equipe</b>
+                    </a>
+                    <a class="@(Ativo("Especialidade") ? "active" : "")" asp-controller="Especialidade" asp-action="Index">
+                        <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#spark"></use></svg></span><b>Especialidades</b>
+                    </a>
+                    <a class="@(Ativo("Funcionario") ? "active" : "")" asp-controller="Funcionario" asp-action="Index">
+                        <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#team"></use></svg></span><b>Funcionários</b>
+                    </a>
+                }
+
+                <span class="nav-section-label">Agenda</span>
+                <a class="@(Ativo("Agenda") ? "active" : "")" asp-controller="Agenda" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg></span><b>Agenda Geral</b>
+                </a>
+                <a class="@(Ativo("Disponibilidades") ? "active" : "")" asp-controller="Disponibilidades" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#clock"></use></svg></span><b>Disponibilidades</b>
+                </a>
+                <a class="@(Ativo("Disponibilidade") ? "active" : "")" asp-controller="Disponibilidade" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg></span><b>Exceções</b>
+                </a>
+                <a class="@(Ativo("Relatorios") ? "active" : "")" asp-controller="Relatorios" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg></span><b>Relatórios</b>
+                </a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <span class="nav-section-label">Sistema</span>
+                    <a class="@(Ativo("Convenios") ? "active" : "")" asp-controller="Convenios" asp-action="Index">
+                        <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#card"></use></svg></span><b>Convênios</b>
+                    </a>
+                    <a class="@(Ativo("Auditoria") ? "active" : "")" asp-controller="Auditoria" asp-action="Index">
+                        <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#shield"></use></svg></span><b>Auditoria</b>
+                    </a>
+                    <a class="@(Ativo("Configuracoes") ? "active" : "")" asp-controller="Configuracoes" asp-action="Index">
+                        <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#settings"></use></svg></span><b>Configurações</b>
+                    </a>
+                    <a class="@(Ativo("Integracoes") ? "active" : "")" asp-controller="Integracoes" asp-action="Index">
+                        <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#spark"></use></svg></span><b>Integrações</b>
+                    </a>
+                }
+            }
+            else if (User.IsInRole("Paciente"))
+            {
+                <span class="nav-section-label">Minha saúde</span>
+                <a class="@(Ativo("Home") ? "active" : "")" asp-controller="Home" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#home"></use></svg></span><b>Início</b>
+                </a>
+                <a class="@(Ativo("Consulta") && action == "Create" ? "active" : "")" asp-controller="Consulta" asp-action="Create">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg></span><b>Marcar consulta</b>
+                </a>
+                <a class="@(Ativo("Consulta") && action != "Create" ? "active" : "")" asp-controller="Consulta" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg></span><b>Minhas consultas</b>
+                </a>
+                <a class="@(Ativo("ListaEspera") ? "active" : "")" asp-controller="ListaEspera" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#clock"></use></svg></span><b>Lista de espera</b>
+                </a>
+                <span class="nav-section-label">Conta</span>
+                <a class="@(Ativo("MinhaConta") ? "active" : "")" asp-controller="MinhaConta" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#settings"></use></svg></span><b>Minha conta</b>
+                </a>
+                <button type="button" class="module-action" data-open-callmed-ai>
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#chat"></use></svg></span><b>Atendimento</b>
+                </button>
+            }
+            else if (User.IsInRole("Medico"))
+            {
+                <span class="nav-section-label">Meu dia</span>
+                <a class="@(Ativo("MedicoPainel") ? "active" : "")" asp-controller="MedicoPainel" asp-action="Index">
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg></span><b>Minha agenda</b>
+                </a>
+            }
+        </nav>
+    </dialog>
+    <main class="app-main" id="conteudo" tabindex="-1">
+        @if (TempData["Erro"] != null) { <div class="alert error" role="alert">@TempData["Erro"]</div> }
+        @if (TempData["Sucesso"] != null) { <div class="alert success" role="status">@TempData["Sucesso"]</div> }
+        @RenderBody()
+    </main>
+    <footer class="app-footer"><span>CallMed · cuidado em conexão</span><a href="/privacidade">Privacidade</a></footer>
+    <nav class="callmed-mobile-nav" aria-label="Navegação no celular">
+        @if (User.IsInRole("Funcionario") || User.IsInRole("Admin"))
+        {
+            <a class="@(Ativo("FuncionarioPainel") ? "active" : "")" asp-controller="FuncionarioPainel" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#home"></use></svg><span>Início</span></a>
+            <a class="@(Ativo("Solicitacoes") ? "active" : "")" asp-controller="Solicitacoes" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg><span>Solicitações</span></a>
+            <a class="@(Ativo("Atendimento") ? "active" : "")" asp-controller="Atendimento" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#chat"></use></svg><span>Atendimento</span></a>
+            <a class="@(Ativo("Agenda") ? "active" : "")" asp-controller="Agenda" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span>Agenda</span></a>
+            <button type="button" data-mobile-more><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#menu"></use></svg><span>Mais</span></button>
+        }
+        else if (User.IsInRole("Paciente"))
+        {
+            <a class="@(Ativo("Home") ? "active" : "")" asp-controller="Home" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#home"></use></svg><span>Início</span></a>
+            <a class="@(Ativo("Consulta") && action == "Create" ? "active" : "")" asp-controller="Consulta" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg><span>Agendar</span></a>
+            <a class="@(Ativo("Consulta") && action != "Create" ? "active" : "")" asp-controller="Consulta" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span>Consultas</span></a>
+            <button type="button" data-open-callmed-ai class="cm19-mobile-assistant"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#chat"></use></svg><span>Atendimento</span></button>
+            <a class="@(Ativo("MinhaConta") ? "active" : "")" asp-controller="MinhaConta" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg><span>Conta</span></a>
+        }
+        else if (User.IsInRole("Medico"))
+        {
+            <a class="@(Ativo("MedicoPainel") ? "active" : "")" asp-controller="MedicoPainel" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span>Agenda</span></a>
+            <button type="button" data-mobile-more><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#menu"></use></svg><span>Menu</span></button>
+        }
+    </nav>
+}
+else
+{
+    <header class="guest-header"><a class="wordmark" asp-controller="Home" asp-action="Index">CallMed</a><partial name="_LoginPartial" /></header>
+    <main class="app-main" id="conteudo">@RenderBody()</main>
+}
+<partial name="_AssistenteFlutuante" />
+<script src="~/js/shell.js" asp-append-version="true"></script>
+<script src="~/js/date-select.js" asp-append-version="true"></script>
+@if (paciente) { <script src="~/js/accessibility.js" asp-append-version="true"></script> }
+<script src="~/js/mobile-final.js" asp-append-version="true"></script>
+<script src="~/js/theme.js" asp-append-version="true"></script>
+<script src="~/js/pwa.js" asp-append-version="true"></script>
+<script src="~/js/confirmacoes.js" asp-append-version="true"></script>
+<script src="~/js/assistente-flutuante.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

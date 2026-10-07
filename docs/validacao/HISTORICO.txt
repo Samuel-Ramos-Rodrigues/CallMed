@@ -1,0 +1,238 @@
+HISTÓRICO DE VALIDAÇÕES ANTERIORES
+Não representa a validação do layout atual.
+
+
+=== TESTES-CODIGO-V22.txt ===
+
+Saída registrada na execução de 15/09/2026:
+PASS Cadastro administrativo aceita e-mail ausente
+PASS E-mail preenchido inválido é rejeitado
+PASS Antecedência usa configuração da clínica
+PASS Consulta por convênio inclui documentação
+PASS Orientação por especialidade é incluída
+PASS Consulta particular não exige carteirinha
+PASS Evolution open reconhecido
+PASS Diagnóstico consulta a instância sem enviar mensagens
+PASS Evolution desconectada não aparece como conectada
+PASS Chave inválida não aparece como conexão ativa
+PASS Resposta inválida é tratada
+Verificações concluídas. Nenhuma mensagem real foi enviada.
+
+
+=== TESTES-FILA-V22.txt ===
+
+Saída registrada na execução de 15/09/2026 (DOM e rede simulados):
+PASS cifra AES-GCM sem contato legível no armazenamento
+PASS recuperação após recarga e senha inválida preservam dados
+PASS resposta perdida preserva pedido; reenvio mantém protocolo e remove só após confirmação
+PASS acesso negado conserva pedido local
+PASS aba desatualizada não sobrescreve a fila
+PASS falha de armazenamento não apaga nem confirma gravação
+PASS bloqueio limpa dados da tela e permite recuperação
+PASS service worker usa formulário público offline e não guarda página de paciente
+
+
+=== VALIDACAO-V21.6.1.txt ===
+
+CallMed V21.6.1 — validação estática
+Data: 2026-09-09
+
+Correções Evolution/WhatsApp verificadas:
+- suporte a remoteJid @lid com senderPn/remoteJidAlt
+- extração ampliada de texto do payload Evolution
+- logs estruturados de webhook sem conteúdo/segredo
+- fallback de payload legado em 400/422 e 500 compatível
+- tratamento de duplicidade restrito ao índice único correto
+- paciente AsNoTracking anexado como existente antes de criar conversa
+- InstanceName padrão: callmed
+
+Validações executadas:
+- JSON: OK (3 arquivos)
+- csproj XML: OK
+- Android XML: OK (6 arquivos)
+- C# brace/lexical sanity: OK (162 arquivos)
+- JavaScript: node --check OK (9 arquivos + service-worker)
+- CSS: tinycss2 OK (3 arquivos, 0 parse errors)
+- GitHub Actions YAML: OK (2 workflows)
+- Service Worker: 21 assets, 0 ausentes
+- asp-append-version: 0 ocorrências
+- cache-buster antigo ?v=2160: 0 ocorrências
+- cache-buster atual ?v=2161: 39 ocorrências
+- default InstanceName=mksan: 0 ocorrências ativas
+- TWA: versionCode 2161 / versionName 21.6.1
+- cache PWA: callmed-static-v21-6-1-evolution-fix
+
+Limitação:
+- dotnet build não foi executado porque o ambiente de validação não possui o SDK .NET instalado.
+
+
+=== VALIDACAO-V21.6.2.txt ===
+
+CallMed V21.6.2 — validação estática
+
+Motivo da release
+- erro real no Render durante TentarExtrairEvolution -> ExtrairTextoMensagem;
+- webhook da Evolution confirmado como enabled=true;
+- eventos MESSAGES_UPSERT e CONNECTION_UPDATE confirmados;
+- webhookByEvents=false e webhookBase64=false confirmados.
+
+Correções verificadas
+- parser estruturado protegido por fallback;
+- fallback genérico TentarExtrairEvolutionFallback presente;
+- suporte a message como objeto, array e JSON em string;
+- suporte a remoteJid/senderPn/remoteJidAlt/sender/participant;
+- suporte a @lid preservado;
+- fromMe possui extração recursiva segura;
+- payload incompatível não derruba mais o endpoint apenas na fase de parsing;
+- logging específico de fallback presente.
+
+Validação estática
+- JSON: OK
+- XML/csproj: OK
+- CSS tinycss2: OK
+- YAML workflows: OK
+- JavaScript node --check: OK
+- Service Worker node --check: OK
+- C# delimitadores léxicos: OK
+- MKSANContext: 1 declaração
+- Usuario: 1 declaração
+- asp-append-version: 0 ocorrências
+- Service Worker: 21 assets locais / 0 ausentes
+- TWA: versionCode 2162 / versionName 21.6.2
+- Cache PWA: callmed-static-v21-6-2-evolution-parser-fix
+
+Limitação
+- dotnet build não executado: SDK .NET indisponível no ambiente de geração.
+
+
+=== VALIDACAO-V21.6.3.txt ===
+
+CallMed V21.6.3 — validação estática
+
+IDENTIDADE / IA
+[OK] AgenteUsuarioContexto inclui ConversaAtendimentoId confiável do backend.
+[OK] Contato sem PacienteId é bloqueado para agendar/confirmar/remarcar/cancelar/lista de espera/dados pessoais.
+[OK] identificar_paciente exige CPF válido + data de nascimento válida.
+[OK] Vínculo é feito na conversa real carregada pelo backend.
+[OK] Falha de identificação não revela qual credencial isolada existe.
+[OK] Sucesso de mutação é formatado a partir do resultado real da tool.
+[OK] Central informa visualmente quando o contato não está identificado.
+[OK] Polling detecta mudança de PacienteId e atualiza a tela via reload.
+
+VISUAL
+[OK] design-v2163.css carregado após os estilos legados no app autenticado.
+[OK] design-v2163.css carregado em Login/Register/ForgotPassword/AccessDenied/Logout.
+[OK] design-v2163.css carregado no site público.
+[OK] tema claro/escuro possui tokens próprios.
+[OK] Central possui regras responsivas para desktop/tablet/mobile.
+[OK] formulários, tabelas, cards e botões recebem estilo transversal.
+
+PWA/TWA
+[OK] novo stylesheet incluído em STATIC_ASSETS.
+[OK] CACHE_NAME alterado para invalidar a versão anterior.
+[OK] TWA versionCode 2163 / versionName 21.6.3.
+
+OBSERVAÇÃO
+O ambiente de edição desta release não possui .NET SDK instalado. Portanto, esta validação é estática/estrutural e não substitui `dotnet build` no CI/Visual Studio.
+
+
+=== VALIDACAO-V21.6.4.txt ===
+
+CallMed V21.6.4 — validação estática do redesign
+
+[OK] V21.6.3 preservada como base funcional.
+[OK] Novo design-v2164.css carregado após site.css.
+[OK] Login/Register/ForgotPassword/AccessDenied/Logout carregam identity.css + design-v2164.css.
+[OK] Página pública carrega public.css + design-v2164.css.
+[OK] Paleta visual principal migrada de verde/teal para azul/índigo/ciano.
+[OK] Tema claro e tema escuro possuem tokens próprios.
+[OK] Sidebar, topbar, cards, KPIs, tabelas, formulários e Central de Atendimento receberam overrides globais.
+[OK] Página do paciente e assistente flutuante receberam tratamento visual específico.
+[OK] PWA manifest atualizado para a paleta V21.6.4.
+[OK] Service Worker usa novo cache e inclui design-v2164.css.
+[OK] TWA versionCode 2164 / versionName 21.6.4.
+[OK] Nenhum arquivo CSS carregado contém cores saturadas na faixa verde/teal da identidade anterior.
+
+Observação: validação de compilação .NET depende de ambiente com SDK .NET 8.
+[OK] design-v2163.css permanece apenas como shim de compatibilidade apontando para design-v2164.css.
+
+
+=== VALIDACAO-V21.6.5.txt ===
+
+CallMed V21.6.5 — VALIDACAO ESTRUTURAL
+
+[OK] 56 telas navegáveis possuem marcador data-cm25-view e estrutura visual V21.6.5.
+[OK] 66 arquivos Razor/CSHTML foram alterados em relação à V21.6.4; somente imports/start/validation sem UI permaneceram inalterados.
+[OK] Nenhum arquivo .cs de regra de negócio/controller/service foi alterado nesta refatoração visual.
+[OK] design-v2165.css validado com parser CSS sem erros de sintaxe.
+[OK] Balanceamento estrutural de tags HTML principais validado em todas as views Razor.
+[OK] Layout, Identity, Home pública, Central de Atendimento, dashboards, CRUDs, formulários, detalhes, confirmações e PWA usam a identidade Aurora.
+[OK] Cor principal migrada para índigo/violeta/azul, sem verde como identidade principal.
+[OK] Service Worker atualizado para callmed-static-v21-6-5-aurora-ui e design-v2165.css.
+[OK] Manifest atualizado para theme_color #5b5cf0 e background_color #f6f7fc.
+[OK] TWA atualizado para versionCode 2165 / versionName 21.6.5.
+[INFO] O ambiente de geração não possui o SDK .NET; o build final deve ser confirmado no CI/Render/ambiente local com dotnet restore + dotnet build.
+
+
+=== VALIDACAO-V21.4.txt ===
+
+CallMed V21.4 — validação CSS/CRUD
+
+Correções principais:
+- KPIs/v16-stat seguem tema escuro.
+- Menus de ações e dropdowns seguem tema escuro.
+- Avatares/chips/status seguem tema escuro.
+- Busca da tela Pacientes ganhou layout próprio.
+- Tabelas CRUD tiveram escala de leitura aumentada no desktop.
+- Toolbars/resumos responsivos no PWA.
+- Cache do Service Worker atualizado.
+
+Validações executadas:
+- tinycss2: 0 erros de CSS
+- node --check: JS OK
+- JSON: OK
+- MKSANContext: 1 declaração
+- Usuario: 1 declaração
+- dotnet build: não executado (SDK .NET indisponível no ambiente)
+
+
+=== VALIDACAO-V21.5.1.txt ===
+
+CallMed V21.5.1 — validação estática
+
+Correção principal:
+- 39 ocorrências de asp-append-version removidas.
+- Cache-busting substituído por querystring fixa ?v=2151.
+- Docker: DOTNET_USE_POLLING_FILE_WATCHER=1.
+- Docker: DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false.
+- Service Worker: callmed-static-v21-5-1-render-inotify-fix.
+- TWA: versionCode 2151 / versionName 21.5.1.
+
+Validações:
+- asp-append-version restante: 0
+- JSON: OK
+- CSS tinycss2: OK
+- JavaScript node --check: OK
+- Service Worker static assets: 21/21 encontrados
+- MKSANContext: 1 declaração
+- Usuario: 1 declaração
+- segredos óbvios no pacote: nenhum detectado
+
+Observação:
+- dotnet build não executado porque o SDK .NET não está disponível neste ambiente.
+
+
+=== VALIDACAO-V21.5.txt ===
+
+CallMed V21.5 — validação estática
+
+- JSON: OK
+- CSS: OK (tinycss2)
+- JavaScript: OK (node --check)
+- MKSANContext: 1 declaração
+- Usuario: 1 declaração
+- Logo mobile: 1 marca compacta / 0 logo horizontal duplicada
+- Service Worker: 22 assets / 0 ausentes
+- Cache PWA: callmed-static-v21-5-mobile-polish
+- TWA: versionCode 2150 / versionName 21.5.0
+- dotnet build: não executado; SDK .NET indisponível no ambiente

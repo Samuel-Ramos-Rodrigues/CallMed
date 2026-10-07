@@ -1,0 +1,70 @@
+@model MKSANCrud.ViewModels.AcessosViewModel
+@{ ViewData["Title"] = "Acessos da equipe"; }
+<section class="cm25-screen cm25-page access-management">
+    <header class="cm25-page-hero">
+        <div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#shield"></use></svg></div>
+        <div class="cm25-hero-copy"><span class="cm25-kicker">ADMINISTRAÇÃO · EQUIPE</span><h1>Acessos da equipe</h1><p>Crie contas individuais para médicos e atendentes e acompanhe quais acessos estão liberados.</p></div>
+        <div class="cm25-hero-actions"><a class="btn secondary" asp-controller="FuncionarioPainel" asp-action="Index">Voltar ao painel</a></div>
+    </header>
+    <div class="access-create-grid">
+        <article class="access-create-card">
+            <span class="eyebrow">ÁREA MÉDICA</span><h2>Cadastrar médico</h2>
+            <p>Cadastre o profissional e a agenda. Em seguida, defina seu e-mail e sua senha de acesso.</p>
+            <a class="btn" asp-controller="Medico" asp-action="Create" asp-route-criarAcesso="true">Cadastrar médico e criar acesso</a>
+            <a class="text-link" href="~/acesso/medico">Tela de entrada do médico ↗</a>
+        </article>
+        <article class="access-create-card">
+            <span class="eyebrow">RECEPÇÃO</span><h2>Cadastrar atendente</h2>
+            <p>Crie uma conta com nome, e-mail e senha. Use o perfil Atendente ou Recepcionista para o atendimento diário.</p>
+            <a class="btn" asp-controller="Funcionario" asp-action="Create">Cadastrar atendente</a>
+            <a class="text-link" href="~/acesso/atendente">Tela de entrada do atendente ↗</a>
+        </article>
+    </div>
+    <section class="panel access-list" aria-labelledby="medicos-acesso-title">
+        <header class="panel-heading"><div><span class="eyebrow">AGENDA E ATENDIMENTOS</span><h2 id="medicos-acesso-title">Médicos</h2></div><span>@Model.Medicos.Count profissionais</span></header>
+        @if (Model.Medicos.Count == 0)
+        {
+            <p class="access-empty">Nenhum médico cadastrado. Comece pelo botão “Cadastrar médico e criar acesso”.</p>
+        }
+        else
+        {
+            <div class="access-table-wrap"><table class="access-table"><thead><tr><th scope="col">Profissional</th><th scope="col">E-mail de acesso</th><th scope="col">Situação</th><th scope="col">Ações</th></tr></thead><tbody>
+                @foreach (var medico in Model.Medicos)
+                {
+                    var possuiAcesso = !string.IsNullOrWhiteSpace(medico.UsuarioId);
+                    <tr><td><strong>@medico.Nome</strong><small>@(medico.EspecialidadeCadastro?.Nome ?? medico.Especialidade)</small></td>
+                        <td>@(string.IsNullOrWhiteSpace(medico.Email) ? "A definir" : medico.Email)</td>
+                        <td><span class="access-status @(!medico.Ativo ? "inactive" : possuiAcesso ? "ready" : "pending")">@(!medico.Ativo ? "Cadastro inativo" : possuiAcesso ? "Acesso criado" : "Sem acesso")</span></td>
+                        <td><div class="access-row-actions">
+                            @if (medico.Ativo)
+                            {
+                                <a asp-controller="MedicoAcesso" asp-action="Gerenciar" asp-route-id="@medico.Id">@(possuiAcesso ? "Gerenciar acesso" : "Criar acesso")</a>
+                            }
+                            <a asp-controller="Medico" asp-action="Edit" asp-route-id="@medico.Id">@(medico.Ativo ? "Editar cadastro" : "Reativar cadastro")</a>
+                        </div></td></tr>
+                }
+            </tbody></table></div>
+        }
+    </section>
+    <section class="panel access-list" aria-labelledby="atendentes-acesso-title">
+        <header class="panel-heading"><div><span class="eyebrow">ATENDIMENTO DA CLÍNICA</span><h2 id="atendentes-acesso-title">Atendentes e recepcionistas</h2></div><a class="text-link" asp-controller="Funcionario" asp-action="Index">Todos os funcionários ↗</a></header>
+        @if (Model.Atendentes.Count == 0)
+        {
+            <p class="access-empty">Nenhum atendente cadastrado. Crie uma conta para a equipe da recepção.</p>
+        }
+        else
+        {
+            <div class="access-table-wrap"><table class="access-table"><thead><tr><th scope="col">Integrante</th><th scope="col">E-mail de acesso</th><th scope="col">Situação</th><th scope="col">Ações</th></tr></thead><tbody>
+                @foreach (var atendente in Model.Atendentes)
+                {
+                    var possuiAcesso = !string.IsNullOrWhiteSpace(atendente.UsuarioId);
+                    <tr><td><strong>@atendente.Nome</strong><small>@atendente.Cargo</small></td><td>@atendente.Email</td>
+                        <td><span class="access-status @(!atendente.Ativo ? "inactive" : possuiAcesso ? "ready" : "pending")">@(!atendente.Ativo ? "Acesso desativado" : possuiAcesso ? "Acesso criado" : "Sem conta vinculada")</span></td>
+                        <td><div class="access-row-actions"><a asp-controller="Funcionario" asp-action="Edit" asp-route-id="@atendente.Id">@(atendente.Ativo ? "Editar acesso" : "Reativar acesso")</a>
+                            @if (atendente.Ativo) { <a asp-controller="Funcionario" asp-action="Delete" asp-route-id="@atendente.Id">Desativar</a> }
+                        </div></td></tr>
+                }
+            </tbody></table></div>
+        }
+    </section>
+</section>

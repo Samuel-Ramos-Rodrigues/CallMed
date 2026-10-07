@@ -1,0 +1,26 @@
+@page
+@{
+    Layout = "_AuthLayout"; ViewData["Title"] = "Acesso negado";
+}
+<main class="identity-shell cm25-identity-shell">
+            <section class="identity-showcase cm25-identity-showcase">
+                <a href="/" class="identity-brand"><img src="~/images/logo-callmed-horizontal.png" alt="CallMed" class="identity-brand-horizontal" /></a>
+                <div class="identity-copy">
+                    <span class="identity-kicker">Permissões</span>
+                    <h1>Esse recurso não está disponível para o seu perfil.</h1>
+                    <p>
+                        O sistema protege funções administrativas e dados sensíveis conforme o tipo de usuário autenticado.
+                    </p>
+                </div>
+            </section>
+            <section class="identity-panel cm25-identity-panel">
+                <div class="identity-state">
+                    <div class="identity-state-icon">!</div>
+                    <h1>Acesso não permitido</h1>
+                    <p>
+                        Seu perfil não possui permissão para acessar esta função. Você pode voltar e continuar usando normalmente as áreas liberadas.
+                    </p>
+                    <a class="identity-secondary" asp-area="" asp-controller="Home" asp-action="Index">← Voltar ao início</a>
+                </div>
+            </section>
+        </main>

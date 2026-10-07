@@ -1,0 +1,64 @@
+@page
+@model MKSANCrud.Areas.Identity.Pages.Account.LoginModel
+@using MKSANCrud.Services.Usuarios
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = Model.Portal.Titulo;
+    var portal = Model.Portal;
+}
+<main class="identity-shell login-shell portal-@portal.Chave">
+    <section class="identity-showcase">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="app-brand"><img src="~/images/logo-callmed-mark.png" alt="" /><span>CallMed<small>CUIDADO EM CONEXÃO</small></span></a>
+        <div class="identity-copy"><span class="eyebrow">@portal.Titulo.ToUpperInvariant()</span><h1>@portal.Chamada</h1><p>@portal.Descricao</p></div>
+        <div class="identity-note-line"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span>@(portal.EhPaciente ? "Consultas e exames em um só lugar." : "Um espaço próprio para o seu trabalho na clínica.")</span></div>
+        <small>CallMed · cuidado em conexão</small>
+    </section>
+    <section class="identity-panel">
+        <div class="identity-card">
+            <a class="identity-back" asp-area="" asp-controller="Home" asp-action="Index">← Voltar ao início</a>
+            <nav class="portal-switcher" aria-label="Escolha sua área de acesso">
+                @foreach (var opcao in PortaisAcesso.Todos)
+                {
+                    <a href="@Url.Content("~" + opcao.UrlLogin)" class="@(opcao.Chave == portal.Chave ? "selected" : "")" aria-current="@(opcao.Chave == portal.Chave ? "page" : null)">@opcao.Nome</a>
+                }
+            </nav>
+            <div class="identity-card-header"><span class="eyebrow">ACESSO @portal.Nome.ToUpperInvariant()</span><h2>@portal.Titulo</h2><p>@(portal.EhPaciente ? "Entre para acompanhar seu atendimento." : "Entre com o e-mail e a senha cadastrados pelo administrador.")</p></div>
+            <form method="post" action="@Url.Content("~" + portal.UrlLogin)" class="identity-form" asp-antiforgery="true">
+                <input type="hidden" asp-for="Perfil" />
+                <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                <div asp-validation-summary="ModelOnly" class="mensagem erro"></div>
+                <div class="input-group">
+                    <label asp-for="Input.Usuario">@(portal.EhPaciente ? "CPF ou e-mail" : "E-mail de acesso")</label>
+                    <input asp-for="Input.Usuario" type="@(portal.EhPaciente ? "text" : "email")" autocomplete="username" autofocus placeholder="@(portal.EhPaciente ? "CPF ou e-mail" : "seu.nome@clinica.com")" />
+                    <span asp-validation-for="Input.Usuario" class="field-error"></span>
+                </div>
+                <div class="input-group">
+                    <label asp-for="Input.Password"></label>
+                    <div class="password-wrap">
+                        <input asp-for="Input.Password" id="login-password" autocomplete="current-password" placeholder="Digite sua senha" />
+                        <button class="password-toggle" id="login-password-toggle" type="button">Mostrar</button>
+                    </div>
+                    <span asp-validation-for="Input.Password" class="field-error"></span>
+                </div>
+                <div class="identity-options">
+                    <label><input asp-for="Input.RememberMe" /> Lembrar acesso</label>
+                    <a asp-page="./ForgotPassword">Esqueci minha senha</a>
+                </div>
+                <button type="submit" class="identity-submit">Entrar como @portal.Nome.ToLowerInvariant()</button>
+            </form>
+            @if (portal.EhPaciente)
+            {
+                <div class="identity-divider"><span>Ainda não tem acesso?</span></div>
+                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="identity-secondary">Criar conta de paciente <span aria-hidden="true">↗</span></a>
+            }
+            else
+            {
+                <p class="identity-footnote portal-account-help">Ainda não recebeu sua conta? Solicite o cadastro ao administrador da clínica.</p>
+            }
+        </div>
+    </section>
+</main>
+@section Scripts {
+    <script src="~/js/login.js" asp-append-version="true"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

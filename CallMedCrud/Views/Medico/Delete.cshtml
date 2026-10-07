@@ -1,0 +1,6 @@
+@model Medico
+@{ ViewData["Title"] = "Excluir médico"; }
+<section class="cm25-screen cm25-page cm25-confirm-page" data-cm25-view="Medico/Delete.cshtml">
+    <header class="cm25-page-hero"><div class="cm25-hero-mark danger"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#doctor"></use></svg></div><div class="cm25-hero-copy"><span class="cm25-kicker">MÉDICOS · AÇÃO CRÍTICA</span><h1>Excluir médico</h1><p>Confirme somente se o profissional não deve mais fazer parte da operação.</p></div></header>
+    <div class="cm25-confirm-card"><div class="cm25-confirm-icon">!</div><h2>Excluir @Model.Nome?</h2><p>Consultas e vínculos existentes podem impedir esta ação. Prefira desativar o profissional quando quiser apenas bloquear novos agendamentos.</p><form asp-action="Delete" method="post"><input type="hidden" asp-for="Id" /><div class="cm25-actions"><a class="btn secondary" asp-action="Index">Cancelar</a><button type="submit" class="btn danger">Excluir médico</button></div></form></div>
+</section>

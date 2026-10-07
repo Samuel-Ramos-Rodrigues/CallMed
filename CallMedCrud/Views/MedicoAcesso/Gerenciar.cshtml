@@ -1,0 +1,35 @@
+@model MKSANCrud.ViewModels.MedicoAcessoViewModel
+@{ ViewData["Title"] = "Acesso do médico"; }
+<section class="cm25-screen cm25-page" data-cm25-view="MedicoAcesso/Gerenciar.cshtml">
+    <header class="cm25-page-hero">
+        <div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#shield"></use></svg></div>
+        <div class="cm25-hero-copy"><span class="cm25-kicker">MÉDICOS · CREDENCIAIS</span><h1>Acesso de @Model.MedicoNome</h1><p>@(Model.PossuiAcesso ? "Atualize o e-mail ou defina uma nova senha para a conta médica." : "Defina o e-mail e a senha que o médico usará para entrar em sua área.")</p></div>
+        <div class="cm25-hero-actions"><a class="btn secondary" asp-controller="Acessos" asp-action="Index">Voltar aos acessos</a></div>
+    </header>
+    <div asp-validation-summary="ModelOnly" class="validation"></div>
+    @if (!Model.MedicoAtivo)
+    {
+        <div class="alert">O cadastro deste médico está inativo. Reative-o antes de configurar as credenciais.</div>
+        <a class="btn" asp-controller="Medico" asp-action="Edit" asp-route-id="@Model.MedicoId">Reativar cadastro do médico</a>
+    }
+    else
+    {
+        <form asp-action="Gerenciar" method="post" class="cm25-form-layout">
+            <input type="hidden" asp-for="MedicoId" />
+            <div class="cm25-form-main cm25-form-card">
+                <div class="form-grid">
+                    <div class="field full"><label asp-for="Email">E-mail de acesso</label><input asp-for="Email" autocomplete="email" placeholder="medico@clinica.com" /><span asp-validation-for="Email" class="validation"></span></div>
+                    <div class="field full">
+                        <label asp-for="Senha">@(Model.PossuiAcesso ? "Nova senha (opcional)" : "Senha inicial")</label>
+                        <input asp-for="Senha" autocomplete="new-password" />
+                        <span asp-validation-for="Senha" class="validation"></span>
+                        <small class="field-help">Pelo menos 8 caracteres, com letra minúscula e número. @(Model.PossuiAcesso ? "Deixe em branco para manter a senha atual." : "Forneça a senha somente ao médico responsável pela conta.")</small>
+                    </div>
+                </div>
+            </div>
+            <aside class="cm25-form-aside"><div class="cm25-aside-card"><h2>Área do médico</h2><p>O médico acompanha sua própria agenda e os pacientes vinculados aos seus atendimentos.</p><a class="text-link" href="~/acesso/medico">Abrir tela de entrada ↗</a></div></aside>
+            <div class="cm25-sticky-actions"><span>Uma conta individual para cada profissional.</span><div><a class="btn secondary" asp-controller="Acessos" asp-action="Index">Cancelar</a><button class="btn" type="submit">@(Model.PossuiAcesso ? "Salvar acesso" : "Criar acesso do médico")</button></div></div>
+        </form>
+    }
+</section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

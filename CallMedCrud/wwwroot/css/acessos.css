@@ -1,0 +1,83 @@
+/* Entradas por perfil e gestão administrativa da equipe. */
+.portal-switcher {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    margin:0 0 28px;
+}
+.portal-switcher a {
+    padding:11px 8px;
+    text-align:center;
+    font-size:12px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    color:var(--muted);
+}
+.portal-switcher a:hover,.portal-switcher a.selected {
+    border-color:var(--brand);
+    color:var(--brand);
+    background:var(--brand-soft);
+}
+.portal-switcher a.selected { font-weight:600; }
+.portal-switcher a:focus-visible,.access-row-actions a:focus-visible {
+    outline:2px solid var(--brand);
+    outline-offset:3px;
+}
+.login-shell.portal-medico .identity-showcase { background:#123e43; }
+.login-shell.portal-atendente .identity-showcase { background:#23375c; }
+.login-shell.portal-administrador .identity-showcase { background:#292f50; }
+.portal-account-help { padding-top:20px; border-top:1px solid var(--line); }
+.public-team-access {
+    max-width:1280px;
+    margin:auto;
+    padding:36px 42px 70px;
+    scroll-margin-top:30px;
+}
+.public-team-access header { max-width:620px; margin-bottom:24px; }
+.public-team-access h2 { font-size:clamp(26px,3vw,38px); letter-spacing:-.03em; margin:10px 0; }
+.public-team-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+.public-team-card,.access-create-card {
+    padding:28px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+}
+.public-team-card svg { width:28px; height:28px; color:var(--brand); }
+.public-team-card h3,.access-create-card h2 { margin:0; font-size:23px; }
+.public-team-card p,.access-create-card p { margin:0 0 8px; color:var(--muted); }
+.public-team-card .btn { margin-top:auto; }
+.access-create-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; margin:24px 0; }
+.access-create-card .btn { margin-top:auto; white-space:normal; text-align:center; }
+.access-create-card .text-link { font-size:12px; }
+.access-list { margin-top:22px; overflow:hidden; }
+.access-list .panel-heading { flex-wrap:wrap; gap:12px; }
+.access-table-wrap { overflow-x:auto; }
+.access-table { width:100%; min-width:630px; border-collapse:collapse; }
+.access-table th,.access-table td { padding:17px 22px; text-align:left; vertical-align:middle; border-top:1px solid var(--line); }
+.access-table th { font-size:11px; color:var(--muted); font-weight:600; }
+.access-table td { font-size:13px; overflow-wrap:anywhere; }
+.access-table td strong { display:block; font-weight:600; }
+.access-table td small { display:block; color:var(--muted); margin-top:3px; }
+.access-status { display:inline-block; padding:5px 9px; font-size:11px; border-radius:20px; white-space:nowrap; }
+.access-status.ready { color:var(--success); background:var(--success-bg); }
+.access-status.pending { color:var(--warning); background:var(--warning-bg); }
+.access-status.inactive { color:var(--danger); background:var(--danger-bg); }
+.access-row-actions { display:flex; gap:10px 16px; flex-wrap:wrap; }
+.access-row-actions a { color:var(--brand); font-size:12px; text-decoration:underline; text-underline-offset:3px; }
+.access-empty { padding:0 24px 20px; color:var(--muted); }
+.access-heading-actions { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+@media(max-width:900px) {
+    .public-team-grid { grid-template-columns:1fr; }
+    .public-team-card { padding:24px; }
+}
+@media(max-width:640px) {
+    .public-team-access { padding:24px 22px 42px; }
+    .access-create-grid { grid-template-columns:1fr; }
+    .access-create-card { padding:22px; }
+    .public-nav .public-links { gap:12px; flex-wrap:wrap; justify-content:flex-end; }
+    .access-heading-actions .btn { white-space:normal; }
+}

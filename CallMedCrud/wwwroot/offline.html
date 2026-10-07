@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#102b49">
+  <title>CallMed · Sem conexão</title>
+  <script src="/js/preferences.js"></script>
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/contingencia.css">
+</head>
+<body class="offline-page">
+  <main role="main">
+    <header><img src="/icons/icon-192.png" alt="CallMed"><span class="eyebrow">MODO DE BAIXA CONECTIVIDADE</span><h1>Você está sem internet.</h1><p>Seus dados continuam protegidos. A CallMed só altera a agenda quando consegue validar a disponibilidade no servidor.</p></header>
+    <div class="content">
+      <div class="notice"><span>i</span><div><strong>O atendimento não para.</strong><p>Se precisar de ajuda agora, use o telefone ou o atendimento presencial da clínica. Quando a conexão voltar, você pode continuar exatamente pelo aplicativo.</p></div></div>
+      <div class="actions"><button type="button" id="retry">Tentar novamente</button><button type="button" class="secondary" id="back">Voltar</button></div>
+      <p><a href="/contingencia.html">Recepção: registrar pedidos sem internet</a></p>
+      <div class="status" id="status" role="status" aria-live="polite">Aguardando conexão.</div>
+    </div>
+  </main>
+  <script>
+    const status=document.getElementById('status');
+    const retry=()=>{status.textContent=navigator.onLine?'Conexão detectada. Tentando abrir…':'Ainda sem conexão. Tente novamente em alguns instantes.';if(navigator.onLine)location.reload();};
+    document.getElementById('retry').addEventListener('click',retry);document.getElementById('back').addEventListener('click',()=>history.length>1?history.back():retry());
+    addEventListener('online',()=>{status.textContent='Internet disponível novamente. Atualizando…';setTimeout(()=>location.reload(),350);});addEventListener('offline',()=>{status.textContent='A conexão continua indisponível.';});
+  </script>
+</body>
+</html>

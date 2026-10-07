@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.CallMedTwa" parent="android:style/Theme.Translucent.NoTitleBar">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@color/callmed_green_dark</item>
+        <item name="android:navigationBarColor">@color/callmed_green_dark</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+</resources>

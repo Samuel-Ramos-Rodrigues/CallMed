@@ -1,0 +1,7 @@
+  CallMedCrud -> /workspace/scratch/8407e0c57330/callmed-update/CallMedCrud/bin/Release/net8.0/CallMedCrud.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:06.15
