@@ -1,0 +1,13 @@
+Saída registrada na execução de 15/09/2026:
+PASS Cadastro administrativo aceita e-mail ausente
+PASS E-mail preenchido inválido é rejeitado
+PASS Antecedência usa configuração da clínica
+PASS Consulta por convênio inclui documentação
+PASS Orientação por especialidade é incluída
+PASS Consulta particular não exige carteirinha
+PASS Evolution open reconhecido
+PASS Diagnóstico consulta a instância sem enviar mensagens
+PASS Evolution desconectada não aparece como conectada
+PASS Chave inválida não aparece como conexão ativa
+PASS Resposta inválida é tratada
+Verificações concluídas. Nenhuma mensagem real foi enviada.

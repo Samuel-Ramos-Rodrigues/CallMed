@@ -1,0 +1,22 @@
+CallMed V21.5.1 — validação estática
+
+Correção principal:
+- 39 ocorrências de asp-append-version removidas.
+- Cache-busting substituído por querystring fixa ?v=2151.
+- Docker: DOTNET_USE_POLLING_FILE_WATCHER=1.
+- Docker: DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false.
+- Service Worker: callmed-static-v21-5-1-render-inotify-fix.
+- TWA: versionCode 2151 / versionName 21.5.1.
+
+Validações:
+- asp-append-version restante: 0
+- JSON: OK
+- CSS tinycss2: OK
+- JavaScript node --check: OK
+- Service Worker static assets: 21/21 encontrados
+- MKSANContext: 1 declaração
+- Usuario: 1 declaração
+- segredos óbvios no pacote: nenhum detectado
+
+Observação:
+- dotnet build não executado porque o SDK .NET não está disponível neste ambiente.

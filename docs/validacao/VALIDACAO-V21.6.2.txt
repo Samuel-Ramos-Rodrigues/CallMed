@@ -1,0 +1,35 @@
+CallMed V21.6.2 — validação estática
+
+Motivo da release
+- erro real no Render durante TentarExtrairEvolution -> ExtrairTextoMensagem;
+- webhook da Evolution confirmado como enabled=true;
+- eventos MESSAGES_UPSERT e CONNECTION_UPDATE confirmados;
+- webhookByEvents=false e webhookBase64=false confirmados.
+
+Correções verificadas
+- parser estruturado protegido por fallback;
+- fallback genérico TentarExtrairEvolutionFallback presente;
+- suporte a message como objeto, array e JSON em string;
+- suporte a remoteJid/senderPn/remoteJidAlt/sender/participant;
+- suporte a @lid preservado;
+- fromMe possui extração recursiva segura;
+- payload incompatível não derruba mais o endpoint apenas na fase de parsing;
+- logging específico de fallback presente.
+
+Validação estática
+- JSON: OK
+- XML/csproj: OK
+- CSS tinycss2: OK
+- YAML workflows: OK
+- JavaScript node --check: OK
+- Service Worker node --check: OK
+- C# delimitadores léxicos: OK
+- MKSANContext: 1 declaração
+- Usuario: 1 declaração
+- asp-append-version: 0 ocorrências
+- Service Worker: 21 assets locais / 0 ausentes
+- TWA: versionCode 2162 / versionName 21.6.2
+- Cache PWA: callmed-static-v21-6-2-evolution-parser-fix
+
+Limitação
+- dotnet build não executado: SDK .NET indisponível no ambiente de geração.

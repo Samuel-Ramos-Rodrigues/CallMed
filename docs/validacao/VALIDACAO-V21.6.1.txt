@@ -1,0 +1,30 @@
+CallMed V21.6.1 — validação estática
+Data: 2026-09-09
+
+Correções Evolution/WhatsApp verificadas:
+- suporte a remoteJid @lid com senderPn/remoteJidAlt
+- extração ampliada de texto do payload Evolution
+- logs estruturados de webhook sem conteúdo/segredo
+- fallback de payload legado em 400/422 e 500 compatível
+- tratamento de duplicidade restrito ao índice único correto
+- paciente AsNoTracking anexado como existente antes de criar conversa
+- InstanceName padrão: callmed
+
+Validações executadas:
+- JSON: OK (3 arquivos)
+- csproj XML: OK
+- Android XML: OK (6 arquivos)
+- C# brace/lexical sanity: OK (162 arquivos)
+- JavaScript: node --check OK (9 arquivos + service-worker)
+- CSS: tinycss2 OK (3 arquivos, 0 parse errors)
+- GitHub Actions YAML: OK (2 workflows)
+- Service Worker: 21 assets, 0 ausentes
+- asp-append-version: 0 ocorrências
+- cache-buster antigo ?v=2160: 0 ocorrências
+- cache-buster atual ?v=2161: 39 ocorrências
+- default InstanceName=mksan: 0 ocorrências ativas
+- TWA: versionCode 2161 / versionName 21.6.1
+- cache PWA: callmed-static-v21-6-1-evolution-fix
+
+Limitação:
+- dotnet build não foi executado porque o ambiente de validação não possui o SDK .NET instalado.
