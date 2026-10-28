@@ -1,3 +1,10 @@
+## Correção de build — validador do webhook SMS — 28/10/2026
+
+- Restaurado `ValidarAssinaturaSmsGateway`, chamado pelo endpoint `POST /api/atendimento/sms` e ausente no código publicado.
+- A validação usa o corpo bruto + timestamp, HMAC-SHA256, janela temporal de ±5 minutos e comparação em tempo constante.
+- A implementação segue o formato documentado pelo SMS Gateway para `X-Signature` e `X-Timestamp`.
+- O erro de compilação `CS0103` apresentado no Render é corrigido por esta alteração. A compilação ainda deve ser confirmada no CI/Render com .NET 8.
+
 ## Agendamento direto e triagem de exames — 28/10/2026
 
 - Agendamentos feitos pela tela normal são confirmados imediatamente, sem redirecionamento para triagem por ausência de matriz de convênio.

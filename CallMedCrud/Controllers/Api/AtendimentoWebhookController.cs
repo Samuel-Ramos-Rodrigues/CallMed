@@ -420,6 +420,44 @@ public sealed class AtendimentoWebhookController : ControllerBase
         }
     }
 
+    private static bool ValidarAssinaturaSmsGateway(
+        string payload,
+        string? assinatura,
+        string? timestamp,
+        string segredo)
+    {
+        if (string.IsNullOrWhiteSpace(payload) ||
+            string.IsNullOrWhiteSpace(assinatura) ||
+            string.IsNullOrWhiteSpace(timestamp) ||
+            string.IsNullOrWhiteSpace(segredo))
+        {
+            return false;
+        }
+
+        // Timestamp Unix em segundos; a janela limitada reduz reenvios de eventos antigos.
+        if (!long.TryParse(timestamp, out var timestampUnix))
+            return false;
+
+        var agoraUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        if (timestampUnix < agoraUnix - 300 || timestampUnix > agoraUnix + 300)
+            return false;
+
+        // HMAC-SHA256 com Signing Key do gateway e mensagem payload + timestamp.
+        var mensagem = payload + timestamp;
+
+        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(segredo));
+        var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(mensagem));
+        var assinaturaEsperada = Convert.ToHexString(hash).ToLowerInvariant();
+        var assinaturaRecebida = assinatura.Trim().ToLowerInvariant();
+
+        if (assinaturaEsperada.Length != assinaturaRecebida.Length)
+            return false;
+
+        return CryptographicOperations.FixedTimeEquals(
+            Encoding.UTF8.GetBytes(assinaturaEsperada),
+            Encoding.UTF8.GetBytes(assinaturaRecebida));
+    }
+
     private bool SegredoValido(string configurado)
     {
         var valido = AtendimentoWebhookSecretValidator.Validar(Request, configurado);
