@@ -4,7 +4,7 @@
     ViewData["Title"] = "Nova solicitação";
 }
 <section class="cm25-screen cm21-form-page" data-cm25-view="Solicitacoes/Create.cshtml">
-    <header class="cm25-page-hero cm21-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#flag"></use></svg></div><div><span class="cm25-kicker v16-eyebrow">ENTRADA HÍBRIDA</span><h1>Registrar solicitação</h1><p>Use esta tela para telefone, presencial ou qualquer solicitação que precise entrar manualmente no fluxo.</p></div><a class="btn secondary" asp-action="Index">Voltar</a></header>
+    <header class="cm25-page-hero cm21-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#flag"></use></svg></div><div><span class="cm25-kicker v16-eyebrow">ENTRADA HÍBRIDA</span><h1>Registrar solicitação</h1><p>Registre pedidos recebidos por telefone, presencialmente ou por outro canal. Depois, escolha um horário para concluir o agendamento.</p></div><a class="btn secondary" asp-action="Index">Voltar</a></header>
     <form asp-action="Create" method="post" class="cm21-form-card">
         <div asp-validation-summary="All" class="validation"></div>
         <div class="cm21-form-grid">
@@ -12,8 +12,8 @@
                 <option value="Presencial">Presencial</option><option value="Telefone">Telefone</option><option value="WhatsApp">WhatsApp</option><option value="Web">Site/PWA</option><option value="Email">E-mail</option><option value="Sms">SMS</option>
             </select></label>
             <label><span>Paciente já cadastrado</span><select asp-for="PacienteId" asp-items="ViewBag.Pacientes"><option value="">Ainda não identificado / novo contato</option></select></label>
-            <label><span>Especialidade solicitada</span><select asp-for="EspecialidadeId" asp-items="ViewBag.Especialidades"><option value="">Definir na triagem</option></select></label>
-            <label><span>Médico de preferência</span><select asp-for="MedicoId" asp-items="ViewBag.Medicos"><option value="">Sem preferência</option></select></label>
+            <label><span>Especialidade solicitada</span><select asp-for="EspecialidadeId" asp-items="ViewBag.Especialidades"><option value="">Selecione a especialidade (pode definir depois)</option></select></label>
+            <label><span>Médico de preferência <small>(opcional)</small></span><select asp-for="MedicoId"><option value="">Sem preferência — qualquer médico</option>@foreach (MKSANCrud.ViewModels.MedicoOpcaoViewModel medico in ViewBag.MedicosOpcoes) { <option value="@medico.Id" data-especialidade="@(medico.EspecialidadeId?.ToString() ?? string.Empty)" selected="@(Model.MedicoId == medico.Id ? "selected" : null)">@medico.Nome</option> }</select></label>
             <label><span>Data preferida</span><input asp-for="DataPreferida" type="date" /></label>
             <label><span>Período</span><select asp-for="PeriodoPreferido"><option>Qualquer</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></label>
         </div>
@@ -23,8 +23,8 @@
             <label><span>E-mail</span><input asp-for="EmailContato" type="email" /></label>
         </div></fieldset>
         <label class="cm21-full"><span>O que o paciente solicitou?</span><textarea asp-for="Observacao" rows="5" placeholder="Ex.: deseja consulta de dermatologia pela manhã; informou convênio..."></textarea></label>
-        <div class="cm21-form-actions"><a class="btn secondary" asp-action="Index">Cancelar</a><button class="btn" type="submit">Criar e iniciar triagem</button></div>
+        <div class="cm21-form-actions"><a class="btn secondary" asp-action="Index">Cancelar</a><button class="btn" type="submit">Registrar solicitação</button></div>
     </form>
 </section>
 
-@section Scripts { <partial name="_ValidationScriptsPartial"/> }
+@section Scripts { <partial name="_ValidationScriptsPartial"/> <script src="~/js/solicitacao-medico-filter.js" asp-append-version="true"></script> }

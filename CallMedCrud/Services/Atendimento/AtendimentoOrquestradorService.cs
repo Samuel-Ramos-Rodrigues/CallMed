@@ -70,7 +70,7 @@ public sealed class AtendimentoOrquestradorService
             return;
 
         // Todo pedido de marcação/remarcação vira também uma solicitação operacional.
-        // Assim WhatsApp, e-mail, SMS e PWA entram no mesmo pipeline de triagem.
+        // Assim WhatsApp, e-mail, SMS e PWA entram no mesmo fluxo de solicitações e agendamento.
         if (AtendimentoIntencao.EhPedidoAgendamento(textoEntrada))
         {
             await _solicitacoes.ObterOuCriarDaConversaAsync(

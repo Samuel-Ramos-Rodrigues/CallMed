@@ -88,8 +88,8 @@ public sealed class ConfirmacoesService
             var especialidade = solicitacao.Especialidade?.Nome ?? "Especialidade a definir";
             var titulo = solicitacao.Status switch
             {
-                StatusSolicitacaoAtendimento.Nova => "Nova solicitação aguardando triagem",
-                StatusSolicitacaoAtendimento.EmTriagem => "Triagem em andamento",
+                StatusSolicitacaoAtendimento.Nova => "Solicitação aguardando agendamento",
+                StatusSolicitacaoAtendimento.EmTriagem => "Solicitação recebida",
                 StatusSolicitacaoAtendimento.BuscandoHorario => "Solicitação pronta para buscar horário",
                 _ => "Solicitação pendente"
             };

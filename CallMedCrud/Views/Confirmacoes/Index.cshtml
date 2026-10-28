@@ -74,7 +74,7 @@
                         }
                         else if (item.Tipo == "solicitacao" && Model.Papel is "Funcionario" or "Admin")
                         {
-                            <a class="btn" asp-controller="Solicitacoes" asp-action="Triagem" asp-route-id="@item.Id">Abrir triagem</a>
+                            <a class="btn" asp-controller="Solicitacoes" asp-action="Detalhes" asp-route-id="@item.Id">Organizar agendamento</a>
                             <a class="btn secondary" asp-controller="Solicitacoes" asp-action="Index">Ver fila completa</a>
                         }
                     </div>

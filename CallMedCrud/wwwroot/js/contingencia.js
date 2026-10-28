@@ -27,7 +27,7 @@
                 <small>Registre somente os dados de contato. Não inclua CPF, exames ou informações de saúde. A preferência não é uma reserva.</small>
                 <button type="submit">Guardar pedido neste dispositivo</button>
             </form>
-            <h2>Pedidos aguardando triagem</h2><div id="offline-list"></div>
+            <h2>Solicitações recebidas</h2><div id="offline-list"></div>
         </div>`;
     const status = host.querySelector('#offline-status');
     const unlock = host.querySelector('#offline-unlock');
@@ -82,7 +82,7 @@
             time.textContent = `Registrado em ${new Date(row.capturadaEm).toLocaleString('pt-BR')} · protocolo ${row.chave}`;
             card.append(heading, summary, time);
             if (host.dataset.syncUrl) {
-                const send = document.createElement('button'); send.type = 'button'; send.textContent = 'Conferi os dados: enviar para triagem';
+                const send = document.createElement('button'); send.type = 'button'; send.textContent = 'Conferi os dados: enviar solicitação';
                 send.addEventListener('click', () => guarded(async () => {
                     const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
                     if (!token) throw new Error('Entre novamente como funcionário para continuar.');
@@ -103,9 +103,9 @@
                     // Remove only after acknowledged commit. Retrying uses the same key.
                     await persist(rows.filter(x => x.chave !== row.chave));
                     render();
-                    say(`Solicitação #${result.id} recebida. Confira cadastro e convênio na triagem antes de marcar.`);
-                    const link = document.createElement('a'); link.href = `/Solicitacoes/Triagem/${result.id}`;
-                    link.textContent = ' Abrir triagem'; status.append(link);
+                    say(`Solicitação #${result.id} recebida. A equipe organizará os dados e ajudará a escolher um horário.`);
+                    const link = document.createElement('a'); link.href = `/Solicitacoes/Detalhes/${result.id}`;
+                    link.textContent = ' Organizar agendamento'; status.append(link);
                 }));
                 card.append(send);
             }

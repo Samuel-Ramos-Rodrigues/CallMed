@@ -16,16 +16,13 @@ public sealed class SolicitacoesController : Controller
 {
     private readonly MKSANContext _context;
     private readonly SolicitacaoAtendimentoService _service;
-    private readonly ConvenioElegibilidadeService _elegibilidade;
 
     public SolicitacoesController(
         MKSANContext context,
-        SolicitacaoAtendimentoService service,
-        ConvenioElegibilidadeService elegibilidade)
+        SolicitacaoAtendimentoService service)
     {
         _context = context;
         _service = service;
-        _elegibilidade = elegibilidade;
     }
 
     public async Task<IActionResult> Index(string? busca, string? canal, CancellationToken ct)
@@ -58,7 +55,7 @@ public sealed class SolicitacoesController : Controller
             .ToListAsync(ct);
 
         ViewData["Title"] = "Fluxo de solicitações";
-        ViewData["Subtitle"] = "Todos os canais no mesmo processo: solicitação, triagem, horário e confirmação.";
+        ViewData["Subtitle"] = "Organize o pedido e escolha uma vaga. A consulta fica confirmada assim que o agendamento é concluído.";
         return View(new SolicitacoesPainelViewModel { Itens = itens, Busca = busca, Canal = canal });
     }
 
@@ -101,11 +98,11 @@ public sealed class SolicitacoesController : Controller
         var item = await _service.CriarAsync(
             model.Canal == "Telefone" ? CanalAtendimento.Telefone : CanalAtendimento.Presencial,
             null, null, null, model.DataPreferida, model.Periodo,
-            $"Pedido registrado durante contingência. Especialidade solicitada: {model.Especialidade.Trim()}. Conferir cadastro, cobertura e disponibilidade antes de agendar.",
+            $"Pedido registrado durante contingência. Especialidade solicitada: {model.Especialidade.Trim()}. Confirmar os dados de contato e escolher uma vaga para agendar.",
             model.Nome.Trim(), model.Telefone, model.Email, ct: ct,
             chaveContingencia: model.Chave, capturadaEm: capturada);
         await tx.CommitAsync(ct);
-        return Ok(new { id = item.Id, chave = model.Chave, mensagem = "Pedido recebido para triagem. Nenhuma vaga foi reservada." });
+        return Ok(new { id = item.Id, chave = model.Chave, mensagem = "Pedido recebido. Nenhuma vaga foi reservada até a escolha de um horário." });
     }
 
     [HttpGet]
@@ -131,7 +128,7 @@ public sealed class SolicitacoesController : Controller
 
         if (!ModelState.IsValid)
         {
-            await PrepararSeletoresAsync(ct);
+            await PrepararSeletoresAsync(ct, model.PacienteId, model.EspecialidadeId, model.MedicoId);
             return View(model);
         }
 
@@ -151,27 +148,23 @@ public sealed class SolicitacoesController : Controller
                 ct: ct);
 
             TempData["Sucesso"] = "Solicitação registrada e adicionada ao fluxo operacional.";
-            return RedirectToAction(nameof(Triagem), new { id = item.Id });
+            return RedirectToAction(nameof(Detalhes), new { id = item.Id });
         }
         catch (InvalidOperationException ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
-            await PrepararSeletoresAsync(ct);
+            await PrepararSeletoresAsync(ct, model.PacienteId, model.EspecialidadeId, model.MedicoId);
             return View(model);
         }
     }
 
     [HttpGet]
-    public async Task<IActionResult> Triagem(int id, CancellationToken ct)
+    public async Task<IActionResult> Detalhes(int id, CancellationToken ct)
     {
         var item = await CarregarAsync(id, ct);
         if (item is null) return NotFound();
 
         await PrepararSeletoresAsync(ct, item.PacienteId, item.EspecialidadeId, item.MedicoId);
-        ResultadoElegibilidadeConvenio? elegibilidade = null;
-        if (item.Paciente is not null)
-            elegibilidade = await _elegibilidade.AvaliarAsync(item.Paciente, item.EspecialidadeId, ct);
-
         var historico = await _context.AuditoriaEventos
             .AsNoTracking()
             .Where(x => x.Entidade == "Solicitação" && x.EntidadeId == id.ToString())
@@ -179,68 +172,48 @@ public sealed class SolicitacoesController : Controller
             .Take(30)
             .ToListAsync(ct);
 
-        ViewData["Title"] = $"Triagem #{id}";
-        ViewData["Subtitle"] = "Confira cadastro, convênio, especialidade e pendências antes de buscar uma vaga.";
-        return View(new TriagemSolicitacaoViewModel { Solicitacao = item, Elegibilidade = elegibilidade, Historico = historico });
+        ViewData["Title"] = $"Solicitação #{id}";
+        ViewData["Subtitle"] = "Confira os dados básicos e siga diretamente para a escolha de horário.";
+        return View(new SolicitacaoDetalhesViewModel { Solicitacao = item, Historico = historico });
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Triagem(
+    public async Task<IActionResult> PrepararAgendamento(
         int id,
         int? pacienteId,
         int? especialidadeId,
         int? medicoId,
-        string? pendenciaTriagem,
-        string? justificativaLiberacao,
-        bool atendimentoParticular,
-        bool liberarSemMatriz,
+        DateTime? dataPreferida,
+        string? periodoPreferido,
+        string? observacao,
         CancellationToken ct)
     {
-        var estado = await _context.SolicitacoesAtendimento.AsNoTracking()
-            .Where(x => x.Id == id)
-            .Select(x => new { x.Status, x.ConsultaId })
+        var responsavel = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var resultado = await _service.PrepararAgendamentoAsync(
+            id, pacienteId, especialidadeId, medicoId, dataPreferida,
+            periodoPreferido, observacao, responsavel, ct);
+
+        if (!resultado.Sucesso || resultado.Item is null)
+        {
+            TempData["Erro"] = resultado.Mensagem;
+            return RedirectToAction(nameof(Detalhes), new { id });
+        }
+
+        var item = resultado.Item;
+        var nomeEspecialidade = await _context.Especialidades.AsNoTracking()
+            .Where(x => x.Id == item.EspecialidadeId)
+            .Select(x => x.Nome)
             .FirstOrDefaultAsync(ct);
-        if (estado is null) return NotFound();
-        if (estado.ConsultaId.HasValue || estado.Status is StatusSolicitacaoAtendimento.Confirmada or StatusSolicitacaoAtendimento.Cancelada or StatusSolicitacaoAtendimento.Encerrada)
-        {
-            TempData["Erro"] = "Esta solicitação já foi finalizada ou possui consulta vinculada. O histórico fica bloqueado para evitar inconsistências.";
-            return RedirectToAction(nameof(Triagem), new { id });
-        }
-
-        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var resultado = await _service.TriarAsync(id, pacienteId, especialidadeId, medicoId, pendenciaTriagem, justificativaLiberacao, atendimentoParticular, liberarSemMatriz, usuarioId, ct);
-        TempData[resultado.Sucesso ? "Sucesso" : "Erro"] = resultado.Mensagem;
-        return RedirectToAction(nameof(Triagem), new { id });
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> BuscarHorario(int id, CancellationToken ct)
-    {
-        var item = await CarregarAsync(id, ct);
-        if (item is null) return NotFound();
-        if (!item.PacienteId.HasValue || !item.EspecialidadeId.HasValue)
-        {
-            TempData["Erro"] = "Conclua a identificação do paciente e da especialidade antes de buscar horários.";
-            return RedirectToAction(nameof(Triagem), new { id });
-        }
-        if (item.Status != StatusSolicitacaoAtendimento.BuscandoHorario ||
-            item.ElegivelConvenio == false ||
-            !string.IsNullOrWhiteSpace(item.PendenciaTriagem))
-        {
-            TempData["Erro"] = item.PendenciaTriagem ?? "Conclua a triagem administrativa antes de buscar horários.";
-            return RedirectToAction(nameof(Triagem), new { id });
-        }
-
-        await _service.AtualizarStatusAsync(id, StatusSolicitacaoAtendimento.BuscandoHorario, ct);
-        var nomeEspecialidade = item.Especialidade?.Nome;
+        var tipoPagamento = item.Paciente?.TemConvenio == true ? "Convenio" : "Particular";
+        TempData["Sucesso"] = resultado.Mensagem;
         return RedirectToAction("Create", "Consulta", new
         {
             pacienteId = item.PacienteId,
             medicoId = item.MedicoId,
+            data = item.DataPreferida,
             especialidade = nomeEspecialidade,
-            tipoPagamento = string.Equals(item.ConvenioInformado, "Particular", StringComparison.OrdinalIgnoreCase) ? "Particular" : "Convenio",
+            tipoPagamento,
             solicitacaoId = item.Id
         });
     }
@@ -254,7 +227,7 @@ public sealed class SolicitacoesController : Controller
         if (item.ConsultaId.HasValue || item.Status is StatusSolicitacaoAtendimento.Confirmada or StatusSolicitacaoAtendimento.Cancelada or StatusSolicitacaoAtendimento.Encerrada)
         {
             TempData["Erro"] = "Esta solicitação já foi finalizada e não pode voltar para aguardando paciente.";
-            return RedirectToAction(nameof(Triagem), new { id });
+            return RedirectToAction(nameof(Detalhes), new { id });
         }
 
         await _service.AtualizarStatusAsync(id, StatusSolicitacaoAtendimento.AguardandoPaciente, ct);
@@ -271,7 +244,7 @@ public sealed class SolicitacoesController : Controller
         if (item.ConsultaId.HasValue || item.Status is StatusSolicitacaoAtendimento.Confirmada or StatusSolicitacaoAtendimento.Cancelada or StatusSolicitacaoAtendimento.Encerrada)
         {
             TempData["Erro"] = "Esta solicitação já foi finalizada ou possui consulta vinculada. O histórico não pode ser alterado por esta ação.";
-            return RedirectToAction(nameof(Triagem), new { id });
+            return RedirectToAction(nameof(Detalhes), new { id });
         }
 
         await _service.AtualizarStatusAsync(id, StatusSolicitacaoAtendimento.Encerrada, ct);
@@ -288,7 +261,7 @@ public sealed class SolicitacoesController : Controller
         if (item.ConsultaId.HasValue || item.Status is StatusSolicitacaoAtendimento.Confirmada or StatusSolicitacaoAtendimento.Cancelada or StatusSolicitacaoAtendimento.Encerrada)
         {
             TempData["Erro"] = "Esta solicitação já foi finalizada ou possui consulta vinculada. Cancele a consulta vinculada quando for necessário.";
-            return RedirectToAction(nameof(Triagem), new { id });
+            return RedirectToAction(nameof(Detalhes), new { id });
         }
 
         await _service.AtualizarStatusAsync(id, StatusSolicitacaoAtendimento.Cancelada, ct);
@@ -317,8 +290,20 @@ public sealed class SolicitacoesController : Controller
         ViewBag.Especialidades = new SelectList(
             await _context.Especialidades.AsNoTracking().Where(x => x.Ativo).OrderBy(x => x.Nome).ToListAsync(ct),
             "Id", "Nome", especialidadeId);
-        ViewBag.Medicos = new SelectList(
-            await _context.Medicos.AsNoTracking().Where(x => x.Ativo).OrderBy(x => x.Nome).ToListAsync(ct),
-            "Id", "Nome", medicoId);
+        var medicos = await _context.Medicos.AsNoTracking()
+            .Where(x => x.Ativo)
+            .OrderBy(x => x.Nome)
+            .Select(x => new MedicoOpcaoViewModel
+            {
+                Id = x.Id,
+                Nome = x.Nome,
+                EspecialidadeId = x.EspecialidadeId
+            })
+            .ToListAsync(ct);
+        ViewBag.MedicosOpcoes = medicos;
+        var medicosSelect = especialidadeId.HasValue
+            ? medicos.Where(x => x.EspecialidadeId == especialidadeId.Value).ToList()
+            : medicos;
+        ViewBag.Medicos = new SelectList(medicosSelect, "Id", "Nome", medicoId);
     }
 }

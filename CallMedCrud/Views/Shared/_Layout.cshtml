@@ -16,6 +16,7 @@
     <partial name="_DocumentHead" />
     <link rel="stylesheet" href="~/css/modules.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/clinic-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/clinic-redesign.css" asp-append-version="true" />
 </head>
 <body class="callmed-app @(paciente ? "patient-context" : "staff-context")">
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -27,20 +28,28 @@
             <nav class="primary-nav" aria-label="Navegação principal">
                 @if (equipe)
                 {
-                    <a class="@(Ativo("FuncionarioPainel") ? "active" : "")" asp-controller="FuncionarioPainel" asp-action="Index">Visão geral</a>
-                    <a class="@(Ativo("Agenda") || Ativo("Consulta") ? "active" : "")" asp-controller="Agenda" asp-action="Index">Agenda</a>
-                    <a class="@(Ativo("Atendimento") || Ativo("Solicitacoes") ? "active" : "")" asp-controller="Atendimento" asp-action="Index">Atendimento</a>
-                    <a class="@(Ativo("Paciente") || Ativo("Medico") ? "active" : "")" asp-controller="Paciente" asp-action="Index">Pessoas</a>
+                    <a class="@(Ativo("FuncionarioPainel") ? "active" : "")" asp-controller="FuncionarioPainel" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#home"></use></svg><span>Início</span></a>
+                    <a class="@(Ativo("Agenda") || Ativo("Consulta") ? "active" : "")" asp-controller="Agenda" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span>Agendamentos</span></a>
+                    <a class="@(Ativo("Paciente") ? "active" : "")" asp-controller="Paciente" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#team"></use></svg><span>Pacientes</span></a>
+                    <a class="@(Ativo("Medico") || Ativo("MedicoAcesso") ? "active" : "")" asp-controller="Medico" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#doctor"></use></svg><span>Médicos</span></a>
+                    <a class="@(Ativo("HistoricoExames") ? "active" : "")" asp-controller="HistoricoExames" asp-action="Pendentes"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#file-medical"></use></svg><span>Exames</span></a>
+                    <a class="@(Ativo("Relatorios") ? "active" : "")" asp-controller="Relatorios" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#chart"></use></svg><span>Relatórios</span></a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="@(Ativo("Configuracoes") ? "active" : "")" asp-controller="Configuracoes" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#settings"></use></svg><span>Configurações</span></a>
+                    }
                 }
                 else if (paciente)
                 {
-                    <a class="@(Ativo("Home") ? "active" : "")" asp-controller="Home" asp-action="Index">Meu início</a>
-                    <a class="@(Ativo("Consulta") ? "active" : "")" asp-controller="Consulta" asp-action="Index">Minhas consultas</a>
-                    <a class="@(Ativo("HistoricoExames") ? "active" : "")" asp-controller="HistoricoExames" asp-action="Index">Meus exames</a>
+                    <a class="@(Ativo("Home") ? "active" : "")" asp-controller="Home" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#home"></use></svg><span>Início</span></a>
+                    <a class="@(Ativo("Consulta") && action == "Create" ? "active" : "")" asp-controller="Consulta" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg><span>Agendar</span></a>
+                    <a class="@(Ativo("Consulta") && action != "Create" ? "active" : "")" asp-controller="Consulta" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar-check"></use></svg><span>Consultas</span></a>
+                    <a class="@(Ativo("HistoricoExames") ? "active" : "")" asp-controller="HistoricoExames" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#file-medical"></use></svg><span>Meus exames</span></a>
+                    <a class="@(Ativo("MinhaConta") ? "active" : "")" asp-controller="MinhaConta" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg><span>Minha conta</span></a>
                 }
                 else if (User.IsInRole("Medico"))
                 {
-                    <a class="@(Ativo("MedicoPainel") ? "active" : "")" asp-controller="MedicoPainel" asp-action="Index">Minha agenda</a>
+                    <a class="@(Ativo("MedicoPainel") ? "active" : "")" asp-controller="MedicoPainel" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span>Minha agenda</span></a>
                 }
             </nav>
             <div class="header-tools">
@@ -100,7 +109,7 @@
                     <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#chat"></use></svg></span><b>Central de Atendimento</b>
                 </a>
                 <a class="@(Ativo("Solicitacoes") ? "active" : "")" asp-controller="Solicitacoes" asp-action="Index">
-                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg></span><b>Solicitações / Triagem</b>
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg></span><b>Solicitações</b>
                 </a>
                 <a class="@(Ativo("HistoricoExames") && action == "Pendentes" ? "active" : "")" asp-controller="HistoricoExames" asp-action="Pendentes">
                     <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#clipboard-check"></use></svg></span><b>Triagem de exames</b>

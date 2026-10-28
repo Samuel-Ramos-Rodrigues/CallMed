@@ -1,0 +1,57 @@
+@model MKSANCrud.ViewModels.SolicitacaoDetalhesViewModel
+@using MKSANCrud.Models
+@using MKSANCrud.Models.Atendimento
+@{
+    var s = Model.Solicitacao;
+    ViewData["Title"] = $"Solicitação #{s.Id}";
+    string CanalNome(CanalAtendimento c) => c switch { CanalAtendimento.WhatsApp => "WhatsApp", CanalAtendimento.Email => "E-mail", CanalAtendimento.Sms => "SMS", CanalAtendimento.Telefone => "Telefone", CanalAtendimento.Presencial => "Presencial", _ => "Site/PWA" };
+    var bloqueada = s.Consulta is not null || s.Status is StatusSolicitacaoAtendimento.Confirmada or StatusSolicitacaoAtendimento.Cancelada or StatusSolicitacaoAtendimento.Encerrada;
+    var cpfFinal = s.Paciente?.Cpf is string cpf && cpf.Length > 4 ? cpf[^4..] : s.Paciente?.Cpf;
+}
+<section class="cm25-screen cm21-form-page clinic-request-details" data-cm25-view="Solicitacoes/Detalhes.cshtml">
+    <header class="cm25-page-hero cm21-page-head clinic-detail-hero">
+        <div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar-check"></use></svg></div>
+        <div><span class="cm25-kicker">SOLICITAÇÃO · @CanalNome(s.Canal).ToUpperInvariant()</span><h1>Organizar agendamento <small>#@s.Id</small></h1><p>Confira quem solicitou, selecione especialidade e médico de preferência e siga direto para os horários disponíveis.</p></div>
+        <a class="btn secondary" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg> Voltar à fila</a>
+    </header>
+
+    @if (s.Consulta is not null)
+    {
+        <section class="clinic-booking-confirmed"><span class="clinic-confirmed-icon"><svg><use href="/icons/callmed-ui.svg#badge-check"></use></svg></span><div><span class="cm25-kicker">AGENDAMENTO CONCLUÍDO</span><h2>Consulta #@s.Consulta.Id confirmada</h2><p>@s.Consulta.Data.ToString("dd/MM/yyyy") às @s.Consulta.Horario. O horário já está vinculado a esta solicitação.</p></div><a class="btn" asp-controller="Consulta" asp-action="Details" asp-route-id="@s.Consulta.Id">Ver consulta</a></section>
+    }
+    else if (bloqueada)
+    {
+        <div class="alert info" role="status">Esta solicitação está encerrada. O histórico foi preservado e não pode iniciar outro agendamento.</div>
+    }
+    else
+    {
+        <div class="clinic-request-layout">
+            <form asp-action="PrepararAgendamento" method="post" class="cm25-panel v16-card clinic-request-form">
+                <input type="hidden" name="id" value="@s.Id" />
+                <div class="clinic-form-intro"><span class="clinic-form-step">01</span><div><h2>Dados para agendamento</h2><p>Apenas os dados essenciais. A conferência do convênio é feita no momento de selecionar a forma de atendimento; não existe triagem antes de reservar.</p></div></div>
+                <div asp-validation-summary="All" class="validation"></div>
+                <div class="cm21-form-grid">
+                    <label class="clinic-field full"><span>Paciente</span><select name="pacienteId" asp-items="ViewBag.Pacientes"><option value="">Selecione o paciente</option></select><small>Contato recebido: @(s.Paciente?.Nome ?? s.NomeContato ?? "Não identificado")@(cpfFinal is null ? "" : $" · CPF final {cpfFinal}")</small></label>
+                    <label class="clinic-field"><span>Especialidade</span><select name="especialidadeId" asp-items="ViewBag.Especialidades"><option value="">Selecione a especialidade</option></select></label>
+                    <label class="clinic-field"><span>Médico de preferência <small>(opcional)</small></span><select name="medicoId"><option value="">Sem preferência — qualquer médico</option>@foreach (MKSANCrud.ViewModels.MedicoOpcaoViewModel medico in ViewBag.MedicosOpcoes) { <option value="@medico.Id" data-especialidade="@(medico.EspecialidadeId?.ToString() ?? string.Empty)" selected="@(s.MedicoId == medico.Id ? "selected" : null)">@medico.Nome</option> }</select></label>
+                    <label class="clinic-field"><span>Data preferida <small>(opcional)</small></span><input type="date" name="dataPreferida" value="@(s.DataPreferida?.ToString("yyyy-MM-dd"))" /></label>
+                    <label class="clinic-field"><span>Período preferido</span><select name="periodoPreferido"><option value="Qualquer" selected="@(s.PeriodoPreferido == "Qualquer" ? "selected" : null)">Qualquer período</option><option value="Manhã" selected="@(s.PeriodoPreferido == "Manhã" ? "selected" : null)">Manhã</option><option value="Tarde" selected="@(s.PeriodoPreferido == "Tarde" ? "selected" : null)">Tarde</option><option value="Noite" selected="@(s.PeriodoPreferido == "Noite" ? "selected" : null)">Noite</option></select></label>
+                    <label class="clinic-field full"><span>Observação <small>(opcional)</small></span><textarea name="observacao" rows="3" maxlength="1200" placeholder="Informações relevantes para organizar o atendimento">@s.Observacao</textarea></label>
+                </div>
+                <div class="clinic-form-actions"><a class="btn secondary" asp-action="Index">Cancelar</a><button class="btn" type="submit"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg> Salvar dados e escolher horário</button></div>
+            </form>
+            <aside class="clinic-request-aside">
+                <article class="cm25-panel clinic-aside-card"><span class="clinic-aside-icon"><svg><use href="/icons/callmed-ui.svg#spark"></use></svg></span><span class="cm25-kicker">FLUXO DIRETO</span><h2>Sem triagem de consulta</h2><p>Depois de salvar os dados, a equipe escolhe a vaga. A consulta é confirmada assim que o horário está disponível e a forma de pagamento é válida.</p><ol><li>Identifique o paciente</li><li>Escolha a especialidade</li><li>Selecione uma vaga</li><li>Confirme o agendamento</li></ol></article>
+                <article class="cm25-panel clinic-aside-card"><span class="clinic-aside-icon"><svg><use href="/icons/circle-help"></use></svg></span><span class="cm25-kicker">ORIGEM DO PEDIDO</span><h2>@CanalNome(s.Canal)</h2><p>Recebida em @ClinicaClock.ConverterUtc(s.CriadoEm).ToString("dd/MM/yyyy 'às' HH:mm").</p><p>@(string.IsNullOrWhiteSpace(s.TelefoneContato) ? "Telefone não informado." : $"Telefone: {s.TelefoneContato}")</p><p>@(string.IsNullOrWhiteSpace(s.EmailContato) ? "E-mail não informado." : s.EmailContato)</p></article>
+                <div class="clinic-request-quick-actions"><form asp-action="AguardarPaciente" method="post"><input type="hidden" name="id" value="@s.Id"/><button class="btn secondary" type="submit">Aguardar resposta do paciente</button></form><form asp-action="Cancelar" method="post" onsubmit="return confirm('Cancelar esta solicitação?');"><input type="hidden" name="id" value="@s.Id"/><button class="btn danger" type="submit">Cancelar solicitação</button></form><form asp-action="Encerrar" method="post"><input type="hidden" name="id" value="@s.Id"/><button class="btn secondary" type="submit">Encerrar solicitação</button></form></div>
+            </aside>
+        </div>
+    }
+
+    @if (Model.Historico.Any())
+    {
+        <section class="cm25-panel clinic-audit-panel"><header><span class="clinic-form-step">↻</span><div><h2>Histórico de ações</h2><p>Registro operacional para rastreabilidade.</p></div></header>@foreach (var h in Model.Historico) { <article><time>@ClinicaClock.ConverterUtc(h.CriadoEm).ToString("dd/MM/yyyy HH:mm")</time><div><strong>@h.Acao</strong><small>@(h.UsuarioNome ?? "Sistema") · @h.Descricao</small></div></article>}</section>
+    }
+</section>
+
+@section Scripts { <script src="~/js/solicitacao-medico-filter.js" asp-append-version="true"></script> }

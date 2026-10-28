@@ -192,11 +192,9 @@ public class ConsultaController : Controller
                 solicitacaoOrigem.Status != StatusSolicitacaoAtendimento.BuscandoHorario ||
                 !solicitacaoOrigem.PacienteId.HasValue ||
                 !solicitacaoOrigem.EspecialidadeId.HasValue ||
-                solicitacaoOrigem.PacienteId.Value != consulta.PacienteId ||
-                solicitacaoOrigem.ElegivelConvenio == false ||
-                !string.IsNullOrWhiteSpace(solicitacaoOrigem.PendenciaTriagem))
+                solicitacaoOrigem.PacienteId.Value != consulta.PacienteId)
             {
-                ModelState.AddModelError(string.Empty, "A solicitação não está liberada pela triagem para concluir este agendamento.");
+                ModelState.AddModelError(string.Empty, "Confira os dados da solicitação antes de escolher uma vaga.");
                 ViewBag.SolicitacaoId = solicitacaoId;
                 await CarregarFormularioAsync(consulta, especialidade, tipoPagamento);
                 return View(consulta);
@@ -210,7 +208,7 @@ public class ConsultaController : Controller
             if (!especialidadeDoMedico.HasValue || especialidadeDoMedico.Value != solicitacaoOrigem.EspecialidadeId.Value ||
                 (solicitacaoOrigem.MedicoId.HasValue && solicitacaoOrigem.MedicoId.Value != consulta.MedicoId))
             {
-                ModelState.AddModelError(string.Empty, "O médico escolhido não corresponde ao que foi aprovado na triagem.");
+                ModelState.AddModelError(string.Empty, "O médico escolhido não corresponde à especialidade ou à preferência registrada na solicitação.");
                 ViewBag.SolicitacaoId = solicitacaoId;
                 await CarregarFormularioAsync(consulta, especialidade, tipoPagamento);
                 return View(consulta);

@@ -5,8 +5,8 @@
     var proxima = Model.ProximasConsultas.FirstOrDefault();
     string StatusPedido(MKSANCrud.Models.StatusSolicitacaoAtendimento status) => status switch
     {
-        MKSANCrud.Models.StatusSolicitacaoAtendimento.Nova => "Recebida",
-        MKSANCrud.Models.StatusSolicitacaoAtendimento.EmTriagem => "Em triagem",
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.Nova => "Aguardando agendamento",
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.EmTriagem => "Solicitação recebida",
         MKSANCrud.Models.StatusSolicitacaoAtendimento.BuscandoHorario => "Buscando horário",
         MKSANCrud.Models.StatusSolicitacaoAtendimento.AguardandoPaciente => "Aguardando sua resposta",
         MKSANCrud.Models.StatusSolicitacaoAtendimento.Confirmada => "Consulta marcada",

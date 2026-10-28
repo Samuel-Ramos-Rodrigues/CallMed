@@ -8,16 +8,13 @@ namespace MKSANCrud.Services.Clinica;
 public sealed class SolicitacaoAtendimentoService
 {
     private readonly MKSANContext _context;
-    private readonly ConvenioElegibilidadeService _elegibilidade;
     private readonly AuditoriaService _auditoria;
 
     public SolicitacaoAtendimentoService(
         MKSANContext context,
-        ConvenioElegibilidadeService elegibilidade,
         AuditoriaService auditoria)
     {
         _context = context;
-        _elegibilidade = elegibilidade;
         _auditoria = auditoria;
     }
 
@@ -48,9 +45,17 @@ public sealed class SolicitacaoAtendimentoService
             !await _context.Especialidades.AsNoTracking().AnyAsync(x => x.Id == especialidadeId && x.Ativo, ct))
             throw new InvalidOperationException("Especialidade inválida ou inativa.");
 
-        if (medicoId.HasValue &&
-            !await _context.Medicos.AsNoTracking().AnyAsync(x => x.Id == medicoId && x.Ativo, ct))
-            throw new InvalidOperationException("Médico inválido ou inativo.");
+        if (medicoId.HasValue)
+        {
+            var medico = await _context.Medicos.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == medicoId.Value && x.Ativo, ct);
+            if (medico is null)
+                throw new InvalidOperationException("Médico inválido ou inativo.");
+            if (especialidadeId.HasValue && medico.EspecialidadeId != especialidadeId.Value)
+                throw new InvalidOperationException("O médico de preferência não pertence à especialidade escolhida.");
+            if (!especialidadeId.HasValue && medico.EspecialidadeId.HasValue)
+                especialidadeId = medico.EspecialidadeId;
+        }
 
         var item = new SolicitacaoAtendimento
         {
@@ -106,133 +111,88 @@ public sealed class SolicitacaoAtendimentoService
             ct);
     }
 
-    public async Task<(bool Sucesso, string Mensagem)> TriarAsync(
+    public async Task<(bool Sucesso, string Mensagem, SolicitacaoAtendimento? Item)> PrepararAgendamentoAsync(
         int id,
         int? pacienteId,
         int? especialidadeId,
         int? medicoId,
-        string? pendencia,
-        string? justificativaLiberacao,
-        bool atendimentoParticular,
-        bool liberarSemMatriz,
+        DateTime? dataPreferida,
+        string? periodoPreferido,
+        string? observacao,
         string? responsavelUsuarioId,
         CancellationToken ct = default)
     {
         var item = await _context.SolicitacoesAtendimento
             .Include(x => x.Paciente)
             .FirstOrDefaultAsync(x => x.Id == id, ct);
-        if (item is null) return (false, "Solicitação não encontrada.");
+        if (item is null) return (false, "Solicitação não encontrada.", null);
+        if (item.ConsultaId.HasValue || item.Status is StatusSolicitacaoAtendimento.Confirmada or StatusSolicitacaoAtendimento.Cancelada or StatusSolicitacaoAtendimento.Encerrada)
+            return (false, "Esta solicitação já foi finalizada ou possui consulta vinculada.", item);
+        if (!pacienteId.HasValue)
+            return (false, "Selecione o paciente para continuar o agendamento.", item);
+        if (!especialidadeId.HasValue)
+            return (false, "Selecione a especialidade para encontrar horários disponíveis.", item);
 
-        var anterior = new { item.Status, item.PacienteId, item.EspecialidadeId, item.MedicoId, item.ElegivelConvenio, item.PendenciaTriagem, item.JustificativaLiberacao };
+        var paciente = await _context.Pacientes.FirstOrDefaultAsync(x => x.Id == pacienteId.Value && x.Ativo, ct);
+        if (paciente is null)
+            return (false, "Paciente inválido ou inativo.", item);
 
-        if (pacienteId.HasValue)
-        {
-            var paciente = await _context.Pacientes.FirstOrDefaultAsync(x => x.Id == pacienteId && x.Ativo, ct);
-            if (paciente is null) return (false, "Paciente inválido ou inativo.");
-            item.PacienteId = paciente.Id;
-            item.Paciente = paciente;
-            item.NomeContato = paciente.Nome;
-            item.TelefoneContato = paciente.Telefone;
-            item.EmailContato = paciente.Email;
-            item.ConvenioInformado = paciente.NomeConvenio;
-        }
+        var especialidade = await _context.Especialidades.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == especialidadeId.Value && x.Ativo, ct);
+        if (especialidade is null)
+            return (false, "Especialidade inválida ou inativa.", item);
 
-        if (especialidadeId.HasValue &&
-            !await _context.Especialidades.AsNoTracking().AnyAsync(x => x.Id == especialidadeId && x.Ativo, ct))
-            return (false, "Especialidade inválida ou inativa.");
-        item.EspecialidadeId = especialidadeId;
-
+        Medico? medico = null;
         if (medicoId.HasValue)
         {
-            var medico = await _context.Medicos.AsNoTracking().FirstOrDefaultAsync(x => x.Id == medicoId && x.Ativo, ct);
-            if (medico is null) return (false, "Médico inválido ou inativo.");
-            if (especialidadeId.HasValue && medico.EspecialidadeId != especialidadeId)
-                return (false, "O médico selecionado não pertence à especialidade informada.");
-            item.MedicoId = medicoId;
-        }
-        else
-        {
-            item.MedicoId = null;
+            medico = await _context.Medicos.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == medicoId.Value && x.Ativo, ct);
+            if (medico is null)
+                return (false, "Médico de preferência inválido ou inativo.", item);
+            if (medico.EspecialidadeId != especialidade.Id)
+                return (false, "O médico de preferência não pertence à especialidade escolhida.", item);
         }
 
-        item.Status = StatusSolicitacaoAtendimento.EmTriagem;
-        item.ResponsavelUsuarioId = responsavelUsuarioId;
-        item.TriadaEm = DateTime.UtcNow;
-        item.AtualizadoEm = DateTime.UtcNow;
-        item.PendenciaTriagem = Limitar(pendencia, 600);
+        var anterior = new
+        {
+            item.Status,
+            item.PacienteId,
+            item.EspecialidadeId,
+            item.MedicoId,
+            item.DataPreferida,
+            item.PeriodoPreferido
+        };
+
+        item.PacienteId = paciente.Id;
+        item.Paciente = paciente;
+        item.EspecialidadeId = especialidade.Id;
+        item.MedicoId = medico?.Id;
+        item.NomeContato = paciente.Nome;
+        item.TelefoneContato = paciente.Telefone;
+        item.EmailContato = paciente.Email;
+        item.ConvenioInformado = paciente.TemConvenio && !string.IsNullOrWhiteSpace(paciente.NomeConvenio)
+            ? Limitar(paciente.NomeConvenio, 120)
+            : "Particular";
+        item.ElegivelConvenio = null; // Será avaliado no momento em que a forma de pagamento for escolhida.
+        item.PendenciaTriagem = null; // Campo legado mantido para não perder compatibilidade com registros antigos.
         item.JustificativaLiberacao = null;
-
-        if (item.Paciente is not null && item.EspecialidadeId.HasValue)
-        {
-            var elegibilidade = await _elegibilidade.AvaliarAsync(item.Paciente, item.EspecialidadeId, ct);
-            if (atendimentoParticular || !item.Paciente.TemConvenio)
-            {
-                item.ConvenioInformado = "Particular";
-                item.ElegivelConvenio = null;
-            }
-            else if (!elegibilidade.PossuiConvenioValido)
-            {
-                item.ConvenioInformado = item.Paciente.NomeConvenio;
-                item.ElegivelConvenio = false;
-                item.PendenciaTriagem = "Convênio vencido ou incompleto. Atualize o cadastro ou marque 'Atendimento particular' para continuar.";
-            }
-            else if (!elegibilidade.RegrasConfiguradas ||
-                     elegibilidade.StatusConsulta == ElegibilidadeConvenioStatus.PendenteValidacao ||
-                     elegibilidade.StatusConsulta == ElegibilidadeConvenioStatus.CoberturaNaMatriz ||
-                     elegibilidade.StatusConsulta == ElegibilidadeConvenioStatus.AguardandoAutorizacao)
-            {
-                item.ConvenioInformado = item.Paciente.NomeConvenio;
-                if (liberarSemMatriz && elegibilidade.Elegivel)
-                {
-                    if (string.IsNullOrWhiteSpace(justificativaLiberacao))
-                    {
-                        item.ElegivelConvenio = null;
-                        item.PendenciaTriagem = "Informe a justificativa e a fonte da conferência externa antes da liberação manual.";
-                    }
-                    else
-                    {
-                        item.ElegivelConvenio = true;
-                        item.JustificativaLiberacao = Limitar(justificativaLiberacao, 600);
-                        if (string.IsNullOrWhiteSpace(pendencia)) item.PendenciaTriagem = null;
-                    }
-                }
-                else
-                {
-                    item.ElegivelConvenio = null;
-                    item.PendenciaTriagem = elegibilidade.Mensagem;
-                }
-            }
-            else
-            {
-                item.ConvenioInformado = item.Paciente.NomeConvenio;
-                item.ElegivelConvenio = elegibilidade.Elegivel;
-                if (!elegibilidade.Elegivel)
-                {
-                    item.PendenciaTriagem = elegibilidade.Mensagem;
-                }
-                else if (elegibilidade.StatusConsulta == ElegibilidadeConvenioStatus.PendenteValidacao)
-                {
-                    item.ElegivelConvenio = null;
-                    item.PendenciaTriagem = elegibilidade.Mensagem;
-                }
-                else if (elegibilidade.StatusConsulta == ElegibilidadeConvenioStatus.AguardandoAutorizacao)
-                {
-                    item.ElegivelConvenio = null;
-                    item.PendenciaTriagem = elegibilidade.Mensagem;
-                }
-                else if (string.IsNullOrWhiteSpace(pendencia)) item.PendenciaTriagem = null;
-            }
-        }
-
-        if (item.PacienteId.HasValue && item.EspecialidadeId.HasValue && item.ElegivelConvenio != false && string.IsNullOrWhiteSpace(item.PendenciaTriagem))
-            item.Status = StatusSolicitacaoAtendimento.BuscandoHorario;
+        item.TriadaEm = null;
+        item.DataPreferida = dataPreferida?.Date;
+        item.PeriodoPreferido = NormalizarPeriodo(periodoPreferido);
+        item.Observacao = Limitar(observacao, 1200);
+        item.ResponsavelUsuarioId = responsavelUsuarioId;
+        item.Status = StatusSolicitacaoAtendimento.BuscandoHorario;
+        item.AtualizadoEm = DateTime.UtcNow;
 
         await _context.SaveChangesAsync(ct);
-        await _auditoria.RegistrarAsync("Triagem", "Solicitação", item.Id, "Triagem administrativa atualizada.", anterior, new { item.Status, item.PacienteId, item.EspecialidadeId, item.MedicoId, item.ElegivelConvenio, item.PendenciaTriagem, item.JustificativaLiberacao, atendimentoParticular, liberarSemMatriz }, ct);
+        await _auditoria.RegistrarAsync(
+            "Preparar agendamento", "Solicitação", item.Id,
+            "Dados da solicitação organizados. A consulta será confirmada ao selecionar uma vaga, sem triagem administrativa intermediária.",
+            anterior,
+            new { item.Status, item.PacienteId, item.EspecialidadeId, item.MedicoId, item.DataPreferida, item.PeriodoPreferido },
+            ct);
 
-        return (true, item.Status == StatusSolicitacaoAtendimento.BuscandoHorario
-            ? "Triagem concluída. A solicitação está pronta para buscar um horário."
-            : "Triagem salva. Revise as pendências antes de avançar.");
+        return (true, "Dados registrados. Agora escolha uma vaga para confirmar a consulta.", item);
     }
 
     public async Task<SolicitacaoAtendimento> RegistrarAgendamentoDiretoAsync(

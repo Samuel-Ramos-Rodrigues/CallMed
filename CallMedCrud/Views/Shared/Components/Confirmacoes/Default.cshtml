@@ -76,7 +76,7 @@
                                 }
                                 else if (item.Tipo == "solicitacao" && Model.Papel is "Funcionario" or "Admin")
                                 {
-                                    <a class="cm-confirm-primary" asp-controller="Solicitacoes" asp-action="Triagem" asp-route-id="@item.Id">Abrir triagem</a>
+                                    <a class="cm-confirm-primary" asp-controller="Solicitacoes" asp-action="Detalhes" asp-route-id="@item.Id">Organizar agendamento</a>
                                     <a asp-controller="Solicitacoes" asp-action="Index">Ver fila</a>
                                 }
                             </div>

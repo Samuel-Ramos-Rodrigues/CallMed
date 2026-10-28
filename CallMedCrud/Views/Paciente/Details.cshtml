@@ -55,7 +55,7 @@
         else {
             <div class="cm21-patient-request-list">
             @foreach (var item in solicitacoes) {
-                <a asp-controller="Solicitacoes" asp-action="Triagem" asp-route-id="@item.Id"><span><strong>#@item.Id · @item.Canal</strong><small>@(item.Especialidade?.Nome ?? "Especialidade não definida") · @ClinicaClock.ConverterUtc(item.CriadoEm).ToString("dd/MM/yyyy HH:mm")</small></span><em>@item.Status</em></a>
+                <a asp-controller="Solicitacoes" asp-action="Detalhes" asp-route-id="@item.Id"><span><strong>#@item.Id · @item.Canal</strong><small>@(item.Especialidade?.Nome ?? "Especialidade não definida") · @ClinicaClock.ConverterUtc(item.CriadoEm).ToString("dd/MM/yyyy HH:mm")</small></span><em>@item.Status</em></a>
             }
             </div>
         }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v28-health-icons';
+const CACHE_NAME = 'callmed-static-v31-sage-horizontal-clinic-ui';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -6,9 +6,11 @@ const STATIC_ASSETS = [
     OFFLINE_URL,
     '/contingencia.html',
     '/js/contingencia.js',
+    '/js/solicitacao-medico-filter.js',
     '/css/contingencia.css',
     '/css/site.css',
     '/css/clinic-theme.css',
+    '/css/clinic-redesign.css',
     '/css/acessos.css',
     '/css/modules.css',
     '/js/preferences.js',

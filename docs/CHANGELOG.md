@@ -356,3 +356,10 @@ Controllers, Services, Models, Data, DTOs, ViewModels, Middleware, Migrations, G
 - Adicionada ilustração SVG local, acessível e disponível offline, no hero público.
 - Atualizada a versão do cache estático do PWA para incluir a nova ilustração.
 - Documentadas referências de licença para Lucide (ISC) e Health Icons (CC0).
+
+## 2026-10-28 — Identidade clínica sálvia e navegação horizontal
+- Substituída a navegação lateral fixa por cabeçalho em duas faixas com navegação horizontal no desktop; a navegação móvel continua no rodapé em telas estreitas.
+- Aplicada paleta verde-sálvia/grafite com superfícies coloridas suaves, sem branco chapado como fundo principal.
+- Dashboard da equipe reorganizado: saudação, atalhos, tabela de próximos atendimentos, resumo real do ViewModel, pontos de atenção e ocupação da agenda.
+- Padronizados alertas, erros de validação, campos, botões, tabelas, cartões, menus e status para áreas autenticadas, públicas e de identidade.
+- Removido alerta de sucesso duplicado no layout compartilhado e atualizado o cache do PWA para a nova identidade.

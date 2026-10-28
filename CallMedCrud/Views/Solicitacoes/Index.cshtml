@@ -2,7 +2,7 @@
 @using MKSANCrud.Models
 @using MKSANCrud.Models.Atendimento
 @{
-    ViewData["Title"] = "Fluxo de solicitações";
+    ViewData["Title"] = "Solicitações de atendimento";
     string CanalNome(CanalAtendimento c) => c switch
     {
         CanalAtendimento.WhatsApp => "WhatsApp",
@@ -14,82 +14,77 @@
     };
     string StatusNome(StatusSolicitacaoAtendimento s) => s switch
     {
-        StatusSolicitacaoAtendimento.Nova => "Nova solicitação",
-        StatusSolicitacaoAtendimento.EmTriagem => "Em triagem",
-        StatusSolicitacaoAtendimento.BuscandoHorario => "Buscando horário",
+        StatusSolicitacaoAtendimento.Nova => "Recebida",
+        StatusSolicitacaoAtendimento.EmTriagem => "Recebida", // compatibilidade com solicitações legadas
+        StatusSolicitacaoAtendimento.BuscandoHorario => "Escolhendo horário",
         StatusSolicitacaoAtendimento.AguardandoPaciente => "Aguardando paciente",
-        StatusSolicitacaoAtendimento.Confirmada => "Confirmada",
+        StatusSolicitacaoAtendimento.Confirmada => "Consulta agendada",
         StatusSolicitacaoAtendimento.Cancelada => "Cancelada",
         _ => "Encerrada"
     };
     var colunas = new[]
     {
         StatusSolicitacaoAtendimento.Nova,
-        StatusSolicitacaoAtendimento.EmTriagem,
         StatusSolicitacaoAtendimento.BuscandoHorario,
         StatusSolicitacaoAtendimento.AguardandoPaciente,
         StatusSolicitacaoAtendimento.Confirmada
     };
 }
-<section class="cm25-screen cm21-request-page" data-cm25-view="Solicitacoes/Index.cshtml">
-    <header class="cm25-page-hero cm21-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#flag"></use></svg></div>
-        <div><span class="cm25-kicker v16-eyebrow">PROCESSO PADRONIZADO</span><h1>Solicitações de consulta</h1><p>WhatsApp, PWA, telefone, presencial, SMS e e-mail entram no mesmo fluxo.</p></div>
-        <a class="btn" asp-action="Create">+ Nova solicitação</a>
+<section class="cm25-screen cm21-request-page clinic-workflow-page" data-cm25-view="Solicitacoes/Index.cshtml">
+    <header class="cm25-page-hero cm21-page-head">
+        <div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#mail"></use></svg></div>
+        <div><span class="cm25-kicker v16-eyebrow">CENTRAL DE ATENDIMENTO</span><h1>Solicitações recebidas</h1><p>Organize pedidos de qualquer canal e siga diretamente para a escolha de horário. A consulta é confirmada ao concluir o agendamento.</p></div>
+        <a class="btn" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg> Nova solicitação</a>
     </header>
 
-    <form method="get" class="cm25-filterbar cm21-filterbar">
-        <input type="search" name="busca" value="@Model.Busca" placeholder="Paciente, CPF, telefone ou e-mail" />
-        <select name="canal">
+    <form method="get" class="cm25-filterbar cm21-filterbar clinic-filterbar">
+        <label class="clinic-search"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#chat"></use></svg><input type="search" name="busca" value="@Model.Busca" placeholder="Paciente, CPF, telefone ou e-mail" /></label>
+        <select name="canal" aria-label="Filtrar pelo canal">
             <option value="">Todos os canais</option>
             @foreach (var c in Enum.GetValues<CanalAtendimento>())
             {
                 <option value="@c" selected="@(Model.Canal == c.ToString() ? "selected" : null)">@CanalNome(c)</option>
             }
         </select>
-        <button class="btn secondary" type="submit">Filtrar</button>
+        <button class="btn secondary" type="submit"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#settings"></use></svg> Filtrar</button>
     </form>
 
-    <p><a class="btn secondary" asp-action="Contingencia">Pedidos registrados sem internet</a> <a class="btn secondary" href="/contingencia.html">Abrir formulário de contingência</a></p>
-    <div class="cm25-kpi-grid cm21-request-kpis">
-        <article><small>Novas</small><strong>@Model.TotalNovas</strong></article>
-        <article><small>Em triagem</small><strong>@Model.TotalTriagem</strong></article>
-        <article><small>Buscando vaga</small><strong>@Model.TotalBuscando</strong></article>
-        <article><small>Aguardando paciente</small><strong>@Model.TotalAguardando</strong></article>
-        <article><small>Confirmadas</small><strong>@Model.TotalConfirmadas</strong></article>
+    <div class="clinic-inline-actions"><a class="btn secondary" asp-action="Contingencia"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#clipboard"></use></svg> Pedidos recebidos offline</a><a class="text-link" href="/contingencia.html">Abrir formulário de contingência ↗</a></div>
+    <div class="cm25-kpi-grid cm21-request-kpis clinic-request-kpis">
+        <article><span class="clinic-kpi-icon received"><svg><use href="/icons/callmed-ui.svg#mail"></use></svg></span><small>Recebidas</small><strong>@Model.TotalRecebidas</strong><span class="clinic-kpi-foot">Aguardando organização</span></article>
+        <article><span class="clinic-kpi-icon calendar"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg></span><small>Escolhendo horário</small><strong>@Model.TotalBuscando</strong><span class="clinic-kpi-foot">Dados já vinculados</span></article>
+        <article><span class="clinic-kpi-icon waiting"><svg><use href="/icons/callmed-ui.svg#message-circle"></use></svg></span><small>Aguardando paciente</small><strong>@Model.TotalAguardando</strong><span class="clinic-kpi-foot">Retorno necessário</span></article>
+        <article><span class="clinic-kpi-icon confirmed"><svg><use href="/icons/callmed-ui.svg#calendar-check"></use></svg></span><small>Consultas agendadas</small><strong>@Model.TotalConfirmadas</strong><span class="clinic-kpi-foot">Agendamento concluído</span></article>
     </div>
 
-    <div class="cm21-kanban">
+    <div class="cm21-kanban clinic-request-kanban">
         @foreach (var coluna in colunas)
         {
-            var itens = Model.Itens.Where(x => x.Status == coluna).ToList();
+            var itens = Model.Itens.Where(x => coluna == StatusSolicitacaoAtendimento.Nova
+                ? x.Status is StatusSolicitacaoAtendimento.Nova or StatusSolicitacaoAtendimento.EmTriagem
+                : x.Status == coluna).ToList();
             <section class="cm21-kanban-column status-@coluna.ToString().ToLowerInvariant()">
-                <header><strong>@StatusNome(coluna)</strong><span>@itens.Count</span></header>
+                <header><div><span class="clinic-column-dot"></span><strong>@(coluna == StatusSolicitacaoAtendimento.Nova ? "Recebidas" : StatusNome(coluna))</strong></div><span>@itens.Count</span></header>
                 <div class="cm21-kanban-list">
                     @if (itens.Count == 0)
                     {
-                        <div class="cm21-kanban-empty">Nenhuma solicitação.</div>
+                        <div class="cm21-kanban-empty"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#badge-check"></use></svg><span>Nenhuma solicitação nesta etapa.</span></div>
                     }
                     @foreach (var item in itens)
                     {
-                        <article class="cm21-request-card">
+                        <article class="cm21-request-card clinic-request-card">
                             <div class="cm21-request-meta"><span class="cm21-channel">@CanalNome(item.Canal)</span><time>@ClinicaClock.ConverterUtc(item.CriadoEm).ToString("dd/MM HH:mm")</time></div>
                             <h2>@(item.Paciente?.Nome ?? item.NomeContato ?? "Contato não identificado")</h2>
-                            <p>@(item.Especialidade?.Nome ?? "Especialidade ainda não definida")</p>
-                            @if (!string.IsNullOrWhiteSpace(item.PendenciaTriagem))
-                            {
-                                <div class="cm21-warning">@item.PendenciaTriagem</div>
-                            }
+                            <p>@(item.Especialidade?.Nome ?? "Especialidade a definir")</p>
                             @if (item.Consulta is not null)
                             {
-                                <div class="cm21-success">Consulta #@item.Consulta.Id · @item.Consulta.Data.ToString("dd/MM") às @item.Consulta.Horario</div>
+                                <div class="cm21-success"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar-check"></use></svg> Consulta #@item.Consulta.Id · @item.Consulta.Data.ToString("dd/MM") às @item.Consulta.Horario</div>
                             }
-                            <div class="cm21-card-actions">
-                                <a asp-action="Triagem" asp-route-id="@item.Id">Abrir</a>
-                                @if (item.ConversaAtendimentoId.HasValue)
-                                {
-                                    <a asp-controller="Atendimento" asp-action="Index" asp-route-id="@item.ConversaAtendimentoId">Conversa</a>
-                                }
-                            </div>
+                            <div class="clinic-request-bottom"><span class="clinic-status-text">@StatusNome(item.Status)</span><a class="btn secondary" asp-action="Detalhes" asp-route-id="@item.Id">@(item.Consulta is null ? "Organizar agendamento" : "Ver solicitação") <span aria-hidden="true">→</span></a></div>
+                            @if (item.ConversaAtendimentoId.HasValue)
+                            {
+                                <a class="clinic-conversation-link" asp-controller="Atendimento" asp-action="Index" asp-route-id="@item.ConversaAtendimentoId">Abrir conversa de origem ↗</a>
+                            }
                         </article>
                     }
                 </div>
@@ -100,10 +95,10 @@
     @{ var encerradas = Model.Itens.Where(x => x.Status is StatusSolicitacaoAtendimento.Cancelada or StatusSolicitacaoAtendimento.Encerrada).Take(20).ToList(); }
     @if (encerradas.Any())
     {
-        <details class="cm21-closed-list"><summary>Ver canceladas/encerradas recentes (@encerradas.Count)</summary>
+        <details class="cm21-closed-list clinic-closed-list"><summary>Consultar canceladas/encerradas recentes (@encerradas.Count)</summary>
             @foreach (var item in encerradas)
             {
-                <a asp-action="Triagem" asp-route-id="@item.Id"><strong>#@item.Id · @(item.Paciente?.Nome ?? item.NomeContato)</strong><span>@StatusNome(item.Status) · @CanalNome(item.Canal)</span></a>
+                <a asp-action="Detalhes" asp-route-id="@item.Id"><strong>#@item.Id · @(item.Paciente?.Nome ?? item.NomeContato)</strong><span>@StatusNome(item.Status) · @CanalNome(item.Canal)</span></a>
             }
         </details>
     }
