@@ -1,0 +1,371 @@
+/* CallMed · identidade clínica refinada 2026
+   Paleta sálvia/verde-petróleo sobre superfícies marfim; sem branco puro como fundo dominante. */
+:root {
+  --bg: #e9eee7;
+  --surface: #f5f6f0;
+  --surface-alt: #dfe8de;
+  --ink: #23372e;
+  --muted: #566a60;
+  --line: #cbd7cb;
+  --brand: #376b57;
+  --brand-soft: #d9e7dc;
+  --navy: #254a3b;
+  --accent: #9fbea6;
+  --success: #286746;
+  --success-bg: #dcecdf;
+  --warning: #82581f;
+  --warning-bg: #f4e8d2;
+  --danger: #9c3b43;
+  --danger-bg: #f4e1e1;
+  --info: #315f70;
+  --info-bg: #e0ebed;
+  --radius: 16px;
+  --shadow: 0 8px 24px rgba(35, 55, 46, .065);
+  --clinic-deep: #254a3b;
+  --clinic-teal: #376b57;
+  --clinic-mint: #d9e7dc;
+  --clinic-halo: rgba(55,107,87,.10);
+  --clinic-sidebar: #315a48;
+  --clinic-sidebar-2: #244a3b;
+  --clinic-canvas: #e9eee7;
+  --clinic-card: #f5f6f0;
+  --clinic-border: #cbd7cb;
+  --clinic-aqua: #5c9075;
+  --clinic-shadow: 0 8px 24px rgba(35,55,46,.065);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #182720;
+  --surface: #22352b;
+  --surface-alt: #2b4335;
+  --ink: #edf3eb;
+  --muted: #c0cec1;
+  --line: #40594a;
+  --brand: #a4c9af;
+  --brand-soft: #2d4a37;
+  --navy: #142f23;
+  --accent: #b6d0b8;
+  --success: #9bd2a9;
+  --success-bg: #294b35;
+  --warning: #f1ce8b;
+  --warning-bg: #4a3d25;
+  --danger: #ffb7b7;
+  --danger-bg: #4b2d31;
+  --info: #aad8e0;
+  --info-bg: #25464a;
+  --shadow: 0 12px 32px rgba(0,0,0,.18);
+  --clinic-deep: #142f23;
+  --clinic-teal: #a4c9af;
+  --clinic-mint: #2d4a37;
+  --clinic-halo: rgba(164,201,175,.10);
+  --clinic-sidebar: #142f23;
+  --clinic-sidebar-2: #203c2d;
+  --clinic-canvas: #182720;
+  --clinic-card: #22352b;
+  --clinic-border: #40594a;
+  --clinic-aqua: #a4c9af;
+  --clinic-shadow: 0 12px 32px rgba(0,0,0,.18);
+}
+
+html { background: var(--bg); }
+body { background: var(--bg); color: var(--ink); }
+
+/* Entrada e página pública são sempre legíveis; não herdam o modo escuro antigo do sistema. */
+html:not(.callmed-high-contrast) body.public-body,
+html:not(.callmed-high-contrast) body.identity-body {
+  --bg: #e9eee7;
+  --surface: #f5f6f0;
+  --surface-alt: #dfe8de;
+  --ink: #23372e;
+  --muted: #566a60;
+  --line: #cbd7cb;
+  --brand: #376b57;
+  --brand-soft: #d9e7dc;
+  --navy: #254a3b;
+  --accent: #9fbea6;
+  background: var(--bg) !important;
+  color: var(--ink) !important;
+  color-scheme: light;
+}
+
+/* Barra principal horizontal em todas as telas autenticadas, alinhada ao layout anterior. */
+body.callmed-app > .app-header {
+  position: sticky;
+  inset: auto;
+  top: 0;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  margin: 0;
+  overflow: visible;
+  background: var(--surface);
+  color: var(--ink);
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 2px 10px rgba(35,55,46,.045);
+}
+body.callmed-app .app-header-inner {
+  width: min(100%, 1600px);
+  max-width: 1600px;
+  height: auto;
+  min-height: 76px;
+  margin: 0 auto;
+  padding: 12px clamp(18px, 2.7vw, 40px);
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  grid-template-areas: "brand nav tools";
+  align-items: center;
+  gap: clamp(12px, 1.8vw, 26px);
+}
+body.callmed-app .app-brand {
+  padding: 0;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+body.callmed-app .app-brand img {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+  object-fit: contain;
+  filter: none !important;
+}
+body.callmed-app .app-brand > span { color: var(--ink); font-size: 22px; font-weight: 780; letter-spacing: -.035em; }
+body.callmed-app .app-brand small { color: var(--muted); font-size: 8px; letter-spacing: .11em; }
+body.callmed-app .primary-nav {
+  grid-area: nav;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  gap: clamp(2px, .45vw, 7px);
+  min-width: 0;
+  overflow-x: auto;
+  flex: initial;
+  scrollbar-width: thin;
+}
+body.callmed-app .primary-nav a {
+  flex: 0 0 auto;
+  min-height: 42px;
+  padding: 9px clamp(8px, .9vw, 13px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 10px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 680;
+  box-shadow: none;
+}
+body.callmed-app .primary-nav a svg { width: 17px; height: 17px; color: var(--brand); }
+body.callmed-app .primary-nav a:hover { color: var(--ink); background: var(--surface-alt); }
+body.callmed-app .primary-nav a.active {
+  color: var(--brand);
+  background: var(--brand-soft);
+  box-shadow: inset 0 -2px var(--brand);
+}
+body.callmed-app .primary-nav a.active::after { display: none; }
+body.callmed-app .header-tools {
+  grid-area: tools;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+}
+body.callmed-app .header-tools .modules-toggle,
+body.callmed-app .header-tools .profile-trigger,
+body.callmed-app .header-tools .v18-icon-button {
+  width: auto;
+  min-height: 40px;
+  padding: 8px 10px;
+  justify-content: center;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+}
+body.callmed-app .header-tools .modules-toggle:hover,
+body.callmed-app .header-tools .profile-trigger:hover,
+body.callmed-app .header-tools .v18-icon-button:hover { background: var(--surface-alt); border-color: var(--line); }
+body.callmed-app .header-tools .profile-copy { color: var(--ink); }
+body.callmed-app .header-tools .profile-copy small { color: var(--muted); }
+body.callmed-app .header-tools .user-avatar { background: var(--brand-soft); color: var(--brand); }
+body.callmed-app .header-tools .v18-tool-wrap { display: flex; flex-direction: column; align-items: center; position: relative; }
+body.callmed-app .header-tools .v18-popover { position: absolute; top: calc(100% + 8px); right: 0; width: 260px; margin-top: 0; z-index: 1300; background: var(--surface); color: var(--ink); border: 1px solid var(--line); box-shadow: var(--shadow); }
+body.callmed-app .header-tools .v18-popover[hidden] { display: none; }
+body.callmed-app .app-main {
+  width: min(100%, 1600px);
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: clamp(20px, 2.4vw, 36px) clamp(18px, 2.7vw, 40px) 38px;
+  min-height: calc(100vh - 76px);
+}
+body.callmed-app .app-footer { width: min(100%, 1600px); max-width: 1600px; margin: 0 auto; padding: 14px clamp(18px, 2.7vw, 40px) 24px; }
+
+/* Regras de superfície: consistência de cor/contraste em telas herdadas, não só no dashboard. */
+body.callmed-app :is(.panel,.workspace-panel,.day-overview,.appointment-panel,.patient-panel,.cm25-panel,.cm25-kpi,.v16-stat,.v16-kpi,.v16-card,.cm19-card,.v18-card,.form-card,.form-section,.patient-form-section,.doctor-form-section-v16,.consultation-card,.appointment-card,.table-card,.simple-filter-v16,.cm25-form-card,.cm21-form-card,.cm25-section-card,.clinic-filterbar,.clinic-request-form,.clinic-aside-card,.clinic-audit-panel,.cm19-booking-card,.cm19-booking-section,.cm-dashboard-quick,.cm-dashboard-agenda,.cm-dashboard-summary,.cm-dashboard-attention,.cm-dashboard-occupancy,.patient-details-grid > .panel,.patient-quicklinks > a,.patient-quicklinks > button) {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+  box-shadow: var(--shadow);
+}
+body.callmed-app :is(.cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head,.workspace-heading,.clinic-filterbar) { color: var(--ink); }
+body.callmed-app :is(.cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head) { background: linear-gradient(115deg,var(--surface) 0%,var(--surface-alt) 100%); border-color: var(--line); }
+body.callmed-app :is(.cm25-page-hero h1,.cm25-page-head h1,.v16-page-head h1,.cm21-page-head h1,.workspace-heading h1,.panel-heading h2,.panel-heading h3,.cm25-panel-head h2) { color: var(--ink); }
+body.callmed-app :is(.cm25-page-hero p,.cm25-page-head p,.v16-page-head p,.cm21-page-head p,.panel-heading p,.cm25-panel-head p,.field-hint,.help-text) { color: var(--muted); }
+body.callmed-app .cm25-hero-mark { background: var(--brand-soft) !important; color: var(--brand) !important; }
+body.callmed-app .patient-appointment { background: linear-gradient(135deg,#305f4a,#3d7259); color: #f6f7ef; }
+body.callmed-app .patient-appointment :is(h1,h2,h3,p,span,strong,small,a) { color: inherit; }
+body.callmed-app .patient-quicklinks > a, body.callmed-app .patient-quicklinks > button { background: var(--surface); color: var(--ink); border-color: var(--line); }
+body.callmed-app .patient-support { background: var(--surface-alt); border-color: var(--line); color: var(--ink); }
+body.callmed-app .patient-support :is(h1,h2,h3,p,strong,a) { color: var(--ink); }
+body.callmed-app :is(.cm19-booking-section,.cm19-booking-card,.cm25-content-card,.cm25-form-card,.cm21-form-card) { background: var(--surface); border-color: var(--line); }
+body.callmed-app .cm19-booking-section-head > span { background: var(--brand-soft); color: var(--brand); }
+body.callmed-app .cm19-booking-steps li { background: var(--surface-alt); color: var(--muted); border-color: var(--line); }
+body.callmed-app .cm19-booking-steps li.active { color: var(--brand); background: var(--brand-soft); border-color: var(--brand); }
+body.callmed-app .cm19-booking-steps li.active b, body.callmed-app .cm19-booking-steps li.done b { color: #fff; background: var(--brand); }
+body.callmed-app :is(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),select,textarea) { background: var(--surface); color: var(--ink); border-color: var(--line); }
+body.callmed-app input::placeholder, body.callmed-app textarea::placeholder { color: var(--muted); opacity: 1; }
+body.callmed-app :is(label,legend,.clinic-field > span,.field > label,.clinic-field > label) { color: var(--ink); }
+body.callmed-app :is(.panel-heading,.cm19-card-head,.cm25-panel-head) { border-color: var(--line); }
+body.callmed-app :is(table,.table,.v16-table) { color: var(--ink); border-color: var(--line); }
+body.callmed-app :is(thead,thead tr,th) { background: var(--surface-alt); color: var(--muted); border-color: var(--line); }
+body.callmed-app :is(tbody,tr,td) { color: var(--ink); border-color: var(--line); }
+body.callmed-app tbody tr:hover { background: var(--surface-alt); }
+body.callmed-app :is(.alert,.alert-success,.alert-danger,.alert-warning,.alert-info,.aviso,.notice,.toast,.toast-message,.toast-notification,.mensagem,.identity-note) { border-radius: 12px; box-shadow: none; border: 1px solid var(--line); }
+body.callmed-app :is(.alert-success,.alert-success *, .success,.mensagem.sucesso) { color: var(--success); }
+body.callmed-app :is(.alert-success,.mensagem.sucesso) { background: var(--success-bg); border-color: #b7d6bf; }
+body.callmed-app :is(.alert-warning,.mensagem.aviso) { background: var(--warning-bg); color: var(--warning); border-color: #e5d3ae; }
+body.callmed-app :is(.alert-danger,.alert-error,.mensagem.erro,.validation-summary-errors) { background: var(--danger-bg); color: var(--danger); border-color: #e5bfc0; }
+body.callmed-app :is(.alert-info,.notice,.aviso.info) { background: var(--info-bg); color: var(--info); border-color: #bfd5d9; }
+body.callmed-app :is(.status-pill,.status-badge,.badge,.soft-pill,.date-chip,.time-chip) { border-color: var(--line); }
+body.callmed-app :is(a:not(.btn),.text-link) { text-underline-offset: .18em; }
+body.callmed-app :is(button,a,input,select,textarea,summary):focus-visible { outline: 3px solid #5e9c7d; outline-offset: 2px; }
+
+/* Home pública: fundo sálvia claro e texto escuro; a ilustração conserva o verde profundo da marca. */
+html:not(.callmed-high-contrast) body.public-body .public-header { background: rgba(233,238,231,.96); border-color: var(--line); color: var(--ink); }
+html:not(.callmed-high-contrast) body.public-body .public-nav { padding-block: 18px; }
+html:not(.callmed-high-contrast) body.public-body :is(.public-hero h1,.public-hero p,.public-how h2,.public-how h3,.public-how p,.public-install h2,.public-install p) { color: var(--ink); }
+html:not(.callmed-high-contrast) body.public-body .public-hero h1 em { color: var(--brand); }
+html:not(.callmed-high-contrast) body.public-body .public-hero-copy .eyebrow,
+html:not(.callmed-high-contrast) body.public-body .public-how .eyebrow { color: var(--brand); }
+html:not(.callmed-high-contrast) body.public-body .public-links > a:not(.btn) { color: var(--muted); }
+html:not(.callmed-high-contrast) body.public-body .care-illustration { background: linear-gradient(145deg,#2b5140 0%,#315f4a 100%); box-shadow: 0 18px 35px rgba(35,55,46,.13); }
+html:not(.callmed-high-contrast) body.public-body .care-ticket { background: #f5f6f0; color: #23372e; border: 1px solid #d1ddd0; box-shadow: 0 16px 34px rgba(20,44,31,.13); }
+html:not(.callmed-high-contrast) body.public-body .care-ticket :is(h2,p,strong,small) { color: #23372e; }
+html:not(.callmed-high-contrast) body.public-body .care-ticket .eyebrow,
+html:not(.callmed-high-contrast) body.public-body .care-step > span { color: #566a60; }
+html:not(.callmed-high-contrast) body.public-body .care-step { border-color: #d5dfd3; }
+html:not(.callmed-high-contrast) body.public-body .care-step svg { color: #376b57; }
+html:not(.callmed-high-contrast) body.public-body .care-plus { background: #c1d7c3; color: #254a3b; }
+html:not(.callmed-high-contrast) body.public-body .public-how-item { background: var(--surface); border-color: var(--line); color: var(--ink); box-shadow: var(--shadow); }
+html:not(.callmed-high-contrast) body.public-body .public-how-item :is(h3,p,span,a) { color: var(--ink); }
+html:not(.callmed-high-contrast) body.public-body .public-how-item p { color: var(--muted); }
+html:not(.callmed-high-contrast) body.public-body .public-install { background: var(--navy); color: #f4f6ef; }
+html:not(.callmed-high-contrast) body.public-body .public-install :is(h2,p) { color: #f4f6ef; }
+html:not(.callmed-high-contrast) body.public-body .public-footer { color: var(--muted); border-color: var(--line); }
+
+/* Login: retirado o seletor flutuante de acessibilidade do canto; a identidade usa contraste legível. */
+html:not(.callmed-high-contrast) body.identity-body .identity-showcase {
+  background: radial-gradient(circle at 8% 12%, rgba(85,139,103,.10), transparent 25rem), linear-gradient(140deg,#dce7d9 0%,#d1dfd1 100%);
+  color: #23372e;
+  border-right: 1px solid #c5d5c6;
+}
+html:not(.callmed-high-contrast) body.identity-body .identity-showcase::after { border-color: rgba(55,107,87,.15); }
+html:not(.callmed-high-contrast) body.identity-body .identity-showcase .app-brand { color: #23372e; }
+html:not(.callmed-high-contrast) body.identity-body .identity-showcase .app-brand > span { color: #23372e; }
+html:not(.callmed-high-contrast) body.identity-body .identity-showcase .app-brand small { color: #536a5c; }
+html:not(.callmed-high-contrast) body.identity-body .identity-showcase .app-brand img { width: 43px; height: 43px; padding: 0; border: 0; border-radius: 0; background: transparent !important; filter: none !important; }
+html:not(.callmed-high-contrast) body.identity-body .identity-copy > .eyebrow,
+html:not(.callmed-high-contrast) body.identity-body .identity-kicker { color: #376b57; }
+html:not(.callmed-high-contrast) body.identity-body .identity-copy h1 { color: #23372e; }
+html:not(.callmed-high-contrast) body.identity-body .identity-copy h1 em { color: #376b57; }
+html:not(.callmed-high-contrast) body.identity-body .identity-copy p,
+html:not(.callmed-high-contrast) body.identity-body .identity-showcase > small,
+html:not(.callmed-high-contrast) body.identity-body .identity-note-line { color: #536a5c; }
+html:not(.callmed-high-contrast) body.identity-body .identity-note-line { border-color: rgba(55,107,87,.22); }
+html:not(.callmed-high-contrast) body.identity-body .identity-note-line strong { color: #23372e; }
+html:not(.callmed-high-contrast) body.identity-body .identity-panel { background: #e9eee7; }
+html:not(.callmed-high-contrast) body.identity-body .identity-card { max-width: 430px; padding: clamp(24px,3.2vw,42px); border: 1px solid #d0dacf; border-radius: 22px; background: #f5f6f0; box-shadow: 0 18px 42px rgba(35,55,46,.075); }
+html:not(.callmed-high-contrast) body.identity-body .identity-card-header h2 { color: #23372e; }
+html:not(.callmed-high-contrast) body.identity-body .identity-card-header p,
+html:not(.callmed-high-contrast) body.identity-body .identity-footnote { color: #566a60; }
+html:not(.callmed-high-contrast) body.identity-body .identity-form label { color: #23372e; }
+html:not(.callmed-high-contrast) body.identity-body .identity-form input:not([type="checkbox"]) { color: #23372e; background: #eef2ea; border-color: #c5d4c5; }
+html:not(.callmed-high-contrast) body.identity-body .identity-form input::placeholder { color: #66776b; opacity: 1; }
+html:not(.callmed-high-contrast) body.identity-body .identity-options a,
+html:not(.callmed-high-contrast) body.identity-body .identity-back { color: #376b57; }
+html:not(.callmed-high-contrast) body.identity-body .identity-submit { background: #376b57; color: #fff; border: 1px solid #2e5d4b; box-shadow: none; }
+html:not(.callmed-high-contrast) body.identity-body .identity-submit:hover { background: #2d5a48; }
+html:not(.callmed-high-contrast) body.identity-body .identity-secondary { background: #e4ebe1; color: #23372e; border-color: #c5d4c5; }
+html:not(.callmed-high-contrast) body.identity-body .identity-divider { color: #566a60; }
+html:not(.callmed-high-contrast) body.identity-body .mensagem.erro,
+html:not(.callmed-high-contrast) body.identity-body .validation-summary-errors,
+html:not(.callmed-high-contrast) body.identity-body .field-error { color: #913b3f; }
+body.identity-body .identity-access-tools { display: none !important; }
+
+/* Alto contraste tem prioridade sobre a identidade cromática decorativa. */
+html.callmed-high-contrast body.public-body,
+html.callmed-high-contrast body.identity-body { background: #fff !important; color: #000 !important; }
+html.callmed-high-contrast body.public-body .care-illustration,
+html.callmed-high-contrast body.identity-body .identity-showcase { background: #000 !important; color: #fff !important; }
+html.callmed-high-contrast body.public-body :is(.public-hero h1,.public-hero p,.public-how h2,.public-how h3,.public-how p),
+html.callmed-high-contrast body.identity-body :is(.identity-copy h1,.identity-copy p,.identity-showcase small,.identity-note-line) { color: #000 !important; }
+html.callmed-high-contrast body.identity-body .identity-showcase :is(.identity-copy h1,.identity-copy p,.identity-showcase > small,.identity-note-line,.app-brand > span) { color: #fff !important; }
+html.callmed-high-contrast body.public-body .care-ticket { background: #fff !important; color: #000 !important; border: 2px solid #000 !important; }
+
+/* Tema escuro explícito: cores pareadas e legíveis em componentes legados. */
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app :is(.panel,.workspace-panel,.day-overview,.appointment-panel,.patient-panel,.cm25-panel,.cm25-kpi,.v16-stat,.v16-kpi,.v16-card,.cm19-card,.v18-card,.form-card,.form-section,.patient-form-section,.doctor-form-section-v16,.consultation-card,.appointment-card,.table-card,.simple-filter-v16,.cm25-form-card,.cm21-form-card,.cm25-section-card,.clinic-filterbar,.clinic-request-form,.clinic-aside-card,.clinic-audit-panel,.cm19-booking-card,.cm19-booking-section,.cm-dashboard-quick,.cm-dashboard-agenda,.cm-dashboard-summary,.cm-dashboard-attention,.cm-dashboard-occupancy,.patient-details-grid > .panel,.patient-quicklinks > a,.patient-quicklinks > button) { background: var(--surface); color: var(--ink); border-color: var(--line); }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app :is(.cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head) { background: linear-gradient(115deg,var(--surface) 0%,var(--surface-alt) 100%); color: var(--ink); border-color: var(--line); }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app :is(th,td,tbody tr,table,.table,.v16-table,input,select,textarea,label,legend) { color: var(--ink); border-color: var(--line); }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app :is(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),select,textarea) { background: var(--surface-alt); }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app :is(thead,thead tr,th) { background: var(--surface-alt); color: var(--muted); }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app .patient-support { background: var(--surface-alt); color: var(--ink); }
+
+@media (max-width: 1180px) {
+  body.callmed-app .app-header-inner { grid-template-columns: minmax(160px,auto) minmax(0,1fr) auto; grid-template-areas: "brand nav tools"; gap: 10px; padding-inline: 20px; }
+  body.callmed-app .primary-nav { justify-content: flex-start; }
+  body.callmed-app .primary-nav a { font-size: 11px; padding-inline: 7px; }
+  body.callmed-app .app-main { padding: 24px 20px 36px; }
+  body.callmed-app .app-footer { padding-inline: 20px; }
+}
+@media (max-width: 900px) {
+  body.callmed-app .app-header-inner { grid-template-columns: minmax(0,1fr) auto; grid-template-rows: 62px auto; grid-template-areas: "brand tools" "nav nav"; gap: 5px 15px; padding: 8px 16px 10px; }
+  body.callmed-app .primary-nav { justify-content: flex-start; width: 100%; padding-bottom: 2px; }
+  body.callmed-app .header-tools .profile-copy { display: none; }
+  body.callmed-app .header-tools .modules-toggle span { display: none; }
+  body.callmed-app .app-main { padding: 20px 16px 32px; }
+}
+@media (max-width: 620px) {
+  body.callmed-app .app-header-inner { grid-template-columns: minmax(0,1fr) auto; grid-template-rows: 58px; grid-template-areas: "brand tools"; padding: 5px 12px; }
+  body.callmed-app .primary-nav { display: none; }
+  body.callmed-app .app-brand img { width: 30px; height: 30px; flex-basis: 30px; }
+  body.callmed-app .app-brand > span { font-size: 19px; }
+  body.callmed-app .app-brand small { display: none; }
+  body.callmed-app .header-tools { gap: 2px; }
+  body.callmed-app .header-tools .modules-toggle, body.callmed-app .header-tools .profile-trigger, body.callmed-app .header-tools .v18-icon-button { min-height: 35px; padding: 5px 7px; }
+  body.callmed-app .app-main { padding: 16px 12px 98px; min-height: auto; }
+  body.callmed-app .app-footer { padding: 12px 12px 98px; }
+  body.callmed-app .callmed-mobile-nav { display: flex; }
+  html:not(.callmed-high-contrast) body.identity-body .identity-shell { grid-template-columns: 1fr; }
+  html:not(.callmed-high-contrast) body.identity-body .identity-showcase { padding: 24px; gap: 20px; }
+  html:not(.callmed-high-contrast) body.identity-body .identity-copy h1 { font-size: clamp(34px,8vw,48px); }
+  html:not(.callmed-high-contrast) body.identity-body .identity-panel { padding: 25px 16px 35px; }
+  html:not(.callmed-high-contrast) body.identity-body .identity-card { max-width: 520px; padding: 22px 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

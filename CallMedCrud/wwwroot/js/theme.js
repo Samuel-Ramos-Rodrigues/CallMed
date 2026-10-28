@@ -9,9 +9,14 @@
     const readPreference = () => {
         try {
             const value = localStorage.getItem(STORAGE_KEY);
-            return allowed.has(value) ? value : 'system';
+            const explicitChoice = localStorage.getItem('callmed-theme-explicit') === '1';
+            if (value === 'system' && !explicitChoice) {
+                localStorage.setItem(STORAGE_KEY, 'light');
+                return 'light';
+            }
+            return allowed.has(value) ? value : 'light';
         } catch {
-            return 'system';
+            return 'light';
         }
     };
 
@@ -40,11 +45,11 @@
 
     const updateMeta = theme => {
         const meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute('content', theme === 'dark' ? '#0d2029' : '#123b4a');
+        if (meta) meta.setAttribute('content', theme === 'dark' ? '#142f23' : '#e9eee7');
     };
 
     const apply = (preference, persist = true) => {
-        if (!allowed.has(preference)) preference = 'system';
+        if (!allowed.has(preference)) preference = 'light';
         const theme = effectiveTheme(preference);
 
         root.dataset.themePreference = preference;
@@ -54,7 +59,10 @@
         updateControls(preference);
 
         if (persist) {
-            try { localStorage.setItem(STORAGE_KEY, preference); } catch { }
+            try {
+                localStorage.setItem(STORAGE_KEY, preference);
+                localStorage.setItem('callmed-theme-explicit', '1');
+            } catch { }
         }
 
         window.dispatchEvent(new CustomEvent('callmed:theme-changed', {
@@ -83,7 +91,7 @@
 
     window.CallMedTheme = {
         set: preference => apply(preference),
-        get: () => root.dataset.themePreference || 'system',
+        get: () => root.dataset.themePreference || 'light',
         current: () => root.dataset.theme || effectiveTheme(readPreference())
     };
 })();
