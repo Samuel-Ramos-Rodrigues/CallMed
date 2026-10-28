@@ -363,3 +363,9 @@ Controllers, Services, Models, Data, DTOs, ViewModels, Middleware, Migrations, G
 - Dashboard da equipe reorganizado: saudação, atalhos, tabela de próximos atendimentos, resumo real do ViewModel, pontos de atenção e ocupação da agenda.
 - Padronizados alertas, erros de validação, campos, botões, tabelas, cartões, menus e status para áreas autenticadas, públicas e de identidade.
 - Removido alerta de sucesso duplicado no layout compartilhado e atualizado o cache do PWA para a nova identidade.
+
+## Correção de contraste e autenticação — 2026-10-28
+- Corrigidas superfícies e texto no tema escuro para tabelas, cartões e formulários.
+- Alto contraste passa a neutralizar cores fixas dos estilos antigos, no modo claro e escuro.
+- Controles de acessibilidade disponibilizados na tela de login e para todos os perfis autenticados.
+- Adicionada folha final de compatibilidade visual e atualizada a versão do cache do PWA.

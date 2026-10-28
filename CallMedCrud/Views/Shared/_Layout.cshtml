@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="~/css/modules.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/clinic-theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/clinic-redesign.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/clinic-final-fixes.css" asp-append-version="true" />
 </head>
 <body class="callmed-app @(paciente ? "patient-context" : "staff-context")">
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -58,9 +59,7 @@
                 {
                     @await Component.InvokeAsync("Confirmacoes")
                 }
-                @if (paciente)
-                {
-                    <div class="v18-tool-wrap cm-a11y-wrap">
+                <div class="v18-tool-wrap cm-a11y-wrap">
                         <button type="button" class="v18-icon-button" data-popover-trigger="accessibility" aria-expanded="false" aria-label="Acessibilidade" title="Acessibilidade"><strong>Aa</strong></button>
                         <div class="v18-popover cm21-a11y-popover" data-popover="accessibility" hidden>
                             <strong>Acessibilidade</strong>
@@ -70,8 +69,7 @@
                             <button type="button" data-a11y-toggle="simple">Modo simplificado <span data-a11y-status>Desativado</span></button>
                             <button type="button" data-a11y-read>🔊 Ouvir a tela</button>
                         </div>
-                    </div>
-                }
+                </div>
 
                 <div class="v18-tool-wrap">
                     <button type="button" class="v18-icon-button" data-theme-toggle data-popover-trigger="theme" aria-expanded="false" aria-label="Alterar aparência"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#spark"></use></svg></button>
@@ -241,7 +239,7 @@ else
 <partial name="_AssistenteFlutuante" />
 <script src="~/js/shell.js" asp-append-version="true"></script>
 <script src="~/js/date-select.js" asp-append-version="true"></script>
-@if (paciente) { <script src="~/js/accessibility.js" asp-append-version="true"></script> }
+<script src="~/js/accessibility.js" asp-append-version="true"></script>
 <script src="~/js/mobile-final.js" asp-append-version="true"></script>
 <script src="~/js/theme.js" asp-append-version="true"></script>
 <script src="~/js/pwa.js" asp-append-version="true"></script>

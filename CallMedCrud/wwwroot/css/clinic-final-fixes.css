@@ -1,0 +1,209 @@
+/* CallMed — correção transversal de contraste, temas e autenticação. Carregado por último. */
+
+/* Paleta clínica: manter as cores de marca, mas nunca misturar texto escuro com superfície escura. */
+body.callmed-app { color: var(--ink); background: var(--bg); }
+body.callmed-app :is(.cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head) h1,
+body.callmed-app :is(.cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head) h2,
+body.callmed-app .cm25-kpi strong,
+body.callmed-app .v16-stat strong,
+body.callmed-app .v16-kpi strong,
+body.callmed-app .stat-date { color: var(--ink); }
+body.callmed-app :is(.cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head) p,
+body.callmed-app .cm25-kpi > span,
+body.callmed-app .cm25-kpi > small,
+body.callmed-app .v16-stat > span,
+body.callmed-app .v16-stat > small,
+body.callmed-app .workspace-heading p { color: var(--muted); }
+body.callmed-app .simple-filter-v16,
+body.callmed-app .table-card,
+body.callmed-app .v16-stat,
+body.callmed-app .cm25-kpi,
+body.callmed-app .panel,
+body.callmed-app .cm25-panel,
+body.callmed-app .v16-card,
+body.callmed-app .form-card,
+body.callmed-app .cm25-form-card,
+body.callmed-app .cm21-form-card,
+body.callmed-app .cm25-section-card,
+body.callmed-app .patient-form-section,
+body.callmed-app .doctor-form-section-v16 { color: var(--ink); border-color: var(--line); }
+body.callmed-app .simple-filter-v16 label,
+body.callmed-app .simple-filter-v16 label span { color: var(--ink); }
+body.callmed-app .simple-filter-v16 select { background: var(--surface); color: var(--ink); border-color: var(--line); }
+body.callmed-app .table-card, body.callmed-app .table-scroll, body.callmed-app .table-wrap { color: var(--ink); }
+body.callmed-app .v16-table { width: 100%; border-collapse: separate; border-spacing: 0; color: var(--ink); background: transparent; }
+body.callmed-app .v16-table thead th { color: var(--muted); background: var(--surface-alt); border-color: var(--line); }
+body.callmed-app .v16-table tbody td { color: var(--ink); background: transparent; border-color: var(--line); }
+body.callmed-app .v16-table tbody tr:hover { background: var(--surface-alt); }
+body.callmed-app .v16-table td strong,
+body.callmed-app .v16-table .entity-cell strong { color: var(--ink); }
+body.callmed-app .date-chip, body.callmed-app .time-chip { background: var(--surface-alt); color: var(--ink); border: 1px solid var(--line); }
+body.callmed-app .soft-pill { background: var(--surface-alt); color: var(--ink); border: 1px solid var(--line); }
+body.callmed-app .row-menu summary, body.callmed-app .row-menu > div { background: var(--surface); color: var(--ink); border-color: var(--line); }
+body.callmed-app .row-menu > div a { color: var(--ink); }
+body.callmed-app .app-brand > span { color: #f7f8f2; }
+body.callmed-app .app-brand small { color: #d5e4d7; }
+body.callmed-app .primary-nav a { color: #dce7df; }
+body.callmed-app .primary-nav a.active, body.callmed-app .primary-nav a:hover { color: #ffffff; }
+body.callmed-app .primary-nav a.active svg, body.callmed-app .primary-nav a:hover svg { color: #c4d8bd; }
+body.callmed-app .header-tools > .modules-toggle,
+body.callmed-app .header-tools > .v18-tool-wrap > .v18-icon-button,
+body.callmed-app .header-tools > .v18-profile-wrap > .profile-trigger { color: #f1f5ed; }
+body.callmed-app .header-tools .profile-copy { color: #f1f5ed; }
+body.callmed-app .header-tools .profile-copy small { color: #cbd9cd; }
+body.callmed-app .header-tools .user-avatar { color: #244b42 !important; }
+body.callmed-app .app-footer { color: var(--muted); }
+
+/* Dark mode: cada superfície, tabela e controle recebe cores próprias do tema. */
+:root[data-theme="dark"] body.callmed-app,
+:root[data-theme="dark"] body.identity-body { background: var(--bg) !important; color: var(--ink) !important; }
+:root[data-theme="dark"] body.callmed-app > .app-header {
+  background: linear-gradient(110deg,#14241e,#1b3026 62%,#20392d) !important;
+  border-color: var(--line) !important;
+}
+:root[data-theme="dark"] body.callmed-app :is(.cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head,
+  .panel,.workspace-panel,.day-overview,.appointment-panel,.patient-panel,.cm25-panel,.cm25-kpi,.v16-stat,.v16-kpi,
+  .v16-card,.form-card,.form-section,.patient-form-section,.doctor-form-section-v16,.consultation-card,.appointment-card,
+  .table-card,.simple-filter-v16,.cm25-form-card,.cm21-form-card,.cm25-section-card,.access-list,.cm19-booking-card,
+  .cm19-booking-section,.clinic-request-form,.clinic-aside-card,.clinic-audit-panel,.patient-quicklinks>a,
+  .patient-quicklinks>button,.patient-details-grid>.panel,.patient-support,.patient-appointment,.cm-dashboard-hero,.cm-dashboard-quick,.cm-dashboard-agenda,
+  .cm-dashboard-summary,.cm-dashboard-attention,.cm-dashboard-occupancy,.v18-popover,.modules-dialog) {
+  background: var(--surface) !important; color: var(--ink) !important; border-color: var(--line) !important; box-shadow: var(--shadow) !important;
+}
+:root[data-theme="dark"] body.callmed-app :is(.cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head) { background: linear-gradient(130deg,var(--surface),var(--surface-alt)) !important; }
+:root[data-theme="dark"] body.callmed-app :is(.cm25-page-hero h1,.cm25-page-hero h2,.cm25-page-hero p,.cm25-page-hero .v16-eyebrow,
+  .cm25-kpi strong,.cm25-kpi span,.cm25-kpi small,.v16-stat strong,.v16-stat span,.v16-stat small,.stat-date,
+  .workspace-heading h1,.workspace-heading h2,.workspace-heading p,.panel h1,.panel h2,.panel h3,.cm25-panel h1,.cm25-panel h2,
+  .cm25-panel h3,.v16-card h1,.v16-card h2,.v16-card h3,.filter-label,.filter-label span,.simple-filter-v16 label,
+  .simple-filter-v16 label span,.cm-dashboard-hero h1,.cm-dashboard-hero p,.cm-dashboard-kpis strong,.cm-dashboard-kpis small,
+  .cm-dashboard-agenda h2,.cm-dashboard-agenda th,.cm-dashboard-agenda td,.cm-dashboard-summary h2,.cm-dashboard-attention h2,
+  .table-card h1,.table-card h2,.table-card h3,.v16-empty,.v16-empty p,.v16-empty strong) { color: var(--ink) !important; }
+:root[data-theme="dark"] body.callmed-app :is(.cm25-page-hero p,.cm25-kpi span,.cm25-kpi small,.v16-stat span,.v16-stat small,
+  .workspace-heading p,.field-help,.form-text,.hint,.clinic-form-intro p,.clinic-aside-card p,.clinic-aside-card li,
+  .clinic-field small,.cm-dashboard-greeting,.cm-dashboard-lead,.cm-dashboard-kpis small,.cm-dashboard-empty p,
+  .cm-dashboard-summary p,.cm-dashboard-attention small,.app-footer,.muted-cell,.entity-sub) { color: var(--muted) !important; }
+:root[data-theme="dark"] body.callmed-app :is(table,.table,.v16-table,.v16-table tbody,.v16-table tbody tr,.v16-table tbody td,
+  .table-card,.table-scroll,.table-wrap) { background: var(--surface) !important; color: var(--ink) !important; border-color: var(--line) !important; }
+:root[data-theme="dark"] body.callmed-app :is(.v16-table thead,.v16-table thead tr,.v16-table thead th,thead,thead tr,th,.table thead th) {
+  background: var(--surface-alt) !important; color: var(--muted) !important; border-color: var(--line) !important;
+}
+:root[data-theme="dark"] body.callmed-app :is(.v16-table tbody tr:hover,tbody tr:hover) { background: var(--surface-alt) !important; }
+:root[data-theme="dark"] body.callmed-app :is(.v16-table td,.v16-table td strong,.entity-cell strong,.entity-cell div,.date-chip,.time-chip,.soft-pill,
+  .row-menu summary,.row-menu>div,.row-menu>div a,.table-card span,.table-card strong) { color: var(--ink) !important; }
+:root[data-theme="dark"] body.callmed-app :is(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),select,textarea) {
+  background: var(--surface-alt) !important; color: var(--ink) !important; border-color: var(--line) !important;
+}
+:root[data-theme="dark"] body.callmed-app input::placeholder,
+:root[data-theme="dark"] body.callmed-app textarea::placeholder { color: var(--muted) !important; opacity: 1; }
+:root[data-theme="dark"] body.callmed-app :is(.date-chip,.time-chip,.soft-pill,.row-menu summary,.row-menu>div) { background: var(--surface-alt) !important; border-color: var(--line) !important; }
+:root[data-theme="dark"] body.callmed-app :is(.status-pill.status-confirmada,.status-pill.status-confirmado,.status-pill.status-aprovado) { background:#244637 !important; color:#c5f0d3 !important; border-color:#426c56 !important; }
+:root[data-theme="dark"] body.callmed-app :is(.status-pill.status-aguardando,.status-pill.status-pendente,.status-pill.status-emtriagem) { background:#4a4025 !important; color:#ffe7a8 !important; border-color:#79673a !important; }
+:root[data-theme="dark"] body.callmed-app :is(.status-pill.status-cancelada,.status-pill.status-reprovado,.status-pill.status-rejeitado) { background:#4b302e !important; color:#ffd0cb !important; border-color:#80514c !important; }
+:root[data-theme="dark"] body.callmed-app :is(.status-pill.status-emandamento,.status-pill.status-buscandohorario) { background:#29434a !important; color:#d0f0f6 !important; border-color:#4a6e78 !important; }
+:root[data-theme="dark"] body.callmed-app .btn.secondary,
+:root[data-theme="dark"] body.callmed-app .btn-secundario,
+:root[data-theme="dark"] body.callmed-app .identity-secondary { background: var(--surface-alt) !important; color: var(--ink) !important; border-color: var(--line) !important; }
+:root[data-theme="dark"] body.callmed-app .alert,
+:root[data-theme="dark"] body.callmed-app .aviso,
+:root[data-theme="dark"] body.callmed-app .notice,
+:root[data-theme="dark"] body.callmed-app .toast,
+:root[data-theme="dark"] body.callmed-app .toast-message,
+:root[data-theme="dark"] body.callmed-app .toast-notification { color: var(--ink); border-color: var(--line); }
+
+/* Login e fluxos de identidade: contraste independente do tema e logo sem placa. */
+.identity-body { min-height: 100vh; background: var(--bg); color: var(--ink); }
+.identity-showcase { background: linear-gradient(145deg,#244b42 0%,#315e50 60%,#3e6b59 100%) !important; }
+.identity-showcase .app-brand { border: 0; padding: 0; }
+.identity-showcase .app-brand img { width: 48px; height: 48px; background: transparent !important; filter: none !important; }
+.identity-showcase .app-brand > span { color: #f6f7ef !important; }
+.identity-showcase .app-brand small { color: #d7e3d2 !important; }
+.identity-copy h1 { color: #f8f8f1 !important; }
+.identity-copy p, .identity-note-line, .identity-showcase > small { color: #e0e9dc !important; }
+.identity-copy > .eyebrow, .identity-kicker { color: #d1e1c9 !important; }
+.identity-panel { background: var(--surface) !important; color: var(--ink) !important; }
+.identity-card { width: min(100%, 430px); padding: clamp(24px,3vw,38px); border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); }
+.identity-card-header h2, .identity-card-header p, .identity-card-header label, .identity-card .identity-back, .identity-footnote { color: var(--ink); }
+.identity-card-header p, .identity-footnote { color: var(--muted); }
+.identity-form input:not([type="checkbox"]) { background: var(--surface-alt); color: var(--ink); border-color: var(--line); }
+.identity-form input::placeholder { color: var(--muted); opacity: 1; }
+.identity-options a, .password-toggle { color: var(--brand); }
+.identity-secondary { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.identity-access-tools { position: fixed; z-index: 2500; top: 14px; right: 16px; display: flex; align-items: center; gap: 7px; padding: 6px; border: 1px solid rgba(36,75,66,.18); border-radius: 14px; background: rgba(247,248,242,.96); color: #253b35; box-shadow: 0 5px 18px rgba(25,48,38,.08); backdrop-filter: blur(8px); }
+.identity-access-label { padding: 0 6px; font-size: 11px; color: #53675c; }
+.identity-a11y-button { display: inline-flex; align-items: center; gap: 6px; min-height: 33px; padding: 6px 9px; border: 1px solid #c4d2c7; border-radius: 9px; background: #fff; color: #253b35; font-size: 11px; font-weight: 700; }
+.identity-a11y-button small { color: #53675c; font-size: 9px; font-weight: 500; }
+.identity-a11y-button.active { background: #dce8d9; border-color: #3b7162; color: #244b42; }
+.identity-access-tools button:focus-visible { outline: 3px solid #1a6d61; outline-offset: 2px; }
+@media(max-width:700px) {
+  .identity-access-tools { position: absolute; top: 10px; right: 10px; gap: 5px; padding: 4px; }
+  .identity-access-label, .identity-a11y-button span, .identity-a11y-button small { display: none; }
+  .identity-a11y-button { min-width: 38px; justify-content: center; }
+  .identity-showcase .app-brand { padding-top: 48px; }
+  .identity-card { padding: 22px 18px; }
+}
+
+/* Alto contraste: controles antes e depois do login; neutraliza fundos e cores codificados nas telas legadas. */
+html.callmed-high-contrast { --bg:#ffffff; --surface:#ffffff; --surface-alt:#f0f0f0; --ink:#050505; --muted:#202020; --line:#000000; --brand:#003fba; --brand-soft:#e4ecff; --success:#005a2b; --success-bg:#e3ffeb; --warning:#5a3900; --warning-bg:#fff0bf; --danger:#8b0000; --danger-bg:#ffe5e5; --info:#003e75; --info-bg:#e5f3ff; color-scheme:light !important; }
+html.callmed-high-contrast body.callmed-app,
+html.callmed-high-contrast body.identity-body { background:#fff !important; color:#000 !important; }
+html.callmed-high-contrast body.callmed-app :is(.app-main,.app-footer,.panel,.workspace-panel,.day-overview,.appointment-panel,.patient-panel,
+  .cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head,.cm25-panel,.cm25-kpi,.v16-stat,.v16-kpi,.v16-card,.form-card,
+  .form-section,.patient-form-section,.doctor-form-section-v16,.consultation-card,.appointment-card,.table-card,.simple-filter-v16,
+  .cm25-form-card,.cm21-form-card,.cm25-section-card,.clinic-request-form,.clinic-aside-card,.clinic-audit-panel,.patient-quicklinks>a,
+  .patient-quicklinks>button,.cm19-booking-card,.cm19-booking-section,.cm-dashboard-quick,.cm-dashboard-agenda,.cm-dashboard-summary,
+  .cm-dashboard-attention,.modules-dialog,.v18-popover,.callmed-mobile-nav) {
+  background:#fff !important; color:#000 !important; border:2px solid #000 !important; box-shadow:none !important;
+}
+html.callmed-high-contrast body.callmed-app .app-header,
+html.callmed-high-contrast .identity-showcase { background:#000 !important; color:#fff !important; border-color:#000 !important; }
+html.callmed-high-contrast body.callmed-app :is(h1,h2,h3,h4,p,small,span,strong,em,label,legend,th,td,li,dt,dd,summary,time,div),
+html.callmed-high-contrast .identity-body :is(h1,h2,h3,h4,p,small,span,strong,label,div,a) { color:#000 !important; }
+html.callmed-high-contrast body.callmed-app .app-header :is(a,button,span,small,strong),
+html.callmed-high-contrast .identity-showcase :is(h1,p,small,span,a) { color:#fff !important; }
+html.callmed-high-contrast body.callmed-app .primary-nav a.active { background:#000 !important; color:#fff !important; outline:2px solid #fff; }
+html.callmed-high-contrast body.callmed-app :is(table,.table,.v16-table,.v16-table tbody,.v16-table tbody tr,.v16-table tbody td,
+  .v16-table thead,.v16-table thead tr,.v16-table thead th,thead,thead tr,th,td) { background:#fff !important; color:#000 !important; border-color:#000 !important; }
+html.callmed-high-contrast body.callmed-app :is(input,select,textarea),
+html.callmed-high-contrast .identity-body :is(input,select,textarea) { background:#fff !important; color:#000 !important; border:2px solid #000 !important; box-shadow:none !important; }
+html.callmed-high-contrast body.callmed-app :is(a:not(.btn),.btn-link,.btn-link-clean,.text-link),
+html.callmed-high-contrast .identity-body :is(.identity-options a,.identity-back) { color:#003fba !important; text-decoration:underline !important; }
+html.callmed-high-contrast body.callmed-app :is(.btn:not(.secondary):not(.danger),.identity-submit,input[type="submit"]),
+html.callmed-high-contrast .identity-body :is(.identity-submit,input[type="submit"]) { background:#000 !important; color:#fff !important; border:2px solid #000 !important; box-shadow:none !important; }
+html.callmed-high-contrast body.callmed-app :is(.btn.secondary,.btn-secundario,.identity-secondary),
+html.callmed-high-contrast .identity-body .identity-secondary { background:#fff !important; color:#000 !important; border:2px solid #000 !important; }
+html.callmed-high-contrast body.callmed-app :is(.status-pill,.status-badge,.badge,.soft-pill,.date-chip,.time-chip) { background:#fff !important; color:#000 !important; border:2px solid #000 !important; }
+html.callmed-high-contrast body.callmed-app :is(.alert,.alert-success,.alert-danger,.alert-warning,.alert-info,.aviso,.notice,.toast,.toast-message,.toast-notification,.validation-summary-errors),
+html.callmed-high-contrast .identity-body :is(.alert,.identity-note,.mensagem,.validation-summary-errors) { background:#fff !important; color:#000 !important; border:2px solid #000 !important; box-shadow:none !important; }
+html.callmed-high-contrast .identity-access-tools { background:#fff !important; color:#000 !important; border:2px solid #000 !important; }
+html.callmed-high-contrast .identity-a11y-button { background:#fff !important; color:#000 !important; border:2px solid #000 !important; }
+html.callmed-high-contrast .identity-a11y-button small { color:#000 !important; }
+
+/* Alto contraste escuro: alternativa real, não apenas mudança de variáveis. */
+html.callmed-high-contrast[data-theme="dark"] { --bg:#000; --surface:#000; --surface-alt:#161616; --ink:#fff; --muted:#fff; --line:#fff; --brand:#ffff00; --brand-soft:#202020; --success:#fff; --success-bg:#111; --warning:#fff; --warning-bg:#111; --danger:#fff; --danger-bg:#111; --info:#fff; --info-bg:#111; color-scheme:dark !important; }
+html.callmed-high-contrast[data-theme="dark"] body.callmed-app,
+html.callmed-high-contrast[data-theme="dark"] body.identity-body,
+html.callmed-high-contrast[data-theme="dark"] body.callmed-app :is(.app-main,.app-footer,.panel,.workspace-panel,.day-overview,.appointment-panel,.patient-panel,
+  .cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head,.cm25-panel,.cm25-kpi,.v16-stat,.v16-kpi,.v16-card,.form-card,
+  .form-section,.patient-form-section,.doctor-form-section-v16,.consultation-card,.appointment-card,.table-card,.simple-filter-v16,
+  .cm25-form-card,.cm21-form-card,.cm25-section-card,.clinic-request-form,.clinic-aside-card,.clinic-audit-panel,.patient-quicklinks>a,
+  .patient-quicklinks>button,.cm19-booking-card,.cm19-booking-section,.cm-dashboard-quick,.cm-dashboard-agenda,.cm-dashboard-summary,
+  .cm-dashboard-attention,.modules-dialog,.v18-popover,.callmed-mobile-nav),
+html.callmed-high-contrast[data-theme="dark"] .identity-panel,
+html.callmed-high-contrast[data-theme="dark"] .identity-card { background:#000 !important; color:#fff !important; border:2px solid #fff !important; box-shadow:none !important; }
+html.callmed-high-contrast[data-theme="dark"] body.callmed-app :is(h1,h2,h3,h4,p,small,span,strong,em,label,legend,th,td,li,dt,dd,summary,time,div),
+html.callmed-high-contrast[data-theme="dark"] .identity-body :is(h1,h2,h3,h4,p,small,span,strong,label,div,a) { color:#fff !important; }
+html.callmed-high-contrast[data-theme="dark"] body.callmed-app :is(table,.table,.v16-table,.v16-table tbody,.v16-table tbody tr,.v16-table tbody td,
+  .v16-table thead,.v16-table thead tr,.v16-table thead th,thead,thead tr,th,td),
+html.callmed-high-contrast[data-theme="dark"] body.callmed-app :is(input,select,textarea),
+html.callmed-high-contrast[data-theme="dark"] .identity-body :is(input,select,textarea) { background:#000 !important; color:#fff !important; border:2px solid #fff !important; }
+html.callmed-high-contrast[data-theme="dark"] body.callmed-app :is(a:not(.btn),.btn-link,.btn-link-clean,.text-link),
+html.callmed-high-contrast[data-theme="dark"] .identity-body :is(.identity-options a,.identity-back) { color:#ffff00 !important; text-decoration:underline !important; }
+html.callmed-high-contrast[data-theme="dark"] body.callmed-app :is(.btn:not(.secondary):not(.danger),.identity-submit,input[type="submit"]),
+html.callmed-high-contrast[data-theme="dark"] .identity-body :is(.identity-submit,input[type="submit"]) { background:#ffff00 !important; color:#000 !important; border:2px solid #fff !important; }
+html.callmed-high-contrast[data-theme="dark"] body.callmed-app :is(.btn.secondary,.btn-secundario,.identity-secondary),
+html.callmed-high-contrast[data-theme="dark"] .identity-body .identity-secondary,
+html.callmed-high-contrast[data-theme="dark"] .identity-access-tools,
+html.callmed-high-contrast[data-theme="dark"] .identity-a11y-button { background:#000 !important; color:#fff !important; border:2px solid #fff !important; }
+
+/* Preferência por movimento reduzido também cobre os novos microefeitos. */
+html.callmed-reduced-motion *, html.callmed-reduced-motion *::before, html.callmed-reduced-motion *::after { animation:none !important; transition:none !important; scroll-behavior:auto !important; }
