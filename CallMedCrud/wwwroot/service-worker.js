@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v26-acessos-equipe';
+const CACHE_NAME = 'callmed-static-v28-health-icons';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -8,6 +8,7 @@ const STATIC_ASSETS = [
     '/js/contingencia.js',
     '/css/contingencia.css',
     '/css/site.css',
+    '/css/clinic-theme.css',
     '/css/acessos.css',
     '/css/modules.css',
     '/js/preferences.js',
@@ -27,6 +28,7 @@ const STATIC_ASSETS = [
     '/icons/callmed-ui.svg',
     '/images/logo-callmed-horizontal.png',
     '/images/logo-callmed-mark.png',
+    '/images/ilustracao-cuidado-clinico.svg',
     '/icons/icon-192.png',
     '/icons/icon-512.png',
     '/icons/maskable-192.png',

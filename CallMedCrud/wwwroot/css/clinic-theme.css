@@ -1,0 +1,298 @@
+/* CallMed Clinic Visual System — identidade clínica original, acessível e responsiva. */
+:root {
+  color-scheme: light;
+  --clinic-deep: #123b4a;
+  --clinic-teal: #087f8c;
+  --clinic-mint: #55d0c5;
+  --clinic-halo: rgba(8,127,140,.13);
+}
+:root[data-theme="dark"] { color-scheme: dark; }
+
+html { background: var(--bg); }
+body {
+  background: radial-gradient(ellipse at 12% 0%, rgba(85,208,197,.09), transparent 32rem), var(--bg);
+  color: var(--ink);
+}
+body, input, select, textarea, button { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+::selection { color: var(--ink); background: var(--brand-soft); }
+
+/* Marca: os PNGs já são transparentes; não adicionar placas brancas atrás da logo. */
+.app-brand { gap: 12px; }
+.app-brand img {
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  object-fit: contain;
+}
+.app-brand > span { letter-spacing: -.045em; }
+.app-brand small { color: #bce5e2; opacity: .9; }
+.identity-brand { display: inline-flex; align-items: center; width: fit-content; background: transparent !important; border: 0 !important; padding: 0 !important; box-shadow: none !important; }
+.identity-brand img, .identity-brand-horizontal {
+  display: block;
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  filter: brightness(0) invert(1);
+  max-width: min(230px, 100%);
+  height: auto;
+}
+.identity-logout-logo, .privacy-brand img {
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  filter: none;
+  max-width: min(220px, 100%);
+  height: auto;
+}
+.mksan-widget-brand-icon img, .mksan-fab-logo {
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  object-fit: contain;
+}
+.offline-page header img {
+  display: block;
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  object-fit: contain;
+}
+
+/* Barra de navegação e contexto de aplicação. */
+.app-header {
+  background: linear-gradient(112deg, #103642 0%, #123b4a 58%, #0d5058 100%);
+  border-bottom: 1px solid rgba(151, 227, 220, .22);
+  box-shadow: 0 8px 24px rgba(13, 50, 61, .12);
+}
+.app-header-inner { max-width: 1540px; min-height: 82px; gap: clamp(18px, 2.7vw, 42px); }
+.primary-nav { gap: clamp(14px, 1.9vw, 28px); }
+.primary-nav a { transition: color .18s ease; }
+.primary-nav a.active::after { height: 3px; background: var(--clinic-mint); }
+.primary-nav a:hover { color: #d7fffb; }
+.header-tools .v18-icon-button, .modules-toggle { border-color: rgba(216,247,244,.24); transition: background .18s ease, border-color .18s ease; }
+.header-tools .v18-icon-button:hover, .modules-toggle:hover { background: rgba(255,255,255,.1); border-color: rgba(216,247,244,.55); }
+.user-avatar { background: #d7f6f1; color: #114b54; }
+.app-main { max-width: 1460px; padding-top: clamp(24px, 3vw, 42px); }
+.app-footer { border-top: 1px solid var(--line); padding-top: 16px; }
+.callmed-mobile-nav { border-top: 1px solid var(--line); box-shadow: 0 -8px 28px rgba(18,59,74,.08); }
+
+/* Hierarquia de páginas e cartões. */
+.workspace-heading { gap: 18px; }
+.workspace-heading h1, .cm25-page-hero h1 { color: var(--ink); }
+.cm25-page-hero, .cm25-page-head {
+  background: linear-gradient(125deg, var(--surface) 0%, var(--surface-alt) 100%);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 7px 24px rgba(18,59,74,.045);
+}
+.cm25-hero-mark {
+  background: var(--brand-soft) !important;
+  color: var(--brand) !important;
+  border: 1px solid rgba(8,127,140,.12);
+  border-radius: 15px !important;
+}
+.panel, .cm25-panel, .v16-card, .cm19-card, .v18-card, .form-card, .cm25-form-card,
+.cm21-form-card, .cm25-section-card, .patient-form-section, .doctor-form-section-v16,
+.access-list, .modules-dialog {
+  border-color: var(--line);
+  box-shadow: var(--shadow);
+}
+.panel-heading, .v16-card-head, .cm19-card-head, .v18-card-header, .cm25-panel-head { border-bottom: 1px solid rgba(214,230,232,.75); }
+.panel-footer { background: var(--surface-alt); }
+.cm25-kicker, .v16-eyebrow { color: var(--brand); }
+
+/* Botões com estados claros e área de toque adequada. */
+.btn, .identity-submit, .btn-secundario, #contingencia button {
+  border-radius: 12px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  transition: transform .16s ease, box-shadow .16s ease, background .16s ease, border-color .16s ease;
+}
+.btn:not(.secondary):not(.danger), .identity-submit:not(.secondary) {
+  background: linear-gradient(135deg, #087f8c, #086c79);
+  box-shadow: 0 5px 13px rgba(8,127,140,.16);
+}
+.btn:not(:disabled):hover, .identity-submit:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(8,127,140,.20);
+}
+.btn.secondary, .btn-secundario, .identity-secondary {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.btn.secondary:hover, .btn-secundario:hover { background: var(--surface-alt); border-color: #9dc9cc; }
+.btn.danger { background: var(--danger-bg); color: var(--danger); border-color: rgba(181,44,64,.16); box-shadow: none; }
+.btn-link, .btn-link-clean, .link-button, .text-link { color: var(--brand); }
+.icon-button, .v18-icon-button { border-radius: 12px; }
+
+/* Formulários: campos consistentes, foco visível e mensagens de ajuda. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+select, textarea {
+  border-color: var(--line);
+  border-radius: 11px;
+  color: var(--ink);
+  transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus,
+select:focus, textarea:focus {
+  border-color: var(--brand) !important;
+  box-shadow: 0 0 0 4px var(--clinic-halo) !important;
+  outline: 0;
+}
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: .72; }
+label { color: var(--ink); }
+.field-help, .form-text, .hint { color: var(--muted); }
+.validation, .field-error, .field-validation-error, .text-danger { color: var(--danger); }
+.validation-summary-errors, .validation-summary-valid { margin-block: 8px; }
+.identity-panel { background: var(--surface); }
+.identity-showcase { background: radial-gradient(circle at 12% 15%, rgba(85,208,197,.16), transparent 22rem), linear-gradient(150deg, #123b4a, #0c5058); }
+.identity-copy h1 em { color: #73e0d6; }
+.identity-state-icon { border-radius: 18px; }
+
+/* Alertas e retorno do sistema: uma linguagem única para sucesso, aviso e erro. */
+.alert, .aviso, .identity-note, .notice, .offline-status {
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--brand);
+  background: var(--info-bg);
+  color: var(--ink);
+  box-shadow: 0 5px 15px rgba(18,59,74,.035);
+  line-height: 1.55;
+}
+.alert { padding: 15px 18px; margin: 0 0 18px; }
+.alert.error, .alert-danger, .mensagem.erro, .alert.alert-danger {
+  background: var(--danger-bg); color: var(--danger); border-color: rgba(181,44,64,.16); border-left-color: var(--danger);
+}
+.alert.success, .alert-success {
+  background: var(--success-bg); color: var(--success); border-color: rgba(23,107,85,.16); border-left-color: var(--success);
+}
+.alert.warning, .alert-warning { background: var(--warning-bg); color: var(--warning); border-color: rgba(132,86,22,.16); border-left-color: var(--warning); }
+.alert.info, .alert-info { background: var(--info-bg); color: var(--info); border-color: rgba(23,107,134,.16); border-left-color: var(--info); }
+.alert [class*="close"], .alert button[data-dismiss], .notice button { margin-left: auto; }
+.cm19-inline-info, .cm23-identity-warning { border-radius: 13px; border-color: var(--line); }
+
+/* Tabelas e estados operacionais legíveis. */
+.table-scroll, .table-wrap { border-radius: 14px; }
+table { border-color: var(--line); }
+th { background: var(--surface-alt); color: #496770; font-size: 10px; }
+td { color: var(--ink); }
+tbody tr { transition: background .14s ease; }
+tbody tr:hover { background: rgba(217,242,241,.48); }
+.status-pill, .status-dot-pill, .soft-pill, .access-pill, .mode-pill, .cm19-status, .cm21-channel {
+  border-radius: 999px;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  font-size: 11px;
+}
+.status-confirmada, .status-realizada, .status-dot-pill.active, .status-ativo { border-color: rgba(23,107,85,.10); }
+.status-pendente, .status-remarcada, .mode-waiting { border-color: rgba(132,86,22,.12); }
+.status-cancelada, .status-ausente, .status-dot-pill.inactive { border-color: rgba(181,44,64,.12); }
+
+/* Dados, métricas e cartões de apoio. */
+.cm25-kpi, .v16-stat, .metric-card, .stat-card { border-radius: 16px; border-color: var(--line); background: var(--surface); }
+.cm25-aside-card, .cm25-readonly-card, .cm21-info-card { border-radius: 15px; }
+.cm19-agenda-toolbar { background: var(--surface); border-bottom: 1px solid var(--line); }
+.cm19-cal-day.today { background: var(--brand-soft); color: var(--brand); }
+.cm19-cal-event { border-radius: 10px; }
+.cm19-cal-event.free { background: var(--success-bg); }
+.cm19-view-switch { background: var(--surface-alt); }
+.cm19-view-switch a.active { background: var(--surface); color: var(--brand); box-shadow: 0 1px 4px rgba(18,59,74,.1); }
+.module-grid > a, .module-action { border-radius: 13px; background: var(--surface); }
+.module-grid > a:hover, .module-grid > a.active, .module-action:hover { background: var(--brand-soft); border-color: var(--brand); }
+.v18-popover { border-radius: 16px; box-shadow: 0 18px 50px rgba(10,45,56,.18); }
+.mksan-ai-fab { border-radius: 50%; background: linear-gradient(145deg, #fff, var(--brand-soft)); border-color: #c5e6e5; box-shadow: 0 8px 24px rgba(8,127,140,.18); }
+.mksan-ai-widget { border-radius: 22px; }
+.mksan-ai-widget-header { background: linear-gradient(110deg, #123b4a, #0d5058); }
+.mksan-widget-brand-icon { display: grid; place-items: center; background: transparent; }
+
+/* Página pública e páginas autônomas. */
+.public-header { background: rgba(255,255,255,.94); backdrop-filter: blur(12px); }
+.public-nav { padding-block: 21px; }
+.public-links { gap: 22px; }
+.public-hero { padding-top: clamp(48px, 6vw, 76px); }
+.public-hero h1 em { color: var(--brand); }
+.care-illustration { background: radial-gradient(circle at 80% 10%, rgba(85,208,197,.2), transparent 18rem), linear-gradient(150deg, #123b4a, #0b5057); }
+.care-ticket { background: #f4fbfb; border: 1px solid rgba(255,255,255,.45); }
+.care-plus { background: var(--clinic-mint); }
+.privacy-shell { border-color: var(--line); box-shadow: var(--shadow); }
+.contingencia-page main, .offline-page main { box-shadow: var(--shadow); }
+.offline-page header { background: radial-gradient(circle at 100% 0%, rgba(85,208,197,.18), transparent 20rem), linear-gradient(140deg, #123b4a, #0d5058); }
+#contingencia .offline-status { border-left-color: var(--brand); }
+
+/* Prefere movimento reduzido e mantém o layout utilizável em telas estreitas. */
+@media (max-width: 900px) {
+  .app-header-inner { gap: 14px; }
+  .primary-nav { gap: 12px; }
+  .primary-nav a { font-size: 12px; }
+  .app-brand small { letter-spacing: 1px; }
+  .public-nav { padding-inline: 22px; }
+  .public-hero { gap: 28px; }
+}
+@media (max-width: 700px) {
+  .app-header-inner { min-height: 68px; }
+  .app-main { padding-top: 20px; }
+  .app-brand img { width: 35px; height: 35px; }
+  .public-nav { flex-wrap: wrap; padding: 16px 18px; gap: 14px; }
+  .public-links { width: 100%; gap: 15px; justify-content: space-between; flex-wrap: wrap; }
+  .public-hero { grid-template-columns: 1fr; padding: 36px 20px 32px; }
+  .public-hero h1 { font-size: clamp(42px, 12vw, 62px); }
+  .care-illustration { min-height: 360px; border-radius: 90px 90px 22px 22px; padding: 38px 22px 58px; }
+  .care-ticket { padding: 22px; }
+  .care-ticket h2 { font-size: 31px; }
+  .identity-shell { grid-template-columns: 1fr; }
+  .identity-showcase { padding: 27px 24px; gap: 26px; }
+  .identity-copy { margin: 10px 0; }
+  .identity-copy h1 { font-size: clamp(34px, 8vw, 48px); }
+  .identity-panel { padding: 32px 22px; }
+  .identity-card-header { margin-bottom: 22px; }
+  .identity-card-header h2 { font-size: 29px; }
+  .alert { padding: 13px 14px; }
+  .form-card, .cm25-form-card, .cm21-form-card, .cm25-section-card, .patient-form-section, .doctor-form-section-v16 { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+:root[data-theme="dark"] body { background: radial-gradient(ellipse at 12% 0%, rgba(103,213,203,.06), transparent 32rem), var(--bg); }
+:root[data-theme="dark"] .app-header { background: linear-gradient(112deg, #071a21, #0d353e 65%, #103f43); }
+:root[data-theme="dark"] .panel, :root[data-theme="dark"] .cm25-panel, :root[data-theme="dark"] .v16-card,
+:root[data-theme="dark"] .cm19-card, :root[data-theme="dark"] .v18-card, :root[data-theme="dark"] .form-card,
+:root[data-theme="dark"] .cm25-form-card, :root[data-theme="dark"] .cm21-form-card { box-shadow: var(--shadow); }
+:root[data-theme="dark"] .app-brand img { filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+:root[data-theme="dark"] .identity-brand img { filter: brightness(0) invert(1); }
+:root[data-theme="dark"] th { color: var(--muted); }
+:root[data-theme="dark"] tbody tr:hover { background: rgba(103,213,203,.07); }
+:root[data-theme="dark"] .public-header { background: rgba(20,45,56,.96); }
+
+/* Ajustes finais para telas já existentes e consistência do tema. */
+.person-avatar, .entity-avatar, .context-avatar,
+.appointment-item:nth-child(3n+2) .person-avatar,
+.appointment-item:nth-child(3n) .person-avatar {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+.cm19-appearance-option .preview {
+  background: linear-gradient(var(--navy) 0 18px, var(--bg) 18px);
+}
+.cm19-appearance-option .preview::after {
+  background: var(--surface);
+  border-color: var(--line);
+}
+.cm19-appearance-option .preview.dark {
+  background: linear-gradient(#081b23 0 18px, #0d2029 18px);
+}
+.cm19-appearance-option .preview.dark::after { background: #142d38; border-color: #31525b; }
+.cm19-appearance-option .preview.system {
+  background: linear-gradient(var(--navy) 0 18px, transparent 18px), linear-gradient(90deg, var(--bg) 50%, #0d2029 50%);
+}
+.cm19-appearance-option .preview.system::after { background: linear-gradient(90deg, var(--surface) 50%, #142d38 50%); }
+:root[data-theme="dark"] .alert, :root[data-theme="dark"] .aviso,
+:root[data-theme="dark"] .identity-note, :root[data-theme="dark"] .notice {
+  box-shadow: none;
+}
+:root[data-theme="dark"] .btn.secondary,
+:root[data-theme="dark"] .btn-secundario,
+:root[data-theme="dark"] .identity-secondary { color: var(--ink); background: var(--surface-alt); }

@@ -40,7 +40,7 @@
 
     const updateMeta = theme => {
         const meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute('content', theme === 'dark' ? '#0e1c2d' : '#102b49');
+        if (meta) meta.setAttribute('content', theme === 'dark' ? '#0d2029' : '#123b4a');
     };
 
     const apply = (preference, persist = true) => {

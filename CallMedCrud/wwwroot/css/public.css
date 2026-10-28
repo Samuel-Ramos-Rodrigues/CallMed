@@ -450,3 +450,63 @@
         padding:20px;
     }
 }
+
+
+/* Recursos visuais locais de saúde: sem dependência de CDN e disponíveis offline. */
+.care-ticket-top {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+    min-height:76px;
+}
+.care-ticket-subtitle {
+    margin-top:9px;
+    max-width:220px;
+    color:#53717b;
+    font-size:11px;
+    line-height:1.5;
+}
+.care-ticket-art {
+    flex:0 0 84px;
+    width:84px;
+    height:78px;
+    margin-top:-10px;
+    border-radius:20px;
+    background:linear-gradient(145deg,#e1f7f4,#c7eeea);
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+}
+.care-ticket-art img {
+    display:block;
+    width:110px;
+    max-width:none;
+    height:88px;
+    object-fit:contain;
+}
+.public-feature-icon {
+    width:48px;
+    height:48px;
+    margin-bottom:18px;
+    display:grid;
+    place-items:center;
+    border:1px solid #cde9e6;
+    border-radius:15px;
+    color:var(--brand);
+    background:linear-gradient(145deg,#f5fffd,#e1f7f4);
+    box-shadow:0 7px 18px rgba(8,127,140,.07);
+}
+.public-feature-icon svg { width:25px; height:25px; stroke-width:1.8; }
+.public-how-item { position:relative; }
+.public-how-item>span { display:block; }
+.public-how-item h3 { margin-top:12px; }
+.public-channel-note svg { color:var(--brand); }
+.public-actions .btn svg, .public-install .btn svg { width:18px; height:18px; }
+.care-step svg { color:#087f8c; }
+@media(max-width:700px) {
+    .care-ticket-top { min-height:68px; }
+    .care-ticket-art { flex-basis:68px; width:68px; height:66px; border-radius:16px; }
+    .care-ticket-art img { width:92px; height:76px; }
+    .public-feature-icon { margin-bottom:14px; }
+}

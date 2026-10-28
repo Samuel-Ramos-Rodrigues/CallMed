@@ -1,3 +1,14 @@
+## Identidade visual clínica e tratamento da logo — 28/10/2026
+
+- Introduzida a camada `clinic-theme.css` em layouts autenticados, públicos e de identidade, com paleta azul-petróleo/verde-água.
+- Padronizados cartões, botões, campos, tabelas, status, mensagens de sucesso/erro/aviso e navegação.
+- Refinados responsividade, foco visível, tema escuro e preferência por movimento reduzido.
+- Removidos fundos aplicados por CSS às imagens de logo; os PNGs transparentes foram aparados sem alterar o desenho original.
+- Atualizado o tema de cor do navegador/PWA e a versão do cache estático para incluir a nova folha de estilos.
+- Apenas alterações de interface; fluxos de negócio, banco de dados e permissões não foram alterados.
+
+[Detalhes da identidade visual](IDENTIDADE-VISUAL-CLINICA.md).
+
 ## Correção de build — validador do webhook SMS — 28/10/2026
 
 - Restaurado `ValidarAssinaturaSmsGateway`, chamado pelo endpoint `POST /api/atendimento/sms` e ausente no código publicado.
@@ -337,3 +348,11 @@ Esta edição é uma variante de UX da V22.1, mantendo a lógica e a estrutura d
 
 ## Preservado
 Controllers, Services, Models, Data, DTOs, ViewModels, Middleware, Migrations, Gemini, Evolution, Neon, PWA e regras de negócio não foram reescritos por esta edição visual.
+
+## Identidade visual médica — ícones e ilustração local
+
+- Ampliado o sprite SVG com símbolos específicos de saúde, agendamento, exames e suporte.
+- Aplicados ícones semânticos à página inicial, formulário de consulta, histórico de exames, triagem e central de atendimento.
+- Adicionada ilustração SVG local, acessível e disponível offline, no hero público.
+- Atualizada a versão do cache estático do PWA para incluir a nova ilustração.
+- Documentadas referências de licença para Lucide (ISC) e Health Icons (CC0).

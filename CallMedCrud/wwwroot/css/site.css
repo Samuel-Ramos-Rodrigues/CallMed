@@ -1,48 +1,53 @@
 /* CallMed: base visual compartilhada. */
-:root  {
-    --bg:#e8eef3;
-    --surface:#f4f7fa;
-    --surface-alt:#e1e9f0;
-    --ink:#142d47;
-    --muted:#566b80;
-    --line:#cfdae4;
-    --brand:#215cd6;
-    --brand-soft:#dce8ff;
-    --navy:#102b49;
-    --accent:#e6aa72;
-    --success:#18755e;
-    --success-bg:#dcefe8;
-    --warning:#875214;
-    --warning-bg:#f6e8d3;
-    --danger:#b13747;
-    --danger-bg:#f9e3e5;
-    --radius:18px;
-    --shadow:0 18px 65px #0c274b1a;
-    --mk-primary:var(--brand);
-    --mk-text:var(--ink);
-    --mk-muted:var(--muted);
-    --mk-border:var(--line);
-    --mk-surface:var(--surface);
-    --mk-primary-soft:var(--brand-soft);
+:root {
+    --bg: #f2f8f9;
+    --surface: #ffffff;
+    --surface-alt: #e9f4f4;
+    --ink: #173743;
+    --muted: #5e7881;
+    --line: #d6e6e8;
+    --brand: #087f8c;
+    --brand-soft: #d9f2f1;
+    --navy: #123b4a;
+    --accent: #55d0c5;
+    --success: #176b55;
+    --success-bg: #e0f4ec;
+    --warning: #845616;
+    --warning-bg: #fff2d8;
+    --danger: #b52c40;
+    --danger-bg: #fde8ec;
+    --info: #176b86;
+    --info-bg: #e5f5fa;
+    --radius: 18px;
+    --shadow: 0 16px 42px rgba(18, 59, 74, .09);
+    --mk-primary: var(--brand);
+    --mk-text: var(--ink);
+    --mk-muted: var(--muted);
+    --mk-border: var(--line);
+    --mk-surface: var(--surface);
+    --mk-primary-soft: var(--brand-soft);
 }
 
-:root[data-theme="dark"]  {
-    --bg:#0e1c2d;
-    --surface:#17293d;
-    --surface-alt:#20374e;
-    --ink:#ecf3fa;
-    --muted:#afc0d1;
-    --line:#30485e;
-    --brand:#90b6ff;
-    --brand-soft:#253f64;
-    --accent:#edb47e;
-    --success:#80dbbe;
-    --success-bg:#193e38;
-    --warning:#f3c488;
-    --warning-bg:#453622;
-    --danger:#ffacb7;
-    --danger-bg:#4d2935;
-    --shadow:0 18px 65px #0003
+:root[data-theme="dark"] {
+    --bg: #0d2029;
+    --surface: #142d38;
+    --surface-alt: #1c3a44;
+    --ink: #edf7f8;
+    --muted: #b1c9ce;
+    --line: #31525b;
+    --brand: #67d5cb;
+    --brand-soft: #1d454b;
+    --navy: #081b23;
+    --accent: #65ded2;
+    --success: #83ddbd;
+    --success-bg: #193f38;
+    --warning: #f0c57f;
+    --warning-bg: #443923;
+    --danger: #ffadb8;
+    --danger-bg: #4b2934;
+    --info: #88d7ed;
+    --info-bg: #173f4c;
+    --shadow: 0 18px 60px rgba(0, 0, 0, .24);
 }
 
 *  {
@@ -95,6 +100,8 @@ svg  {
     fill:none;
     stroke:currentColor;
     stroke-width:1.7;
+    stroke-linecap:round;
+    stroke-linejoin:round;
     flex-shrink:0
 }
 

@@ -44,7 +44,7 @@ else
     <div class="cm19-specialty-grid" id="cm19SpecialtyGrid">
         @foreach (var especialidade in especialidades)
         {
-            <button type="button" class="cm19-specialty-option @(especialidade.Equals(especialidadeSelecionada, StringComparison.OrdinalIgnoreCase) ? "selected" : "")" data-specialty="@especialidade"><span><svg><use href="/icons/callmed-ui.svg#spark"></use></svg></span><strong>@especialidade</strong></button>
+            <button type="button" class="cm19-specialty-option @(especialidade.Equals(especialidadeSelecionada, StringComparison.OrdinalIgnoreCase) ? "selected" : "")" data-specialty="@especialidade"><span><svg><use href="/icons/callmed-ui.svg#stethoscope"></use></svg></span><strong>@especialidade</strong></button>
         }
     </div>
 </section>
@@ -54,7 +54,7 @@ else
     <select asp-for="MedicoId" asp-items="ViewBag.MedicoId" class="cm19-native-select" id="medicoSelect"><option value="">Selecione uma especialidade primeiro</option></select>
     <span asp-validation-for="MedicoId" class="validation"></span>
     <div class="cm19-choice-grid" id="cm19DoctorChoices"><div class="cm19-choice-placeholder">Escolha uma especialidade para ver os médicos.</div></div>
-    <button type="button" class="cm19-smart-slot" id="primeiraVagaButton"><svg><use href="/icons/callmed-ui.svg#spark"></use></svg><span><strong>Encontrar a primeira vaga</strong><small id="primeiraVagaStatus">A CallMed procura automaticamente o horário mais próximo.</small></span></button>
+    <button type="button" class="cm19-smart-slot" id="primeiraVagaButton"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar-check"></use></svg><span><strong>Encontrar a primeira vaga</strong><small id="primeiraVagaStatus">A CallMed procura automaticamente o horário mais próximo.</small></span></button>
 </section>
 
 <section class="cm19-booking-section" data-section="date">

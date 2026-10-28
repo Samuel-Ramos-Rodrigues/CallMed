@@ -15,6 +15,7 @@
 <head>
     <partial name="_DocumentHead" />
     <link rel="stylesheet" href="~/css/modules.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/clinic-theme.css" asp-append-version="true" />
 </head>
 <body class="callmed-app @(paciente ? "patient-context" : "staff-context")">
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -102,7 +103,7 @@
                     <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg></span><b>Solicitações / Triagem</b>
                 </a>
                 <a class="@(Ativo("HistoricoExames") && action == "Pendentes" ? "active" : "")" asp-controller="HistoricoExames" asp-action="Pendentes">
-                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#clipboard"></use></svg></span><b>Triagem de exames</b>
+                    <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#clipboard-check"></use></svg></span><b>Triagem de exames</b>
                 </a>
                 <a class="@(Ativo("Consulta") ? "active" : "")" asp-controller="Consulta" asp-action="Index">
                     <span class="nav-icon"><svg class="nav-svg" aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg></span><b>Consultas</b>
