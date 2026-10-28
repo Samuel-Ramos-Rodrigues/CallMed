@@ -1,0 +1,35 @@
+@model MKSANCrud.ViewModels.ConveniosRegrasViewModel
+@using MKSANCrud.Models
+@{
+    var especialidades = ViewBag.Especialidades as IEnumerable<Especialidade> ?? Enumerable.Empty<Especialidade>();
+}
+<section class="cm25-screen cm21-rules-page" data-cm25-view="Convenios/Index.cshtml">
+    <header class="cm25-page-hero cm21-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#card"></use></svg></div><div><span class="cm25-kicker v16-eyebrow">REGRAS DE ELEGIBILIDADE</span><h1>Convênios × Especialidades</h1><p>Use a matriz como referência administrativa da clínica. Ela não consulta a operadora em tempo real e não substitui a validação individual do beneficiário.</p></div></header>
+    <div class="v16-head-actions" style="margin: 0 0 1rem;">
+        <a class="btn secondary" asp-controller="Consulta" asp-action="Index" asp-route-statusConvenio="PendenteValidacao">Ver pendências de convênio</a>
+        <a class="btn secondary" asp-controller="Consulta" asp-action="Index" asp-route-statusConvenio="AguardandoAutorizacao">Ver autorizações pendentes</a>
+        <a class="btn secondary" asp-controller="Consulta" asp-action="Index" asp-route-statusConvenio="CoberturaNaMatriz">Conferir elegibilidade</a>
+    </div>
+    <div class="cm21-rules-grid">
+        <form asp-action="Salvar" method="post" class="cm21-form-card">
+            <h2>Adicionar/atualizar regra</h2>
+            <p class="muted">Cadastre apenas o que foi confirmado no contrato, manual de credenciamento ou portal da operadora. Não use dados de cobertura de outra clínica como se fossem desta unidade.</p>
+            <label><span>Convênio / operadora + produto (quando aplicável)</span><input name="convenioNome" list="convenios-list" required maxlength="120" placeholder="Ex.: Operadora — nome do plano" /></label>
+            <datalist id="convenios-list">@foreach(var c in Model.ConveniosCadastrados){<option value="@c"></option>}</datalist>
+            <label><span>Especialidade</span><select name="especialidadeId" required><option value="">Selecione</option>@foreach(var e in especialidades){<option value="@e.Id">@e.Nome</option>}</select></label>
+            <label><span>Situação na matriz da clínica</span><select name="statusCobertura" required><option value="VerificacaoManual">Conferência manual necessária</option><option value="Coberta">Coberta conforme credenciamento</option><option value="NaoCoberta">Não coberta</option></select></label>
+            <label class="cm21-check-option"><input type="checkbox" name="requerAutorizacao" value="true" /><span><strong>Exige autorização prévia</strong><small>Marque quando a regra do plano/serviço exigir autorização da operadora.</small></span></label>
+            <label><span>Observação / fonte de conferência</span><textarea name="observacao" rows="3" maxlength="500" placeholder="Ex.: consultado no portal da operadora em DD/MM/AAAA; produto/unidade; exigência de senha..."></textarea></label>
+            <button class="btn" type="submit">Salvar regra</button>
+        </form>
+        <section class="cm21-rule-list">
+            @if (!Model.Regras.Any()) { <div class="cm21-empty-state"><strong>Nenhuma matriz configurada.</strong><p>O agendamento direto continuará confirmando a vaga, mas marcará a cobertura como pendente de validação. A equipe deve conferir elegibilidade, rede credenciada e autorização junto à operadora antes do atendimento.</p></div> }
+            @foreach(var grupo in Model.Regras.GroupBy(x=>x.ConvenioNome))
+            {
+                <article class="cm21-rule-group"><header><strong>@grupo.Key</strong><span>@grupo.Count() especialidade(s)</span></header>
+                    @foreach(var item in grupo){<div><span>@item.Especialidade?.Nome</span><b class="@(item.StatusCobertura == StatusCoberturaConvenio.Coberta ? "ok" : item.StatusCobertura == StatusCoberturaConvenio.NaoCoberta ? "no" : "warn")">@StatusCoberturaConvenio.Rotulo(item.StatusCobertura)</b>@if(item.RequerAutorizacao){<small><strong>Exige autorização prévia.</strong></small>}<small>@item.Observacao</small><form asp-action="Desativar" method="post"><input type="hidden" name="id" value="@item.Id"/><button class="btn small danger" type="submit">Desativar</button></form></div>}
+                </article>
+            }
+        </section>
+    </div>
+</section>

@@ -1,0 +1,69 @@
+@model MKSANCrud.Models.Consulta
+@{
+    ViewData["Title"] = "Remarcar consulta";
+}
+<section class="cm25-screen cm25-page" data-cm25-view="Consulta/Remarcar.cshtml">
+    <header class="cm25-page-hero"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg></div><div class="cm25-hero-copy"><span class="cm25-kicker">CONSULTA #@Model.Id · REMARCAÇÃO</span><h1>Escolher nova data e horário</h1><p>O médico permanece o mesmo. A CallMed carrega apenas opções válidas para esse profissional.</p></div><div class="cm25-hero-actions"><a class="btn secondary" asp-action="Details" asp-route-id="@Model.Id">Voltar aos detalhes</a></div></header>
+    <div class="cm25-detail-grid">
+        <form asp-action="Remarcar" asp-route-id="@Model.Id" method="post" class="cm25-form-card cm25-form-main">
+            <div asp-validation-summary="ModelOnly" class="validation"></div>
+            <div class="cm25-form-section-title"><span>01</span><div><h2>Consulta atual</h2><p>O profissional não pode ser trocado durante a remarcação.</p></div></div>
+            <div class="cm25-readonly-card"><span class="entity-avatar doctor">@(Model.Medico?.Nome?.Substring(0,1).ToUpper() ?? "M")</span><div><small>MÉDICO</small><strong>@Model.Medico?.Nome</strong><span>@Model.Medico?.Especialidade</span></div></div>
+            <div class="cm25-form-section-title second"><span>02</span><div><h2>Novo horário</h2><p>Escolha uma data e depois um horário disponível.</p></div></div>
+            <div class="form-grid cm25-form-grid"><div class="field"><label>Nova data disponível</label><select name="data" class="form-control" id="dataSelect" data-atual="@Model.Data.ToString("yyyy-MM-dd")"><option value="">Carregando datas...</option></select><span class="validation">@Html.ValidationMessage("Data")</span></div><div class="field"><label>Novo horário disponível</label><select name="horario" class="form-control" id="horarioSelect" data-atual="@Model.Horario"><option value="">Selecione uma data primeiro</option></select><span class="validation">@Html.ValidationMessage("Horario")</span></div></div>
+            <div class="cm25-actions"><a class="btn secondary" asp-action="Index">Cancelar</a><button class="btn" type="submit">Confirmar remarcação</button></div>
+        </form>
+        <aside class="cm25-detail-side"><div class="cm25-aside-card"><span>↻</span><h2>Regra de remarcação</h2><p>O médico é mantido para preservar a continuidade do atendimento. Se precisar trocar de profissional, faça um novo agendamento.</p></div><div class="cm25-aside-card subtle"><strong>Horário atual</strong><p>@Model.Data.ToString("dd/MM/yyyy") às @Model.Horario</p></div></aside>
+    </div>
+</section>
+
+<script>
+(function () {
+    const medicoId = '@Model.MedicoId';
+    const data = document.getElementById('dataSelect');
+    const horario = document.getElementById('horarioSelect');
+    let dataAtual = data.dataset.atual || '';
+    let horarioAtual = horario.dataset.atual || '';
+
+    async function carregarDatas() {
+        data.disabled = true;
+        data.innerHTML = '<option value="">Carregando datas...</option>';
+        horario.innerHTML = '<option value="">Selecione uma data primeiro</option>';
+        try {
+            const resposta = await fetch(`/Consulta/DatasDisponiveis?medicoId=${encodeURIComponent(medicoId)}&ignorarConsultaId=@Model.Id`);
+            const itens = await resposta.json();
+            data.innerHTML = '<option value="">Selecione uma data disponível</option>';
+            if (!Array.isArray(itens) || itens.length === 0) {
+                data.innerHTML = '<option value="">Nenhuma data disponível</option>';
+                horario.innerHTML = '<option value="">Nenhum horário disponível</option>';
+                return;
+            }
+            itens.forEach(item => data.add(new Option(item.text, item.value, false, item.value === dataAtual)));
+            if (data.value) await carregarHorarios();
+        } catch {
+            data.innerHTML = '<option value="">Erro ao carregar datas</option>';
+        } finally { data.disabled = false; }
+    }
+
+    async function carregarHorarios() {
+        if (!data.value) { horario.innerHTML = '<option value="">Selecione uma data primeiro</option>'; return; }
+        horario.disabled = true;
+        horario.innerHTML = '<option value="">Carregando horários...</option>';
+        try {
+            const resposta = await fetch(`/Consulta/HorariosDisponiveis?medicoId=${encodeURIComponent(medicoId)}&data=${encodeURIComponent(data.value)}&ignorarConsultaId=@Model.Id`);
+            const itens = await resposta.json();
+            horario.innerHTML = '<option value="">Selecione um horário</option>';
+            if (!Array.isArray(itens) || itens.length === 0) {
+                horario.innerHTML = '<option value="">Nenhum horário disponível</option>';
+                return;
+            }
+            itens.forEach(item => horario.add(new Option(item, item, false, item === horarioAtual)));
+        } catch {
+            horario.innerHTML = '<option value="">Erro ao carregar horários</option>';
+        } finally { horario.disabled = false; }
+    }
+
+    data.addEventListener('change', async () => { horarioAtual = ''; await carregarHorarios(); });
+    carregarDatas();
+})();
+</script>

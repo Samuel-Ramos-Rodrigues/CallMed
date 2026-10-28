@@ -1,0 +1,47 @@
+@model IReadOnlyList<MKSANCrud.Models.ExameHistorico>
+@{ ViewData["Title"] = "Triagem de exames"; }
+<section class="cm25-screen cm25-exams-page">
+    <header class="cm25-page-hero">
+        <div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#clipboard"></use></svg></div>
+        <div><span class="cm25-kicker">REVISÃO ADMINISTRATIVA</span><h1>Triagem de exames</h1><p>Confira os dados antes de disponibilizar um registro no histórico do paciente. Esta etapa verifica o cadastro, não interpreta clinicamente o exame.</p></div>
+        <a class="btn secondary" asp-action="Index">Voltar ao histórico</a>
+    </header>
+
+    @if (TempData["Sucesso"] is string sucesso) { <div class="alert alert-success" role="status">@sucesso</div> }
+    @if (TempData["Erro"] is string erro) { <div class="alert alert-danger" role="alert">@erro</div> }
+
+    @if (Model.Count == 0)
+    {
+        <div class="cm25-panel v16-empty"><strong>Nenhum exame aguardando triagem.</strong><p>Novos registros feitos pela equipe aparecerão aqui.</p></div>
+    }
+    else
+    {
+        @foreach (var exame in Model)
+        {
+            <article class="cm25-panel v16-card cm25-content-card cm25-exam-record">
+                <div>
+                    <span class="cm25-kicker">REGISTRO #@exame.Id</span>
+                    <h2>@exame.Nome</h2>
+                    <p><strong>Paciente:</strong> @(exame.Paciente?.Nome ?? $"Paciente #{exame.PacienteId}")</p>
+                    <p><strong>Realizado em:</strong> @exame.DataRealizacao.ToString("dd/MM/yyyy") · <strong>Local:</strong> @(exame.LocalRealizacao ?? "Não informado")</p>
+                    <p><strong>Recebido em:</strong> @exame.CriadoEm.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+                <div class="form-grid">
+                    <form asp-action="Aprovar" method="post" class="field">
+                        <input type="hidden" name="id" value="@exame.Id" />
+                        <label for="nota-@exame.Id">Observação da triagem (opcional)</label>
+                        <textarea id="nota-@exame.Id" name="observacaoTriagem" maxlength="600" rows="2"></textarea>
+                        <button class="btn" type="submit">Aprovar e incluir no histórico</button>
+                    </form>
+                    <form asp-action="Rejeitar" method="post" class="field" onsubmit="return confirm('Rejeitar este registro? Ele não ficará visível no histórico do paciente.');">
+                        <input type="hidden" name="id" value="@exame.Id" />
+                        <label for="motivo-@exame.Id">Motivo da rejeição (obrigatório)</label>
+                        <textarea id="motivo-@exame.Id" name="motivo" maxlength="600" rows="2" required></textarea>
+                        <button class="btn secondary" type="submit">Rejeitar registro</button>
+                    </form>
+                </div>
+            </article>
+        }
+        @if (Model.Count == 300) { <p>Exibindo os 300 registros pendentes mais antigos.</p> }
+    }
+</section>

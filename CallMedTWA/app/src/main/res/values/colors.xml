@@ -1,0 +1,7 @@
+<resources>
+    <color name="callmed_green_dark">#063F35</color>
+    <color name="callmed_green">#008966</color>
+    <color name="callmed_teal">#12B8B0</color>
+    <color name="callmed_background">#E2F0EA</color>
+    <color name="transparent">#00000000</color>
+</resources>

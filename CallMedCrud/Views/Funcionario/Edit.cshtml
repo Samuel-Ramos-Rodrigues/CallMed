@@ -1,0 +1,15 @@
+@model Funcionario
+@{ ViewData["Title"] = "Editar funcionário"; }
+<section class="cm25-screen cm25-page" data-cm25-view="Funcionario/Edit.cshtml">
+    <header class="cm25-page-hero">
+        <div class="cm25-hero-mark"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#team"></use></svg></div>
+        <div class="cm25-hero-copy"><span class="cm25-kicker">EQUIPE · PERFIL</span><h1>Editar funcionário</h1><p>Atualize os dados de @Model.Nome sem perder o histórico de ações.</p></div>
+        <div class="cm25-hero-actions"><a class="btn secondary" asp-action="Details" asp-route-id="@Model.Id">Ver perfil</a></div>
+    </header>
+    <form asp-action="Edit" method="post" class="cm25-form-layout">
+        <input type="hidden" asp-for="Id" />
+        <div class="cm25-form-main cm25-form-card"><partial name="_Form" model="Model" /></div>
+        <aside class="cm25-form-aside"><div class="cm25-aside-card"><span>02</span><h2>Conta e permissão</h2><p>Desativar o cadastro bloqueia o acesso e preserva o histórico.</p></div></aside>
+        <div class="cm25-sticky-actions"><span>As alterações entram em vigor após salvar.</span><div><a class="btn secondary" asp-action="Index">Cancelar</a><button class="btn" type="submit">Salvar alterações</button></div></div>
+    </form>
+</section>

@@ -1,0 +1,51 @@
+@model MKSANCrud.ViewModels.FuncionarioPainelViewModel
+@{
+    var administrador = User.IsInRole("Admin");
+    ViewData["Title"] = administrador ? "Área do administrador" : "Área do atendente";
+    var nome = Model.NomeUsuario.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "equipe";
+    var agenda = Model.ProximasConsultas.OrderBy(c => c.Data).ThenBy(c => c.Horario).ToList();
+    var percentual = Math.Clamp(Model.OcupacaoAgenda, 0, 100).ToString("0", System.Globalization.CultureInfo.InvariantCulture);
+}
+<section class="workspace-home">
+    <header class="workspace-heading"><div><span class="eyebrow">@(administrador ? "ÁREA DO ADMINISTRADOR" : "ÁREA DO ATENDENTE")</span><h1>Olá, @nome<span class="heading-dot">.</span></h1><p>@(administrador ? "Acompanhe a clínica e gerencie os acessos da sua equipe." : "Organize a recepção, os agendamentos e o atendimento dos pacientes.")</p></div><div class="access-heading-actions">@if (administrador) { <a class="btn secondary" asp-controller="Acessos" asp-action="Index">Acessos da equipe</a> }<a class="btn" asp-controller="Consulta" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg>Agendar consulta</a></div></header>
+    <section class="day-overview" aria-label="Resumo de hoje">
+        <div class="day-stamp"><span>@Model.Hoje.ToString("dddd")</span><strong>@Model.Hoje.ToString("dd")<small>@Model.Hoje.ToString("MMM").ToUpperInvariant()<br />@Model.Hoje.Year</small></strong></div>
+        <div class="day-title"><span class="eyebrow">SEU DIA, EM FOCO</span><h2>O cuidado<br />começa aqui.</h2><a asp-controller="Agenda" asp-action="Index">Abrir agenda <span aria-hidden="true">↗</span></a></div>
+        <div class="day-numbers"><div><strong>@Model.ConsultasHoje.ToString("00")</strong><span>consultas hoje</span></div><div><strong>@Model.ConfirmadasHoje.ToString("00")</strong><span>confirmadas</span></div><div><strong>@Model.AguardandoHoje.ToString("00")</strong><span>aguardando confirmação</span></div></div>
+    </section>
+    <div class="workspace-columns">
+        <section class="panel appointment-panel">
+            <header class="panel-heading"><div><span class="eyebrow">AGENDA</span><h2>Próximos atendimentos</h2></div><a class="text-link" asp-controller="Agenda" asp-action="Index">Ver agenda <span aria-hidden="true">↗</span></a></header>
+            @if (agenda.Any())
+            {
+                <div class="appointment-labels"><span>QUANDO</span><span>PACIENTE / PROFISSIONAL</span><span>SITUAÇÃO</span></div>
+                <div class="appointment-list">
+                @foreach (var item in agenda)
+                {
+                    var pacienteNome = item.Paciente?.Nome ?? "Paciente";
+                    var inicial = string.IsNullOrWhiteSpace(pacienteNome) ? "P" : pacienteNome[..1].ToUpperInvariant();
+                    <a class="appointment-item" asp-controller="Consulta" asp-action="Details" asp-route-id="@item.Id">
+                        <time datetime="@item.Data.ToString("yyyy-MM-dd")"><strong>@item.Horario</strong><small>@(item.Data.Date == Model.Hoje.Date ? "Hoje" : item.Data.ToString("dd/MM"))</small></time>
+                        <div class="appointment-person"><span class="person-avatar">@inicial</span><div><strong>@pacienteNome</strong><small>@item.Medico?.Nome · @item.Medico?.Especialidade</small></div></div>
+                        <span class="status-pill status-@item.Status.ToLowerInvariant()">@item.Status</span><span class="row-arrow" aria-hidden="true">↗</span>
+                    </a>
+                }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><h3>Sua agenda está livre.</h3><p>As próximas consultas aparecerão aqui.</p><a class="btn secondary" asp-controller="Consulta" asp-action="Create">Marcar uma consulta</a></div>
+            }
+            <footer class="panel-footer"><span>@Model.MedicosAtivos profissionais ativos</span><a asp-controller="Disponibilidades" asp-action="Index">Gerenciar horários →</a></footer>
+        </section>
+        <aside class="workspace-aside">
+            <section class="attention-panel"><header class="panel-heading"><div><span class="eyebrow">PRÓXIMAS AÇÕES</span><h2>Precisa de atenção</h2></div><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg></header>
+                <a class="attention-item" asp-controller="Solicitacoes" asp-action="Index"><span class="attention-number">@Model.SolicitacoesPendentes.ToString("00")</span><div><strong>Solicitações pendentes</strong><small>@Model.SolicitacoesAtrasadas aguardam há mais de 30 min</small></div><span aria-hidden="true">↗</span></a>
+                <a class="attention-item" asp-controller="Atendimento" asp-action="Index"><span class="attention-number">@Model.ConversasAbertas.ToString("00")</span><div><strong>Conversas abertas</strong><small>@Model.ConversasIA com IA · @Model.ConversasHumano com equipe</small></div><span aria-hidden="true">↗</span></a>
+                <a class="attention-item" asp-controller="ListaEspera" asp-action="Index"><span class="attention-number">@Model.ListaEsperaAtiva.ToString("00")</span><div><strong>Na lista de espera</strong><small>Acompanhar novas oportunidades</small></div><span aria-hidden="true">↗</span></a>
+            </section>
+            <section class="occupancy-panel"><div class="occupancy-ring" style="--progress:@(percentual)%" role="img" aria-label="Ocupação mensal de @percentual por cento"><strong>@percentual<small>%</small></strong></div><div><span class="eyebrow">NESTE MÊS</span><h3>Ocupação da agenda</h3><p>@Model.ConsultasMes consultas registradas</p><a class="text-link" asp-controller="Relatorios" asp-action="Index">Acompanhar indicadores ↗</a></div></section>
+        </aside>
+    </div>
+    <section class="shortcut-strip" aria-label="Acessos rápidos"><div><span class="eyebrow">VAMOS FACILITAR?</span><h2>O próximo passo.</h2></div><a asp-controller="Paciente" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg><span>Cadastrar paciente</span><b aria-hidden="true">↗</b></a><a asp-controller="Solicitacoes" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg><span>Registrar solicitação</span><b aria-hidden="true">↗</b></a><a asp-controller="Relatorios" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg><span>Ver relatórios</span><b aria-hidden="true">↗</b></a></section>
+</section>

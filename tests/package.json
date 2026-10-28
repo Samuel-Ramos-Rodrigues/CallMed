@@ -1,0 +1,12 @@
+{
+  "name": "callmed-verificacoes",
+  "private": true,
+  "scripts": {
+    "test:dom": "node contingencia-dom.mjs",
+    "test:browser": "node contingencia-browser.cjs"
+  },
+  "devDependencies": {
+    "happy-dom": "20.14.5",
+    "playwright": "1.62.1"
+  }
+}

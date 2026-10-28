@@ -1,0 +1,49 @@
+@page
+@model MKSANCrud.Areas.Identity.Pages.Account.LoginModel
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Entrar na CallMed";
+}
+<main class="identity-shell login-shell">
+    <section class="identity-showcase">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="app-brand"><img src="~/images/logo-callmed-mark.png" alt="" /><span>CallMed<small>CUIDADO EM CONEXÃO</small></span></a>
+        <div class="identity-copy"><span class="eyebrow">ACESSO SEGURO</span><h1>Seu cuidado, em um só lugar.</h1><p>Entre na CallMed para acompanhar consultas, organizar atendimentos e acessar as ferramentas da sua conta.</p></div>
+        <div class="identity-note-line"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span>Um único acesso, direcionado automaticamente para sua área.</span></div>
+        <small>CallMed · cuidado em conexão</small>
+    </section>
+    <section class="identity-panel">
+        <div class="identity-card">
+            <a class="identity-back" asp-area="" asp-controller="Home" asp-action="Index">← Voltar ao início</a>
+            <div class="identity-card-header"><span class="eyebrow">ACESSO À CONTA</span><h2>Entrar na CallMed</h2><p>Use o CPF associado à conta do paciente ou o e-mail cadastrado na clínica.</p></div>
+            <form method="post" action="@Url.Content("~/acesso")" class="identity-form" asp-antiforgery="true">
+                <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                <div asp-validation-summary="ModelOnly" class="mensagem erro"></div>
+                <div class="input-group">
+                    <label asp-for="Input.Usuario">CPF ou e-mail</label>
+                    <input asp-for="Input.Usuario" type="text" autocomplete="username" autofocus placeholder="Digite seu CPF ou e-mail" />
+                    <span asp-validation-for="Input.Usuario" class="field-error"></span>
+                </div>
+                <div class="input-group">
+                    <label asp-for="Input.Password"></label>
+                    <div class="password-wrap">
+                        <input asp-for="Input.Password" id="login-password" autocomplete="current-password" placeholder="Digite sua senha" />
+                        <button class="password-toggle" id="login-password-toggle" type="button">Mostrar</button>
+                    </div>
+                    <span asp-validation-for="Input.Password" class="field-error"></span>
+                </div>
+                <div class="identity-options">
+                    <label><input asp-for="Input.RememberMe" /> Lembrar acesso</label>
+                    <a asp-page="./ForgotPassword">Esqueci minha senha</a>
+                </div>
+                <button type="submit" class="identity-submit">Entrar</button>
+            </form>
+            <div class="identity-divider"><span>Primeiro acesso como paciente?</span></div>
+            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="identity-secondary">Criar conta de paciente <span aria-hidden="true">↗</span></a>
+            <p class="identity-footnote portal-account-help">O acesso da equipe é criado pelo administrador da clínica.</p>
+        </div>
+    </section>
+</main>
+@section Scripts {
+    <script src="~/js/login.js" asp-append-version="true"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

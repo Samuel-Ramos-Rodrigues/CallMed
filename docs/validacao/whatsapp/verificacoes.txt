@@ -1,0 +1,45 @@
+PASS Cadastro administrativo aceita e-mail ausente
+PASS E-mail preenchido inválido é rejeitado
+PASS Antecedência usa configuração da clínica
+PASS Consulta por convênio inclui documentação
+PASS Orientação por especialidade é incluída
+PASS Consulta particular não exige carteirinha
+PASS Evolution open reconhecido
+PASS Diagnóstico consulta a instância sem enviar mensagens
+PASS Evolution desconectada não aparece como conectada
+PASS Chave inválida não aparece como conexão ativa
+PASS Resposta inválida é tratada
+PASS Meus exames sem ID mostra somente registros ativos do paciente logado
+PASS Paciente não pode consultar exames de outra pessoa alterando o ID
+PASS Link existente com o próprio ID continua funcionando
+PASS IDs explícitos inválidos não são tratados como atalho pessoal
+PASS Outra conta recebe apenas o próprio histórico
+PASS Paciente sem exames recebe a página vazia, não acesso negado
+PASS Conta sem paciente vinculado não recebe histórico alheio
+PASS Funcionario mantém a consulta ao histórico do paciente selecionado
+PASS Admin mantém a consulta ao histórico do paciente selecionado
+PASS Acesso médico continua exigindo consulta vinculada não cancelada
+PASS Política de autorização do paciente: Index permitido
+PASS Política de autorização do paciente: Create bloqueado
+PASS Política de autorização do paciente: Desativar bloqueado
+PASS 429 respeita Retry-After em segundos e não usa fallback de payload
+PASS Pausa após 429 é compartilhada entre clientes e destinatários
+PASS Envio pode prosseguir depois da espera indicada pelo servidor
+PASS 429 respeita Retry-After em formato de data HTTP
+PASS 429 sem cabeçalho usa espera progressiva configurável
+PASS 401 não entra em repetição automática nem troca de payload
+PASS Fallback legado continua disponível para rejeição de payload
+PASS Envio parcial não repete automaticamente trechos já confirmados
+PASS Resultado de transporte incerto pede conferência em vez de repetir a mensagem
+PASS Envios concorrentes respeitam intervalo mínimo
+PASS Aviso automático e botão manual respeitam a pausa sem criar duplicatas
+PASS Reenvio atualiza a mesma mensagem e avisos concluídos não são enviados outra vez
+PASS Aviso 429 da versão anterior é reutilizado sem apagar o histórico
+PASS Servidor bloqueia reenvio de resultado parcial mesmo com POST direto
+PASS Duas requisições de reenvio não disparam simultaneamente a mesma mensagem
+PASS Modelo exige chave única de aviso e controle de concorrência persistente
+PASS Versão persistente rejeita tentativa baseada em estado antigo da mensagem
+PASS Modelo PostgreSQL gera as colunas e o índice de controle de envio
+PASS Lista de espera com 429 conserva um único aviso e não marca notificação como enviada
+PASS Lista de espera retoma o mesmo aviso após a pausa e registra sucesso uma única vez
+Verificações concluídas. Nenhuma mensagem real foi enviada.

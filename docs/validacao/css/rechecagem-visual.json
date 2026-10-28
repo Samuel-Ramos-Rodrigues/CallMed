@@ -1,0 +1,608 @@
+[
+  {
+    "view": "staff",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Olá, Samuel.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "staff",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Olá, Samuel.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patient",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Olá, Ana!",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patient",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Olá, Ana!",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "public",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Sua saúde,mais perto.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "public",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Sua saúde,mais perto.",
+    "overflow": [
+      "care-orbit orbit-one",
+      "care-orbit orbit-two"
+    ],
+    "errors": []
+  },
+  {
+    "view": "login",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Mais pertodo seupróximo cuidado.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "login",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Mais pertodo seupróximo cuidado.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "register",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Crie sua conta e cuide da sua agenda.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "register",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Crie sua conta e cuide da sua agenda.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patients",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Pacientes",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patients",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Pacientes",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patient-create",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Novo paciente",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patient-create",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Novo paciente",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "booking",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Agendar consulta",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "booking",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Agendar consulta",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "agenda",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Agenda geral",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "agenda",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Agenda geral",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "doctor",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Olá, Dra. Helena Costa",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "doctor",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Olá, Dra. Helena Costa",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "availability",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Disponibilidades",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "availability",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Disponibilidades",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "atendimento",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Central de Atendimento",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "atendimento",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Central de Atendimento",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "account",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Ana Oliveira",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "account",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Ana Oliveira",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "empty",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Olá, Samuel.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "empty",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Olá, Samuel.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patient-empty",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Olá, Ana!",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patient-empty",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Olá, Ana!",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "staff",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Olá, Samuel.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "staff",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Olá, Samuel.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patient",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Olá, Ana!",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patient",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Olá, Ana!",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "public",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Sua saúde,mais perto.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "public",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Sua saúde,mais perto.",
+    "overflow": [
+      "care-orbit orbit-one",
+      "care-orbit orbit-two"
+    ],
+    "errors": []
+  },
+  {
+    "view": "login",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Mais pertodo seupróximo cuidado.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "login",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Mais pertodo seupróximo cuidado.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "register",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Crie sua conta e cuide da sua agenda.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "register",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Crie sua conta e cuide da sua agenda.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patients",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Pacientes",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patients",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Pacientes",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patient-create",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Novo paciente",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patient-create",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Novo paciente",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "booking",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Agendar consulta",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "booking",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Agendar consulta",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "agenda",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Agenda geral",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "agenda",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Agenda geral",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "doctor",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Olá, Dra. Helena Costa",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "doctor",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Olá, Dra. Helena Costa",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "availability",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Disponibilidades",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "availability",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Disponibilidades",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "atendimento",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Central de Atendimento",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "atendimento",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Central de Atendimento",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "account",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Ana Oliveira",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "account",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Ana Oliveira",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "empty",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Olá, Samuel.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "empty",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Olá, Samuel.",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patient-empty",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 1425,
+    "h1": "Olá, Ana!",
+    "overflow": [],
+    "errors": []
+  },
+  {
+    "view": "patient-empty",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "scroll": 375,
+    "h1": "Olá, Ana!",
+    "overflow": [],
+    "errors": []
+  }
+]
