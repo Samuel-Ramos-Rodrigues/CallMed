@@ -1,0 +1,60 @@
+/* CallMed — sistema visual consolidado. Camada única de tokens e contraste para todas as telas. */
+:root:not(.callmed-high-contrast) {
+  color-scheme: light;
+  --bg:#f3f7fb; --surface:#ffffff; --surface-alt:#eaf1f7; --ink:#17324d; --muted:#5e7185;
+  --line:#d7e2ec; --brand:#087f8c; --brand-soft:#dff4f2; --navy:#12345a; --accent:#42b9b2;
+  --success:#176b4d; --success-bg:#e0f4e9; --warning:#805411; --warning-bg:#fff1d6;
+  --danger:#a3323c; --danger-bg:#fde8e9; --info:#245e7b; --info-bg:#e3f1f8;
+  --clinic-deep:#12345a; --clinic-teal:#087f8c; --clinic-mint:#dff4f2; --clinic-halo:rgba(8,127,140,.13);
+  --clinic-sidebar:#12345a; --clinic-sidebar-2:#0d2948; --clinic-canvas:#f3f7fb;
+  --radius:14px; --shadow:0 8px 26px rgba(18,52,90,.07);
+}
+html:not([data-theme="dark"]):not(.callmed-high-contrast) { background:var(--bg); color-scheme:light; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app,
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.public-body,
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.identity-body { background:var(--bg)!important; color:var(--ink)!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app :is(.panel,.workspace-panel,.day-overview,.appointment-panel,.patient-panel,.cm25-panel,.cm25-kpi,.v16-stat,.v16-kpi,.v16-card,.cm19-card,.v18-card,.form-card,.form-section,.patient-form-section,.doctor-form-section-v16,.consultation-card,.appointment-card,.table-card,.simple-filter-v16,.cm25-form-card,.cm21-form-card,.cm25-section-card,.clinic-filterbar,.clinic-request-form,.clinic-aside-card,.clinic-audit-panel,.cm19-booking-card,.cm19-booking-section,.cm-dashboard-quick,.cm-dashboard-agenda,.cm-dashboard-summary,.cm-dashboard-attention,.cm-dashboard-occupancy,.modules-dialog,.v18-popover) { background:var(--surface)!important; color:var(--ink)!important; border-color:var(--line)!important; box-shadow:var(--shadow); }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app :is(h1,h2,h3,h4,p,label,th,td,strong,small,.eyebrow,.cm-dashboard-table td strong,.cm-dashboard-kpis strong) { color:var(--ink); }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app :is(p,small,.muted,.eyebrow,.cm-dashboard-table td small,.cm-dashboard-kpis small,.cm-dashboard-greeting,.cm-dashboard-lead,.cm-dashboard-attention small,.cm-dashboard-summary p) { color:var(--muted); }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app .cm-dashboard-hero { background:linear-gradient(120deg,#e5f4f5,#f8fbfd 68%,#e5eff8)!important; border-color:#c9e1e6!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app .cm-dashboard-hero h1 { color:#12345a!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app .cm-dashboard-hero h1 span { color:#087f8c!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app :is(.cm-dashboard-kpis article,.cm-dashboard-quick-grid>a,.cm-dashboard-date,.cm-dashboard-occupancy) { background:#f5f9fc!important; border-color:var(--line)!important; color:var(--ink)!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app .cm-dashboard-kpis article * { color:var(--ink)!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app .cm-dashboard-kpis article small { color:var(--muted)!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app .cm-dashboard-table thead { background:#eaf2f7!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app .cm-dashboard-table th { color:#526b80!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app .cm-dashboard-table td { border-color:var(--line)!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app .cm-dashboard-table tbody tr:hover { background:#f0f7fa!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app .cm-dashboard-panel-footer { background:#f5f9fc!important; border-color:var(--line)!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app :is(.cm-dashboard-panel-footer a,.cm-dashboard-occupancy a,.cm-dashboard-footer a,.cm-btn-quiet) { color:#087f8c!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app :is(input,select,textarea) { background:#fff!important; color:var(--ink)!important; border-color:#cbd9e5!important; }
+html:not([data-theme="dark"]):not(.callmed-high-contrast) body.callmed-app :is(.app-header,.primary-nav,.app-footer) { color:var(--ink); }
+html[data-theme="dark"]:not(.callmed-high-contrast) {
+ color-scheme:dark; --bg:#101f2c; --surface:#182d3c; --surface-alt:#20394a; --ink:#edf5fa; --muted:#b5c6d3; --line:#365163;
+ --brand:#55c8c1; --brand-soft:#244b55; --navy:#d8e9f6; --accent:#55c8c1; --success:#7ce0b4; --success-bg:#1d4439;
+ --warning:#ffd27c; --warning-bg:#4c3c20; --danger:#ff9da4; --danger-bg:#4d2930; --info:#9ad9f3; --info-bg:#203f52;
+ --clinic-deep:#d8e9f6; --clinic-teal:#55c8c1; --clinic-mint:#244b55; --clinic-sidebar:#102536; --clinic-sidebar-2:#0b1b29; --clinic-canvas:#101f2c;
+}
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app,
+html[data-theme="dark"]:not(.callmed-high-contrast) body.public-body,
+html[data-theme="dark"]:not(.callmed-high-contrast) body.identity-body { background:var(--bg)!important; color:var(--ink)!important; }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app :is(.panel,.workspace-panel,.day-overview,.appointment-panel,.patient-panel,.cm25-panel,.cm25-kpi,.v16-stat,.v16-kpi,.v16-card,.cm19-card,.v18-card,.form-card,.form-section,.patient-form-section,.doctor-form-section-v16,.consultation-card,.appointment-card,.table-card,.simple-filter-v16,.cm25-form-card,.cm21-form-card,.cm25-section-card,.clinic-filterbar,.clinic-request-form,.clinic-aside-card,.clinic-audit-panel,.cm19-booking-card,.cm19-booking-section,.cm-dashboard-quick,.cm-dashboard-agenda,.cm-dashboard-summary,.cm-dashboard-attention,.cm-dashboard-occupancy,.modules-dialog,.v18-popover) { background:var(--surface)!important; color:var(--ink)!important; border-color:var(--line)!important; }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app :is(h1,h2,h3,h4,p,label,th,td,strong,small,.eyebrow,.cm-dashboard-table td strong,.cm-dashboard-kpis strong) { color:var(--ink); }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app :is(p,small,.muted,.cm-dashboard-table td small,.cm-dashboard-kpis small,.cm-dashboard-greeting,.cm-dashboard-lead,.cm-dashboard-attention small,.cm-dashboard-summary p) { color:var(--muted); }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app :is(.cm-dashboard-hero,.cm-dashboard-occupancy) { background:linear-gradient(120deg,#1a3445,#1b3040)!important; border-color:var(--line)!important; }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app .cm-dashboard-hero h1 { color:var(--ink)!important; }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app .cm-dashboard-hero h1 span { color:var(--brand)!important; }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app :is(.cm-dashboard-kpis article,.cm-dashboard-quick-grid>a,.cm-dashboard-date) { background:#20394a!important; border-color:var(--line)!important; color:var(--ink)!important; }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app .cm-dashboard-kpis article * { color:var(--ink)!important; }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app .cm-dashboard-kpis article small { color:var(--muted)!important; }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app .cm-dashboard-table thead,
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app .cm-dashboard-panel-footer { background:#20394a!important; }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app .cm-dashboard-table th { color:#c1d2de!important; }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app .cm-dashboard-table td { border-color:var(--line)!important; }
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app :is(input,select,textarea) { background:#132838!important; color:var(--ink)!important; border-color:var(--line)!important; }
+body.callmed-app :is(.btn-primary,.cm-btn-primary),body.public-body .btn { background:#087f8c!important; border-color:#087f8c!important; color:#fff!important; }
+body.callmed-app :is(.btn-primary,.cm-btn-primary):hover,body.public-body .btn:hover { background:#066b76!important; }
+body.callmed-app :is(a,button,input,select,textarea):focus-visible { outline:3px solid #43bfc1!important; outline-offset:2px; }
+@media(max-width:900px){.cm-dashboard-top-grid,.cm-dashboard-content-grid{grid-template-columns:minmax(0,1fr)!important}.cm-dashboard-aside{grid-template-columns:minmax(0,1fr)!important}.cm-dashboard-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:520px){.cm-dashboard-quick-grid{grid-template-columns:minmax(0,1fr)!important}.cm-dashboard-table{min-width:620px}.cm-dashboard-agenda-heading{padding:16px!important}}
