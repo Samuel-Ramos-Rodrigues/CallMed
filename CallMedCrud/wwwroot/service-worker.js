@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v33-clinic-polish';
+const CACHE_NAME = 'callmed-static-v35-unified-clinical-theme';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -13,6 +13,7 @@ const STATIC_ASSETS = [
     '/css/clinic-redesign.css',
     '/css/clinic-final-fixes.css',
     '/css/clinic-polish-2026.css',
+    '/css/clinic-unified-palette.css',
     '/css/acessos.css',
     '/css/modules.css',
     '/js/preferences.js',

@@ -1,0 +1,355 @@
+/* CallMed — camada final de unificação visual.
+   Corrige cores fixas legadas e garante a mesma paleta na área pública,
+   autenticação e área autenticada. Não interfere no modo alto contraste. */
+:root:not(.callmed-high-contrast) {
+  color-scheme: light;
+  --bg: #dce6da;
+  --surface: #e8eee4;
+  --surface-alt: #d4e1d2;
+  --ink: #26392f;
+  --muted: #52665a;
+  --line: #bccdbb;
+  --brand: #356a53;
+  --brand-soft: #cbdcca;
+  --navy: #294d3e;
+  --accent: #87ad91;
+  --success: #286747;
+  --success-bg: #d9eadc;
+  --warning: #79551d;
+  --warning-bg: #f0e5cd;
+  --danger: #923d43;
+  --danger-bg: #f1dddd;
+  --info: #315d67;
+  --info-bg: #dce9e8;
+  --clinic-deep: #294d3e;
+  --clinic-teal: #356a53;
+  --clinic-mint: #cbdcca;
+  --clinic-halo: rgba(53,106,83,.15);
+  --clinic-sidebar: #294d3e;
+  --clinic-sidebar-2: #203d31;
+  --clinic-canvas: #dce6da;
+  --clinic-card: #e8eee4;
+  --clinic-border: #bccdbb;
+  --clinic-aqua: #70977a;
+  --shadow: 0 7px 22px rgba(38,57,47,.06);
+  --clinic-shadow: 0 7px 22px rgba(38,57,47,.06);
+}
+:root[data-theme="dark"]:not(.callmed-high-contrast) {
+  color-scheme: dark;
+  --bg: #1e2b24;
+  --surface: #29382e;
+  --surface-alt: #344638;
+  --ink: #edf3e9;
+  --muted: #c0cec0;
+  --line: #4c604f;
+  --brand: #a8caae;
+  --brand-soft: #344b39;
+  --navy: #17271f;
+  --accent: #c1d8bd;
+  --success: #b5dfbd;
+  --success-bg: #2a4833;
+  --warning: #f0d39a;
+  --warning-bg: #4a3d26;
+  --danger: #ffc0c0;
+  --danger-bg: #4b2c31;
+  --info: #b9dfe2;
+  --info-bg: #29494b;
+  --clinic-deep: #17271f;
+  --clinic-teal: #a8caae;
+  --clinic-mint: #344b39;
+  --clinic-halo: rgba(168,202,174,.18);
+  --clinic-sidebar: #17271f;
+  --clinic-sidebar-2: #22392c;
+  --clinic-canvas: #1e2b24;
+  --clinic-card: #29382e;
+  --clinic-border: #4c604f;
+  --clinic-aqua: #a8caae;
+  --shadow: 0 10px 30px rgba(0,0,0,.18);
+  --clinic-shadow: 0 10px 30px rgba(0,0,0,.18);
+}
+
+html:not(.callmed-high-contrast),
+html:not(.callmed-high-contrast) body {
+  background: var(--bg);
+  color: var(--ink);
+}
+html:not(.callmed-high-contrast) body.callmed-app,
+html:not(.callmed-high-contrast) body.public-body,
+html:not(.callmed-high-contrast) body.identity-body {
+  background: var(--bg) !important;
+  color: var(--ink) !important;
+}
+/* Public e autenticação tinham variáveis próprias em CSS legado.
+   Reassociamos esses escopos à mesma paleta dinâmica da área autenticada. */
+html[data-theme="light"]:not(.callmed-high-contrast) body.public-body,
+html[data-theme="light"]:not(.callmed-high-contrast) body.identity-body {
+  --bg: #dce6da;
+  --surface: #e8eee4;
+  --surface-alt: #d4e1d2;
+  --ink: #26392f;
+  --muted: #52665a;
+  --line: #bccdbb;
+  --brand: #356a53;
+  --brand-soft: #cbdcca;
+  --navy: #294d3e;
+  --accent: #87ad91;
+  color-scheme: light;
+}
+html[data-theme="dark"]:not(.callmed-high-contrast) body.public-body,
+html[data-theme="dark"]:not(.callmed-high-contrast) body.identity-body {
+  --bg: #1e2b24;
+  --surface: #29382e;
+  --surface-alt: #344638;
+  --ink: #edf3e9;
+  --muted: #c0cec0;
+  --line: #4c604f;
+  --brand: #a8caae;
+  --brand-soft: #344b39;
+  --navy: #17271f;
+  --accent: #c1d8bd;
+  --success: #b5dfbd;
+  --success-bg: #2a4833;
+  --warning: #f0d39a;
+  --warning-bg: #4a3d26;
+  --danger: #ffc0c0;
+  --danger-bg: #4b2c31;
+  --info: #b9dfe2;
+  --info-bg: #29494b;
+  color-scheme: dark;
+}
+html:not(.callmed-high-contrast) body.callmed-app :is(.app-main,.app-footer),
+html:not(.callmed-high-contrast) body.public-body :is(main,.public-footer),
+html:not(.callmed-high-contrast) body.identity-body :is(.identity-shell,.identity-panel) {
+  background: transparent;
+  color: var(--ink);
+}
+
+/* Cabeçalhos/navs partilham a mesma superfície; sem faixa azul/verde separada por página. */
+html:not(.callmed-high-contrast) body.callmed-app .app-header,
+html:not(.callmed-high-contrast) body.public-body .public-header,
+html:not(.callmed-high-contrast) body.public-body .public-nav {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+  box-shadow: 0 2px 10px rgba(38,57,47,.035) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .app-brand,
+html:not(.callmed-high-contrast) body.callmed-app .app-brand > span,
+html:not(.callmed-high-contrast) body.callmed-app .app-brand small,
+html:not(.callmed-high-contrast) body.callmed-app .primary-nav a,
+html:not(.callmed-high-contrast) body.callmed-app .header-tools :is(button,.profile-copy),
+html:not(.callmed-high-contrast) body.public-body :is(.app-brand,.app-brand > span,.app-brand small,.public-links a) {
+  color: var(--ink) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .primary-nav a.active {
+  background: var(--brand-soft) !important;
+  color: var(--brand) !important;
+  box-shadow: inset 0 -3px var(--brand) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .primary-nav a:hover,
+html:not(.callmed-high-contrast) body.callmed-app .header-tools :is(button,a):hover,
+html:not(.callmed-high-contrast) body.public-body .public-links a:not(.btn):hover {
+  background: var(--surface-alt) !important;
+  color: var(--ink) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .user-avatar {
+  color: var(--ink) !important;
+  background: var(--brand-soft) !important;
+}
+
+/* Cards/painéis/tabelas nunca mantêm #fff fixo nas telas comuns. */
+html:not(.callmed-high-contrast) body :is(
+  .panel,.workspace-panel,.day-overview,.appointment-panel,.patient-panel,
+  .cm25-panel,.cm25-kpi,.v16-stat,.v16-kpi,.v16-card,.cm19-card,.v18-card,
+  .form-card,.form-section,.patient-form-section,.doctor-form-section-v16,
+  .consultation-card,.appointment-card,.table-card,.table-scroll,.table-wrap,
+  .simple-filter-v16,.cm25-form-card,.cm21-form-card,.cm25-section-card,
+  .clinic-filterbar,.clinic-request-form,.clinic-aside-card,.clinic-audit-panel,
+  .cm19-booking-card,.cm19-booking-section,.cm-dashboard-quick,.cm-dashboard-agenda,
+  .cm-dashboard-summary,.cm-dashboard-attention,.cm-dashboard-occupancy,
+  .patient-details-grid > .panel,.patient-quicklinks > a,.patient-quicklinks > button,
+  .clinic-request-kpis > article,.clinic-request-card,.clinic-request-kanban .cm21-kanban-column,
+  .module-grid > a,.module-action,.modules-dialog,.v18-popover,.public-how-item
+) {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+  box-shadow: var(--shadow) !important;
+}
+html:not(.callmed-high-contrast) body :is(.cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head,.workspace-heading-card) {
+  background: linear-gradient(125deg,var(--surface),var(--surface-alt)) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body :is(.panel-heading,.v16-card-head,.cm19-card-head,.v18-card-header,.cm25-panel-head,.panel-footer) {
+  color: var(--ink);
+  border-color: var(--line) !important;
+  background: var(--surface-alt) !important;
+}
+html:not(.callmed-high-contrast) body :is(table,.table,.data-table,.v16-table) {
+  width: 100%;
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body :is(thead,thead tr,th) {
+  background: var(--surface-alt) !important;
+  color: var(--muted) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body :is(tbody,tr,td) {
+  background: transparent;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body tbody tr:nth-child(even) { background: color-mix(in srgb, var(--surface-alt) 42%, transparent); }
+html:not(.callmed-high-contrast) body tbody tr:hover { background: var(--surface-alt) !important; }
+
+/* Inputs, selects e botões secundários usam a mesma família de superfícies. */
+html:not(.callmed-high-contrast) body :is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+  select,textarea
+) {
+  background: var(--surface-alt) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body :is(input,select,textarea)::placeholder { color: var(--muted) !important; opacity: .9; }
+html:not(.callmed-high-contrast) body :is(label,legend,.field-help,.form-text,.hint,.identity-footnote,.identity-divider) { color: var(--ink); }
+html:not(.callmed-high-contrast) body :is(.btn.secondary,.btn-secundario,.identity-secondary,.btn-outline,.secondary-action) {
+  color: var(--ink) !important;
+  background: var(--surface-alt) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body :is(.btn:not(.secondary):not(.danger),.identity-submit) {
+  background: var(--brand) !important;
+  color: #fff !important;
+  border-color: var(--brand) !important;
+}
+html[data-theme="dark"]:not(.callmed-high-contrast) body :is(.btn:not(.secondary):not(.danger),.identity-submit,.cm19-booking-steps li.active b,.cm19-booking-steps li.done b) {
+  color: #17271f !important;
+}
+
+/* Login: ambos os lados seguem as variáveis do tema; evita painel claro e painel escuro divergentes. */
+html:not(.callmed-high-contrast) body.identity-body .identity-showcase {
+  background: linear-gradient(145deg,var(--surface-alt),var(--surface)) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body.identity-body .identity-panel { background: var(--bg) !important; color: var(--ink) !important; }
+html:not(.callmed-high-contrast) body.identity-body .identity-card {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+  box-shadow: var(--shadow) !important;
+}
+html:not(.callmed-high-contrast) body.identity-body .identity-card :is(h1,h2,h3,p,label,.identity-footnote,.identity-divider,.identity-note-line,.identity-back) { color: var(--ink) !important; }
+html:not(.callmed-high-contrast) body.identity-body .identity-card :is(.identity-options a,.identity-back) { color: var(--brand) !important; }
+html:not(.callmed-high-contrast) body.identity-body .identity-card :is(.eyebrow,.identity-kicker,.identity-copy > .eyebrow) { color: var(--brand) !important; }
+html:not(.callmed-high-contrast) body.identity-body .identity-showcase :is(h1,h2,h3,p,small,.identity-note-line,.app-brand,.app-brand > span,.app-brand small) { color: var(--ink) !important; }
+html:not(.callmed-high-contrast) body.identity-body .identity-copy h1 em { color: var(--brand) !important; }
+html:not(.callmed-high-contrast) body.identity-body .identity-form input:not([type="checkbox"]) {
+  background: var(--surface-alt) !important; color: var(--ink) !important; border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body.identity-body .identity-note-line { border-color: var(--line) !important; }
+
+/* Página pública: fundo e blocos usam as mesmas cores da área logada. */
+html:not(.callmed-high-contrast) body.public-body :is(.public-hero,.public-how,.public-install,.public-channel-note,.care-ticket) {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body.public-body :is(.public-hero h1,.public-hero p,.public-how h2,.public-how h3,.public-how p,.public-install h2,.public-install p,.public-channel-note strong,.public-channel-note span,.care-ticket h2,.care-ticket p,.care-ticket strong,.care-ticket small) {
+  color: var(--ink) !important;
+}
+html:not(.callmed-high-contrast) body.public-body .public-hero h1 em { color: var(--brand) !important; }
+html:not(.callmed-high-contrast) body.public-body .public-install { background: var(--surface-alt) !important; }
+html:not(.callmed-high-contrast) body.public-body .public-install :is(h2,p,a) { color: var(--ink) !important; }
+html:not(.callmed-high-contrast) body.public-body .care-illustration { background: var(--navy) !important; color: #f6f7ef !important; }
+html:not(.callmed-high-contrast) body.public-body .care-ticket { background: var(--surface) !important; border-color: var(--line) !important; }
+html:not(.callmed-high-contrast) body.public-body .public-footer { color: var(--muted) !important; border-color: var(--line) !important; }
+
+/* Alertas com tons de estado, mas superfícies ajustadas para o tema. */
+html:not(.callmed-high-contrast) body :is(.alert,.notice,.toast,.toast-message,.toast-notification,.mensagem,.validation-summary-errors,.identity-note) {
+  border-radius: 12px;
+  box-shadow: none;
+}
+html:not(.callmed-high-contrast) body :is(.alert-success,.alert.success,.mensagem.sucesso) { background-color: var(--success-bg); color: var(--success); border-color: var(--line); }
+html:not(.callmed-high-contrast) body :is(.alert-warning,.alert.warning,.mensagem.aviso) { background-color: var(--warning-bg); color: var(--warning); border-color: var(--line); }
+html:not(.callmed-high-contrast) body :is(.alert-danger,.alert.error,.alert-error,.mensagem.erro,.validation-summary-errors) { background-color: var(--danger-bg); color: var(--danger); border-color: var(--line); }
+html:not(.callmed-high-contrast) body :is(.alert-info,.alert.info,.notice,.aviso.info) { background-color: var(--info-bg); color: var(--info); border-color: var(--line); }
+
+/* Acessibilidade: contraste alto permanece monocromático e tem prioridade. */
+html.callmed-high-contrast,
+html.callmed-high-contrast body,
+html.callmed-high-contrast body :is(.app-header,.public-header,.identity-showcase,.identity-panel,.identity-card,.panel,table,.table,.data-table,.form-card,.cm25-panel,.v16-card,.cm19-card,.v18-card,.clinic-filterbar,.clinic-request-card,.patient-quicklinks > a,.patient-quicklinks > button,.card,.card-header,.card-body,.card-footer,.modal-content,.modal-header,.modal-body,.modal-footer,.dropdown-menu,.list-group-item,.bg-white,.bg-light) {
+  background: #fff !important;
+  color: #000 !important;
+  border-color: #000 !important;
+}
+html.callmed-high-contrast body a,
+html.callmed-high-contrast body button,
+html.callmed-high-contrast body label,
+html.callmed-high-contrast body p,
+html.callmed-high-contrast body h1,
+html.callmed-high-contrast body h2,
+html.callmed-high-contrast body h3,
+html.callmed-high-contrast body th,
+html.callmed-high-contrast body td { color: #000 !important; }
+html.callmed-high-contrast[data-theme="dark"],
+html.callmed-high-contrast[data-theme="dark"] body,
+html.callmed-high-contrast[data-theme="dark"] body :is(.app-header,.public-header,.identity-showcase,.identity-panel,.identity-card,.panel,table,.table,.data-table,.form-card,.cm25-panel,.v16-card,.cm19-card,.v18-card,.clinic-filterbar,.clinic-request-card,.patient-quicklinks > a,.patient-quicklinks > button,.card,.card-header,.card-body,.card-footer,.modal-content,.modal-header,.modal-body,.modal-footer,.dropdown-menu,.list-group-item,.bg-white,.bg-light) {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+html.callmed-high-contrast[data-theme="dark"] body a,
+html.callmed-high-contrast[data-theme="dark"] body button,
+html.callmed-high-contrast[data-theme="dark"] body label,
+html.callmed-high-contrast[data-theme="dark"] body p,
+html.callmed-high-contrast[data-theme="dark"] body h1,
+html.callmed-high-contrast[data-theme="dark"] body h2,
+html.callmed-high-contrast[data-theme="dark"] body h3,
+html.callmed-high-contrast[data-theme="dark"] body th,
+html.callmed-high-contrast[data-theme="dark"] body td { color: #fff !important; }
+html.callmed-high-contrast body :is(input,select,textarea) { background: #fff !important; color: #000 !important; border: 2px solid #000 !important; }
+html.callmed-high-contrast[data-theme="dark"] body :is(input,select,textarea) { background: #000 !important; color: #fff !important; border: 2px solid #fff !important; }
+
+@media (max-width: 760px) {
+  html:not(.callmed-high-contrast) body.identity-body .identity-showcase {
+    background: var(--surface-alt) !important;
+    border-bottom: 1px solid var(--line) !important;
+  }
+}
+
+
+/* Compatibilidade com utilitários Bootstrap e componentes legados que fixavam branco. */
+html:not(.callmed-high-contrast) body :is(
+  .bg-white,.bg-light,.card,.card-header,.card-body,.card-footer,
+  .modal-content,.modal-header,.modal-body,.modal-footer,.dropdown-menu,
+  .list-group-item,.well,.content-panel,.section-panel,.section-card,
+  .stats-card,.metric-card,.stat-card,.white-card,.page-header,
+  .form-control,.form-select,.input-group-text,.breadcrumb,.pagination .page-link,
+  .nav-tabs .nav-link,.popover,.tooltip-inner,.accordion-item,.accordion-button
+) {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body :is(.card-header,.card-footer,.modal-header,.modal-footer,.accordion-button) {
+  background: var(--surface-alt) !important;
+}
+html:not(.callmed-high-contrast) body :is(.form-control,.form-select,.input-group-text) {
+  background: var(--surface-alt) !important;
+}
+html:not(.callmed-high-contrast) body :is(.form-control,.form-select):focus {
+  border-color: var(--brand) !important;
+  box-shadow: 0 0 0 3px var(--clinic-halo) !important;
+}
+
+html:not(.callmed-high-contrast) body :is(dialog,.modal,.modal-dialog,.offcanvas,.popover-content,.v18-popover,.modules-dialog) {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body :is(.divider,.section-divider,hr) { border-color: var(--line); }
