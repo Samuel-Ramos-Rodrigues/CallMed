@@ -1,19 +1,23 @@
-# Identidade visual clínica — CallMed
+# Identidade visual CallMed — sistema atualizado
 
-## O que mudou
-- Paleta clínica azul-petróleo e verde-água, com fundos suaves e contrastes consistentes.
-- Camada `wwwroot/css/clinic-theme.css` aplicada após os estilos base, públicos e de autenticação.
-- Componentes ajustados: navegação, cartões, formulários, botões, tabelas, estados, alertas, páginas públicas, telas de acesso e widgets.
-- Tokens para o tema claro/escuro e respeito à preferência por movimento reduzido.
-- As imagens de logo foram recortadas apenas na transparência exterior; o desenho original e o canal alfa foram preservados.
-- Removidos fundos cinza/brancos aplicados por CSS nas imagens de logo; nas telas escuras a logomarca horizontal fica monocromática clara para manter contraste sem uma placa branca.
-- Página offline utiliza a marca original transparente.
+## Direção visual
 
-## Arquivos principais
-- `CallMedCrud/wwwroot/css/site.css`: tokens de cor atualizados.
-- `CallMedCrud/wwwroot/css/clinic-theme.css`: refinamento visual transversal.
-- `CallMedCrud/wwwroot/images/logo-callmed-mark.png` e `logo-callmed-horizontal.png`: imagens originais com bordas transparentes aparadas.
-- `Views/Shared/_Layout.cshtml`, `_AuthLayout.cshtml`, `_PublicLayout.cshtml`: inclusão do tema na última posição da cascata CSS.
+- Paleta de marca nova: índigo e safira, com lavanda como acento e neutros azulados.
+- Modo claro: fundo azul-acinzentado suave, cartões claros e texto escuro com contraste alto.
+- Modo escuro: fundo azul-marinho profundo, superfícies separadas por tons de azul e tipografia clara.
+- Verde não é usado como cor primária de marca; é reservado para estados semânticos como sucesso/confirmado.
+- Estilo mais editorial e organizado: espaços generosos, raios consistentes, bordas sutis e elevação discreta.
+
+## Arquitetura
+
+- `CallMedCrud/wwwroot/css/callmed.css`: folha única e fonte visual atual.
+- `CallMedCrud/Views/Shared/_DocumentHead.cshtml`: inclusão compartilhada.
+- `CallMedCrud/wwwroot/js/preferences.js` e `theme.js`: aplicação e persistência da preferência visual.
+- `CallMedCrud/wwwroot/manifest.json`: cores da instalação PWA.
+- `CallMedCrud/wwwroot/service-worker.js`: cache versionado para atualizar a aparência instalada.
+
+O CSS antigo foi usado como referência funcional de seletores e estrutura das telas; suas regras visuais não são importadas. A folha nova cobre painel, atendimento, agenda, cadastro, relatórios, autenticação, conteúdo público, contingência/offline, estados de botões, acessibilidade e impressão.
 
 ## Validação
-Verificar telas autenticadas, acesso/cadastro/recuperação de senha, homepage pública, tema escuro, alertas de sucesso/erro, telas mobile e páginas offline. O tema é apenas visual e não altera regras de negócio, permissões ou dados clínicos.
+
+A checagem estática confirma referências de CSS válidas, um único arquivo CSS de produção, sintaxe CSS parseável e manifesto JSON válido. A compilação da solução e a inspeção de todas as páginas em execução continuam necessárias no Visual Studio, pois o SDK .NET não estava disponível no ambiente de reconstrução.
