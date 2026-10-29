@@ -9,7 +9,6 @@
     var podeRealizar = ConsultaStatus.PodeRealizar(Model.Status);
     var podeAusente = ConsultaStatus.PodeMarcarAusente(Model.Status) && Model.Data.Date <= hojeClinica;
 }
-<link rel="stylesheet" href="~/css/comprovante.css" asp-append-version="true" />
 <section class="cm25-screen cm25-page v16-page comprovante-consulta" data-cm25-view="Consulta/Details.cshtml">
     <div class="cm25-page-hero v16-page-head compact-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg></div><div><span class="cm25-kicker v16-eyebrow">CONSULTA #@Model.Id</span><h1>Detalhes da consulta</h1><p>@Model.Data.ToString("dddd, dd/MM/yyyy") às @Model.Horario.</p></div><span class="status-pill status-@Model.Status.ToLowerInvariant()">@Model.Status</span></div>
     <div class="consultation-detail-grid-v16">

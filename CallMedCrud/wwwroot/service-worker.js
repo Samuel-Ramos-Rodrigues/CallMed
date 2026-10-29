@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-premium-ui-2026-10-29';
+const CACHE_NAME = 'callmed-single-css-2026-10-29-v1';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -7,21 +7,10 @@ const STATIC_ASSETS = [
     '/contingencia.html',
     '/js/contingencia.js',
     '/js/solicitacao-medico-filter.js',
-    '/css/contingencia.css',
-    '/css/site.css',
-    '/css/clinic-theme.css',
-    '/css/clinic-redesign.css',
-    '/css/clinic-final-fixes.css',
-    '/css/clinic-polish-2026.css',
-    '/css/clinic-unified-palette.css',
-    '/css/clinic-functional-fixes.css',
-    '/css/acessos.css',
-    '/css/modules.css',
+    '/css/callmed.css',
     '/js/preferences.js',
     '/js/shell.js',
     '/js/login.js',
-    '/css/public.css',
-    '/css/identity.css',
     '/js/theme.js',
     '/js/accessibility.js',
     '/js/mobile-final.js',
