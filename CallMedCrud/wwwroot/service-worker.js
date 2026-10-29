@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-single-css-2026-10-29-v1';
+const CACHE_NAME = 'callmed-static-v38-registration-consent-password-policy';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -8,9 +8,20 @@ const STATIC_ASSETS = [
     '/js/contingencia.js',
     '/js/solicitacao-medico-filter.js',
     '/css/callmed.css',
+    '/css/callmed.css',
+    '/css/callmed.css',
+    '/css/callmed.css',
+    '/css/callmed.css',
+    '/css/callmed.css',
+    '/css/callmed.css',
+    '/css/callmed.css',
+    '/css/callmed.css',
+    '/css/callmed.css',
     '/js/preferences.js',
     '/js/shell.js',
     '/js/login.js',
+    '/css/callmed.css',
+    '/css/callmed.css',
     '/js/theme.js',
     '/js/accessibility.js',
     '/js/mobile-final.js',
