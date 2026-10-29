@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v38-registration-consent-password-policy';
+const CACHE_NAME = 'callmed-static-v39-dashboard-attendance-palette-refresh';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.

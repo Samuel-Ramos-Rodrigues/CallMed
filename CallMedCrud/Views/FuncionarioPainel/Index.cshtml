@@ -27,6 +27,7 @@
         <aside class="cm-dashboard-quick panel" aria-labelledby="quick-title">
             <header class="cm-section-heading"><div><span class="eyebrow">ATALHOS</span><h2 id="quick-title">Acesso rápido</h2></div></header>
             <div class="cm-dashboard-quick-grid">
+                <a class="cm-quick-attendance" asp-controller="Atendimento" asp-action="Index"><span class="cm-action-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#headset"></use></svg></span><span><strong>Atendimento</strong><small>Central de conversas</small></span><b aria-hidden="true">↗</b></a>
                 <a asp-controller="Paciente" asp-action="Index"><span class="cm-action-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg></span><span><strong>Pacientes</strong><small>Buscar cadastro</small></span><b aria-hidden="true">↗</b></a>
                 <a asp-controller="Solicitacoes" asp-action="Index"><span class="cm-action-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg></span><span><strong>Solicitações</strong><small>Acompanhar pedidos</small></span><b aria-hidden="true">↗</b></a>
                 <a asp-controller="HistoricoExames" asp-action="Pendentes"><span class="cm-action-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#clipboard-check"></use></svg></span><span><strong>Exames</strong><small>Revisar pendências</small></span><b aria-hidden="true">↗</b></a>

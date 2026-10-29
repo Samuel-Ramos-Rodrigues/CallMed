@@ -429,3 +429,271 @@ html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app .atendiment
   color: #f1f7ed !important;
   border-color: #557b5f !important;
 }
+
+
+/* CallMed 2026-10-29 — correção final de cascata da paleta e redesign da Central. */
+/* Tokens são reafirmados no elemento raiz que recebe data-theme; nenhum componente
+   deve manter superfícies brancas/azuis herdadas quando o tema muda. */
+html:not(.callmed-high-contrast) {
+  --bg: #dce6da;
+  --surface: #e8eee4;
+  --surface-alt: #d4e1d2;
+  --ink: #26392f;
+  --muted: #52665a;
+  --line: #bccdbb;
+  --brand: #356a53;
+  --brand-soft: #cbdcca;
+  --navy: #294d3e;
+  --accent: #87ad91;
+  --success: #286747;
+  --success-bg: #d9eadc;
+  --warning: #79551d;
+  --warning-bg: #f0e5cd;
+  --danger: #923d43;
+  --danger-bg: #f1dddd;
+  --info: #315d67;
+  --info-bg: #dce9e8;
+  color-scheme: light;
+}
+html[data-theme="dark"]:not(.callmed-high-contrast) {
+  --bg: #1e2b24;
+  --surface: #29382e;
+  --surface-alt: #344638;
+  --ink: #edf3e9;
+  --muted: #c0cec0;
+  --line: #4c604f;
+  --brand: #a8caae;
+  --brand-soft: #344638;
+  --navy: #17271f;
+  --accent: #c1d8bd;
+  --success: #b5dfbd;
+  --success-bg: #2a4833;
+  --warning: #f0d39a;
+  --warning-bg: #4a3d26;
+  --danger: #ffc0c0;
+  --danger-bg: #4b2c31;
+  --info: #b9dfe2;
+  --info-bg: #29494b;
+  color-scheme: dark;
+}
+html:not(.callmed-high-contrast) body.callmed-app,
+html:not(.callmed-high-contrast) body.public-body,
+html:not(.callmed-high-contrast) body.identity-body {
+  background-color: var(--bg) !important;
+  color: var(--ink) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app :is(.panel,.workspace-panel,.day-overview,.appointment-panel,.patient-panel,
+  .cm25-panel,.cm25-kpi,.v16-stat,.v16-kpi,.v16-card,.cm19-card,.v18-card,.form-card,.form-section,
+  .consultation-card,.appointment-card,.table-card,.table-scroll,.table-wrap,.simple-filter-v16,
+  .cm25-form-card,.cm21-form-card,.cm25-section-card,.clinic-filterbar,.clinic-request-form,
+  .clinic-aside-card,.clinic-audit-panel,.cm19-booking-card,.cm19-booking-section,
+  .cm-dashboard-quick,.cm-dashboard-agenda,.cm-dashboard-summary,.cm-dashboard-attention,.cm-dashboard-occupancy,
+  .atendimento-shell,.atendimento-inbox,.atendimento-chat,.atendimento-context-v16) {
+  background-color: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app :is(.cm-dashboard-quick-grid > a,.cm-action-icon) {
+  background-color: var(--surface-alt) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .cm-dashboard-quick-grid > a:hover {
+  background-color: var(--brand-soft) !important;
+  border-color: var(--brand) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .cm-dashboard-quick-grid .cm-quick-attendance {
+  border-color: var(--brand) !important;
+  box-shadow: inset 3px 0 var(--brand);
+}
+html:not(.callmed-high-contrast) body.callmed-app .cm-dashboard-quick-grid .cm-quick-attendance .cm-action-icon {
+  background: var(--brand) !important;
+  color: #fff !important;
+}
+html[data-theme="dark"]:not(.callmed-high-contrast) body.callmed-app .cm-dashboard-quick-grid .cm-quick-attendance .cm-action-icon {
+  color: #17271f !important;
+}
+
+/* Central de Atendimento: hierarquia visual mais clara, sem alterar ações/rotas. */
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page {
+  display: grid;
+  gap: 18px;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .v16-page-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: clamp(20px, 2.4vw, 30px);
+  border: 1px solid var(--line) !important;
+  border-radius: 20px;
+  background: linear-gradient(125deg, var(--surface), var(--surface-alt)) !important;
+  box-shadow: var(--shadow);
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .cm25-hero-mark {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
+  border-radius: 16px;
+  background: var(--brand-soft) !important;
+  color: var(--brand) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .v16-page-head h1 {
+  margin: 4px 0 6px;
+  color: var(--ink) !important;
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
+  letter-spacing: -.035em;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .v16-page-head p,
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .v16-eyebrow {
+  color: var(--muted) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .v16-head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-stats-v16 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 12px;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-stats-v16 > div {
+  min-width: 0;
+  padding: 17px 19px;
+  border: 1px solid var(--line) !important;
+  border-radius: 16px;
+  background: var(--surface) !important;
+  box-shadow: var(--shadow);
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-stats-v16 span {
+  display: block;
+  color: var(--muted) !important;
+  font-size: .82rem;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-stats-v16 strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--brand) !important;
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+  line-height: 1.2;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-filters select {
+  min-height: 42px;
+  background: var(--surface-alt) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-shell {
+  overflow: hidden;
+  border: 1px solid var(--line) !important;
+  border-radius: 20px;
+  background: var(--surface) !important;
+  box-shadow: var(--shadow);
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-inbox-title {
+  padding: 18px 20px;
+  background: var(--surface-alt) !important;
+  color: var(--ink) !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-conversation {
+  gap: 12px;
+  padding: 16px;
+  color: var(--ink) !important;
+  border-bottom: 1px solid var(--line) !important;
+  transition: background .16s ease, box-shadow .16s ease;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-conversation:hover {
+  background: var(--surface-alt) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-conversation.active {
+  background: var(--brand-soft) !important;
+  box-shadow: inset 4px 0 var(--brand);
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .conversation-copy :is(strong,small,.conversation-preview) {
+  color: var(--ink) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .conversation-copy small,
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .conversation-preview {
+  color: var(--muted) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-chat-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line) !important;
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-messages {
+  padding: 20px;
+  background: var(--surface-alt) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-message {
+  max-width: min(82%, 680px);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 12px 15px;
+  box-shadow: 0 3px 10px rgba(25,45,33,.05);
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-message.incoming {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-message.outgoing {
+  background: var(--brand-soft) !important;
+  color: var(--ink) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-message :is(p,strong,time) {
+  color: inherit !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-compose {
+  padding: 14px;
+  border-top: 1px solid var(--line) !important;
+  background: var(--surface) !important;
+}
+html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-compose textarea {
+  min-height: 100px;
+  background: var(--surface-alt) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+@media (max-width: 1000px) {
+  html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .v16-page-head {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .v16-head-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+  html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-stats-v16 {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+}
+@media (max-width: 680px) {
+  html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-stats-v16 {
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+    gap: 8px;
+  }
+  html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-stats-v16 > div {
+    padding: 13px;
+  }
+  html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-shell {
+    border-radius: 15px;
+  }
+  html:not(.callmed-high-contrast) body.callmed-app .atendimento-v16-page .atendimento-message {
+    max-width: 94%;
+  }
+}
