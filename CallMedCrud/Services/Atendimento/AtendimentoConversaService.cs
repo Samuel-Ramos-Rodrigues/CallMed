@@ -21,13 +21,21 @@ public sealed class AtendimentoConversaService
         _identidade = identidade;
     }
 
+    public Task<ConversaAtendimento?> ObterPorIdAsync(
+        long conversaId,
+        CancellationToken ct = default) =>
+        _context.ConversasAtendimento
+            .Include(c => c.Paciente)
+            .FirstOrDefaultAsync(c => c.Id == conversaId, ct);
+
     public async Task<ConversaAtendimento> ObterOuCriarAsync(
         CanalAtendimento canal,
         string identificador,
         int? pacienteId = null,
         string? assunto = null,
         bool reativar = true,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        bool resolverIdentidade = true)
     {
         var normalizado =
             AtendimentoIdentidadeService.NormalizarIdentificador(
@@ -53,10 +61,13 @@ public sealed class AtendimentoConversaService
                         ct);
             }
 
-            paciente ??= await _identidade.ResolverPacienteAsync(
-                canal,
-                normalizado,
-                ct);
+            if (resolverIdentidade)
+            {
+                paciente ??= await _identidade.ResolverPacienteAsync(
+                    canal,
+                    normalizado,
+                    ct);
+            }
 
             AnexarPacienteExistente(paciente);
 
@@ -306,7 +317,9 @@ public sealed class AtendimentoConversaService
         IQueryable<MensagemAtendimento> query =
             _context.MensagensAtendimento
                 .AsNoTracking()
-                .Include(m => m.Conversa);
+                .Include(m => m.Conversa)
+                .Where(m => m.Status != StatusMensagemAtendimento.AguardandoAprovacao &&
+                            m.Status != StatusMensagemAtendimento.Ignorada);
 
         query = pacienteId.HasValue
             ? query.Where(m =>

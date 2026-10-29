@@ -8,5 +8,6 @@ public interface IEmailService
         string destinatario,
         string assunto,
         string corpoHtml,
-        CancellationToken ct = default);
+        CancellationToken ct = default,
+        string? replyTo = null);
 }

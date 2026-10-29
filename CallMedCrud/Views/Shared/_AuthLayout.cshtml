@@ -3,9 +3,16 @@
 <head><partial name="_DocumentHead" /><link rel="stylesheet" href="~/css/identity.css" asp-append-version="true" /><link rel="stylesheet" href="~/css/clinic-theme.css" asp-append-version="true" /><link rel="stylesheet" href="~/css/clinic-redesign.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/clinic-final-fixes.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/clinic-polish-2026.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/clinic-unified-palette.css" asp-append-version="true" /></head>
+    <link rel="stylesheet" href="~/css/clinic-unified-palette.css" asp-append-version="true" /><link rel="stylesheet" href="~/css/clinic-functional-fixes.css" asp-append-version="true" /></head>
 <body class="identity-body">
 @RenderBody()
+<footer class="auth-legal-footer" aria-label="Informações legais da CallMed">
+    <span>CallMed · Cuidado em conexão</span>
+    <nav aria-label="Informações legais">
+        <a href="/privacidade">Política de privacidade</a>
+        <a href="/termos-de-uso">Termos de Serviço</a>
+    </nav>
+</footer>
 <script src="~/js/accessibility.js" asp-append-version="true"></script>
 <script src="~/js/theme.js" asp-append-version="true"></script>
 <script src="~/js/pwa.js" asp-append-version="true"></script>

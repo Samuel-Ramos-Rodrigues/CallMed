@@ -40,8 +40,8 @@ public static class ServiceCollectionExtensions
                 options.Password.RequiredLength = 8;
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
                 options.Lockout.AllowedForNewUsers = true;
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
@@ -49,7 +49,8 @@ public static class ServiceCollectionExtensions
             })
             .AddRoles<IdentityRole>()
             .AddErrorDescriber<PortugueseIdentityErrorDescriber>()
-            .AddEntityFrameworkStores<MKSANContext>();
+            .AddEntityFrameworkStores<MKSANContext>()
+            .AddPasswordValidator<SpecialCharacterPasswordValidator>();
 
         services.ConfigureApplicationCookie(options =>
         {
@@ -113,6 +114,14 @@ public static class ServiceCollectionExtensions
             configuration.GetSection(EvolutionWhatsAppOptions.SectionName));
         services.Configure<SmsHttpOptions>(
             configuration.GetSection(SmsHttpOptions.SectionName));
+        services.Configure<AtendimentoEmailInboundOptions>(
+            configuration.GetSection(AtendimentoEmailInboundOptions.SectionName));
+        services.Configure<GmailInboxOptions>(
+            configuration.GetSection(GmailInboxOptions.SectionName));
+        services.AddSingleton<AtendimentoEmailReplyAddressService>();
+        services.AddHttpClient("GmailApi");
+        services.AddSingleton<GmailApiClient>();
+        services.AddHostedService<GmailInboxPollingService>();
         services.AddScoped<AtendimentoIdentidadeService>();
         services.AddScoped<AtendimentoConversaService>();
         services.AddScoped<AtendimentoEnvioService>();

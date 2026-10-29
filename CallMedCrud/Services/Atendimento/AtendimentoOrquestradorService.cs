@@ -31,6 +31,156 @@ public sealed class AtendimentoOrquestradorService
         _logger = logger;
     }
 
+    /// <summary>
+    /// Trata uma mensagem recebida pela Gmail API e salva uma sugestão da IA para revisão.
+    /// Diferente dos webhooks conversacionais, este fluxo nunca envia automaticamente a resposta.
+    /// </summary>
+    public async Task ProcessarEntradaEmailComoRascunhoAsync(
+        CanalMensagemEntrada entrada,
+        CancellationToken ct = default)
+    {
+        if (entrada.Canal != CanalAtendimento.Email ||
+            string.IsNullOrWhiteSpace(entrada.Identificador) ||
+            string.IsNullOrWhiteSpace(entrada.Texto))
+            return;
+
+        var textoEntrada = NormalizarTextoEntrada(entrada.Texto, CanalAtendimento.Email);
+        if (string.IsNullOrWhiteSpace(textoEntrada)) return;
+
+        var conversa = await _conversas.ObterOuCriarAsync(
+            CanalAtendimento.Email,
+            entrada.Identificador,
+            assunto: entrada.Assunto,
+            ct: ct,
+            // Um remetente de e-mail, por si só, não deve vincular a conversa a um prontuário.
+            resolverIdentidade: false);
+        var jaEstavaEmAtendimentoHumano = conversa.Modo == ModoAtendimento.Humano;
+
+        // E-mail é um canal não autenticado: o histórico é restrito à própria conversa e
+        // os dados cadastrais do paciente não são enviados ao modelo só por conhecer o remetente.
+        var historico = await _conversas.CarregarHistoricoPacienteAsync(
+            pacienteId: null,
+            conversaAtualId: conversa.Id,
+            limite: 16,
+            ct: ct);
+
+        var nova = await _conversas.RegistrarEntradaAsync(
+            conversa,
+            textoEntrada,
+            entrada.MensagemExternaId,
+            ct);
+        if (nova is null) return; // ID externo já registrado: idempotência da leitura Gmail.
+
+        // E-mail não autenticado não cria solicitações operacionais automaticamente.
+        // Pedidos de agendamento/remarcação passam pela equipe, que pode verificar a identidade.
+
+        // Conversa já assumida pela equipe: registrar a entrada, mas não disputar a resposta.
+        if (jaEstavaEmAtendimentoHumano) return;
+
+        // Pedidos de humano e conteúdo clínico/sensível não seguem para o modelo.
+        // A mensagem fica visível para a equipe, sem resposta automática ou rascunho clínico.
+        if (AtendimentoIntencao.EhPedidoAtendimentoHumano(textoEntrada) ||
+            EmailRequerRevisaoHumana(textoEntrada))
+        {
+            await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+            return;
+        }
+
+        var usuario = new AgenteUsuarioContexto
+        {
+            Email = entrada.Identificador,
+            Canal = "E-mail",
+            PodeGerenciarOutrosPacientes = false,
+            ConversaAtendimentoId = conversa.Id,
+            // Não trate um remetente de e-mail como autenticado nem revele dados privados.
+            PacienteId = null,
+            PacienteNome = null,
+            PacienteCpfMascarado = null,
+            PacienteDataNascimento = null,
+            PacienteTemConvenio = null,
+            PacienteNomeConvenio = null
+        };
+
+        try
+        {
+            var resposta = await _agente.EnviarAsync(
+                textoEntrada,
+                conversa.SessionId,
+                usuario,
+                historico,
+                ct);
+
+            if (string.IsNullOrWhiteSpace(resposta.Resposta))
+            {
+                await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+                return;
+            }
+
+            await _conversas.RegistrarSaidaAsync(
+                conversa,
+                resposta.Resposta,
+                AutorMensagemAtendimento.Assistente,
+                StatusMensagemAtendimento.AguardandoAprovacao,
+                erro: "Rascunho gerado pela IA. Revise antes de enviar ao paciente.",
+                ct: ct);
+            await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Não foi possível gerar um rascunho de e-mail para a conversa {ConversaId}; a equipe responderá manualmente.", conversa.Id);
+            await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+        }
+    }
+
+    private static bool EmailRequerRevisaoHumana(string texto)
+    {
+        var semAcentos = NormalizarSemAcentos(texto);
+
+        // Não enviar conteúdo clínico ou identificadores pessoais ao modelo por um canal não autenticado.
+        var termosSensíveis = new[]
+        {
+            "sintoma", "sinto dor", "estou com dor", "dor no peito", "falta de ar", "dificuldade para respirar",
+            "sangramento", "febre", "urgente", "emergencia", "laudo", "resultado de exame", "resultado do exame",
+            "exame", "medicamento", "remedio", "receita medica", "prescricao", "diagnostico", "tratamento",
+            "doenca", "gravidez", "gestante", "pressao arterial", "glicemia", "efeito colateral", "consulta",
+            "convenio", "carteirinha", "cpf", "data de nascimento", "minha senha e", "senha e", "codigo de acesso",
+            "prontuario", "numero do documento", "meu documento"
+        };
+        if (termosSensíveis.Any(termo => semAcentos.Contains(NormalizarSemAcentos(termo), StringComparison.Ordinal)))
+            return true;
+
+        if (System.Text.RegularExpressions.Regex.IsMatch(texto, @"(?<!\d)\d{11}(?!\d)"))
+            return true;
+
+        // Lista positiva: somente dúvidas administrativas genéricas e previsíveis podem gerar rascunho da IA.
+        // Todo pedido de ação, conteúdo desconhecido ou mensagem ambígua segue para a equipe humana.
+        var temasAdministrativosPermitidos = new[]
+        {
+            "horario de funcionamento", "horario de atendimento", "qual o horario", "quais os horarios",
+            "que horas abre", "que horas fecha", "a que horas abre", "a que horas fecha", "funcionamento da clinica",
+            "endereco da clinica", "qual o endereco", "onde fica", "localizacao da clinica", "como chegar",
+            "telefone de contato", "qual o telefone", "informacao de contato", "informacoes de contato",
+            "email de contato", "whatsapp da clinica", "canal de contato",
+            "como funciona o callmed", "como funciona a callmed", "como usar o site", "como usar o portal",
+            "como acessar o portal", "como acessar minha conta", "nao consigo acessar minha conta",
+            "nao consigo entrar no portal", "recuperar senha", "esqueci minha senha", "esqueci a senha",
+            "como criar uma conta", "como me cadastrar", "como fazer cadastro"
+        };
+        return !temasAdministrativosPermitidos.Any(tema => semAcentos.Contains(NormalizarSemAcentos(tema), StringComparison.Ordinal));
+    }
+
+    private static string NormalizarSemAcentos(string texto)
+    {
+        var decomposto = texto.Normalize(System.Text.NormalizationForm.FormD);
+        var chars = decomposto.Where(c => System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) !=
+                                          System.Globalization.UnicodeCategory.NonSpacingMark);
+        return new string(chars.ToArray()).Normalize(System.Text.NormalizationForm.FormC).ToLowerInvariant();
+    }
+
     public async Task ProcessarEntradaAsync(
         CanalMensagemEntrada entrada,
         CancellationToken ct = default)
@@ -48,11 +198,38 @@ public sealed class AtendimentoOrquestradorService
         if (string.IsNullOrWhiteSpace(textoEntrada))
             return;
 
-        var conversa = await _conversas.ObterOuCriarAsync(
-            entrada.Canal,
-            entrada.Identificador,
-            assunto: entrada.Assunto,
-            ct: ct);
+        ConversaAtendimento conversa;
+        if (entrada.ConversaAtendimentoId is long conversaId)
+        {
+            // Uma resposta de e-mail roteada por alias assinado só pode entrar
+            // na conversa correspondente e se vier do mesmo remetente original.
+            var existente = await _conversas.ObterPorIdAsync(conversaId, ct);
+            if (existente is null || existente.Canal != entrada.Canal)
+            {
+                _logger.LogWarning("Mensagem recebida para conversa inexistente ou canal incorreto. ConversaId={ConversaId}.", conversaId);
+                return;
+            }
+
+            var identificadorEsperado = AtendimentoIdentidadeService.NormalizarIdentificador(
+                existente.Canal, existente.IdentificadorExterno);
+            var identificadorRecebido = AtendimentoIdentidadeService.NormalizarIdentificador(
+                entrada.Canal, entrada.Identificador);
+            if (!string.Equals(identificadorEsperado, identificadorRecebido, StringComparison.OrdinalIgnoreCase))
+            {
+                _logger.LogWarning("Resposta de e-mail ignorada porque o remetente não corresponde à conversa {ConversaId}.", conversaId);
+                return;
+            }
+
+            conversa = existente;
+        }
+        else
+        {
+            conversa = await _conversas.ObterOuCriarAsync(
+                entrada.Canal,
+                entrada.Identificador,
+                assunto: entrada.Assunto,
+                ct: ct);
+        }
 
         var historico = await _conversas.CarregarHistoricoPacienteAsync(
             conversa.PacienteId,

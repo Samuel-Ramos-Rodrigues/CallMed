@@ -10,6 +10,7 @@ using MKSANCrud.Models;
 using MKSANCrud.Options;
 using MKSANCrud.Services.Clinica;
 using MKSANCrud.Services.Atendimento.Canais.WhatsApp;
+using MKSANCrud.Services.Atendimento.Canais.Email;
 using MKSANCrud.Services.Email;
 
 static void Check(bool condition, string message)
@@ -44,6 +45,19 @@ Check(service.Texto(consulta).Contains("carteirinha"), "Consulta por convênio i
 Check(service.Texto(consulta).Contains("Orientação administrativa da especialidade."), "Orientação por especialidade é incluída");
 consulta.TipoPagamento = TipoPagamentoConsulta.Particular;
 Check(!service.Texto(consulta).Contains("carteirinha"), "Consulta particular não exige carteirinha");
+var gmailIncomplete = new GmailInboxOptions
+{
+    Enabled = true,
+    MailboxEmail = "callmed.atendimento@gmail.com",
+    ClientId = "client.apps.googleusercontent.com",
+    ClientSecret = "client-secret",
+    RefreshToken = "refresh-token",
+    StartAfterUtc = ""
+};
+Check(!gmailIncomplete.Configurado, "Gmail API não fica ativo sem instante UTC inicial, evitando importar e-mails antigos");
+gmailIncomplete.StartAfterUtc = "2026-10-28T00:00:00Z";
+Check(gmailIncomplete.Configurado, "Gmail API aceita caixa, OAuth e instante UTC inicial válidos");
+
 var smtpConfigured = Options.Create(new SmtpOptions
 {
     Host = "smtp-relay.brevo.com", Port = 2525, Username = "smtp-user", Password = "smtp-password",
@@ -63,6 +77,21 @@ var smtpSemRemetente = new SmtpEmailService(Options.Create(new SmtpOptions
     FromEmail = "", EnableSsl = true
 }), NullLogger<SmtpEmailService>.Instance);
 Check(!smtpSemRemetente.Configurado, "Brevo SMTP não aparece configurado sem remetente autorizado definido");
+
+var inboundEmailOptions = Options.Create(new AtendimentoEmailInboundOptions
+{
+    Enabled = true,
+    WebhookSecret = new string('W', 48),
+    ReplyAddressSecret = new string('R', 48),
+    ReplyDomain = "reply.example.com"
+});
+var replyAddressService = new AtendimentoEmailReplyAddressService(inboundEmailOptions);
+var replyAddress = replyAddressService.CriarEndereco(12345);
+Check(replyAddressService.Configurado && !string.IsNullOrWhiteSpace(replyAddress), "Brevo inbound gera Reply-To exclusivo para conversa quando os segredos/domínio estão configurados");
+Check(replyAddressService.TentarObterConversaId(replyAddress, out var conversaReplyId) && conversaReplyId == 12345, "Alias Reply-To válido resolve somente a conversa assinada");
+Check(!replyAddressService.TentarObterConversaId("c12346-000000000000000000000000@reply.example.com", out _), "Alias Reply-To adulterado é rejeitado");
+Check(replyAddressService.ValidarWebhookSecret(new string('W', 48)), "Webhook Brevo aceita o segredo correto");
+Check(!replyAddressService.ValidarWebhookSecret("segredo-incorreto"), "Webhook Brevo rejeita segredo incorreto");
 
 var options = Options.Create(new EvolutionWhatsAppOptions { Enabled = true, BaseUrl = "https://evolution.test", ApiKey = "test-only", InstanceName = "callmed" });
 var handler = new FakeHandler();

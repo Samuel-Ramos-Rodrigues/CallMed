@@ -30,7 +30,8 @@ public sealed class SmtpEmailService : IEmailService
         string destinatario,
         string assunto,
         string corpoHtml,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        string? replyTo = null)
     {
         if (!Configurado)
         {
@@ -62,6 +63,19 @@ public sealed class SmtpEmailService : IEmailService
                 HeadersEncoding = System.Text.Encoding.UTF8
             };
             mensagem.To.Add(destinatarioValidado);
+
+            var enderecoResposta = !string.IsNullOrWhiteSpace(replyTo)
+                ? replyTo.Trim()
+                : _options.ReplyToEmail?.Trim();
+            if (!string.IsNullOrWhiteSpace(enderecoResposta))
+            {
+                if (!MailAddress.TryCreate(enderecoResposta, out var respostaValidada))
+                {
+                    _logger.LogWarning("Tentativa de envio SMTP com Reply-To inválido.");
+                    return false;
+                }
+                mensagem.ReplyToList.Add(respostaValidada);
+            }
 
             using var smtp = new SmtpClient(_options.Host.Trim(), _options.Port)
             {

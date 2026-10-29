@@ -1,0 +1,68 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    Layout = "_PublicLayout";
+    ViewData["Title"] = "Termos de Serviço | CallMed";
+    var contato = Configuration["PlayStore:SupportEmail"]?.Trim();
+    if (string.IsNullOrWhiteSpace(contato)) contato = Configuration["Clinica:Email"]?.Trim();
+    if (string.IsNullOrWhiteSpace(contato)) contato = Configuration["GmailInbox:MailboxEmail"]?.Trim();
+    if (string.IsNullOrWhiteSpace(contato)) contato = "callmed.atendimento@gmail.com";
+    var nomeServico = Configuration["Clinica:Nome"]?.Trim();
+    if (string.IsNullOrWhiteSpace(nomeServico)) nomeServico = "CallMed";
+}
+<section class="privacy-shell cm25-privacy-shell terms-shell">
+    <header class="cm25-privacy-head">
+        <a class="privacy-brand" href="/"><img src="~/images/logo-callmed-horizontal.png" alt="CallMed" /></a>
+        <p class="privacy-meta">Última atualização: 29/10/2026</p>
+        <span class="cm25-kicker">REGRAS DE UTILIZAÇÃO</span>
+        <h1>Termos de Serviço e Uso</h1>
+    </header>
+
+    <p>Estes Termos regulam o acesso e a utilização do @nomeServico, uma plataforma digital de apoio à comunicação com a clínica, consulta de informações, agendamento e acompanhamento de solicitações. Ao criar uma conta ou utilizar os recursos do sistema, você declara que leu e compreendeu estas condições. Se não concordar, não utilize os recursos digitais.</p>
+
+    <h2>1. Quem opera o serviço</h2>
+    <p>O CallMed é uma plataforma utilizada pela organização de saúde responsável pelo atendimento apresentado no próprio sistema. Informações institucionais, canais de contato e orientações da clínica devem ser consultados na plataforma ou solicitados pelo canal de suporte indicado abaixo. A utilização do CallMed não substitui os contratos, as orientações ou as responsabilidades legais da clínica e dos profissionais que prestam o atendimento.</p>
+
+    <h2>2. Conta e segurança</h2>
+    <ul>
+        <li>Forneça informações corretas e mantenha seus dados de contato atualizados.</li>
+        <li>Proteja sua senha e não compartilhe códigos de acesso ou links de redefinição.</li>
+        <li>Avise a equipe responsável se suspeitar de acesso não autorizado à sua conta.</li>
+        <li>Não tente acessar dados, contas, mensagens ou recursos que não estejam autorizados para o seu perfil.</li>
+    </ul>
+
+    <h2>3. Agendamentos e convênios</h2>
+    <p>Os horários apresentados dependem da disponibilidade registrada no sistema. Uma consulta só deve ser considerada agendada quando o CallMed exibir uma confirmação. Solicitações, mensagens ou pedidos de contato não representam, por si só, uma reserva confirmada.</p>
+    <p>O cadastro de um convênio no sistema não garante cobertura, autorização ou pagamento pela operadora. A cobertura depende do plano, contrato, rede credenciada, validade do vínculo e eventuais autorizações exigidas. Quando necessário, a clínica ou o paciente deverá confirmar a elegibilidade com a operadora.</p>
+
+    <h2>4. Comunicação eletrônica e atendimento</h2>
+    <p>O CallMed pode enviar mensagens de serviço sobre conta, agendamentos, lembretes e solicitações pelos canais configurados. A entrega depende de provedores externos, conectividade, filtros de spam e dados de contato válidos; por isso, o usuário deve consultar o sistema quando precisar confirmar o status de uma solicitação.</p>
+    <p>Mensagens enviadas por e-mail podem ser registradas na Central de Atendimento. Para responder a solicitações administrativas elegíveis, a equipe pode utilizar recursos de inteligência artificial para elaborar rascunhos. A equipe deve revisar e aprovar respostas antes do envio. Uma mensagem de e-mail, isoladamente, não comprova a identidade do paciente nem autoriza a divulgação de prontuário ou outros dados sensíveis.</p>
+
+    <h2>5. Limites do recurso de IA e emergências</h2>
+    <div class="privacy-note">O assistente de IA apoia navegação e informações administrativas. Ele não realiza diagnóstico, não interpreta exames para fins clínicos, não prescreve tratamentos e não substitui avaliação profissional. O CallMed não é um canal de emergência. Em uma situação urgente, procure o serviço de emergência adequado.</div>
+
+    <h2>6. Uso aceitável</h2>
+    <p>É proibido usar o sistema para fraudar identidade, enviar mensagens abusivas, introduzir código malicioso, contornar controles de acesso, interferir na disponibilidade do serviço ou acessar informações de outros usuários sem autorização. O uso pode ser limitado ou suspenso quando necessário para proteger pessoas, dados, a clínica ou a segurança do sistema, sem prejuízo das obrigações legais aplicáveis.</p>
+
+    <h2>7. Privacidade e dados pessoais</h2>
+    <p>O tratamento de dados pessoais é descrito na <a href="/privacidade">Política de Privacidade</a>, que integra estes Termos. Dados de saúde são sensíveis e devem ser acessados somente por pessoas autorizadas e para finalidades compatíveis com o atendimento. Evite enviar informações clínicas desnecessárias por e-mail ou por canais que não sejam apropriados para esse fim.</p>
+    <p>Quando a organização responsável ativa a integração com Gmail, a conta de atendimento autorizada é consultada para receber mensagens da Central. O acesso é limitado às finalidades informadas na Política de Privacidade, e a autorização pode ser revogada pelo administrador da conta Google.</p>
+
+    <h2>8. Serviços de terceiros e disponibilidade</h2>
+    <p>Algumas funções dependem de serviços de terceiros, como hospedagem, armazenamento, envio de e-mail, integrações de mensagens e recursos de IA. Esses serviços possuem condições próprias e podem sofrer interrupções, mudanças ou limitações. A equipe adota medidas razoáveis para manter o CallMed disponível e seguro, mas não é possível garantir operação ininterrupta ou ausência absoluta de falhas.</p>
+
+    <h2>9. Propriedade intelectual</h2>
+    <p>As marcas, elementos visuais, textos e componentes do CallMed são protegidos pelas regras aplicáveis de propriedade intelectual ou pertencem aos respectivos titulares. Não copie, redistribua ou utilize elementos protegidos de forma que viole direitos de terceiros ou a legislação aplicável.</p>
+
+    <h2>10. Alterações destes Termos</h2>
+    <p>Estes Termos podem ser atualizados para refletir mudanças no serviço, nos requisitos legais ou nos processos da clínica. A versão vigente será publicada nesta página com sua data de atualização. Quando uma mudança exigir comunicação específica, a organização responsável utilizará um canal apropriado.</p>
+
+    <h2>11. Legislação e contato</h2>
+    <p>Estes Termos são interpretados conforme a legislação brasileira, inclusive as normas de proteção de dados e de defesa do consumidor aplicáveis, respeitadas as regras obrigatórias de competência. Para dúvidas sobre utilização do serviço, privacidade ou solicitações relacionadas à conta, entre em contato pelo e-mail <a href="mailto:@contato">@contato</a>.</p>
+
+    <div class="privacy-actions">
+        <a class="btn" href="/">Voltar ao CallMed</a>
+        <a class="btn secondary" href="/privacidade">Política de Privacidade</a>
+        <a class="btn secondary" href="mailto:@contato">Falar com o suporte</a>
+    </div>
+</section>

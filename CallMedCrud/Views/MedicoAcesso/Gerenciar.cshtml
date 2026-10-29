@@ -23,7 +23,7 @@
                         <label asp-for="Senha">@(Model.PossuiAcesso ? "Nova senha (opcional)" : "Senha inicial")</label>
                         <input asp-for="Senha" autocomplete="new-password" />
                         <span asp-validation-for="Senha" class="validation"></span>
-                        <small class="field-help">Pelo menos 8 caracteres, com letra minúscula e número. @(Model.PossuiAcesso ? "Deixe em branco para manter a senha atual." : "Forneça a senha somente ao médico responsável pela conta.")</small>
+                        <small class="field-help">Pelo menos 8 caracteres, com letra maiúscula, minúscula, número e caractere especial. @(Model.PossuiAcesso ? "Deixe em branco para manter a senha atual." : "Forneça a senha somente ao médico responsável pela conta.")</small>
                     </div>
                 </div>
             </div>

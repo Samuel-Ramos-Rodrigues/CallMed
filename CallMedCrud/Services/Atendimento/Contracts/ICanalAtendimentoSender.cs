@@ -12,5 +12,6 @@ public interface ICanalAtendimentoSender
         string destinatario,
         string texto,
         string? assunto = null,
-        CancellationToken ct = default);
+        CancellationToken ct = default,
+        string? replyTo = null);
 }

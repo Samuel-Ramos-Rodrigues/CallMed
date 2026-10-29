@@ -485,3 +485,53 @@
         gap:9px
     }
 }
+
+
+/* Rodapé jurídico visível também nas telas de autenticação. */
+.auth-legal-footer {
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 22px;
+    width: min(100% - 32px, 1100px); margin: 24px auto 18px; padding: 12px 0;
+    border-top: 1px solid var(--line, #d9e2d9); color: var(--muted, #65756b);
+    font-size: 12px;
+}
+.auth-legal-footer nav { display: flex; flex-wrap: wrap; gap: 14px; }
+.auth-legal-footer a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.auth-legal-footer a:hover { color: var(--brand, #356a53); }
+@media (max-width: 600px) { .auth-legal-footer { padding-inline: 8px; text-align: center; } }
+
+
+/* Consentimento legal e requisitos de senha no cadastro. */
+.password-guidance {
+    margin-top: 10px;
+    padding: 13px 15px;
+    border: 1px solid var(--line, #cfdad0);
+    border-radius: 12px;
+    background: var(--surface-alt, #edf2ec);
+    color: var(--muted, #57675e);
+    font-size: 12px;
+    line-height: 1.55;
+}
+.password-guidance strong { display: block; color: var(--ink, #20382d); margin-bottom: 7px; }
+.password-guidance ul { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px 12px; margin: 0; padding: 0; }
+.password-guidance li { position: relative; padding-left: 19px; }
+.password-guidance li::before { content: "○"; position: absolute; left: 0; top: 0; font-size: 14px; color: var(--muted, #65756b); }
+.password-guidance li.is-valid { color: var(--success, #287557); }
+.password-guidance li.is-valid::before { content: "✓"; font-weight: 800; color: var(--success, #287557); }
+.terms-consent {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    align-items: start;
+    gap: 11px;
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid var(--line, #d2ddd3);
+    border-radius: 12px;
+    background: var(--surface-alt, #edf2ec);
+}
+.terms-consent input[type="checkbox"] { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--brand, #356a53); cursor: pointer; }
+.terms-consent label { margin: 0; font-size: 12px; font-weight: 500; line-height: 1.65; color: var(--ink, #20382d); cursor: pointer; }
+.terms-consent a { color: var(--brand, #356a53); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.terms-consent input:focus-visible { outline: 3px solid var(--focus, #78b7a4); outline-offset: 3px; }
+.register-client-feedback { margin: 10px 0 16px; padding: 12px 14px; border-radius: 10px; }
+.register-client-feedback[hidden] { display: none !important; }
+@media (max-width: 540px) { .password-guidance ul { grid-template-columns: 1fr; } }

@@ -8,6 +8,18 @@
     {
         loginHref += "?returnUrl=" + Uri.EscapeDataString(Model.ReturnUrl);
     }
+    var errorKeys = ViewData.ModelState
+        .Where(entry => entry.Value is not null && entry.Value.Errors.Count > 0)
+        .Select(entry => entry.Key)
+        .ToArray();
+    var initialStep = errorKeys.Any(key => key.StartsWith("Input.Nome", StringComparison.OrdinalIgnoreCase)
+        || key.StartsWith("Input.Cpf", StringComparison.OrdinalIgnoreCase)
+        || key.StartsWith("Input.DataNascimento", StringComparison.OrdinalIgnoreCase)) ? 1
+        : errorKeys.Any(key => key.StartsWith("Input.TemConvenio", StringComparison.OrdinalIgnoreCase)
+            || key.StartsWith("Input.NomeConvenio", StringComparison.OrdinalIgnoreCase)
+            || key.StartsWith("Input.NumeroConvenio", StringComparison.OrdinalIgnoreCase)
+            || key.StartsWith("Input.ValidadeConvenio", StringComparison.OrdinalIgnoreCase)) ? 2
+        : errorKeys.Length > 0 ? 3 : 1;
 }
 <main class="identity-shell cm25-identity-shell register-shell">
             <section class="identity-showcase cm25-identity-showcase">
@@ -69,7 +81,7 @@
                         </div>
                     </div>
 
-                    <form method="post" id="form-cadastro" class="identity-form">
+                    <form method="post" id="form-cadastro" class="identity-form" data-initial-step="@initialStep" novalidate>
                         <input type="hidden" name="returnUrl" value="@Model.ReturnUrl"  />
                         <div asp-validation-summary="ModelOnly" class="mensagem erro"></div>
 
@@ -133,14 +145,24 @@
                             <div class="input-group">
                                 <label asp-for="Input.Password"></label>
                                 <div class="password-wrap">
-                                    <input asp-for="Input.Password" id="senha" autocomplete="new-password" placeholder="Mínimo de 8 caracteres, com letra e número"  />
-                                    <button type="button" class="password-toggle" id="btnMostrarSenha">Mostrar</button>
+                                    <input asp-for="Input.Password" id="senha" autocomplete="new-password" placeholder="Crie uma senha segura" aria-describedby="passwordGuidance" />
+                                    <button type="button" class="password-toggle" id="btnMostrarSenha" aria-label="Mostrar senha">Mostrar</button>
                                 </div>
                                 <span asp-validation-for="Input.Password" class="field-error"></span>
+                                <div class="password-guidance" id="passwordGuidance">
+                                    <strong>A senha precisa conter:</strong>
+                                    <ul>
+                                        <li data-password-rule="length">Pelo menos 8 caracteres</li>
+                                        <li data-password-rule="upper">Uma letra maiúscula</li>
+                                        <li data-password-rule="lower">Uma letra minúscula</li>
+                                        <li data-password-rule="digit">Um número</li>
+                                        <li data-password-rule="special">Um caractere especial, como ! ou #</li>
+                                    </ul>
+                                </div>
                             </div>
                             <div class="input-group">
                                 <label asp-for="Input.ConfirmPassword"></label>
-                                <input asp-for="Input.ConfirmPassword" autocomplete="new-password" placeholder="Repita sua senha"  />
+                                <input asp-for="Input.ConfirmPassword" id="confirmarSenha" autocomplete="new-password" placeholder="Repita sua senha" />
                                 <span asp-validation-for="Input.ConfirmPassword" class="field-error"></span>
                             </div>
                             <div class="checklist">
@@ -149,8 +171,18 @@
                                 <div>✓ Gerenciar suas consultas</div>
                                 <div>✓ Usar o assistente virtual CallMed</div>
                             </div>
+
+                            <div class="terms-consent">
+                                <input asp-for="Input.AceitaTermos" type="checkbox" id="aceitaTermos" aria-describedby="termosError" />
+                                <label for="aceitaTermos">
+                                    Li e concordo com os <a href="/termos-de-uso" target="_blank" rel="noopener noreferrer">Termos de Serviço</a>
+                                    e com a <a href="/privacidade" target="_blank" rel="noopener noreferrer">Política de Privacidade</a> da CallMed.
+                                </label>
+                            </div>
+                            <span asp-validation-for="Input.AceitaTermos" id="termosError" class="field-error"></span>
                         </div>
 
+                        <div class="register-client-feedback mensagem erro" id="registerClientFeedback" role="alert" aria-live="assertive" hidden></div>
                         <div class="botoes-form">
                             <button type="button" id="btnVoltar" class="btn-secundario">Voltar</button>
                             <button type="button" id="btnProximo">Continuar</button>

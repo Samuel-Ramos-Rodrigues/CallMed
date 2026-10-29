@@ -6,5 +6,7 @@ public enum StatusMensagemAtendimento
     Processando = 2,
     Enviada = 3,
     Falhou = 4,
-    Ignorada = 5
+    Ignorada = 5,
+    /// <summary>Rascunho da IA aguardando aprovação humana; ainda não foi enviado.</summary>
+    AguardandoAprovacao = 6
 }

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MKSANCrud.Data;
 using MKSANCrud.Services.Atendimento.Canais.WhatsApp;
 using MKSANCrud.Services.Atendimento.Canais.Sms;
+using MKSANCrud.Services.Atendimento.Canais.Email;
 using MKSANCrud.Services.Email;
 
 namespace MKSANCrud.Controllers;
@@ -35,11 +36,23 @@ public sealed class IntegracoesController : Controller
     public async Task<IActionResult> Index(
         [FromServices] IEmailService emailService,
         [FromServices] SmsHttpSender smsSender,
+        [FromServices] AtendimentoEmailReplyAddressService emailReplyAddresses,
+        [FromServices] GmailApiClient gmailApi,
         CancellationToken ct)
     {
         ViewBag.WhatsAppAtivo = string.Equals(_configuration["Atendimento:WhatsApp:Evolution:Enabled"], "true", StringComparison.OrdinalIgnoreCase);
         ViewBag.GeminiConfigurado = !string.IsNullOrWhiteSpace(_configuration["Gemini:ApiKey"]);
         ViewBag.EmailConfigurado = emailService.Configurado;
+        ViewBag.GmailInboxConfigurado = gmailApi.Configurado;
+        ViewBag.EmailEntradaConfigurado = gmailApi.Configurado || emailReplyAddresses.Configurado;
+        var gmailInboxEnabled = _configuration.GetValue<bool>("GmailInbox:Enabled");
+        ViewBag.EmailEntradaProvider = gmailApi.Configurado
+            ? "Gmail API"
+            : gmailInboxEnabled
+                ? "Gmail API pendente de configuração"
+                : emailReplyAddresses.Configurado
+                    ? "Brevo Inbound (legado)"
+                    : "não configurado";
         ViewBag.SmsAtivo = smsSender.Configurado;
         ViewBag.LegacyConfigurada = !string.IsNullOrWhiteSpace(_configuration["LegacyIntegration:ApiKey"]);
         try { ViewBag.BancoConectado = await _context.Database.CanConnectAsync(ct); }

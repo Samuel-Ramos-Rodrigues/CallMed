@@ -167,6 +167,29 @@
                                 </div>
                                 <p>@(mensagem.Texto?.Replace("**", string.Empty))</p>
                                 <div class="message-delivery">
+                                    @if (!entrada && mensagem.Status == StatusMensagemAtendimento.AguardandoAprovacao)
+                                    {
+                                        <div class="email-draft-review" role="status">
+                                            <strong>Rascunho da IA · ainda não enviado</strong>
+                                            <p>Revise o conteúdo antes de enviar ao paciente.</p>
+                                            <div class="email-draft-actions">
+                                                <form asp-action="AprovarRascunho" method="post" data-confirm="Enviar este rascunho por e-mail ao paciente?">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="mensagemId" value="@mensagem.Id" />
+                                                    <button type="submit" class="btn small">Aprovar e enviar</button>
+                                                </form>
+                                                <form asp-action="DescartarRascunho" method="post" data-confirm="Descartar este rascunho? Nenhum e-mail será enviado.">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="mensagemId" value="@mensagem.Id" />
+                                                    <button type="submit" class="btn secondary small">Descartar</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    }
+                                    else if (!entrada && mensagem.Status == StatusMensagemAtendimento.Ignorada && mensagem.Erro?.StartsWith("Rascunho descartado", StringComparison.OrdinalIgnoreCase) == true)
+                                    {
+                                        <small class="message-draft-discarded">Rascunho descartado pela equipe; não foi enviado.</small>
+                                    }
                                     @if (mensagem.Status == StatusMensagemAtendimento.Falhou)
                                     {
                                         var aguardando = mensagem.ProximaTentativaEm > DateTime.UtcNow;

@@ -1,3 +1,10 @@
+## 2026-10-29 — Termos de Serviço e transparência Gmail OAuth
+
+- Adicionada a página pública `/termos-de-uso`, sem autenticação.
+- Links para Termos de Serviço e Política de Privacidade adicionados aos rodapés público, de autenticação e autenticado.
+- Política de Privacidade ampliada para descrever a integração Gmail da caixa de atendimento e o uso limitado de IA para rascunhos administrativos com aprovação humana.
+- Incluídas instruções para configurar URLs no Google Auth Platform e ressalva sobre domínio verificado.
+
 ## Identidade visual clínica e tratamento da logo — 28/10/2026
 
 - Introduzida a camada `clinic-theme.css` em layouts autenticados, públicos e de identidade, com paleta azul-petróleo/verde-água.
@@ -369,3 +376,12 @@ Controllers, Services, Models, Data, DTOs, ViewModels, Middleware, Migrations, G
 - Alto contraste passa a neutralizar cores fixas dos estilos antigos, no modo claro e escuro.
 - Controles de acessibilidade disponibilizados na tela de login e para todos os perfis autenticados.
 - Adicionada folha final de compatibilidade visual e atualizada a versão do cache do PWA.
+
+## 2026-10-28 — recuperação de senha, respostas por e-mail e paleta clínica
+
+- Vincula links novos de redefinição de senha ao UID da conta e usa token em Base64URL; o formulário mostra o e-mail mascarado e não pede CPF novamente.
+- Remove o erro de validação residual do campo CPF/e-mail ao enviar apenas nova senha e confirmação.
+- Adiciona testes unitários do alias Reply-To assinado e do segredo do webhook Brevo.
+- Documenta recebimento de respostas na Central via Brevo Inbound Parsing, com requisito de domínio próprio, MX, webhook e segredos independentes.
+- Ajusta a paleta clínica para superfícies sálvia mais visíveis, padroniza a área de atendimento/admin e força a autenticação a uma coluna em telas de até 960px.
+- Atualiza o cache estático do PWA para `callmed-static-v37-email-reset-routing-clinic-palette`.

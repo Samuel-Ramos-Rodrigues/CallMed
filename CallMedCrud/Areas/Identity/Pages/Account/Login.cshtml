@@ -15,6 +15,10 @@
         <div class="identity-card">
             <a class="identity-back" asp-area="" asp-controller="Home" asp-action="Index">← Voltar ao início</a>
             <div class="identity-card-header"><span class="eyebrow">ACESSO À CONTA</span><h2>Entrar na CallMed</h2><p>Use o CPF associado à conta do paciente ou o e-mail cadastrado na clínica.</p></div>
+            @if (TempData["SenhaRedefinida"] is string senhaRedefinida && !string.IsNullOrWhiteSpace(senhaRedefinida))
+            {
+                <div class="alert alert-success identity-note" role="status" aria-live="polite">@senhaRedefinida</div>
+            }
             <form method="post" action="@Url.Content("~/acesso")" class="identity-form" asp-antiforgery="true">
                 <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
                 <div asp-validation-summary="ModelOnly" class="mensagem erro"></div>

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,6 +12,10 @@ namespace MKSANCrud.Areas.Identity.Pages.Account;
 
 public class RegisterModel : PageModel
 {
+    // Incrementar estas versões quando os documentos legais forem atualizados.
+    private const string VersaoTermos = "2026-10-29";
+    private const string VersaoPrivacidade = "2026-10-29";
+
     private readonly UserManager<Usuario> _userManager;
     private readonly SignInManager<Usuario> _signInManager;
     private readonly MKSANContext _context;
@@ -84,6 +89,9 @@ public class RegisterModel : PageModel
         [Compare(nameof(Password), ErrorMessage = "As senhas não coincidem.")]
         [Display(Name = "Confirmar senha")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        [Display(Name = "Aceito os Termos de Serviço e a Política de Privacidade")]
+        public bool AceitaTermos { get; set; }
     }
 
     public void OnGet(string? returnUrl = null)
@@ -102,6 +110,11 @@ public class RegisterModel : PageModel
 
         var cpf = CadastroValidator.SomenteNumeros(Input.Cpf);
         var email = Input.Email.Trim();
+
+        if (!Input.AceitaTermos)
+        {
+            ModelState.AddModelError("Input.AceitaTermos", "Para criar a conta, marque a caixa confirmando que leu e aceita os Termos de Serviço e a Política de Privacidade.");
+        }
 
         if (!CadastroValidator.CpfValido(cpf))
             ModelState.AddModelError("Input.Cpf", "Informe um CPF válido.");
@@ -182,6 +195,21 @@ public class RegisterModel : PageModel
             await tx.RollbackAsync();
             foreach (var error in roleResult.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
+            return Page();
+        }
+
+        var momentoAceite = DateTimeOffset.UtcNow.ToString("O");
+        var claimsDeAceite = new[]
+        {
+            new Claim("callmed/terms-accepted-version", VersaoTermos),
+            new Claim("callmed/privacy-accepted-version", VersaoPrivacidade),
+            new Claim("callmed/legal-consent-accepted-at-utc", momentoAceite)
+        };
+        var resultadoClaims = await _userManager.AddClaimsAsync(user, claimsDeAceite);
+        if (!resultadoClaims.Succeeded)
+        {
+            await tx.RollbackAsync();
+            ModelState.AddModelError(string.Empty, "Não foi possível registrar seu aceite dos documentos legais. Tente novamente.");
             return Page();
         }
 

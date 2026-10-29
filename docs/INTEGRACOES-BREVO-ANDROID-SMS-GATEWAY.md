@@ -26,7 +26,7 @@ Depois de definir as variáveis, faça um novo deploy. Entre como administrador 
 
 ### Escopo de e-mail
 
-Esta configuração envia e-mails. O recebimento automático de mensagens de e-mail dentro da Central de Atendimento não está configurado nesta versão. O endpoint e as configurações do provedor anterior de entrada foram removidos. Se for necessário receber respostas por e-mail na Central, será preciso desenvolver e homologar uma integração de entrada separada com um provedor compatível.
+Esta configuração envia e-mails. O recebimento automático de respostas na Central é suportado separadamente pelo Brevo Inbound Parsing, mas fica desativado por padrão até que o subdomínio, os MX e o webhook sejam configurados conforme a seção abaixo.
 
 ## SMS — Android SMS Gateway
 
@@ -50,3 +50,27 @@ Use credenciais do gateway, não as credenciais do Brevo. Configure o webhook de
 3. Teste o envio de e-mail para um endereço controlado por você.
 4. Teste SMS apenas com um número autorizado e confirme o resultado no aparelho/gateway.
 5. Confirme falhas de credencial e remetente não verificado antes de publicar para pacientes.
+
+## Respostas por e-mail dentro da Central de Atendimento (opcional)
+
+O envio SMTP por si só não recebe respostas. Para que o paciente clique em **Responder** no próprio e-mail e a resposta apareça na conversa certa do CallMed, a aplicação suporta o **Inbound Parsing** do Brevo. Isso exige um domínio/subdomínio controlado pela clínica; um endereço Gmail (`@gmail.com`) sozinho não permite configurar os registros MX que encaminham as respostas para o CallMed.
+
+1. Controle um domínio próprio e autentique-o no Brevo. Crie um subdomínio dedicado para entrada, por exemplo `reply.seudominio.com.br`; ele deve ser distinto do domínio de envio.
+2. No DNS do subdomínio, cadastre os MX documentados pelo Brevo:
+   - Prioridade `10`: `inbound1.sendinblue.com.`
+   - Prioridade `20`: `inbound2.sendinblue.com.`
+3. No Brevo, crie um webhook com tipo `inbound`, evento `inboundEmailProcessed`, domínio do subdomínio de recebimento e URL:
+   `https://callmed.onrender.com/api/atendimento/email/inbound`
+4. Configure no webhook o cabeçalho personalizado `X-CallMed-Webhook-Secret` com o mesmo valor de `Atendimento__Email__Inbound__WebhookSecret` no Render.
+5. No Render, configure os valores abaixo. Use dois segredos aleatórios independentes, cada um com pelo menos 32 caracteres; nunca reutilize a senha SMTP.
+
+```text
+Atendimento__Email__Inbound__Enabled=true
+Atendimento__Email__Inbound__WebhookSecret=SEGREDO_ALEATORIO_DO_WEBHOOK_COM_32_OU_MAIS_CARACTERES
+Atendimento__Email__Inbound__ReplyAddressSecret=OUTRO_SEGREDO_ALEATORIO_COM_32_OU_MAIS_CARACTERES
+Atendimento__Email__Inbound__ReplyDomain=reply.seudominio.com.br
+```
+
+O CallMed gera um `Reply-To` exclusivo, assinado e vinculado à conversa em cada e-mail enviado pela Central. Ao receber uma resposta, valida o segredo do webhook, valida o endereço de roteamento e confirma que o remetente corresponde ao e-mail da conversa antes de gravar a mensagem. Mensagens para endereços não gerados pelo CallMed são ignoradas; o webhook nunca cria uma conversa nova apenas com base no e-mail recebido.
+
+A integração permanece desativada por padrão. Sem domínio próprio e sem os registros DNS de entrada, o envio de saída continua funcionando, mas as respostas não retornarão automaticamente à Central.

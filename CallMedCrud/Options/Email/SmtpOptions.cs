@@ -11,6 +11,8 @@ public sealed class SmtpOptions
     public string Password { get; set; } = string.Empty;
     public string FromEmail { get; set; } = string.Empty;
     public string FromName { get; set; } = "CallMed";
+    /// <summary>Reply-To padrão para mensagens sem endereço de resposta específico.</summary>
+    public string ReplyToEmail { get; set; } = string.Empty;
     /// <summary>Usa STARTTLS; porta 2525 é utilizada para SMTP com TLS no Brevo/Render.</summary>
     public bool EnableSsl { get; set; } = true;
 }

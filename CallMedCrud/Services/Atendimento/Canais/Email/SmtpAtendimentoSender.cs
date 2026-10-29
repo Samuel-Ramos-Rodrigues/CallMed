@@ -20,7 +20,8 @@ public sealed class SmtpAtendimentoSender : ICanalAtendimentoSender
         string destinatario,
         string texto,
         string? assunto = null,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        string? replyTo = null)
     {
         if (!_email.Configurado)
             return CanalEnvioResultado.Falha(
@@ -42,7 +43,8 @@ public sealed class SmtpAtendimentoSender : ICanalAtendimentoSender
                 ? "Atendimento CallMed"
                 : assunto,
             html,
-            ct);
+            ct,
+            replyTo);
 
         return enviado
             ? CanalEnvioResultado.Ok()

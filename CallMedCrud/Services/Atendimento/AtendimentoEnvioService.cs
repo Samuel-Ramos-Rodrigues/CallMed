@@ -1,7 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Net.Mail;
+using MKSANCrud.Options;
 using MKSANCrud.Data;
 using MKSANCrud.DTOs.Atendimento;
 using MKSANCrud.Models.Atendimento;
+using MKSANCrud.Services.Atendimento.Canais.Email;
 using Npgsql;
 
 namespace MKSANCrud.Services.Atendimento;
@@ -10,8 +14,11 @@ public sealed class AtendimentoEnvioService(
     IEnumerable<ICanalAtendimentoSender> senders,
     MKSANContext context,
     TimeProvider clock,
-    ILogger<AtendimentoEnvioService> logger)
+    ILogger<AtendimentoEnvioService> logger,
+    AtendimentoEmailReplyAddressService emailReplyAddresses,
+    IOptions<GmailInboxOptions> gmailInboxOptions)
 {
+    private readonly GmailInboxOptions _gmailInboxOptions = gmailInboxOptions.Value;
     private readonly IReadOnlyDictionary<CanalAtendimento, ICanalAtendimentoSender> _senders =
         senders.ToDictionary(s => s.Canal);
 
@@ -68,6 +75,53 @@ public sealed class AtendimentoEnvioService(
             : await TentarExistenteAsync(mensagem, conversa, true, ct);
     }
 
+    public async Task<MensagemAtendimento?> AprovarRascunhoAsync(
+        long mensagemId,
+        string usuarioId,
+        CancellationToken ct = default)
+    {
+        var mensagem = await context.MensagensAtendimento.Include(m => m.Conversa)
+            .FirstOrDefaultAsync(m => m.Id == mensagemId &&
+                m.Direcao == DirecaoMensagemAtendimento.Saida &&
+                m.Autor == AutorMensagemAtendimento.Assistente &&
+                m.Status == StatusMensagemAtendimento.AguardandoAprovacao, ct);
+        if (mensagem?.Conversa is null || mensagem.Conversa.Canal != CanalAtendimento.Email)
+            return null;
+
+        mensagem.Status = StatusMensagemAtendimento.Processando;
+        mensagem.AutorUsuarioId = usuarioId;
+        mensagem.VersaoEnvio = Guid.NewGuid();
+        try { await context.SaveChangesAsync(ct); }
+        catch (DbUpdateConcurrencyException)
+        {
+            await context.Entry(mensagem).ReloadAsync(ct);
+            return mensagem.Status == StatusMensagemAtendimento.Enviada ? mensagem : null;
+        }
+
+        return await EnviarReservadaAsync(mensagem, mensagem.Conversa, mensagem.Conversa.Assunto, ct);
+    }
+
+    public async Task<bool> DescartarRascunhoAsync(
+        long mensagemId,
+        string usuarioId,
+        CancellationToken ct = default)
+    {
+        var mensagem = await context.MensagensAtendimento.FirstOrDefaultAsync(m =>
+            m.Id == mensagemId &&
+            m.Direcao == DirecaoMensagemAtendimento.Saida &&
+            m.Autor == AutorMensagemAtendimento.Assistente &&
+            m.Status == StatusMensagemAtendimento.AguardandoAprovacao, ct);
+        if (mensagem is null) return false;
+
+        mensagem.Status = StatusMensagemAtendimento.Ignorada;
+        mensagem.AutorUsuarioId = usuarioId;
+        mensagem.Erro = "Rascunho descartado pela equipe.";
+        mensagem.VersaoEnvio = Guid.NewGuid();
+        try { await context.SaveChangesAsync(ct); }
+        catch (DbUpdateConcurrencyException) { return false; }
+        return true;
+    }
+
     public async Task<MensagemAtendimento?> ReenviarAsync(long mensagemId, CancellationToken ct = default)
     {
         var mensagem = await context.MensagensAtendimento.Include(m => m.Conversa)
@@ -107,8 +161,21 @@ public sealed class AtendimentoEnvioService(
                 resultado = CanalEnvioResultado.Falha("Canal sem provedor registrado.");
             else if (!sender.Configurado)
                 resultado = CanalEnvioResultado.Falha("Canal ainda não foi configurado.");
-            else resultado = await sender.EnviarAsync(conversa.IdentificadorExterno, mensagem.Texto,
-                assunto ?? conversa.Assunto, ct);
+            else
+            {
+                var replyTo = conversa.Canal == CanalAtendimento.Email
+                    ? (_gmailInboxOptions.Enabled &&
+                       MailAddress.TryCreate(_gmailInboxOptions.MailboxEmail?.Trim(), out var gmailMailbox)
+                        ? gmailMailbox.Address
+                        : emailReplyAddresses.CriarEndereco(conversa.Id))
+                    : null;
+                resultado = await sender.EnviarAsync(
+                    conversa.IdentificadorExterno,
+                    mensagem.Texto,
+                    assunto ?? conversa.Assunto,
+                    ct,
+                    replyTo);
+            }
         }
         catch (Exception ex)
         {

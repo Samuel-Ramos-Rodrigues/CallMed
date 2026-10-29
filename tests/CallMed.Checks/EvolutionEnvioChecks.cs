@@ -206,7 +206,7 @@ internal static class EvolutionEnvioChecks
         public CanalEnvioResultado Next { get; set; } = CanalEnvioResultado.Ok();
         public TaskCompletionSource? Hold { get; set; }
         public TaskCompletionSource? Started { get; set; }
-        public async Task<CanalEnvioResultado> EnviarAsync(string destinatario, string texto, string? assunto = null, CancellationToken ct = default)
+        public async Task<CanalEnvioResultado> EnviarAsync(string destinatario, string texto, string? assunto = null, CancellationToken ct = default, string? replyTo = null)
         { Calls++; Started?.TrySetResult(); if (Hold is not null) await Hold.Task; return Next; }
     }
 }

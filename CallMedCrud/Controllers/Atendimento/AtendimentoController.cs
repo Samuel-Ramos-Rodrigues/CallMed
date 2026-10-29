@@ -442,6 +442,47 @@ public sealed class AtendimentoController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AprovarRascunho(long mensagemId, CancellationToken ct)
+    {
+        if (!await PodeOperarAtendimentoAsync(ct)) return Forbid();
+        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(usuarioId)) return Forbid();
+
+        var rascunho = await _envio.AprovarRascunhoAsync(mensagemId, usuarioId, ct);
+        if (rascunho?.Conversa is null)
+        {
+            TempData["Erro"] = "Este rascunho já foi tratado ou não está disponível para aprovação.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        TempData[rascunho.Status == StatusMensagemAtendimento.Enviada ? "Sucesso" : "Erro"] =
+            rascunho.Status == StatusMensagemAtendimento.Enviada
+                ? "Rascunho aprovado e enviado ao paciente."
+                : rascunho.Erro ?? "Não foi possível enviar o rascunho. Revise o canal de e-mail.";
+        return RedirectToAction(nameof(Index), new { id = rascunho.ConversaAtendimentoId });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DescartarRascunho(long mensagemId, CancellationToken ct)
+    {
+        if (!await PodeOperarAtendimentoAsync(ct)) return Forbid();
+        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(usuarioId)) return Forbid();
+
+        var mensagem = await _context.MensagensAtendimento.AsNoTracking()
+            .FirstOrDefaultAsync(m => m.Id == mensagemId, ct);
+        if (mensagem is null) return NotFound();
+
+        var descartado = await _envio.DescartarRascunhoAsync(mensagemId, usuarioId, ct);
+        TempData[descartado ? "Sucesso" : "Erro"] = descartado
+            ? "Rascunho descartado. Nenhum e-mail foi enviado."
+            : "O rascunho já foi tratado ou não está mais disponível.";
+        return RedirectToAction(nameof(Index), new { id = mensagem.ConversaAtendimentoId });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Reenviar(
         long mensagemId,
         CancellationToken ct)

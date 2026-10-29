@@ -39,6 +39,29 @@
             let delivery = article.querySelector('.message-delivery');
             if (!delivery) { delivery = document.createElement('div'); delivery.className = 'message-delivery'; article.append(delivery); }
             delivery.replaceChildren();
+            if (item.status === 'AguardandoAprovacao') {
+                const panel = document.createElement('div'); panel.className = 'email-draft-review'; panel.setAttribute('role', 'status');
+                const title = document.createElement('strong'); title.textContent = 'Rascunho da IA · ainda não enviado';
+                const note = document.createElement('p'); note.textContent = 'Revise o conteúdo antes de enviar ao paciente.';
+                const actions = document.createElement('div'); actions.className = 'email-draft-actions';
+                const token = document.querySelector('input[name="__RequestVerificationToken"]');
+                const makeAction = (path, label, confirmText, secondary) => {
+                    const form = document.createElement('form'); form.method = 'post'; form.action = path; form.dataset.confirm = confirmText;
+                    const id = document.createElement('input'); id.type = 'hidden'; id.name = 'mensagemId'; id.value = String(item.id);
+                    const button = document.createElement('button'); button.type = 'submit'; button.className = secondary ? 'btn secondary small' : 'btn small'; button.textContent = label;
+                    form.append(id); if (token) form.append(token.cloneNode(true)); form.append(button); return form;
+                };
+                if (token) {
+                    actions.append(
+                        makeAction('/Atendimento/AprovarRascunho', 'Aprovar e enviar', 'Enviar este rascunho por e-mail ao paciente?', false),
+                        makeAction('/Atendimento/DescartarRascunho', 'Descartar', 'Descartar este rascunho? Nenhum e-mail será enviado.', true)
+                    );
+                }
+                panel.append(title, note, actions); delivery.append(panel); return;
+            }
+            if (item.status === 'Ignorada' && (item.erro || '').toLowerCase().startsWith('rascunho descartado')) {
+                const note = document.createElement('small'); note.className = 'message-draft-discarded'; note.textContent = 'Rascunho descartado pela equipe; não foi enviado.'; delivery.append(note); return;
+            }
             if (item.status === 'Processando') {
                 const note = document.createElement('small');
                 note.textContent = 'Envio em processamento. Aguarde a confirmação.';
@@ -173,6 +196,15 @@
 
     // Ações de estado usam POST tradicional do navegador.
     // Assim Assumir/Devolver/Encerrar continuam funcionando mesmo se o fetch/polling falhar.
+    document.querySelectorAll('.email-draft-actions form').forEach(form => {
+        form.addEventListener('submit', event => {
+            const confirmation = form.dataset.confirm;
+            if (confirmation && !window.confirm(confirmation)) { event.preventDefault(); return; }
+            const button = form.querySelector('button[type="submit"]');
+            if (button) { button.disabled = true; button.textContent = 'Aguarde...'; }
+        });
+    });
+
     document.querySelectorAll('.atendimento-state-form').forEach(form => {
         form.addEventListener('submit', event => {
             const confirmation = form.dataset.confirm;

@@ -1,14 +1,18 @@
 using MKSANCrud.DTOs.Atendimento;
 using MKSANCrud.Options;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using MKSANCrud.Models.Atendimento;
 using MKSANCrud.Services.Atendimento;
+using MKSANCrud.Services.Atendimento.Canais.Email;
 using MKSANCrud.Services.Atendimento.Canais.Sms;
 using MKSANCrud.Services.Atendimento.Canais.WhatsApp;
 
@@ -23,6 +27,9 @@ public sealed class AtendimentoWebhookController : ControllerBase
     private readonly AtendimentoEnvioService _envio;
     private readonly EvolutionWhatsAppOptions _whatsapp;
     private readonly SmsHttpOptions _sms;
+    private readonly AtendimentoEmailInboundOptions _emailInbound;
+    private readonly AtendimentoEmailReplyAddressService _emailReplyAddresses;
+    private readonly GmailInboxOptions _gmailInbox;
     private readonly ILogger<AtendimentoWebhookController> _logger;
 
     public AtendimentoWebhookController(
@@ -30,12 +37,18 @@ public sealed class AtendimentoWebhookController : ControllerBase
         AtendimentoEnvioService envio,
         IOptions<EvolutionWhatsAppOptions> whatsapp,
         IOptions<SmsHttpOptions> sms,
+        IOptions<AtendimentoEmailInboundOptions> emailInbound,
+        AtendimentoEmailReplyAddressService emailReplyAddresses,
+        IOptions<GmailInboxOptions> gmailInbox,
         ILogger<AtendimentoWebhookController> logger)
     {
         _orquestrador = orquestrador;
         _envio = envio;
         _whatsapp = whatsapp.Value;
         _sms = sms.Value;
+        _emailInbound = emailInbound.Value;
+        _emailReplyAddresses = emailReplyAddresses;
+        _gmailInbox = gmailInbox.Value;
         _logger = logger;
     }
 
@@ -73,10 +86,167 @@ public sealed class AtendimentoWebhookController : ControllerBase
         },
         email = new
         {
-            outboundConfigured =
-                _envio.CanalConfigurado(CanalAtendimento.Email)
+            outboundConfigured = _envio.CanalConfigurado(CanalAtendimento.Email),
+            inboundConfigured = _gmailInbox.Configurado || (!_gmailInbox.Enabled && _emailInbound.Enabled && _emailReplyAddresses.Configurado),
+            gmailInboxConfigured = _gmailInbox.Configurado,
+            inboundDomainConfigured = !string.IsNullOrWhiteSpace(_gmailInbox.MailboxEmail),
+            replyMode = _gmailInbox.Configurado ? "Gmail API; rascunho exige aprovação humana" : "Entrada não configurada"
         }
     });
+
+    /// <summary>
+    /// Recebe respostas de mensagens de e-mail enviadas pelo CallMed.
+    /// Requer o Brevo Inbound Parsing e um cabeçalho secreto configurado no webhook.
+    /// </summary>
+    [HttpPost("email/inbound")]
+    [RequestSizeLimit(1_048_576)]
+    [Consumes("application/json")]
+    public async Task<IActionResult> EmailInbound(CancellationToken ct)
+    {
+        // Gmail API polling substitui o parser pago de entrada. Nunca processe a mesma caixa por dois provedores.
+        if (_gmailInbox.Enabled || !_emailInbound.Enabled)
+            return NotFound();
+
+        var segredo = Request.Headers["X-CallMed-Webhook-Secret"].ToString();
+        if (string.IsNullOrWhiteSpace(segredo))
+        {
+            var authorization = Request.Headers["Authorization"].ToString();
+            if (authorization.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                segredo = authorization[7..].Trim();
+        }
+
+        if (!_emailReplyAddresses.ValidarWebhookSecret(segredo))
+        {
+            _logger.LogWarning("Webhook de e-mail rejeitado por segredo inválido ou integração incompleta.");
+            return Unauthorized();
+        }
+
+        JsonDocument documento;
+        try
+        {
+            documento = await JsonDocument.ParseAsync(Request.Body, cancellationToken: ct);
+        }
+        catch (JsonException)
+        {
+            return BadRequest(new { error = "Payload JSON inválido." });
+        }
+
+        using (documento)
+        {
+            var itens = Propriedade(documento.RootElement, "items");
+            if (itens is not JsonElement array || array.ValueKind != JsonValueKind.Array)
+                return BadRequest(new { error = "O payload precisa conter a matriz 'items' do Brevo." });
+
+            var processados = 0;
+            foreach (var item in array.EnumerateArray().Take(20))
+            {
+                if (item.ValueKind != JsonValueKind.Object ||
+                    !TentarResolverConversaIdEmail(item, out var conversaId))
+                {
+                    // O domínio pode receber mensagens que não são respostas a uma conversa CallMed.
+                    continue;
+                }
+
+                var remetenteBruto = Texto(Propriedade(item, "From"), "Address");
+                if (string.IsNullOrWhiteSpace(remetenteBruto) ||
+                    !MailAddress.TryCreate(remetenteBruto.Trim(), out var remetente) ||
+                    !string.Equals(remetente.Address, remetenteBruto.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    _logger.LogWarning("Resposta de e-mail ignorada por remetente inválido. ConversaId={ConversaId}.", conversaId);
+                    continue;
+                }
+
+                var corpo = ExtrairCorpoEmail(item);
+                if (string.IsNullOrWhiteSpace(corpo))
+                {
+                    _logger.LogDebug("Resposta de e-mail sem texto ignorada. ConversaId={ConversaId}.", conversaId);
+                    continue;
+                }
+
+                var messageId = Texto(item, "MessageId");
+                var assunto = Texto(item, "Subject");
+
+                try
+                {
+                    await _orquestrador.ProcessarEntradaAsync(
+                        new CanalMensagemEntrada
+                        {
+                            Canal = CanalAtendimento.Email,
+                            Identificador = remetente.Address,
+                            Texto = corpo,
+                            MensagemExternaId = messageId,
+                            Assunto = assunto,
+                            ConversaAtendimentoId = conversaId
+                        },
+                        ct);
+                    processados++;
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Falha ao registrar resposta por e-mail na conversa {ConversaId}.", conversaId);
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+            }
+
+            _logger.LogInformation("Webhook Brevo processado. Itens válidos encaminhados: {Quantidade}.", processados);
+            return Ok(new { processed = processados });
+        }
+    }
+
+    private bool TentarResolverConversaIdEmail(JsonElement item, out long conversaId)
+    {
+        conversaId = 0;
+        foreach (var nomeArray in new[] { "To", "Recipients" })
+        {
+            var destinatarios = Propriedade(item, nomeArray);
+            if (destinatarios is not JsonElement lista || lista.ValueKind != JsonValueKind.Array)
+                continue;
+
+            foreach (var destinatario in lista.EnumerateArray().Take(20))
+            {
+                string? endereco = destinatario.ValueKind switch
+                {
+                    JsonValueKind.String => destinatario.GetString(),
+                    JsonValueKind.Object => Texto(destinatario, "Address"),
+                    _ => null
+                };
+
+                if (_emailReplyAddresses.TentarObterConversaId(endereco, out conversaId))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private static string ExtrairCorpoEmail(JsonElement item)
+    {
+        var markdown = Texto(item, "ExtractedMarkdownMessage");
+        var texto = Texto(item, "RawTextBody");
+        var html = Texto(item, "RawHtmlBody");
+        var corpo = !string.IsNullOrWhiteSpace(markdown) ? markdown : texto;
+
+        if (string.IsNullOrWhiteSpace(corpo) && !string.IsNullOrWhiteSpace(html))
+        {
+            var semBlocosAtivos = Regex.Replace(
+                html,
+                @"<(script|style)\b[^>]*>.*?</\1>",
+                " ",
+                RegexOptions.IgnoreCase | RegexOptions.Singleline,
+                TimeSpan.FromMilliseconds(100));
+            semBlocosAtivos = Regex.Replace(semBlocosAtivos, @"<\s*br\s*/?\s*>|</\s*(p|div|li)\s*>", "\n", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(100));
+            corpo = Regex.Replace(semBlocosAtivos, @"<[^>]{0,1000}>", " ", RegexOptions.Singleline, TimeSpan.FromMilliseconds(100));
+            corpo = WebUtility.HtmlDecode(corpo);
+        }
+
+        if (string.IsNullOrWhiteSpace(corpo))
+            return string.Empty;
+        corpo = corpo.Replace("\0", string.Empty).Trim();
+        return corpo.Length > 5000 ? corpo[..5000] : corpo;
+    }
 
     [HttpPost("whatsapp/evolution")]
     [RequestSizeLimit(1_048_576)]

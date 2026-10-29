@@ -75,7 +75,8 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
         string destinatario,
         string texto,
         string? assunto = null,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        string? replyTo = null)
     {
         if (!Configurado)
             return CanalEnvioResultado.Falha("Evolution API não configurada.");

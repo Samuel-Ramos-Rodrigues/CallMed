@@ -43,7 +43,8 @@ public sealed class SmsHttpSender : ICanalAtendimentoSender
         string destinatario,
         string texto,
         string? assunto = null,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        string? replyTo = null)
     {
         if (!Configurado)
         {

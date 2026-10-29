@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="~/css/clinic-final-fixes.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/clinic-polish-2026.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/clinic-unified-palette.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/clinic-functional-fixes.css" asp-append-version="true" />
 </head>
 <body class="callmed-app @(paciente ? "patient-context" : "staff-context")">
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -208,7 +209,7 @@
         @if (TempData["Sucesso"] != null) { <div class="alert success" role="status">@TempData["Sucesso"]</div> }
         @RenderBody()
     </main>
-    <footer class="app-footer"><span>CallMed · cuidado em conexão</span><a href="/privacidade">Privacidade</a></footer>
+    <footer class="app-footer"><span>CallMed · cuidado em conexão</span><nav aria-label="Informações legais"><a href="/privacidade">Privacidade</a><a href="/termos-de-uso">Termos de Serviço</a></nav></footer>
     <nav class="callmed-mobile-nav" aria-label="Navegação no celular">
         @if (User.IsInRole("Funcionario") || User.IsInRole("Admin"))
         {

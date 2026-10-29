@@ -9,4 +9,6 @@ public sealed class CanalMensagemEntrada
     public string Texto { get; init; } = string.Empty;
     public string? MensagemExternaId { get; init; }
     public string? Assunto { get; init; }
+    /// <summary>Usado apenas por webhooks autenticados que respondem a uma conversa já existente.</summary>
+    public long? ConversaAtendimentoId { get; init; }
 }

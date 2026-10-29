@@ -510,3 +510,13 @@
     .care-ticket-art img { width:92px; height:76px; }
     .public-feature-icon { margin-bottom:14px; }
 }
+
+
+/* Links legais públicos para transparência e configuração do OAuth Google. */
+.public-footer nav[aria-label="Informações legais"] {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 18px;
+}
+.public-footer nav[aria-label="Informações legais"] a {
+    color: var(--muted); text-decoration: underline; text-underline-offset: 3px;
+}
+.public-footer nav[aria-label="Informações legais"] a:hover { color: var(--brand); }

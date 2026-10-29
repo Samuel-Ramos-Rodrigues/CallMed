@@ -6,7 +6,7 @@
     <div class="field full"><label asp-for="Email">E-mail</label><input asp-for="Email" autocomplete="email" placeholder="equipe@clinica.com"/><span asp-validation-for="Email" class="validation"></span></div>
     @if (Model == null || Model.Id == 0)
     {
-        <div class="field full"><label asp-for="Senha">Senha de acesso</label><input asp-for="Senha" autocomplete="new-password" placeholder="Mínimo de 8 caracteres, com letra minúscula e número"/><span asp-validation-for="Senha" class="validation"></span><small>Forneça a senha somente à pessoa responsável pela conta.</small></div>
+        <div class="field full"><label asp-for="Senha">Senha de acesso</label><input asp-for="Senha" autocomplete="new-password" placeholder="Mínimo de 8 caracteres, maiúscula, minúscula, número e caractere especial"/><span asp-validation-for="Senha" class="validation"></span><small>Forneça a senha somente à pessoa responsável pela conta.</small></div>
     }
     <div class="field"><label asp-for="Cargo">Perfil operacional</label><select asp-for="Cargo"><option>Atendente</option><option>Recepcionista</option><option>Administrador</option></select></div>
     <div class="field"><span class="cm25-field-label">Situação</span><label class="cm25-toggle-row compact"><input asp-for="Ativo"/><span><strong>Acesso ativo</strong><small>Permite entrar no sistema.</small></span></label></div>

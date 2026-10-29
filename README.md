@@ -364,6 +364,7 @@ Smtp__FromName=CallMed
 Smtp__EnableSsl=true
 
 # Primeiro administrador
+# A senha inicial precisa ter 8+ caracteres, maiúscula, minúscula, número e símbolo/pontuação (espaços não contam).
 BootstrapAdmin__Enabled=false
 BootstrapAdmin__Email=
 BootstrapAdmin__Password=

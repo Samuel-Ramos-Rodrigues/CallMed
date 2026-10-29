@@ -95,6 +95,12 @@ public class HomeController : Controller
         return View();
     }
 
+    [HttpGet("/termos-de-uso")]
+    public IActionResult TermosDeUso()
+    {
+        return View();
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

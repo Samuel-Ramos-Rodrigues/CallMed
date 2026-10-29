@@ -45,7 +45,7 @@
 
     const updateMeta = theme => {
         const meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute('content', theme === 'dark' ? '#1e2b24' : '#dce6da');
+        if (meta) meta.setAttribute('content', theme === 'dark' ? '#1e2b24' : '#d1e0d0');
     };
 
     const apply = (preference, persist = true) => {
