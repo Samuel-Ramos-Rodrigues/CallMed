@@ -1,0 +1,169 @@
+/* CallMed Visual System 2026 — fonte final de tokens e estados.
+   Paleta nova: azul ardósia + índigo + violeta. Não depende de verde como cor de marca.
+   Carregar por último nos layouts autenticado, público e de autenticação. */
+:root:not(.callmed-high-contrast) {
+  color-scheme: light;
+  --bg: #eef2fa;
+  --surface: #f8faff;
+  --surface-alt: #e5ebf7;
+  --ink: #17233b;
+  --muted: #53627d;
+  --line: #cbd5e7;
+  --brand: #4059d9;
+  --brand-strong: #3047c2;
+  --brand-soft: #dfe5ff;
+  --navy: #202c49;
+  --accent: #7657e8;
+  --success: #176a4b;
+  --success-bg: #d9f3e7;
+  --warning: #80510b;
+  --warning-bg: #fff0ce;
+  --danger: #a52e43;
+  --danger-bg: #ffe3e8;
+  --info: #2457a6;
+  --info-bg: #e0ebff;
+  --clinic-deep: #202c49;
+  --clinic-teal: #4059d9;
+  --clinic-mint: #dfe5ff;
+  --clinic-halo: rgba(64,89,217,.2);
+  --clinic-sidebar: #202c49;
+  --clinic-sidebar-2: #17213a;
+  --clinic-canvas: #eef2fa;
+  --clinic-card: #f8faff;
+  --clinic-border: #cbd5e7;
+  --clinic-aqua: #7657e8;
+  --shadow: 0 8px 26px rgba(28,42,75,.08);
+  --clinic-shadow: 0 8px 26px rgba(28,42,75,.08);
+}
+:root[data-theme="dark"]:not(.callmed-high-contrast) {
+  color-scheme: dark;
+  --bg: #101827;
+  --surface: #182338;
+  --surface-alt: #22304a;
+  --ink: #f1f5ff;
+  --muted: #bdc8df;
+  --line: #394965;
+  --brand: #9eafff;
+  --brand-strong: #8195ff;
+  --brand-soft: #29365e;
+  --navy: #0b1220;
+  --accent: #b6a2ff;
+  --success: #8ee0bd;
+  --success-bg: #173c35;
+  --warning: #ffd58a;
+  --warning-bg: #4b3820;
+  --danger: #ffb4c0;
+  --danger-bg: #4b2634;
+  --info: #b5ceff;
+  --info-bg: #20385e;
+  --clinic-deep: #0b1220;
+  --clinic-teal: #9eafff;
+  --clinic-mint: #29365e;
+  --clinic-halo: rgba(158,175,255,.24);
+  --clinic-sidebar: #0b1220;
+  --clinic-sidebar-2: #141f34;
+  --clinic-canvas: #101827;
+  --clinic-card: #182338;
+  --clinic-border: #394965;
+  --clinic-aqua: #b6a2ff;
+  --shadow: 0 12px 34px rgba(0,0,0,.24);
+  --clinic-shadow: 0 12px 34px rgba(0,0,0,.24);
+}
+
+html:not(.callmed-high-contrast), html:not(.callmed-high-contrast) body,
+html:not(.callmed-high-contrast) body.callmed-app,
+html:not(.callmed-high-contrast) body.public-body,
+html:not(.callmed-high-contrast) body.identity-body {
+  background: var(--bg) !important;
+  color: var(--ink) !important;
+}
+html:not(.callmed-high-contrast) body :is(.app-header,.public-header,.public-nav,.modules-dialog,.v18-popover),
+html:not(.callmed-high-contrast) body :is(.panel,.workspace-panel,.day-overview,.appointment-panel,.patient-panel,
+.cm25-panel,.cm25-kpi,.v16-stat,.v16-kpi,.v16-card,.cm19-card,.v18-card,.form-card,.form-section,
+.patient-form-section,.doctor-form-section-v16,.consultation-card,.appointment-card,.table-card,.table-scroll,
+.table-wrap,.simple-filter-v16,.cm25-form-card,.cm21-form-card,.cm25-section-card,.clinic-filterbar,
+.clinic-request-form,.clinic-aside-card,.clinic-audit-panel,.cm19-booking-card,.cm19-booking-section,
+.cm-dashboard-quick,.cm-dashboard-agenda,.cm-dashboard-summary,.cm-dashboard-attention,.cm-dashboard-occupancy,
+.clinic-request-card,.clinic-request-kanban .cm21-kanban-column,.module-grid>a,.module-action,.identity-panel,
+.identity-card,.identity-form-card,.public-how-item) {
+  background-color: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html:not(.callmed-high-contrast) body :is(h1,h2,h3,h4,h5,h6,p,li,dt,dd,label,legend,th,td,.eyebrow,.field-help,.form-text,.hint,.muted,.text-muted,.subtitle,.description) {
+  color: inherit;
+}
+html:not(.callmed-high-contrast) body :is(.text-muted,.muted,.field-help,.form-text,.hint,.subtitle,.description,.account-email,.app-brand small) {
+  color: var(--muted) !important;
+}
+html:not(.callmed-high-contrast) body :is(a:not(.btn),.btn-link,.btn-link-clean,.link-button,.text-link) { color: var(--brand) !important; }
+html:not(.callmed-high-contrast) body :is(a:not(.btn),button,.btn,input,select,textarea,summary,[role="button"]):focus-visible {
+  outline: 3px solid var(--accent) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 3px var(--bg) !important;
+}
+
+/* Botões: cores explícitas em todos os estados para evitar texto desbotado herdado. */
+html:not(.callmed-high-contrast) body :is(.btn-primary,.identity-submit,.btn:not(.secondary):not(.outline):not(.btn-link):not(.btn-link-clean):not(.btn-secondary):not(.btn-outline-secondary):not(.danger),button.primary,[type="submit"].btn) {
+  background: var(--brand) !important;
+  border: 1px solid var(--brand) !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  -webkit-text-fill-color: #fff !important;
+}
+html:not(.callmed-high-contrast) body :is(.btn-primary,.identity-submit,.btn:not(.secondary):not(.outline):not(.btn-link):not(.btn-link-clean):not(.btn-secondary):not(.btn-outline-secondary):not(.danger),button.primary,[type="submit"].btn):is(:hover,:focus-visible,:active) {
+  background: var(--brand-strong) !important;
+  border-color: var(--brand-strong) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  opacity: 1 !important;
+}
+html:not(.callmed-high-contrast) body :is(.btn-secondary,.btn.secondary,.btn-secundario,.identity-secondary,.btn-outline-secondary,.btn.outline,button.secondary) {
+  background: var(--surface-alt) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink) !important;
+  opacity: 1 !important;
+}
+html:not(.callmed-high-contrast) body :is(.btn-secondary,.btn.secondary,.btn-secundario,.identity-secondary,.btn-outline-secondary,.btn.outline,button.secondary):is(:hover,:focus-visible,:active) {
+  background: var(--brand-soft) !important;
+  border-color: var(--brand) !important;
+  color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink) !important;
+}
+html:not(.callmed-high-contrast) body :is(.btn-danger,.btn.danger,.btn-delete,.danger-button) {
+  background: var(--danger-bg) !important; border-color: var(--danger) !important;
+  color: var(--danger) !important; -webkit-text-fill-color: var(--danger) !important; opacity: 1 !important;
+}
+html:not(.callmed-high-contrast) body :is(button,a.btn,input[type="button"],input[type="submit"],[role="button"]):disabled,
+html:not(.callmed-high-contrast) body :is(button,a.btn,input[type="button"],input[type="submit"],[role="button"])[aria-disabled="true"] {
+  opacity: 1 !important; cursor: not-allowed !important;
+  background: var(--surface-alt) !important; border-color: var(--line) !important;
+  color: var(--muted) !important; -webkit-text-fill-color: var(--muted) !important;
+}
+html:not(.callmed-high-contrast) body :is(button,a.btn,input[type="button"],input[type="submit"]):disabled svg,
+html:not(.callmed-high-contrast) body :is(button,a.btn,input[type="button"],input[type="submit"]):disabled span { color: inherit !important; fill: currentColor; }
+html:not(.callmed-high-contrast) body :is(.btn-link,.btn-link-clean,.link-button,.text-link):is(:hover,:focus-visible) {
+  color: var(--brand-strong) !important; text-decoration: underline;
+}
+
+/* Campos e tabelas usam a superfície do tema em vez de cores brancas fixas. */
+html:not(.callmed-high-contrast) body :is(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),select,textarea,.form-control,.form-select) {
+  background-color: var(--surface) !important; color: var(--ink) !important;
+  border-color: var(--line) !important; caret-color: var(--brand);
+}
+html:not(.callmed-high-contrast) body :is(input,select,textarea)::placeholder { color: var(--muted) !important; opacity: 1 !important; }
+html:not(.callmed-high-contrast) body :is(input,select,textarea):focus {
+  border-color: var(--brand) !important; box-shadow: 0 0 0 3px var(--clinic-halo) !important;
+}
+html:not(.callmed-high-contrast) body :is(table,thead,tbody,tr,th,td) { border-color: var(--line); }
+html:not(.callmed-high-contrast) body :is(th,.table thead th) { background: var(--surface-alt) !important; color: var(--ink) !important; }
+html:not(.callmed-high-contrast) body :is(.panel-footer,.card-footer,.table-footer) { background: var(--surface-alt) !important; color: var(--muted) !important; }
+html:not(.callmed-high-contrast) body :is(.primary-nav a.active,.callmed-mobile-nav a.active,.module-grid a.active) {
+  color: var(--brand) !important; background: var(--brand-soft) !important;
+}
+html:not(.callmed-high-contrast) body :is(.app-header,.public-header,.public-nav) { box-shadow: var(--shadow) !important; }
+html:not(.callmed-high-contrast) body .app-brand small { opacity: 1 !important; }
+html:not(.callmed-high-contrast) body :is(.badge,.status-pill,.status-badge) { opacity: 1 !important; }
+html:not(.callmed-high-contrast) body :is(.alert,.notice,.identity-note) { color: var(--ink); }

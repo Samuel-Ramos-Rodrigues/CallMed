@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v40-unified-visual-system';
+const CACHE_NAME = 'callmed-static-v40-visual-system-2026';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -15,7 +15,6 @@ const STATIC_ASSETS = [
     '/css/clinic-polish-2026.css',
     '/css/clinic-unified-palette.css',
     '/css/clinic-functional-fixes.css',
-    '/css/callmed-visual-system.css',
     '/css/acessos.css',
     '/css/modules.css',
     '/js/preferences.js',
