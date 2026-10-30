@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v39-visual-system-rebuilt';
+const CACHE_NAME = 'callmed-static-v40-assistant-widget-fix';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.

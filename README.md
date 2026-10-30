@@ -491,3 +491,10 @@ O projeto prioriza:
 ## V22.2 — Shiftboard Edition
 
 Variante visual alternativa com quadro operacional por turno, navegação por espaços de trabalho e sidebar apenas como launcher de módulos. A lógica de negócio, banco, integrações e estrutura backend permanecem preservados.
+
+## Ajuste do assistente flutuante (29/10/2026)
+
+- Corrigidos seletores CSS que não correspondiam às classes reais do partial `_AssistenteFlutuante.cshtml`.
+- O cabeçalho, logotipo, botões de limpar/fechar, lista de mensagens, balões de usuário/IA e compositor foram estilizados com seletores scoped ao widget.
+- A caixa agora tem altura responsiva, área de mensagens rolável, textarea compacto, botão de envio consistente e estilos para modo claro/escuro.
+- Cache do service worker atualizado para `callmed-static-v40-assistant-widget-fix`.
