@@ -4,20 +4,19 @@
 
 <h1 align="center">CallMed</h1>
 
-> **Áreas separadas por perfil:** login de Médico, Atendente e Administrador, com criação de contas pela administração. [Como usar e verificar os acessos](docs/ACESSOS-DA-EQUIPE.md).
+> **Perfis de acesso:** áreas de Paciente, Médico, Atendente/Recepcionista e Administrador. As contas da equipe são criadas pela administração; o atendente usa o papel interno `Funcionario` para manter compatibilidade com o banco. [Como usar e verificar os acessos](docs/ACESSOS-DA-EQUIPE.md).
 >
-> **Envio WhatsApp corrigido:** espera após HTTP 429, reenvio da mesma mensagem e avisos automáticos sem duplicação. [Correção, configuração e atualização do banco](docs/CORRECAO-ENVIO-WHATSAPP.md).
+> **Atendimento WhatsApp:** tratamento de HTTP 429, reenvio controlado e prevenção de avisos automáticos duplicados. [Correção, configuração e atualização do banco](docs/CORRECAO-ENVIO-WHATSAPP.md).
 >
-> **CSS revisado em todo o site:** seis folhas de estilo, 58 páginas Razor e duas telas offline. [Correções e inventário página por página](docs/REVISAO-CSS.md).
+> **Identidade visual atual:** CSS centralizado em um único arquivo (`CallMedCrud/wwwroot/css/callmed.css`), com temas claro e escuro em índigo, safira e lavanda. A base contém 73 views MVC, 7 páginas Identity e páginas próprias de contingência/offline. [Redesign visual](docs/REDESIGN-VISUAL-2026-10-29.md) · [Compatibilidade e correções de 30/10](CallMedCrud/docs/CORRECAO-COMPATIBILIDADE-VISUAL-2026-10-30.md).
 >
-> **Layout atualizado e projeto organizado.** [Veja a limpeza, o visual e as verificações](docs/LAYOUT-E-ORGANIZACAO.md).
+> **Segurança de exames:** o atalho “Meus exames” identifica o paciente pela conta autenticada; o acesso ao histórico de outras pessoas permanece restrito.
 >
-> **Correção de exames:** o atalho “Meus exames” identifica o paciente pela conta logada; acesso a históricos de outras pessoas permanece bloqueado.
+> **Recursos operacionais:** cadastro presencial sem e-mail, fila offline protegida, reconciliação com triagem, orientações e comprovante, histórico de exames e diagnóstico da Evolution API.
 >
-> **Recursos V22 preservados:** Cadastro presencial sem e-mail, fila offline protegida, reconciliação com triagem, orientações/comprovante, histórico de exames e diagnóstico da Evolution.
-> **Matriz de convênios (V25):** cobertura por convênio/produto e especialidade, marcação de autorização prévia, pendências de conferência e registro auditável da decisão da equipe. A matriz interna não substitui a verificação individual na operadora. [Fluxo e homologação](docs/FLUXO-MATRIZ-CONVENIOS-ANS.md).
+> **Matriz de convênios:** cobertura por convênio/produto e especialidade, sinalização de autorização prévia, pendências de conferência e registro auditável da decisão da equipe. A matriz interna não substitui a verificação individual na operadora. [Fluxo e homologação](docs/FLUXO-MATRIZ-CONVENIOS-ANS.md).
 >
-> [Entrega e atualização do banco](docs/ENTREGA-V22.md) · [Evolution junto do projeto](docs/integracoes/EVOLUTION-NO-PROPRIO-PROJETO.md) · [Roteiro de homologação e custos](docs/ROTEIRO-HOMOLOGACAO-V22.md) · [Validação executada](docs/validacao/VALIDACAO-V22.md)
+> [Entrega e atualização do banco](docs/ENTREGA-V22.md) · [Evolution no próprio projeto](docs/integracoes/EVOLUTION-NO-PROPRIO-PROJETO.md) · [Roteiro de homologação](docs/ROTEIRO-HOMOLOGACAO-V22.md) · [Validação](docs/validacao/VALIDACAO-V22.md)
 
 
 <p align="center">
@@ -122,7 +121,7 @@ flowchart LR
 |---|---|
 | **Paciente** | Agendar, consultar, confirmar, remarcar/cancelar quando permitido, lista de espera, conta e assistente |
 | **Médico** | Painel e agenda relacionados ao atendimento médico |
-| **Funcionário** | Pacientes, médicos, agenda, triagem, consultas, Central de Atendimento e relatórios |
+| **Atendente / Recepcionista** | Pacientes, médicos, agenda, triagem, consultas, Central de Atendimento e relatórios. Papel interno no Identity: `Funcionario`. |
 | **Administrador** | Recursos administrativos, funcionários, convênios, especialidades, integrações, auditoria e configurações |
 
 A autorização é validada no servidor com **ASP.NET Core Identity + Roles**.
@@ -168,8 +167,15 @@ CallMed/
 │
 ├── CallMedTWA/                  # Aplicativo Android via TWA
 ├── PlayStore/                   # Materiais de publicação
-├── docs/                        # Documentação técnica
-├── .github/workflows/           # Automação de build
+├── docs/                        # Documentação técnica e validação
+├── tests/                       # Verificações .NET e testes da contingência
+│   ├── CallMed.Checks/           # Verificações executáveis do projeto
+│   ├── contingencia-dom.mjs      # Testes DOM da fila offline
+│   └── contingencia-browser.cjs  # Testes de navegador com Playwright
+├── scripts/                     # Scripts auxiliares
+├── .github/workflows/            # Automação de build/publicação
+├── .env.example                 # Modelo de configuração (sem segredos)
+├── compose.evolution.yml        # Ambiente auxiliar da Evolution API
 ├── Dockerfile
 └── CallMed.sln
 ```
@@ -274,6 +280,22 @@ Principais recursos:
 
 ---
 
+## Identidade visual e Design System
+
+A interface utiliza um sistema visual centralizado para manter a mesma linguagem entre as áreas de paciente, equipe, administração, autenticação e páginas públicas.
+
+- **Folha de estilo principal:** `CallMedCrud/wwwroot/css/callmed.css`.
+- **Temas:** claro, escuro e preferência do sistema, por meio do mecanismo de tema existente.
+- **Paleta:** índigo, azul-safira, lavanda e neutros azulados. O verde fica reservado a estados semânticos, como sucesso, e não é a cor principal da marca.
+- **Componentes:** navegação, botões, formulários, tabelas, cartões, indicadores, agenda, atendimento omnichannel, acessibilidade e estados de validação.
+- **Responsividade:** layouts adaptados a desktop e dispositivos móveis, com áreas roláveis próprias para tabelas e grades extensas.
+
+As regras novas devem ser integradas ao arquivo principal e agrupadas por componente. Evite recriar folhas paralelas ou adicionar correções globais que possam competir com o sistema visual.
+
+Documentação: [redesign visual](./docs/REDESIGN-VISUAL-2026-10-29.md) e [correções de compatibilidade visual](./CallMedCrud/docs/CORRECAO-COMPATIBILIDADE-VISUAL-2026-10-30.md).
+
+---
+
 ## Android / TWA
 
 O repositório também inclui um wrapper Android baseado em **Trusted Web Activity**.
@@ -282,7 +304,8 @@ O repositório também inclui um wrapper Android baseado em **Trusted Web Activi
 applicationId: com.callmed.app
 minSdk: 26
 targetSdk: 36
-versionName: 21.6.5
+versionCode: 2220
+versionName: 22.2.0
 ```
 
 Arquivos e instruções estão em **[CallMedTWA/README-TWA.md](./CallMedTWA/README-TWA.md)**.
@@ -331,6 +354,30 @@ dotnet run --project CallMedCrud/CallMedCrud.csproj
 ```
 
 > Não publique senhas, tokens ou connection strings reais no repositório.
+
+### Executar as verificações .NET
+
+O repositório inclui o projeto executável `tests/CallMed.Checks`, que reúne verificações de regras e integrações sem enviar mensagens reais:
+
+```bash
+dotnet restore CallMed.sln
+dotnet build CallMed.sln --no-restore
+dotnet run --project tests/CallMed.Checks/CallMed.Checks.csproj
+```
+
+### Executar os testes da contingência no navegador
+
+Os testes JavaScript ficam em `tests/` e utilizam Happy DOM e Playwright:
+
+```bash
+cd tests
+npm install
+npm run test:dom
+npx playwright install chromium
+npm run test:browser
+```
+
+O teste de navegador utiliza servidor local e dados fictícios. Ele não substitui a homologação dos fluxos com banco, contas e integrações de um ambiente de desenvolvimento.
 
 ---
 
@@ -449,11 +496,22 @@ O projeto inclui, entre outras medidas:
 
 ---
 
+## Versões e histórico
+
+O projeto web não declara uma versão única do produto no arquivo raiz. As entregas e mudanças funcionais ficam registradas em [`docs/CHANGELOG.md`](./docs/CHANGELOG.md). O aplicativo Android/TWA possui versionamento próprio: atualmente `versionName` **22.2.0** e `versionCode` **2220**, definidos em `CallMedTWA/app/build.gradle`.
+
+Não confunda o `versionCode` do Android com a versão do backend ou com os identificadores de patches de banco (por exemplo, `Database__ApplyV25Patch`).
+
+---
+
 ## Documentação
 
 | Documento | Conteúdo |
 |---|---|
 | [Arquitetura](./docs/ARQUITETURA.md) | Organização técnica e responsabilidades |
+| [Redesign visual](./docs/REDESIGN-VISUAL-2026-10-29.md) | Identidade visual atual, folha CSS unificada e áreas abrangidas |
+| [Compatibilidade visual](./CallMedCrud/docs/CORRECAO-COMPATIBILIDADE-VISUAL-2026-10-30.md) | Correções de seletores, variáveis e componentes de agendamento/acessibilidade |
+| [Revisão CSS histórica](./docs/REVISAO-CSS.md) | Registro de revisão anterior; consulte o redesign para a estrutura visual atual |
 | [Desafio SENAI](./docs/DESAFIO-SENAI.md) | Relação entre o problema e a solução |
 | [Integração legada](./docs/integracoes/INTEGRACAO-LEGADO.md) | API para sistemas existentes |
 | [Deploy / Render](./docs/deploy/V21.5.1-RENDER-HTTP500.md) | Correção e configuração para Render |
@@ -461,6 +519,21 @@ O projeto inclui, entre outras medidas:
 | [Validação](./docs/validacao/VALIDACAO.md) | Checklist técnico da release |
 | [Histórico consolidado](./docs/CHANGELOG.md) | Histórico das versões anteriores, reunido em um documento |
 | [Android / TWA](./CallMedTWA/README-TWA.md) | Geração e configuração do app Android |
+
+---
+
+## Contribuição e manutenção
+
+Antes de propor uma alteração:
+
+1. verifique se a funcionalidade ou correção já está registrada em `docs/CHANGELOG.md` ou nas documentações do módulo;
+2. preserve as regras de autorização no servidor e não coloque segredos em código, commits, prints ou arquivos de configuração versionados;
+3. execute o build e as verificações aplicáveis descritas neste README;
+4. descreva no pull request as telas, perfis, cenários e resoluções testadas. Para alterações visuais, inclua capturas dos temas claro e escuro quando pertinente.
+
+## Licença e uso
+
+Nesta versão do repositório não há um arquivo `LICENSE`. Portanto, não presuma que o código esteja liberado sob uma licença open source ou que possa ser redistribuído. A licença e as permissões de uso precisam ser definidas pelo responsável pelo projeto e incluídas no repositório.
 
 ---
 
@@ -487,14 +560,11 @@ O projeto prioriza:
   <sub>Agendamento mais rápido, acessível e conectado.</sub>
 </p>
 
+## Estado atual da interface — 30/10/2026
 
-## V22.2 — Shiftboard Edition
+- A interface utiliza uma única folha CSS de produção: `CallMedCrud/wwwroot/css/callmed.css`.
+- A folha foi reconstruída para preservar os seletores utilizados pelas views Razor e scripts, mantendo a identidade índigo, safira e lavanda nos temas claro e escuro.
+- O service worker utiliza o cache `callmed-static-v44-booking-a11y-fix`.
+- O redesign e as correções de compatibilidade estão documentados em `docs/REDESIGN-VISUAL-2026-10-29.md` e `CallMedCrud/docs/CORRECAO-COMPATIBILIDADE-VISUAL-2026-10-30.md`.
 
-Variante visual alternativa com quadro operacional por turno, navegação por espaços de trabalho e sidebar apenas como launcher de módulos. A lógica de negócio, banco, integrações e estrutura backend permanecem preservados.
-
-## Ajuste do assistente flutuante (29/10/2026)
-
-- Corrigidos seletores CSS que não correspondiam às classes reais do partial `_AssistenteFlutuante.cshtml`.
-- O cabeçalho, logotipo, botões de limpar/fechar, lista de mensagens, balões de usuário/IA e compositor foram estilizados com seletores scoped ao widget.
-- A caixa agora tem altura responsiva, área de mensagens rolável, textarea compacto, botão de envio consistente e estilos para modo claro/escuro.
-- Cache do service worker atualizado para `callmed-static-v40-assistant-widget-fix`.
+As revisões anteriores permanecem no changelog como histórico; para novos ajustes, use a folha unificada e confirme os seletores reais das views e scripts antes de alterar estilos.
