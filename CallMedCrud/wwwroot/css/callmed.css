@@ -2865,3 +2865,353 @@ button:not(:disabled):hover, a:hover { -webkit-tap-highlight-color: transparent;
 .exception-guide-icon.extra, .exception-option-icon.extra { background: var(--cm-success-bg); color: var(--cm-success); }
 .exception-guide-icon.block, .exception-option-icon.block { background: var(--cm-danger-bg); color: var(--cm-danger); }
 .exception-guide-icon.away, .exception-option-icon.away { background: var(--cm-warning-bg); color: var(--cm-warning); }
+
+
+/* =====================================================================
+   COMPATIBILIDADE E RECONSTRUÇÃO DE COMPONENTES — BASE ORIGINAL CALLMED
+   Mantém os tokens da identidade índigo/lavanda atual e restaura os
+   contratos de variáveis e seletores usados pelas views originais.
+   ===================================================================== */
+
+/* Aliases completos dos tokens da primeira versão, agora mapeados
+   exclusivamente para a paleta atual. */
+:root {
+  --clinic-deep: var(--cm-ink-2);
+  --clinic-teal: var(--cm-primary);
+  --clinic-mint: var(--cm-primary-soft);
+  --clinic-halo: var(--cm-ring);
+  --clinic-sidebar: var(--cm-surface-raised);
+  --clinic-sidebar-2: var(--cm-surface-strong);
+  --clinic-canvas: var(--cm-bg);
+  --clinic-card: var(--cm-surface);
+  --clinic-border: var(--cm-border);
+  --clinic-aqua: var(--cm-accent);
+  --clinic-shadow: var(--cm-shadow);
+  --mk-primary: var(--cm-primary);
+  --mk-text: var(--cm-ink);
+  --mk-muted: var(--cm-muted);
+  --mk-border: var(--cm-border);
+  --mk-surface: var(--cm-surface);
+  --mk-primary-soft: var(--cm-primary-soft);
+}
+:root[data-theme="dark"] {
+  --clinic-deep: var(--cm-ink);
+  --clinic-teal: var(--cm-primary);
+  --clinic-mint: var(--cm-primary-soft);
+  --clinic-halo: var(--cm-ring);
+  --clinic-sidebar: var(--cm-surface);
+  --clinic-sidebar-2: var(--cm-surface-raised);
+  --clinic-canvas: var(--cm-bg);
+  --clinic-card: var(--cm-surface);
+  --clinic-border: var(--cm-border);
+  --clinic-aqua: var(--cm-accent);
+  --clinic-shadow: var(--cm-shadow);
+  --mk-primary: var(--cm-primary);
+  --mk-text: var(--cm-ink);
+  --mk-muted: var(--cm-muted);
+  --mk-border: var(--cm-border);
+  --mk-surface: var(--cm-surface);
+  --mk-primary-soft: var(--cm-primary-soft);
+}
+
+/* AGENDAMENTO: cabeçalho com etapa, título e descrição sem quebra indevida. */
+.cm19-booking-section-head {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "step title"
+    ". description";
+  align-items: center;
+  justify-content: initial;
+  column-gap: 14px;
+  row-gap: 4px;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 18px;
+}
+.cm19-booking-section-head > span {
+  grid-area: step;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 76px;
+  min-height: 34px;
+  height: auto;
+  padding: 6px 12px;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  border-radius: 999px;
+}
+.cm19-booking-section-head h2 {
+  grid-area: title;
+  min-width: 0;
+  margin: 0;
+  line-height: 1.25;
+  text-align: left;
+}
+.cm19-booking-section-head p {
+  grid-area: description;
+  min-width: 0;
+  margin: 0;
+  color: var(--cm-muted);
+  line-height: 1.5;
+}
+
+/* Especialidades, médicos, datas e horários: classes realmente geradas
+   pelo JavaScript de Consulta/_Form.cshtml. */
+.cm19-specialty-option,
+.cm19-doctor-option,
+.cm19-date-option,
+.cm19-time-option {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 15px;
+  border: 1px solid var(--cm-border);
+  border-radius: var(--cm-radius-sm);
+  background: var(--cm-surface);
+  color: var(--cm-ink);
+  font: inherit;
+  line-height: 1.4;
+  text-align: left;
+  white-space: normal;
+  cursor: pointer;
+  box-shadow: var(--cm-shadow-sm);
+  transition: border-color var(--cm-motion), background-color var(--cm-motion),
+              box-shadow var(--cm-motion), transform var(--cm-motion);
+}
+.cm19-specialty-option:hover,
+.cm19-doctor-option:hover,
+.cm19-date-option:hover,
+.cm19-time-option:hover {
+  border-color: var(--cm-primary);
+  background: var(--cm-primary-soft);
+  color: var(--cm-ink);
+  box-shadow: var(--cm-shadow);
+  transform: translateY(-1px);
+}
+.cm19-specialty-option.selected,
+.cm19-doctor-option.selected,
+.cm19-date-option.selected,
+.cm19-time-option.selected,
+.cm19-specialty-option[aria-pressed="true"],
+.cm19-doctor-option[aria-pressed="true"],
+.cm19-date-option[aria-pressed="true"],
+.cm19-time-option[aria-pressed="true"] {
+  border-color: var(--cm-primary);
+  background: var(--cm-primary-soft);
+  color: var(--cm-ink);
+  box-shadow: inset 0 0 0 1px var(--cm-primary), var(--cm-shadow-sm);
+}
+.cm19-specialty-option > span:first-child,
+.cm19-doctor-option .avatar {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--cm-primary-soft);
+  color: var(--cm-primary);
+}
+.cm19-specialty-option > span:first-child svg { width: 19px; height: 19px; }
+.cm19-specialty-option > strong,
+.cm19-doctor-option strong,
+.cm19-date-option strong,
+.cm19-time-option strong {
+  min-width: 0;
+  color: inherit;
+  font-weight: 750;
+}
+.cm19-doctor-option > span:nth-of-type(2) {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cm19-doctor-option > span:nth-of-type(2) strong {
+  overflow-wrap: anywhere;
+}
+.cm19-doctor-option > span:nth-of-type(2) small,
+.cm19-date-option small,
+.cm19-date-option > span {
+  color: var(--cm-muted);
+  font-size: .82rem;
+}
+.cm19-doctor-option > b {
+  flex: 0 0 auto;
+  color: var(--cm-primary);
+  font-size: 1.35rem;
+}
+.cm19-date-option {
+  min-height: 82px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+.cm19-date-option small { font-weight: 650; }
+.cm19-date-option strong { font-size: 1.35rem; line-height: 1.15; }
+.cm19-time-option {
+  min-height: 52px;
+  justify-content: center;
+  text-align: center;
+  font-weight: 750;
+}
+.cm19-choice-placeholder {
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding: 16px;
+  border: 1px dashed var(--cm-border-strong);
+  border-radius: var(--cm-radius-sm);
+  color: var(--cm-muted);
+  background: var(--cm-surface-muted);
+}
+
+/* O botão de busca automática contém ícone e texto em dois blocos. */
+.cm19-smart-slot {
+  width: 100%;
+  min-height: 64px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-top: 14px;
+  text-align: left;
+}
+.cm19-smart-slot > svg {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  color: var(--cm-primary);
+}
+.cm19-smart-slot > span {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cm19-smart-slot strong { color: inherit; }
+.cm19-smart-slot small { color: var(--cm-muted); }
+
+/* CONFIGURAÇÕES: o painel de acessibilidade deve usar a largura do cartão,
+   não a largura do popover compacto do cabeçalho. */
+.cm21-a11y-options {
+  width: 100%;
+  max-width: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+.cm21-a11y-option {
+  width: 100%;
+  min-width: 0;
+  min-height: 76px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  text-align: left;
+  white-space: normal;
+  border: 1px solid var(--cm-border);
+  border-radius: var(--cm-radius-sm);
+  background: var(--cm-surface);
+  color: var(--cm-ink);
+}
+.cm21-a11y-option > span {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--cm-primary-soft);
+  color: var(--cm-primary);
+  font-weight: 800;
+}
+.cm21-a11y-option > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cm21-a11y-option strong { color: var(--cm-ink); }
+.cm21-a11y-option small {
+  color: var(--cm-muted);
+  line-height: 1.4;
+}
+.cm21-a11y-option > b {
+  justify-self: end;
+  color: var(--cm-muted);
+  font-size: .78rem;
+  white-space: nowrap;
+}
+.cm21-a11y-option[aria-pressed="true"] {
+  border-color: var(--cm-primary);
+  background: var(--cm-primary-soft);
+}
+.cm21-a11y-read-actions {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* O popover de acessibilidade do cabeçalho continua compacto; não herda
+   a largura do painel completo de configurações. */
+.cm21-a11y-popover { width: min(290px, calc(100vw - 24px)); }
+.v18-popover .cm21-a11y-options { width: 100%; display: flex; flex-direction: column; }
+
+/* Controles desabilitados permanecem legíveis e distinguíveis. */
+.cm19-specialty-option:disabled,
+.cm19-doctor-option:disabled,
+.cm19-date-option:disabled,
+.cm19-time-option:disabled,
+.cm19-smart-slot:disabled,
+.cm21-a11y-option:disabled {
+  opacity: .58;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.cm19-specialty-option:focus-visible,
+.cm19-doctor-option:focus-visible,
+.cm19-date-option:focus-visible,
+.cm19-time-option:focus-visible,
+.cm19-smart-slot:focus-visible,
+.cm21-a11y-option:focus-visible {
+  outline: 3px solid var(--cm-primary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .cm19-booking-section-head {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "step" "title" "description";
+    gap: 7px;
+  }
+  .cm19-booking-section-head > span { justify-self: start; }
+  .cm19-specialty-grid,
+  .cm19-choice-grid,
+  .cm19-date-choices,
+  .cm19-time-choices,
+  .cm19-settings-grid,
+  .cm21-a11y-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cm21-a11y-option { grid-template-columns: 34px minmax(0, 1fr) auto; }
+}

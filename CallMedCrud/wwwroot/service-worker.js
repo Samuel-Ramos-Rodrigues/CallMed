@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v43-css-compat-audit';
+const CACHE_NAME = 'callmed-static-v44-booking-a11y-fix';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
