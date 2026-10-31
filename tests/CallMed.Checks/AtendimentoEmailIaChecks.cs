@@ -62,5 +62,20 @@ internal static class AtendimentoEmailIaChecks
             AutorMensagemAtendimento.Assistente, StatusMensagemAtendimento.AguardandoAprovacao);
         check(await service.ObterUltimaEntradaPendenteAsync(301) is null,
             "Rascunho já existente bloqueia nova tentativa sobre a mesma entrada");
+
+        // Uma nova pergunta depois de um rascunho antigo precisa voltar a ser
+        // analisável, sem reprocessar e-mails anteriores.
+        db.MensagensAtendimento.Add(new MensagemAtendimento
+        {
+            Id = 9999,
+            ConversaAtendimentoId = 301,
+            Autor = AutorMensagemAtendimento.Paciente,
+            Direcao = DirecaoMensagemAtendimento.Entrada,
+            Status = StatusMensagemAtendimento.Recebida,
+            Texto = "Quais medicu tem ai"
+        });
+        await db.SaveChangesAsync();
+        check((await service.ObterUltimaEntradaPendenteAsync(301))?.Id == 9999,
+            "Nova mensagem após rascunho anterior permite nova análise da IA");
     }
 }

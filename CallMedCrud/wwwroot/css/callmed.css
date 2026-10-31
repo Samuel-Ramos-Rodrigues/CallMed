@@ -3305,3 +3305,25 @@ button:not(:disabled):hover, a:hover { -webkit-tap-highlight-color: transparent;
 
 /* Evita o contorno duplo no campo de busca do painel clássico. */
 .atendimento-inbox .cm-classic-inbox-search input[type="search"] { border: 0 !important; box-shadow: none !important; background: transparent !important; outline: none !important; -webkit-appearance: none; appearance: none; }
+
+/* CallMed clássico · correções pontuais de acessibilidade e alinhamento (31/10/2026). */
+.password-wrap { min-width: 0; width: 100%; }
+.password-wrap input { min-width: 0; padding-right: 98px !important; }
+.password-toggle { right: 7px; width: auto; min-width: 76px; max-width: 90px; height: 36px; padding: 0 10px; white-space: nowrap; font-size: .78rem; font-weight: 680; border-radius: 9px; }
+.password-toggle:focus-visible { outline: 2px solid var(--cm-primary); outline-offset: 2px; }
+.channel-status-card.is-partial { border-color: color-mix(in srgb, var(--cm-warning) 35%, var(--cm-border)); }
+.channel-status-card.is-partial .channel-status-card-top > span { background: var(--cm-warning-bg); color: var(--cm-warning); border-color: color-mix(in srgb, var(--cm-warning) 30%, var(--cm-border)); }
+.channel-status-dialog { max-width: calc(100vw - 24px); }
+.channel-status-card-top { flex-wrap: wrap; }
+.channel-status-head > div { min-width: 0; }
+.context-profile > div { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+.context-profile small, .context-profile strong, .context-profile > div > span { line-height: 1.4; }
+.atendimento-header-actions { min-width: 0; flex-wrap: wrap; }
+.atendimento-header-actions > form { flex: 0 0 auto; }
+.atendimento-action-hint { font-size: .72rem; color: var(--cm-muted); width: 100%; }
+@media (max-width: 560px) {
+  .channel-status-grid { grid-template-columns: minmax(0, 1fr); }
+  .channel-status-dialog { padding: 16px; }
+  .channel-status-card-top { gap: 6px; }
+  .atendimento-header-actions .btn { white-space: normal; }
+}

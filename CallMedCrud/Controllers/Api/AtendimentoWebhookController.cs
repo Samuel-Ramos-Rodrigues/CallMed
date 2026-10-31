@@ -76,9 +76,12 @@ public sealed class AtendimentoWebhookController : ControllerBase
         },
         email = new
         {
-            outboundConfigured = _envio.CanalConfigurado(CanalAtendimento.Email),
+            // Status de CONFIGURAÇÃO, não de conexão em tempo real com o provedor.
+            enabled = _gmailInbox.Enabled || _envio.CanalConfigurado(CanalAtendimento.Email),
+            inboundEnabled = _gmailInbox.Enabled,
             inboundConfigured = _gmailInbox.Configurado,
             gmailInboxConfigured = _gmailInbox.Configurado,
+            outboundConfigured = _envio.CanalConfigurado(CanalAtendimento.Email),
             inboundDomainConfigured = !string.IsNullOrWhiteSpace(_gmailInbox.MailboxEmail),
             replyMode = _gmailInbox.Configurado ? "Gmail API; rascunho exige aprovação humana" : "Entrada não configurada"
         }

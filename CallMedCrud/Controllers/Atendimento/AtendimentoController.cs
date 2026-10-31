@@ -360,28 +360,56 @@ public sealed class AtendimentoController : Controller
 
         if (conversa.Canal == CanalAtendimento.Email)
         {
-            var resultado = await _orquestrador.RetomarUltimoEmailPendenteAsync(conversa, ct);
-            switch (resultado)
-            {
-                case ResultadoRetomadaEmail.RascunhoCriado:
-                    TempData["Sucesso"] = "Conversa devolvida à IA. Um rascunho para a última mensagem foi criado e aguarda sua aprovação (nenhum e-mail foi enviado).";
-                    break;
-                case ResultadoRetomadaEmail.RequerEquipe:
-                    TempData["Erro"] = "A última mensagem exige revisão humana ou solicita um atendente. A conversa permanece na fila da equipe; nenhum e-mail foi enviado.";
-                    break;
-                case ResultadoRetomadaEmail.FalhaNaGeracao:
-                    TempData["Erro"] = "A IA não conseguiu criar o rascunho. A conversa foi mantida com a equipe para não perder a mensagem. Confira os logs do Render.";
-                    break;
-                default:
-                    TempData["Sucesso"] = "Conversa devolvida à IA. Não existe mensagem pendente para responder; a IA analisará os próximos e-mails.";
-                    break;
-            }
+            await PrepararRascunhoPendenteAsync(conversa, ct);
         }
         else
         {
             TempData["Sucesso"] = "A conversa voltou para o Assistente CallMed. A IA atenderá as próximas mensagens.";
         }
         return RedirectToAction(nameof(Index), new { id });
+    }
+
+    /// <summary>
+    /// Permite tentar novamente a análise de uma entrada de e-mail pendente mesmo
+    /// quando a conversa já está em modo IA. Não envia e-mail; gera só rascunho.
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> GerarRascunhoPendente(long id, CancellationToken ct)
+    {
+        if (!await PodeOperarAtendimentoAsync(ct)) return Forbid();
+
+        var conversa = await _context.ConversasAtendimento
+            .FirstOrDefaultAsync(c => c.Id == id, ct);
+        if (conversa is null) return NotFound();
+        if (!conversa.Ativa || conversa.Canal != CanalAtendimento.Email || conversa.Modo != ModoAtendimento.IA)
+        {
+            TempData["Erro"] = "A conversa precisa estar aberta e em modo Assistente IA para revisar um e-mail pendente.";
+            return RedirectToAction(nameof(Index), new { id });
+        }
+
+        await PrepararRascunhoPendenteAsync(conversa, ct);
+        return RedirectToAction(nameof(Index), new { id });
+    }
+
+    private async Task PrepararRascunhoPendenteAsync(ConversaAtendimento conversa, CancellationToken ct)
+    {
+        var resultado = await _orquestrador.RetomarUltimoEmailPendenteAsync(conversa, ct);
+        switch (resultado)
+        {
+            case ResultadoRetomadaEmail.RascunhoCriado:
+                TempData["Sucesso"] = "A IA criou um rascunho para a última mensagem. Confira o histórico e aprove o envio quando estiver correto. Nenhum e-mail foi enviado automaticamente.";
+                break;
+            case ResultadoRetomadaEmail.RequerEquipe:
+                TempData["Erro"] = "A análise indicou necessidade de atendimento humano (identificação, ação ou assunto sensível). A conversa voltou à fila da equipe; nenhum e-mail foi enviado.";
+                break;
+            case ResultadoRetomadaEmail.FalhaNaGeracao:
+                TempData["Erro"] = "Não foi possível gerar o rascunho da IA. A conversa foi preservada na fila humana. Confira a configuração do Gemini e os logs do Render.";
+                break;
+            default:
+                TempData["Sucesso"] = "Não há mensagem de e-mail pendente sem resposta. Se um rascunho já aparecer no histórico, revise e aprove; novos e-mails serão analisados pela IA.";
+                break;
+        }
     }
 
     [HttpPost]

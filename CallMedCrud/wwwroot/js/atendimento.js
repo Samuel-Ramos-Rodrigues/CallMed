@@ -249,7 +249,7 @@
                 button.dataset.originalText = button.textContent || '';
                 button.textContent = form.dataset.actionName === 'Devolver para IA'
                     ? 'Reativando IA...'
-                    : 'Aguarde...';
+                    : form.dataset.actionName === 'Verificar e-mail pendente' ? 'Analisando e-mail...' : 'Aguarde...';
             }
         });
     });
@@ -258,9 +258,10 @@
     const statusDialog = document.getElementById('channelStatusDialog');
     const statusContent = document.getElementById('channelStatusContent');
 
-    const statusBadge = (label, ok, detail) => {
+    const statusBadge = (label, status, detail) => {
         const card = document.createElement('article');
-        card.className = `channel-status-card ${ok ? 'is-ok' : 'is-off'}`;
+        const normalized = ['configured', 'partial'].includes(status) ? status : 'off';
+        card.className = `channel-status-card ${normalized === 'configured' ? 'is-ok' : normalized === 'partial' ? 'is-partial' : 'is-off'}`;
 
         const top = document.createElement('div');
         top.className = 'channel-status-card-top';
@@ -269,7 +270,7 @@
         title.textContent = label;
 
         const badge = document.createElement('span');
-        badge.textContent = ok ? 'Configurado' : 'Inativo';
+        badge.textContent = normalized === 'configured' ? 'Configurado' : normalized === 'partial' ? 'Parcial' : 'Não configurado';
 
         top.append(title, badge);
 
@@ -294,27 +295,24 @@
             if (!response.ok) throw new Error(String(response.status));
             const data = await response.json();
 
+            const configuracao = (enabled, inbound, outbound) => {
+                if (enabled && inbound && outbound) return 'configured';
+                if (enabled || inbound || outbound) return 'partial';
+                return 'off';
+            };
+            const emailEntrada = Boolean(data.email?.gmailInboxConfigured ?? data.email?.inboundConfigured);
+            const emailSaida = Boolean(data.email?.outboundConfigured);
+            const emailHabilitado = Boolean(data.email?.inboundEnabled ?? data.email?.enabled ?? emailEntrada);
+            const emailDetails = emailEntrada && emailSaida
+                ? 'Gmail API para entrada e Brevo SMTP para saída estão configurados. A conexão real não foi testada aqui.'
+                : `Gmail API: ${emailEntrada ? 'configurado' : emailHabilitado ? 'habilitado, mas falta configuração' : 'não habilitado'}. Brevo SMTP: ${emailSaida ? 'configurado' : 'não configurado'}.`;
             statusContent.replaceChildren(
-                statusBadge(
-                    'Site / PWA',
-                    Boolean(data.web?.enabled && data.web?.outboundConfigured),
-                    'Atendimento pelo próprio CallMed.'
-                ),
-                statusBadge(
-                    'WhatsApp',
-                    Boolean(data.whatsapp?.enabled && data.whatsapp?.inboundConfigured && data.whatsapp?.outboundConfigured),
-                    data.whatsapp?.enabled ? 'Entrada e saída pela Evolution API.' : 'Canal desativado.'
-                ),
-                statusBadge(
-                    'SMS',
-                    Boolean(data.sms?.enabled && data.sms?.inboundConfigured && data.sms?.outboundConfigured),
-                    data.sms?.enabled ? 'Entrada e saída configuradas.' : 'Canal desativado.'
-                ),
-                statusBadge(
-                    'E-mail',
-                    Boolean(data.email?.inboundEnabled && data.email?.inboundConfigured && data.email?.outboundConfigured),
-                    data.email?.inboundEnabled ? 'Entrada e saída configuradas.' : 'Canal desativado.'
-                )
+                statusBadge('Site / PWA', 'configured', 'Atendimento pelo próprio CallMed.'),
+                statusBadge('WhatsApp', configuracao(data.whatsapp?.enabled, data.whatsapp?.inboundConfigured, data.whatsapp?.outboundConfigured),
+                    'Evolution API: status de configuração; conexão não testada.'),
+                statusBadge('SMS', configuracao(data.sms?.enabled, data.sms?.inboundConfigured, data.sms?.outboundConfigured),
+                    'SMS: status de configuração; conexão não testada.'),
+                statusBadge('E-mail', configuracao(emailHabilitado, emailEntrada, emailSaida), emailDetails)
             );
         } catch {
             statusContent.innerHTML = '<div class="channel-status-error">Não foi possível consultar a situação dos canais agora.</div>';
