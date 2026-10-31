@@ -4,15 +4,38 @@
     Layout = "_AuthLayout";
     ViewData["Title"] = "Entrar na CallMed";
 }
-<main class="identity-shell login-shell">
-    <section class="identity-showcase">
+<main class="identity-shell login-shell login-shell-plus">
+    <section class="identity-showcase identity-showcase-plus">
         <a asp-area="" asp-controller="Home" asp-action="Index" class="app-brand"><img src="~/images/logo-callmed-mark.png" alt="" /><span>CallMed<small>CUIDADO EM CONEXÃO</small></span></a>
-        <div class="identity-copy"><span class="eyebrow">ACESSO SEGURO</span><h1>Seu cuidado, em um só lugar.</h1><p>Entre na CallMed para acompanhar consultas, organizar atendimentos e acessar as ferramentas da sua conta.</p></div>
-        <div class="identity-note-line"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span>Um único acesso, direcionado automaticamente para sua área.</span></div>
+        <div class="identity-copy"><span class="eyebrow">ACESSO SEGURO</span><h1>Um login.<br />Quatro experiências.</h1><p>Entre na CallMed e siga automaticamente para o espaço do seu perfil: paciente, médico, atendente ou administrador.</p></div>
+        <div class="identity-note-line"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span>Autenticação única, permissões separadas e navegação personalizada.</span></div>
+        <div class="identity-role-grid" aria-label="Perfis da plataforma">
+            <article>
+                <strong>Paciente</strong>
+                <small>Consultas, exames, lista de espera e dados pessoais.</small>
+            </article>
+            <article>
+                <strong>Médico</strong>
+                <small>Agenda do dia, bloqueios, pacientes e rotina clínica.</small>
+            </article>
+            <article>
+                <strong>Atendente</strong>
+                <small>Recepção, atendimento omnichannel e marcações.</small>
+            </article>
+            <article>
+                <strong>Administrador</strong>
+                <small>Visão da clínica, acessos, integrações e governança.</small>
+            </article>
+        </div>
+        <ul class="identity-benefits-list">
+            <li>Redirecionamento automático para a área correta.</li>
+            <li>Proteção por permissões reais do usuário.</li>
+            <li>Acesso único para web e PWA.</li>
+        </ul>
         <small>CallMed · cuidado em conexão</small>
     </section>
     <section class="identity-panel">
-        <div class="identity-card">
+        <div class="identity-card identity-card-plus">
             <a class="identity-back" asp-area="" asp-controller="Home" asp-action="Index">← Voltar ao início</a>
             <div class="identity-card-header"><span class="eyebrow">ACESSO À CONTA</span><h2>Entrar na CallMed</h2><p>Use o CPF associado à conta do paciente ou o e-mail cadastrado na clínica.</p></div>
             @if (TempData["SenhaRedefinida"] is string senhaRedefinida && !string.IsNullOrWhiteSpace(senhaRedefinida))
@@ -43,7 +66,17 @@
             </form>
             <div class="identity-divider"><span>Primeiro acesso como paciente?</span></div>
             <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="identity-secondary">Criar conta de paciente <span aria-hidden="true">↗</span></a>
-            <p class="identity-footnote portal-account-help">O acesso da equipe é criado pelo administrador da clínica.</p>
+            <div class="identity-help-grid">
+                <div>
+                    <strong>Equipe da clínica</strong>
+                    <small>O acesso do atendente, médico e administrador é criado pela própria clínica.</small>
+                </div>
+                <div>
+                    <strong>Suporte</strong>
+                    <small>Se você perdeu o acesso, recupere a senha ou solicite ajuda à recepção.</small>
+                </div>
+            </div>
+            <p class="identity-footnote portal-account-help">Ao entrar, a CallMed abre a área correspondente ao seu perfil e mantém os recursos protegidos.</p>
         </div>
     </section>
 </main>

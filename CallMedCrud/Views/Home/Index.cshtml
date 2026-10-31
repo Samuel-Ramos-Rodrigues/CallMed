@@ -3,6 +3,9 @@
     Layout = Model.Autenticado ? "_Layout" : "_PublicLayout";
     ViewData["Title"] = Model.Autenticado ? "Meu início" : "Sua saúde, mais perto";
     var proxima = Model.ProximasConsultas.FirstOrDefault();
+    var totalConsultas = Model.ProximasConsultas.Count;
+    var totalSolicitacoes = Model.SolicitacoesRecentes.Count;
+    var resumoExamesDisponivel = Model.PacienteId.HasValue;
     string StatusPedido(MKSANCrud.Models.StatusSolicitacaoAtendimento status) => status switch
     {
         MKSANCrud.Models.StatusSolicitacaoAtendimento.Nova => "Aguardando agendamento",
@@ -16,40 +19,132 @@
 }
 @if (Model.Autenticado)
 {
-    <section class="patient-home">
+    <section class="patient-home patient-home-plus">
         <section class="cm21-simple-home" aria-label="Modo simplificado"><h1>Olá, @Model.NomePaciente!</h1><p>O que você deseja fazer?</p><div class="cm21-simple-actions"><a asp-controller="Consulta" asp-action="Create">Marcar consulta</a><a asp-controller="Consulta" asp-action="Index">Minhas consultas</a><button type="button" data-open-callmed-ai>Falar com atendimento</button><a asp-controller="ListaEspera" asp-action="Index">Lista de espera</a></div><button type="button" class="btn secondary" data-a11y-toggle="simple">Sair do modo fácil</button></section>
-        <div class="patient-standard">
-            <header class="workspace-heading"><div><span class="eyebrow">SEU ESPAÇO DE CUIDADO</span><h1>Olá, @Model.NomePaciente<span class="heading-dot">.</span></h1><p>Vamos cuidar do seu próximo passo?</p></div><button type="button" class="btn secondary" data-a11y-toggle="simple">Aa · Modo fácil</button></header>
-            <div class="patient-overview">
-                <section class="patient-appointment"><span class="eyebrow">SUA PRÓXIMA CONSULTA</span>
+
+        <div class="patient-standard patient-standard-plus">
+        <section class="patient-hero-plus panel">
+            <div class="patient-hero-copy-plus">
+                <span class="eyebrow">PORTAL DO PACIENTE</span>
+                <h1>Olá, @Model.NomePaciente<span class="heading-dot">.</span></h1>
+                <p>Seu espaço para acompanhar consultas, exames, solicitações e tudo o que faz parte do seu cuidado com a CallMed.</p>
+                <div class="patient-hero-actions-plus">
+                    <a class="btn" asp-controller="Consulta" asp-action="Create">Marcar consulta</a>
+                    <a class="btn secondary" asp-controller="Consulta" asp-action="Index">Ver minha agenda</a>
+                    <button type="button" class="btn ghost" data-open-callmed-ai>Preciso de ajuda</button>
+                </div>
+                <div class="patient-mini-stats">
+                    <article><strong>@totalConsultas</strong><small>próximas consultas</small></article>
+                    <article><strong>@totalSolicitacoes</strong><small>solicitações recentes</small></article>
+                    <article><strong>@Model.Convenio</strong><small>convênio atual</small></article>
+                </div>
+            </div>
+            <aside class="patient-profile-slab">
+                <span class="eyebrow">SEU RESUMO</span>
                 @if (proxima is not null)
                 {
-                    <div class="patient-appointment-body"><div class="appointment-date"><strong>@proxima.Data.ToString("dd")</strong><span>@proxima.Data.ToString("MMMM")</span></div><div><span class="status-pill status-@proxima.Status.ToLowerInvariant()">@proxima.Status</span><h2>@proxima.Medico?.Nome</h2><p>@proxima.Medico?.Especialidade</p><strong>@proxima.Data.ToString("dddd") · @proxima.Horario</strong></div></div>
-                    <a class="btn light" asp-controller="Consulta" asp-action="Details" asp-route-id="@proxima.Id">Ver detalhes e orientações <span aria-hidden="true">↗</span></a>
+                    <div class="patient-profile-highlight">
+                        <small>Próximo atendimento</small>
+                        <strong>@proxima.Data.ToString("dd/MM") · @proxima.Horario</strong>
+                        <span>@proxima.Medico?.Nome · @proxima.Medico?.Especialidade</span>
+                    </div>
                 }
                 else
                 {
-                    <h2>Um horário<br />para cuidar de você.</h2><p>Escolha a especialidade e encontre uma vaga disponível.</p><a class="btn light" asp-controller="Consulta" asp-action="Create">Marcar minha consulta <span aria-hidden="true">↗</span></a>
+                    <div class="patient-profile-highlight empty">
+                        <small>Próximo atendimento</small>
+                        <strong>Nenhuma consulta marcada</strong>
+                        <span>Você pode escolher um horário disponível a qualquer momento.</span>
+                    </div>
                 }
-                </section>
-                <nav class="patient-quicklinks" aria-label="Seu atendimento"><a asp-controller="Consulta" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg><span><strong>Marcar uma consulta</strong><small>Encontre um horário para você</small></span><b aria-hidden="true">↗</b></a><a asp-controller="Consulta" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span><strong>Minhas consultas</strong><small>Acompanhe sua agenda</small></span><b aria-hidden="true">↗</b></a><a asp-controller="HistoricoExames" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#file-medical"></use></svg><span><strong>Meus exames</strong><small>Consulte seu histórico</small></span><b aria-hidden="true">↗</b></a><button type="button" data-open-callmed-ai><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#chat"></use></svg><span><strong>Preciso de ajuda</strong><small>Converse com o atendimento</small></span><b aria-hidden="true">↗</b></button></nav>
-            </div>
-            <div class="patient-details-grid"><section class="panel"><header class="panel-heading"><div><span class="eyebrow">ACOMPANHAMENTO</span><h2>Seus pedidos</h2></div></header>
+                <ul>
+                    <li><span>Canal de suporte</span><strong>Atendimento CallMed</strong></li>
+                    <li><span>Lista de espera</span><strong>Disponível</strong></li>
+                    <li><span>Exames</span><strong>@(resumoExamesDisponivel ? "Acessíveis no portal" : "Disponíveis quando vinculados")</strong></li>
+                </ul>
+            </aside>
+        </section>
+
+        <div class="patient-action-grid-plus">
+            <a class="patient-action-card" asp-controller="Consulta" asp-action="Create"><span>🗓</span><strong>Agendar nova consulta</strong><small>Escolha especialidade, data e horário.</small></a>
+            <a class="patient-action-card" asp-controller="Consulta" asp-action="Index"><span>📋</span><strong>Minha agenda</strong><small>Acompanhe confirmações e orientações.</small></a>
+            <a class="patient-action-card" asp-controller="HistoricoExames" asp-action="Index"><span>🧪</span><strong>Histórico de exames</strong><small>Veja exames já aprovados pela clínica.</small></a>
+            <a class="patient-action-card" asp-controller="MinhaConta" asp-action="Index"><span>👤</span><strong>Minha conta</strong><small>Atualize dados e preferências.</small></a>
+        </div>
+
+        <div class="patient-home-grid-plus">
+            <section class="panel patient-next-panel-plus">
+                <header class="panel-heading"><div><span class="eyebrow">ACOMPANHAMENTO</span><h2>Sua próxima consulta</h2></div><a class="text-link" asp-controller="Consulta" asp-action="Index">Ver agenda ↗</a></header>
+                @if (proxima is not null)
+                {
+                    <div class="patient-appointment-body plus">
+                        <div class="appointment-date"><strong>@proxima.Data.ToString("dd")</strong><span>@proxima.Data.ToString("MMMM")</span></div>
+                        <div>
+                            <span class="status-pill status-@proxima.Status.ToLowerInvariant()">@proxima.Status</span>
+                            <h3>@proxima.Medico?.Nome</h3>
+                            <p>@proxima.Medico?.Especialidade</p>
+                            <strong>@proxima.Data.ToString("dddd") · @proxima.Horario</strong>
+                        </div>
+                    </div>
+                    <div class="patient-inline-actions"><a class="btn light" asp-controller="Consulta" asp-action="Details" asp-route-id="@proxima.Id">Ver detalhes</a><button type="button" class="btn secondary" data-open-callmed-ai>Tirar dúvida</button></div>
+                }
+                else
+                {
+                    <div class="empty-state compact"><h3>Você ainda não tem consulta marcada.</h3><p>Quando quiser, você pode escolher uma especialidade e reservar um horário disponível.</p><a class="btn light" asp-controller="Consulta" asp-action="Create">Marcar minha consulta</a></div>
+                }
+            </section>
+
+            <section class="panel patient-checklist-panel">
+                <header class="panel-heading"><div><span class="eyebrow">PRÓXIMOS PASSOS</span><h2>Checklist do cuidado</h2></div></header>
+                <div class="patient-checklist-list">
+                    <article><span class="patient-check-icon">1</span><div><strong>Confirmar ou marcar consulta</strong><small>@(proxima is null ? "Você ainda não tem um atendimento futuro agendado." : "Sua próxima consulta já aparece no painel.")</small></div></article>
+                    <article><span class="patient-check-icon">2</span><div><strong>Conferir seus dados</strong><small>Mantenha telefone, e-mail e convênio atualizados para receber avisos corretamente.</small></div></article>
+                    <article><span class="patient-check-icon">3</span><div><strong>Acompanhar exames e solicitações</strong><small>O portal mostra solicitações recentes e o histórico de exames aprovados.</small></div></article>
+                </div>
+            </section>
+        </div>
+
+        <div class="patient-detail-grid-plus">
+            <section class="panel">
+                <header class="panel-heading"><div><span class="eyebrow">SOLICITAÇÕES</span><h2>Pedidos recentes</h2></div></header>
                 @if (Model.SolicitacoesRecentes.Any())
                 {
-                    @foreach(var pedido in Model.SolicitacoesRecentes.Take(4))
+                    @foreach(var pedido in Model.SolicitacoesRecentes.Take(5))
                     {
                         <div class="request-row"><span class="request-dot"></span><div><strong>@(pedido.Especialidade?.Nome ?? "Solicitação de consulta")</strong><small>@ClinicaClock.ConverterUtc(pedido.CriadoEm).ToString("dd/MM · HH:mm")</small></div><span class="soft-pill">@StatusPedido(pedido.Status)</span></div>
                     }
                 }
-                else { <div class="empty-state compact"><h3>Tudo tranquilo por aqui.</h3><p>O andamento das suas solicitações aparecerá neste espaço.</p></div> }
-            </section><section class="patient-support"><span class="eyebrow">DO SEU JEITO</span><h2>Seu atendimento,<br />suas preferências.</h2><p>Convênio: <strong>@Model.Convenio</strong></p><a class="text-link" asp-controller="MinhaConta" asp-action="Index">Conferir meus dados ↗</a><hr /><a class="text-link" asp-controller="ListaEspera" asp-action="Index">Acompanhar lista de espera ↗</a></section></div>
-            @if (Model.ProximasConsultas.Skip(1).Any())
-            {
-                <section class="panel"><header class="panel-heading"><h2>Mais adiante na sua agenda</h2><a class="text-link" asp-controller="Consulta" asp-action="Index">Ver todas ↗</a></header>
-                @foreach(var consulta in Model.ProximasConsultas.Skip(1).Take(3)) { <a class="request-row" asp-controller="Consulta" asp-action="Details" asp-route-id="@consulta.Id"><time>@consulta.Data.ToString("dd/MM")<small>@consulta.Horario</small></time><div><strong>@consulta.Medico?.Nome</strong><small>@consulta.Medico?.Especialidade</small></div><span aria-hidden="true">↗</span></a> }
-                </section>
-            }
+                else
+                {
+                    <div class="empty-state compact"><h3>Nenhuma solicitação recente.</h3><p>Quando houver um pedido em andamento, ele aparecerá aqui.</p></div>
+                }
+            </section>
+            <section class="panel patient-support-plus">
+                <header class="panel-heading"><div><span class="eyebrow">SEU PERFIL</span><h2>Preferências e apoio</h2></div></header>
+                <div class="patient-support-stack">
+                    <div><small>Convênio</small><strong>@Model.Convenio</strong></div>
+                    <div><small>Canal de apoio</small><strong>Atendimento CallMed</strong></div>
+                    <div><small>Autoatendimento</small><strong>Portal disponível 24h</strong></div>
+                </div>
+                <div class="patient-support-links">
+                    <a class="text-link" asp-controller="MinhaConta" asp-action="Index">Conferir meus dados ↗</a>
+                    <a class="text-link" asp-controller="ListaEspera" asp-action="Index">Acompanhar lista de espera ↗</a>
+                    <a class="text-link" asp-controller="HistoricoExames" asp-action="Index">Abrir meus exames ↗</a>
+                </div>
+            </section>
+        </div>
+
+        @if (Model.ProximasConsultas.Skip(1).Any())
+        {
+            <section class="panel patient-upcoming-plus"><header class="panel-heading"><h2>Mais adiante na sua agenda</h2><a class="text-link" asp-controller="Consulta" asp-action="Index">Ver todas ↗</a></header>
+            <div class="patient-upcoming-list-plus">
+                @foreach(var consulta in Model.ProximasConsultas.Skip(1).Take(4))
+                {
+                    <a class="request-row" asp-controller="Consulta" asp-action="Details" asp-route-id="@consulta.Id"><time>@consulta.Data.ToString("dd/MM")<small>@consulta.Horario</small></time><div><strong>@consulta.Medico?.Nome</strong><small>@consulta.Medico?.Especialidade</small></div><span aria-hidden="true">↗</span></a>
+                }
+            </div>
+            </section>
+        }
         </div>
     </section>
 }
