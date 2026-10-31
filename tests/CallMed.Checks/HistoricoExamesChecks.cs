@@ -79,6 +79,9 @@ internal static class HistoricoExamesChecks
             http.User = Principal("conta-equipe", role, "equipe@example.test");
             check(await controller.Index(12, default) is ViewResult,
                 role + " mantém a consulta ao histórico do paciente selecionado");
+            var semPaciente = await controller.Index(null, default) as RedirectToActionResult;
+            check(semPaciente?.ActionName == "Index" && semPaciente.ControllerName == "Paciente",
+                role + " sem paciente selecionado vai à lista de pacientes, sem erro 403");
             var pendentes = (await controller.Pendentes(default) as ViewResult)?.Model as IReadOnlyList<ExameHistorico>;
             check(pendentes?.Select(x => x.Id).SequenceEqual(new[] { 104 }) == true,
                 role + " visualiza somente exames ativos aguardando triagem");
@@ -86,9 +89,17 @@ internal static class HistoricoExamesChecks
         http.User = Principal("conta-medico", "Medico", "medico@example.test");
         check(await controller.Index(11, default) is ViewResult && await controller.Index(12, default) is ForbidResult,
             "Acesso médico continua exigindo consulta vinculada não cancelada");
+        var medicoSemPaciente = await controller.Index(null, default) as RedirectToActionResult;
+        check(medicoSemPaciente?.ControllerName == "MedicoPainel" && medicoSemPaciente.ActionName == "Index",
+            "Médico sem paciente selecionado retorna ao painel, sem liberar dados de terceiros");
 
         var policyProvider = scope.ServiceProvider.GetRequiredService<IAuthorizationPolicyProvider>();
         var authorization = scope.ServiceProvider.GetRequiredService<IAuthorizationService>();
+        var triagemPolicy = await AuthorizationPolicy.CombineAsync(policyProvider,
+            typeof(HistoricoExamesController).GetCustomAttributes<AuthorizeAttribute>()
+                .Concat(typeof(HistoricoExamesController).GetMethod(nameof(HistoricoExamesController.Pendentes))!.GetCustomAttributes<AuthorizeAttribute>()));
+        check((await authorization.AuthorizeAsync(Principal("admin", "Admin", "admin@example.test"), null, triagemPolicy!)).Succeeded,
+            "Papel Admin é autorizado expressamente na triagem de exames");
         foreach (var action in new[] { nameof(HistoricoExamesController.Index), nameof(HistoricoExamesController.Create), nameof(HistoricoExamesController.Desativar), nameof(HistoricoExamesController.Pendentes), nameof(HistoricoExamesController.Aprovar), nameof(HistoricoExamesController.Rejeitar) })
         {
             var attributes = typeof(HistoricoExamesController).GetCustomAttributes<AuthorizeAttribute>()

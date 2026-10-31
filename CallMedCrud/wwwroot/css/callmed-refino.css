@@ -1,0 +1,358 @@
+/* CallMed · refinamento visual clássico · 31/10/2026
+   Camada não destrutiva. Preserva a identidade, os layouts Razor e as ações existentes.
+   Evita redefinir comportamento, visibilidade ou fluxo de formulário. */
+
+/* 01 — Base, leitura, estados e movimentação */
+:root {
+  --cm-refino-linha: color-mix(in srgb, var(--cm-border) 83%, var(--cm-ink) 17%);
+  --cm-refino-brilho: color-mix(in srgb, var(--cm-primary) 7%, var(--cm-surface));
+  --cm-refino-hover: color-mix(in srgb, var(--cm-primary) 11%, var(--cm-surface));
+  --cm-refino-sombra: 0 9px 28px rgba(18,24,56,.065);
+}
+:root[data-theme="dark"] {
+  --cm-refino-linha: #354461;
+  --cm-refino-brilho: #1b2540;
+  --cm-refino-hover: #252e4c;
+  --cm-refino-sombra: 0 8px 25px rgba(0,0,0,.15);
+}
+body { line-height: 1.58; }
+:where(button, a, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--cm-accent);
+  outline-offset: 3px;
+}
+:where(.cm25-screen, .cm25-page, .v16-page, .form-grid, .cm25-form-layout, .cm-dashboard) { min-width: 0; }
+:where(.cm25-screen, .cm25-page, .v16-page) :where(h1,h2,h3) { text-wrap: pretty; }
+:where(.app-header, .modules-dialog, .channel-status-dialog, .v18-popover) { -webkit-font-smoothing: antialiased; }
+:where(.app-header, .atendimento-shell, .table-card, .cm25-panel) a:focus-visible { border-radius: 5px; }
+
+/* 02 — Barra superior e modais de navegação: sem comandos laterais extras */
+.app-header { border-bottom-color: var(--cm-refino-linha); }
+.app-brand img { object-fit: contain; }
+.primary-nav a { border-radius: 10px; }
+.primary-nav a.active { font-weight: 760; }
+.header-tools .profile-trigger { border-radius: 12px; }
+.header-tools .v18-popover { border-color: var(--cm-refino-linha); }
+.modules-dialog { border-color: var(--cm-refino-linha); }
+.module-grid > a, .module-grid > button {
+  border-color: var(--cm-refino-linha); min-width: 0; box-shadow: none;
+}
+.module-grid > a:hover, .module-grid > button:hover { box-shadow: var(--cm-refino-sombra); }
+.module-grid b { overflow-wrap: anywhere; }
+
+/* 03 — Cabeçalhos, cartões, indicadores e áreas de ação, reutilizados no site */
+.cm25-page { gap: clamp(16px, 1.65vw, 23px); }
+:where(.cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head) {
+  gap: clamp(12px,1.35vw,20px);
+  border-color: var(--cm-refino-linha);
+}
+:where(.cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head) h1 { line-height: 1.12; }
+:where(.cm25-page-hero,.cm25-page-head,.v16-page-head,.cm21-page-head) p {
+  max-width: 72ch; line-height: 1.55;
+}
+:where(.panel,.cm25-panel,.v16-card,.cm19-card,.v18-card,.form-card,.cm25-form-card,.cm21-form-card,.cm25-section-card,.cm25-content-card,.table-card) {
+  border-color: var(--cm-refino-linha); box-shadow: var(--cm-refino-sombra);
+}
+:where(.cm25-kpi,.v16-stat,.v16-kpi,.clinic-request-kpis > article,.atendimento-stats-v16 > div) {
+  border-color: var(--cm-refino-linha);
+  background: linear-gradient(165deg,var(--cm-surface),color-mix(in srgb,var(--cm-surface-muted) 32%,var(--cm-surface)));
+}
+:where(.cm25-kpi,.v16-stat,.v16-kpi,.atendimento-stats-v16 > div) > strong {
+  letter-spacing: -.035em; font-variant-numeric: tabular-nums;
+}
+:where(.v16-card-head,.cm25-panel-head,.cm19-card-head,.panel-heading) { min-width: 0; }
+:where(.v16-card-head,.cm25-panel-head,.cm19-card-head,.panel-heading) > div { min-width: 0; }
+:where(.v16-card-head,.cm25-panel-head,.cm19-card-head,.panel-heading) h2 { line-height: 1.25; }
+:where(.cm25-sticky-actions,.v16-sticky-actions) {
+  border-color: var(--cm-refino-linha);
+  box-shadow: 0 10px 30px rgba(10,17,41,.14);
+}
+
+/* 04 — Inputs: alinhamento, texto, estados e botões em telas diversas */
+:where(input:not([type="checkbox"]):not([type="radio"]),select,textarea,.form-control) {
+  font-variant-numeric: lining-nums; max-width: 100%;
+}
+:where(input:not([type="checkbox"]):not([type="radio"]),select,textarea,.form-control):hover:not(:disabled):not(:focus) {
+  border-color: color-mix(in srgb, var(--cm-primary) 36%, var(--cm-border-strong));
+}
+:where(.field,.clinic-field,.form-group,.input-group) { gap: 8px; }
+:where(.field,.clinic-field,.form-group,.input-group) > :where(label,span:first-child) { line-height: 1.4; }
+:where(.form-card,.cm25-form-card,.cm21-form-card) :where(label,small) { overflow-wrap: anywhere; }
+.btn, button.btn, a.btn { font-weight: 735; line-height: 1.28; }
+.btn.secondary, button.btn.secondary, a.btn.secondary { border-color: var(--cm-border-strong); }
+.btn:focus-visible, button.btn:focus-visible, a.btn:focus-visible { box-shadow: var(--cm-ring); }
+:where(.form-actions,.cm21-form-actions,.clinic-form-actions,.cm25-sticky-actions,.v16-sticky-actions) > :where(a,button,form) {
+  max-width: 100%;
+}
+.password-wrap { width: 100%; min-width: 0; }
+.password-wrap input { padding-right: 98px !important; }
+.password-toggle { min-width: 76px; right: 7px; white-space: nowrap; }
+:where(.validation-summary-errors,.validation,.field-validation-error) { overflow-wrap: anywhere; }
+
+/* 05 — Tabelas/cadastros (pacientes, médicos, exames, auditoria, relatórios) */
+:where(.table-scroll,.cm-table-scroll,.access-table-wrap) {
+  overflow-x: auto; overscroll-behavior-inline: contain;
+  scrollbar-color: var(--cm-border-strong) transparent;
+}
+:where(.v16-table,.modern-table,.table,table) th {
+  line-height: 1.35; vertical-align: middle;
+}
+:where(.v16-table,.modern-table,.table,table) td {
+  line-height: 1.5; vertical-align: middle;
+}
+:where(.v16-table,.modern-table,.table,table) :where(th,td) { padding-block: 12px; }
+:where(.v16-table,.modern-table,.table,table) tbody tr:hover {
+  background: color-mix(in srgb,var(--cm-primary-soft) 36%,var(--cm-surface));
+}
+:where(.entity-cell,.cm25-definition-grid,.detail-info-stack,.cm19-data-list) { min-width: 0; }
+:where(.entity-cell,.cm25-definition-grid,.detail-info-stack,.cm19-data-list) strong { overflow-wrap: anywhere; }
+:where(.status-pill,.soft-pill,.status-dot-pill) { white-space: normal; line-height: 1.3; }
+
+/* 06 — Agenda e agendamento; diferenciar seleção, hover e evento */
+:where(.cm19-agenda-toolbar,.cm19-calendar,.cm19-form-card,.cm19-booking-section,.cm19-integration-card) {
+  border-color: var(--cm-refino-linha);
+}
+:where(.cm19-specialty-option,.cm19-doctor-option,.cm19-date-option,.cm19-time-option) {
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+:where(.cm19-specialty-option,.cm19-doctor-option,.cm19-date-option,.cm19-time-option):hover:not(:disabled) {
+  box-shadow: 0 0 0 2px color-mix(in srgb,var(--cm-primary) 13%,transparent);
+}
+:where(.cm19-specialty-option,.cm19-doctor-option,.cm19-date-option,.cm19-time-option):is(.selected,[aria-pressed="true"]) {
+  box-shadow: 0 0 0 2px color-mix(in srgb,var(--cm-primary) 24%,transparent);
+}
+.cm19-calendar-scroll { scrollbar-color: var(--cm-border-strong) transparent; }
+.cm19-cal-day, .cm19-cal-doctor { border-color: var(--cm-refino-linha); }
+.cm19-cal-event { line-height: 1.4; overflow-wrap: anywhere; }
+.cm19-booking-section-head h2 { font-size: clamp(1.04rem,1.4vw,1.28rem); }
+:where(.time-chip,.cm19-cal-event) { font-variant-numeric: tabular-nums; }
+
+/* 07 — Atendimento: destaque para as mensagens e rascunhos, mantendo as três colunas */
+.atendimento-v16-page { gap: 17px; }
+.atendimento-stats-v16 { gap: 12px; }
+.atendimento-stats-v16 > div { position: relative; overflow: hidden; padding: 17px 18px; }
+.atendimento-stats-v16 > div::before {
+  content: ""; position: absolute; left: 17px; right: 17px; top: 0; height: 2px;
+  background: linear-gradient(90deg,var(--cm-primary),transparent); opacity: .72;
+}
+.atendimento-stats-v16 > div:nth-child(2)::before { background: linear-gradient(90deg,var(--cm-violet),transparent); }
+.atendimento-stats-v16 > div:nth-child(3)::before { background: linear-gradient(90deg,var(--cm-accent),transparent); }
+.atendimento-stats-v16 > div:nth-child(4)::before { background: linear-gradient(90deg,var(--cm-warning),transparent); }
+.atendimento-filters { gap: 10px; border-color: var(--cm-refino-linha); }
+.atendimento-shell, .v16-atendimento-shell, .cm25-atendimento-shell {
+  border-color: var(--cm-refino-linha); box-shadow: var(--cm-refino-sombra);
+}
+.atendimento-inbox { background: var(--cm-surface); }
+.atendimento-inbox-title { min-height: 76px; }
+.atendimento-inbox-title > span { border-radius: 999px; }
+.atendimento-inbox .cm-classic-inbox-search {
+  margin: 12px 13px 12px; min-height: 45px;
+  background: var(--cm-surface-muted);
+  border-color: var(--cm-border-strong);
+}
+.atendimento-inbox .cm-classic-inbox-search:focus-within {
+  box-shadow: var(--cm-ring); border-color: var(--cm-primary);
+}
+.atendimento-conversation { gap: 11px; padding: 15px 14px; }
+.atendimento-conversation.active { box-shadow: inset 4px 0 0 var(--cm-primary); }
+.atendimento-conversation:hover:not(.active) { background: var(--cm-refino-brilho); }
+.atendimento-conversation .conversation-topline { min-width: 0; }
+.atendimento-conversation .conversation-topline strong { font-size: .83rem; }
+.atendimento-conversation .conversation-preview { line-height: 1.48; }
+.atendimento-chat { min-width: 0; }
+.atendimento-chat-header { gap: 14px; }
+.atendimento-person { min-width: 0; }
+.atendimento-person > div { min-width: 0; }
+.atendimento-header-actions { max-width: 100%; gap: 7px; }
+.atendimento-header-actions .btn { white-space: normal; text-align: center; }
+.atendimento-messages {
+  gap: 16px; padding: clamp(17px,1.6vw,26px) clamp(13px,1.5vw,23px);
+  scrollbar-color: var(--cm-border-strong) transparent;
+}
+.atendimento-message {
+  max-width: min(88%, 715px);
+  border-color: var(--cm-refino-linha);
+  box-shadow: 0 5px 15px rgba(6,12,32,.07);
+}
+.atendimento-message.incoming { border-bottom-left-radius: 6px; }
+.atendimento-message.outgoing { border-color: color-mix(in srgb,var(--cm-primary) 30%,var(--cm-border)); }
+.atendimento-message > p { line-height: 1.68; }
+.atendimento-message .message-meta { align-items: center; }
+.atendimento-message .message-meta time { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cm-origem-message-source { min-width: 0; }
+.cm-origem-message-source strong { overflow-wrap: anywhere; }
+.cm-channel { flex-shrink: 0; }
+.message-failure, .email-draft-review {
+  border-radius: 12px; padding: 12px 13px; line-height: 1.45;
+}
+.email-draft-review { border-left-width: 4px; }
+.email-draft-review .email-draft-actions { margin-top: 4px; }
+.cm23-identity-warning { border-radius: 12px; }
+.cm23-identity-warning p { line-height: 1.6; }
+.atendimento-compose { padding: 15px 17px 17px; }
+.atendimento-compose textarea { min-height: 88px; }
+.compose-footer { gap: 10px; }
+.compose-footer small { line-height: 1.5; }
+.atendimento-context-v16 { padding: 18px; }
+.context-profile { gap: 12px; }
+.context-section { padding-block: 18px; }
+.context-section h3 { font-size: .88rem; }
+.context-info-row { gap: 10px; }
+.context-info-row strong { text-align: right; }
+.context-link-form { gap: 8px; }
+.channel-status-dialog { border-color: var(--cm-refino-linha); }
+.channel-status-grid { gap: 12px; }
+.channel-status-card { border-color: var(--cm-refino-linha); }
+.channel-status-card-top { min-height: 52px; }
+.channel-status-card > p { line-height: 1.6; }
+
+/* 08 — Configurações, integrações, relatórios, login e outros painéis */
+.cm19-settings-grid, .cm25-detail-grid { align-items: stretch; }
+:where(.cm19-setting-card,.cm19-integration-card,.cm25-aside-card) { border-color: var(--cm-refino-linha); }
+:where(.cm19-setting-card,.cm19-integration-card,.cm25-aside-card) p { line-height: 1.6; }
+.cm19-setting-card dl > div { gap: 5px; }
+.cm19-integration-logo, .cm19-setting-icon, .cm25-hero-mark { flex-shrink: 0; }
+:where(.cm25-profile-hero,.cm25-confirm-card,.cm25-detail-card) { border-color: var(--cm-refino-linha); }
+:where(.cm25-profile-hero,.cm19-record-head) { flex-wrap: wrap; }
+:where(.identity-form,.identity-card,.login-card,.register-card) :where(input,select,textarea) { max-width: 100%; }
+:where(.identity-card,.auth-card,.login-card,.register-card) { border-color: var(--cm-refino-linha); }
+.cm-dashboard-hero { isolation: isolate; }
+.cm-dashboard-hero-copy { position: relative; z-index: 1; }
+
+/* 09 — Responsividade e acessibilidade, sem reordenar os fluxos */
+@media (max-width: 1200px) {
+  .atendimento-stats-v16 { gap: 9px; }
+  .atendimento-stats-v16 > div { padding: 14px; }
+  .atendimento-header-actions { justify-content: flex-start; }
+}
+@media (max-width: 1060px) {
+  .atendimento-context-v16 { border-top: 1px solid var(--cm-border); }
+}
+@media (max-width: 820px) {
+  .cm25-page-hero, .cm25-page-head, .v16-page-head, .cm21-page-head { padding: 17px 18px; }
+  .cm25-kpi-grid { gap: 10px; }
+  .atendimento-stats-v16 > div::before { left: 14px; right: 14px; }
+  .atendimento-messages { padding: 17px; }
+}
+@media (max-width: 600px) {
+  .atendimento-messages { padding: 14px 12px; gap: 12px; }
+  .atendimento-message { max-width: 96%; padding: 12px; }
+  .atendimento-conversation { padding: 13px; }
+  .atendimento-chat-header { padding: 14px; }
+  .atendimento-compose { padding: 12px; }
+  .atendimento-context-v16 { padding: 14px; }
+  .context-info-row { flex-wrap: wrap; }
+  .context-info-row strong { text-align: left; }
+  .compose-footer { flex-wrap: wrap; }
+  .compose-footer .btn { flex: 0 0 auto; }
+  /* No celular, barra de ação fixa cobria os campos inferiores em formulários longos. */
+  .cm25-sticky-actions, .v16-sticky-actions { position: static; bottom: auto; }
+  /* Evita zoom automático ao focar campos em navegadores móveis. */
+  :where(input:not([type="checkbox"]):not([type="radio"]),select,textarea,.form-control) { font-size: 16px; }
+  .module-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 400px) {
+  .module-grid { grid-template-columns: 1fr; }
+  .atendimento-header-actions { justify-content: flex-start; }
+  .atendimento-message { max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm19-specialty-option,.cm19-doctor-option,.cm19-date-option,.cm19-time-option { transition: none; }
+}
+@media print {
+  .atendimento-stats-v16 > div, .cm25-kpi, .v16-card { box-shadow: none; }
+}
+
+/* 10 — Correção da rolagem na Central: cada área fica em sua coluna.
+   Evita a coluna de mensagens crescendo e empurrando a página indefinidamente. */
+@media (min-width: 1121px) {
+  .atendimento-shell:not(.no-context),
+  .v16-atendimento-shell:not(.no-context),
+  .cm25-atendimento-shell:not(.no-context) {
+    height: clamp(610px, calc(100dvh - 290px), 850px);
+    min-height: 610px;
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .atendimento-shell:not(.no-context) .atendimento-inbox,
+  .atendimento-shell:not(.no-context) .atendimento-chat,
+  .atendimento-shell:not(.no-context) .atendimento-context-v16 {
+    min-height: 0;
+    max-height: 100%;
+  }
+  .atendimento-shell:not(.no-context) .atendimento-conversation-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .atendimento-shell:not(.no-context) .atendimento-messages {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+  .atendimento-shell:not(.no-context) .atendimento-context-v16 {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .atendimento-shell:not(.no-context) .atendimento-compose,
+  .atendimento-shell:not(.no-context) .atendimento-chat-header,
+  .atendimento-shell:not(.no-context) .cm23-identity-warning { flex-shrink: 0; }
+}
+@media (min-width: 769px) and (max-width: 1120px) {
+  .atendimento-shell:not(.no-context),
+  .v16-atendimento-shell:not(.no-context),
+  .cm25-atendimento-shell:not(.no-context) {
+    grid-template-rows: minmax(580px, auto) auto;
+  }
+  .atendimento-shell:not(.no-context) .atendimento-inbox,
+  .atendimento-shell:not(.no-context) .atendimento-chat {
+    min-height: 0;
+    height: min(75dvh, 780px);
+  }
+  .atendimento-shell:not(.no-context) .atendimento-conversation-list,
+  .atendimento-shell:not(.no-context) .atendimento-messages {
+    min-height: 0;
+    max-height: none;
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }
+}
+@media (max-width: 768px) {
+  /* No celular a leitura usa a rolagem natural da página. Apenas a lista de
+     conversas fica limitada para não ocupar a tela inteira. */
+  .atendimento-shell, .v16-atendimento-shell, .cm25-atendimento-shell {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+  .atendimento-chat { height: auto; min-height: 0; }
+  .atendimento-messages {
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+    flex: 0 0 auto;
+    scroll-behavior: auto;
+  }
+  .atendimento-inbox { min-height: 0; }
+  .atendimento-conversation-list { max-height: 240px; overflow-y: auto; }
+  .atendimento-message { max-width: min(94%, 720px); }
+}
+
+/* 11 — Logo horizontal original nos portais de cadastro e acesso negado.
+   O CSS herdado tratava a versão horizontal como ícone de 38 x 38px. */
+.identity-brand > img.identity-brand-horizontal,
+.identity-showcase .identity-brand > img.identity-brand-horizontal {
+  display: block;
+  width: clamp(155px, 17vw, 208px);
+  max-width: 100%;
+  height: auto;
+  max-height: 76px;
+  object-fit: contain;
+  object-position: left center;
+}
+@media (max-width: 600px) {
+  .identity-brand > img.identity-brand-horizontal,
+  .identity-showcase .identity-brand > img.identity-brand-horizontal { width: 160px; }
+}

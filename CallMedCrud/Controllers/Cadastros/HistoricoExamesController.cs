@@ -25,7 +25,16 @@ public sealed class HistoricoExamesController(
         if (pacienteId is null && User.IsInRole("Paciente") && !Equipe)
             pacienteId = (await vinculos.ObterPacienteAsync(User, ct))?.Id;
 
-        if (pacienteId is not > 0 || !await PodeAcessarAsync(pacienteId.Value, ct)) return Forbid();
+        // O histórico é sempre de um paciente específico. A equipe administrativa
+        // pode acessar todos os pacientes, mas não deve receber Acesso Negado
+        // apenas por abrir o histórico sem um paciente selecionado.
+        if (pacienteId is not > 0)
+        {
+            if (Equipe) return RedirectToAction("Index", "Paciente");
+            if (User.IsInRole("Medico")) return RedirectToAction("Index", "MedicoPainel");
+            return Forbid();
+        }
+        if (!await PodeAcessarAsync(pacienteId.Value, ct)) return Forbid();
         if (Equipe)
         {
             ViewBag.ExamesPendentes = await context.ExamesHistorico.AsNoTracking()
