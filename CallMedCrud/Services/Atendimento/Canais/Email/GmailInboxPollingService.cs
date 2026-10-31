@@ -115,7 +115,7 @@ public sealed class GmailInboxPollingService : BackgroundService
                     ct);
 
                 await _gmail.MarcarComoProcessadaAsync(mensagem.Id, ct);
-                _logger.LogInformation("Mensagem Gmail registrada na Central para revisão humana. GmailMessageId={MessageId}.", mensagem.Id);
+                _logger.LogInformation("Mensagem Gmail processada pela Central (rascunho ou fila da equipe conforme classificação). GmailMessageId={MessageId}.", mensagem.Id);
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {

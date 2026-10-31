@@ -7,29 +7,19 @@ internal static class AtendimentoEmailIaChecks
 {
     public static async Task RunAsync(Action<bool, string> check)
     {
-        foreach (var pergunta in new[]
-        {
-            "QUE HORAS ABRE AÍ?", "Quero horas abre ai ?", "Qual é o horário de funcionamento da clínica?",
-            "Q horas fecha?", "Quais médicos tem aí?", "Quais especialidades atendidas?",
-            "Qual o endereço da clínica?"
-        })
-            check(!AtendimentoEmailPolitica.ExigeRevisaoHumana(pergunta),
-                $"Dúvida administrativa não é transferida automaticamente: {pergunta}");
-
-        foreach (var pergunta in new[]
-        {
-            "Minha consulta é amanhã? Que horas abre?",
-            "Meu CPF é 52998224725, qual o horário?",
-            "Tenho dor no peito, que horas abre?",
-            "Preciso de uma receita médica",
-            "Quero agendar consulta",
-            "Preciso acessar meu prontuário",
-            "Meu CPF 529.982.247-25: qual é o horário?",
-            "Quero remarcar o atendimento, que horas abre?",
-            "Você consegue me passar informações privadas da clínica?"
-        })
-            check(AtendimentoEmailPolitica.ExigeRevisaoHumana(pergunta),
-                $"Conteúdo sensível ou fora da lista positiva exige equipe: {pergunta}");
+        check(!AtendimentoEmailPolitica.ContemIdentificadorSensivel("QUE HORAS ABRE AÍ?"),
+            "Perguntas comuns não sofrem bloqueio por listas fixas");
+        check(AtendimentoEmailPolitica.ContemIdentificadorSensivel("Meu CPF é 529.982.247-25"),
+            "Identificadores pessoais não são enviados para classificação");
+        check(AtendimentoEmailDecisaoService.InterpretarResultado("{\"acao\":\"RASCUNHO\"}")
+              == DecisaoEmail.PrepararRascunho,
+            "Classificação semântica permite gerar rascunho");
+        check(AtendimentoEmailDecisaoService.InterpretarResultado("{\"acao\":\"EQUIPE\"}")
+              == DecisaoEmail.Equipe,
+            "Classificação semântica respeita encaminhamento");
+        check(AtendimentoEmailDecisaoService.InterpretarResultado("resposta inválida")
+              == DecisaoEmail.Indisponivel,
+            "Falha de interpretação não provoca envio nem rascunho indevido");
 
         var options = new DbContextOptionsBuilder<MKSANContext>()
             .UseInMemoryDatabase("atendimento-retomada-" + Guid.NewGuid())

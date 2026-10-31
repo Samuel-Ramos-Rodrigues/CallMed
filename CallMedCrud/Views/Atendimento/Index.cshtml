@@ -14,15 +14,9 @@
         CanalAtendimento.WhatsApp => "WhatsApp",
         CanalAtendimento.Sms => "SMS",
         CanalAtendimento.Email => "E-mail",
+        CanalAtendimento.Presencial => "Presencial",
+        CanalAtendimento.Telefone => "Telefone",
         _ => "Site"
-    };
-
-    string CanalIcon(CanalAtendimento canal) => canal switch
-    {
-        CanalAtendimento.WhatsApp => "W",
-        CanalAtendimento.Sms => "S",
-        CanalAtendimento.Email => "@",
-        _ => "C"
     };
 
     string AutorLabel(AutorMensagemAtendimento autor) => autor switch
@@ -35,14 +29,19 @@
 }
 
 <section class="cm25-screen cm25-page v16-page atendimento-v16-page" data-cm25-view="Atendimento/Index.cshtml">
-    <div class="cm25-page-hero v16-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#headset"></use></svg></div>
-        <div><span class="cm25-kicker v16-eyebrow">OMNICHANNEL</span><h1>Central de Atendimento</h1><p>Site, WhatsApp, SMS e e-mail em uma caixa de entrada única.</p></div>
-        <div class="v16-head-actions">
-            <button type="button" class="btn secondary" id="channelStatusButton">Situação dos canais</button>
-            <a asp-action="Nova" class="btn"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#message-circle"></use></svg>Novo atendimento</a>
+    <header class="cm-origem-hero">
+        <div class="cm-origem-hero-copy">
+            <span class="cm-origem-eyebrow">UMA NOVA FORMA DE ATENDER</span>
+            <h1>Central de Atendimento<span aria-hidden="true">.</span></h1>
+            <p>Cada canal identificado. Cada conversa no seu lugar.</p>
         </div>
-    </div>
-
+        <div class="cm-origem-hero-actions">
+            <button type="button" class="cm-origem-channel-status" id="channelStatusButton"><span class="cm-origem-dot" aria-hidden="true"></span>Situação dos canais</button>
+            <a asp-action="Nova" class="btn cm-origem-new">+ Novo atendimento</a>
+        </div>
+    </header>
+    <details class="cm-origem-summary">
+        <summary>Resumo da operação e filtros <span aria-hidden="true">⌄</span></summary>
     <div class="atendimento-stats-v16">
         <div><span>Conversas abertas</span><strong>@abertas</strong></div>
         <div><span>Em atendimento IA</span><strong>@emIa</strong></div>
@@ -50,8 +49,14 @@
         <div><span>Mensagens não lidas</span><strong>@naoLidas</strong></div>
     </div>
 
+    </details>
+    <div class="cm25-atendimento-shell atendimento-shell v16-atendimento-shell @(Model.ConversaSelecionada is null ? "no-context" : "")">
+        <aside class="atendimento-inbox v16-inbox">
+            <div class="atendimento-inbox-title"><div><strong>Caixa de entrada</strong><small>Conversas organizadas por atividade</small></div><span>@Model.Conversas.Count</span></div>
+            <div class="cm-origem-inbox-controls">
+                <label class="cm-origem-search" for="cmOrigemSearch"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="cmOrigemSearch" type="search" autocomplete="off" placeholder="Buscar conversa ou contato" aria-label="Buscar nas conversas carregadas" /></label>
     <form method="get" asp-action="Index" class="atendimento-filters v16-atendimento-filters">
-        <div class="filter-label"><span>⌕</span><strong>Filtros</strong></div>
+        <div class="filter-label"><span>⌕</span><strong>Exibir</strong></div>
         <select name="canal" aria-label="Filtrar por canal">
             <option value="">Todos os canais</option>
             <option value="Web" selected="@(Model.FiltroCanal == "Web" ? "selected" : null)">Site</option>
@@ -69,9 +74,8 @@
         { <a asp-action="Index" class="btn-link-clean">Limpar</a> }
     </form>
 
-    <div class="cm25-atendimento-shell atendimento-shell v16-atendimento-shell @(Model.ConversaSelecionada is null ? "no-context" : "")">
-        <aside class="atendimento-inbox v16-inbox">
-            <div class="atendimento-inbox-title"><div><strong>Conversas</strong><small>Mais recentes primeiro</small></div><span>@Model.Conversas.Count</span></div>
+                <p class="cm-origem-filter-note">Busque nesta página ou filtre pelo canal e pelo atendimento.</p>
+            </div>
             @if (!Model.Conversas.Any())
             {
                 <div class="atendimento-empty-list">Nenhuma conversa encontrada.</div>
@@ -83,11 +87,11 @@
                     {
                         var ativa = Model.ConversaSelecionada?.Id == resumo.Id;
                         <a asp-action="Index" asp-route-id="@resumo.Id" asp-route-canal="@Model.FiltroCanal" asp-route-modo="@Model.FiltroModo" class="atendimento-conversation @(ativa ? "active" : "")">
-                            <span class="conversation-channel channel-@resumo.Canal.ToString().ToLowerInvariant()">@CanalIcon(resumo.Canal)</span>
+                            <partial name="_CanalIcon" model="resumo.Canal" />
                             <span class="conversation-copy">
                                 <span class="conversation-topline"><strong>@resumo.Nome</strong>@if (resumo.NaoLidas > 0){<b class="unread-count">@resumo.NaoLidas</b>}</span>
-                                <small>@CanalLabel(resumo.Canal) · @(resumo.Modo == ModoAtendimento.IA ? "IA" : "Humano")</small>
                                 <span class="conversation-preview">@(string.IsNullOrWhiteSpace(resumo.UltimaMensagem) ? "Conversa iniciada" : resumo.UltimaMensagem)</span>
+                                <small class="cm-origem-conversation-channel">@CanalLabel(resumo.Canal) · @(resumo.Modo == ModoAtendimento.IA ? "Assistente" : "Equipe")</small>
                             </span>
                         </a>
                     }
@@ -105,7 +109,7 @@
                 var conversa = Model.ConversaSelecionada;
                 <header class="atendimento-chat-header v16-chat-header">
                     <div class="atendimento-person">
-                        <span class="conversation-channel channel-@conversa.Canal.ToString().ToLowerInvariant()">@CanalIcon(conversa.Canal)</span>
+                        <span class="cm-origem-monogram" aria-hidden="true">@((string.IsNullOrWhiteSpace(conversa.Paciente?.Nome ?? conversa.IdentificadorExterno) ? "?" : (conversa.Paciente?.Nome ?? conversa.IdentificadorExterno)[..1].ToUpperInvariant()))</span>
                         <div><strong>@(conversa.Paciente?.Nome ?? conversa.IdentificadorExterno)</strong><small>@CanalLabel(conversa.Canal) · @conversa.IdentificadorExterno</small></div>
                     </div>
                     <div class="atendimento-header-actions">
@@ -150,7 +154,8 @@
                         </div>
                     </div>
                 }
-                <div class="atendimento-messages" id="atendimentoMessages" data-conversa-id="@conversa.Id" data-last-id="@(Model.Mensagens.LastOrDefault()?.Id ?? 0)" data-mode="@conversa.Modo" data-active="@conversa.Ativa.ToString().ToLowerInvariant()" data-responsavel-id="@conversa.ResponsavelUsuarioId" data-paciente-id="@(conversa.PacienteId?.ToString() ?? string.Empty)">
+                <span id="cm-origem-channel-template" hidden><partial name="_CanalIcon" model="conversa.Canal" /></span>
+                <div class="atendimento-messages" id="atendimentoMessages" data-conversa-id="@conversa.Id" data-channel="@conversa.Canal.ToString()" data-last-id="@(Model.Mensagens.LastOrDefault()?.Id ?? 0)" data-mode="@conversa.Modo" data-active="@conversa.Ativa.ToString().ToLowerInvariant()" data-responsavel-id="@conversa.ResponsavelUsuarioId" data-paciente-id="@(conversa.PacienteId?.ToString() ?? string.Empty)">
                     @if (!Model.Mensagens.Any())
                     {
                         <div class="empty-state">Ainda não há mensagens nessa conversa.</div>
@@ -162,7 +167,7 @@
                             var entrada = mensagem.Direcao == DirecaoMensagemAtendimento.Entrada;
                             <article class="atendimento-message @(entrada ? "incoming" : "outgoing")" data-message-id="@mensagem.Id">
                                 <div class="message-meta">
-                                    <strong>@AutorLabel(mensagem.Autor)</strong>
+                                    <span class="cm-origem-message-source"><partial name="_CanalIcon" model="conversa.Canal" /><strong>@(entrada ? $"Recebido por {CanalLabel(conversa.Canal)}" : mensagem.Status == StatusMensagemAtendimento.AguardandoAprovacao ? $"Rascunho para {CanalLabel(conversa.Canal)} · CallMed" : $"{AutorLabel(mensagem.Autor)} · {CanalLabel(conversa.Canal)}")</strong></span>
                                     <time datetime="@mensagem.CriadoEm.ToString("O")">@ClinicaClock.ConverterUtc(mensagem.CriadoEm).ToString("dd/MM HH:mm")</time>
                                 </div>
                                 <p>@(mensagem.Texto?.Replace("**", string.Empty))</p>
@@ -223,7 +228,7 @@
                     <form asp-action="EnviarMensagem" method="post" class="atendimento-compose v16-compose">
                         <input type="hidden" name="id" value="@conversa.Id" />
                         <textarea name="mensagem" maxlength="4000" rows="2" required placeholder="Digite uma mensagem para este atendimento..."></textarea>
-                        <div class="compose-footer"><small>Ao responder, a conversa passa para atendimento humano.</small><button type="submit" class="btn">Enviar</button></div>
+                        <div class="compose-footer"><small><partial name="_CanalIcon" model="conversa.Canal" /> Resposta por @CanalLabel(conversa.Canal) · ao responder, o atendimento passa para a equipe.</small><button type="submit" class="btn">Enviar</button></div>
                     </form>
                 }
                 else
@@ -236,7 +241,9 @@
         @if (Model.ConversaSelecionada is not null)
         {
             var conversa = Model.ConversaSelecionada;
-            <aside class="atendimento-context-v16">
+            <details class="atendimento-context-v16 atendimento-context-details">
+                <summary>Detalhes da conversa e vínculo do paciente <span aria-hidden="true">⌄</span></summary>
+                <div class="atendimento-context-inner">
                 <div class="context-profile">
                     <span class="context-avatar">@(conversa.Paciente?.Nome?.Substring(0,1).ToUpper() ?? "?")</span>
                     <div><small>CONTATO</small><strong>@(conversa.Paciente?.Nome ?? "Não identificado")</strong><span>@CanalLabel(conversa.Canal)</span></div>
@@ -283,7 +290,8 @@
                     }
                     @if (!string.IsNullOrWhiteSpace(conversa.Assunto)){<div class="context-info-row"><span>Assunto</span><strong>@conversa.Assunto</strong></div>}
                 </div>
-            </aside>
+                </div>
+            </details>
         }
     </div>
 </section>

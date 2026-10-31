@@ -34,6 +34,10 @@
         };
 
         const cleanMessageText = value => (value || '').replace(/\*\*/g, '');
+        const channelLabels = { Email: 'E-mail', WhatsApp: 'WhatsApp', Sms: 'SMS', Web: 'Site', Telefone: 'Telefone', Presencial: 'Presencial' };
+        const conversationChannel = messages.dataset.channel || 'Web';
+        const channelLabel = channelLabels[conversationChannel] || 'Site';
+        const createChannelIcon = () => document.querySelector('#cm-origem-channel-template .cm-channel')?.cloneNode(true) || null;
 
         const updateDelivery = (article, item) => {
             let delivery = article.querySelector('.message-delivery');
@@ -101,14 +105,23 @@
             const meta = document.createElement('div');
             meta.className = 'message-meta';
 
+            const source = document.createElement('span');
+            source.className = 'cm-origem-message-source';
+            const channelIcon = createChannelIcon();
+            if (channelIcon) source.append(channelIcon);
             const strong = document.createElement('strong');
-            strong.textContent = authorLabel(item.autor);
+            strong.textContent = item.direcao === 'Entrada'
+                ? `Recebido por ${channelLabel}`
+                : item.status === 'AguardandoAprovacao'
+                    ? `Rascunho para ${channelLabel} · CallMed`
+                    : `${authorLabel(item.autor)} · ${channelLabel}`;
+            source.append(strong);
 
             const time = document.createElement('time');
             time.dateTime = item.criadoEm;
             time.textContent = formatDate(item.criadoEm);
 
-            meta.append(strong, time);
+            meta.append(source, time);
 
             const paragraph = document.createElement('p');
             paragraph.textContent = cleanMessageText(item.texto);
@@ -187,6 +200,15 @@
 
         window.setInterval(poll, 3500);
     }
+
+    // Busca instantânea somente nas conversas já carregadas. Filtros por canal e modo continuam no servidor.
+    const inboxSearch = document.getElementById('cmOrigemSearch');
+    const conversationLinks = [...document.querySelectorAll('.atendimento-conversation-list .atendimento-conversation')];
+    inboxSearch?.addEventListener('input', () => {
+        const normalize = value => (value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
+        const query = normalize(inboxSearch.value.trim());
+        conversationLinks.forEach(link => { link.hidden = !normalize(link.textContent).includes(query); });
+    });
 
     document.addEventListener('submit', event => {
         if (!event.target.matches('.atendimento-retry-form')) return;

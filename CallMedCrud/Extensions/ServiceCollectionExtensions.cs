@@ -123,6 +123,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AtendimentoConversaService>();
         services.AddScoped<AtendimentoEnvioService>();
         services.AddScoped<AtendimentoOrquestradorService>();
+        services.AddScoped<AtendimentoEmailDecisaoService>();
 
         services.AddSingleton(TimeProvider.System);
         services.AddSingleton<EvolutionEnvioControle>();

@@ -11,6 +11,7 @@ public sealed class AtendimentoOrquestradorService
     private readonly IAgenteClinicaService _agente;
     private readonly AtendimentoConversaService _conversas;
     private readonly AtendimentoEnvioService _envio;
+    private readonly AtendimentoEmailDecisaoService _decisaoEmail;
     private readonly ConvenioService _convenio;
     private readonly SolicitacaoAtendimentoService _solicitacoes;
     private readonly ILogger<AtendimentoOrquestradorService> _logger;
@@ -19,6 +20,7 @@ public sealed class AtendimentoOrquestradorService
         IAgenteClinicaService agente,
         AtendimentoConversaService conversas,
         AtendimentoEnvioService envio,
+        AtendimentoEmailDecisaoService decisaoEmail,
         ConvenioService convenio,
         SolicitacaoAtendimentoService solicitacoes,
         ILogger<AtendimentoOrquestradorService> logger)
@@ -26,6 +28,7 @@ public sealed class AtendimentoOrquestradorService
         _agente = agente;
         _conversas = conversas;
         _envio = envio;
+        _decisaoEmail = decisaoEmail;
         _convenio = convenio;
         _solicitacoes = solicitacoes;
         _logger = logger;
@@ -77,11 +80,12 @@ public sealed class AtendimentoOrquestradorService
         // Conversa já assumida pela equipe: registrar a entrada, mas não disputar a resposta.
         if (jaEstavaEmAtendimentoHumano) return;
 
-        // Pedidos de humano e conteúdo clínico/sensível não seguem para o modelo.
-        // A mensagem fica visível para a equipe, sem resposta automática ou rascunho clínico.
-        if (AtendimentoIntencao.EhPedidoAtendimentoHumano(textoEntrada) ||
-            AtendimentoEmailPolitica.ExigeRevisaoHumana(textoEntrada))
+        // A IA interpreta a intenção, não uma lista de frases rígidas.
+        // Dúvidas públicas recebem um rascunho; questões privadas ficam com a equipe.
+        var decisao = await _decisaoEmail.AnalisarAsync(textoEntrada, ct);
+        if (decisao != DecisaoEmail.PrepararRascunho)
         {
+            _logger.LogInformation("E-mail {ConversaId} direcionado para equipe. Decisao={Decisao}", conversa.Id, decisao);
             await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
             return;
         }
@@ -107,12 +111,14 @@ public sealed class AtendimentoOrquestradorService
             return ResultadoRetomadaEmail.SemMensagemPendente;
 
         var texto = NormalizarTextoEntrada(ultima.Texto, CanalAtendimento.Email);
-        if (string.IsNullOrWhiteSpace(texto) ||
-            AtendimentoIntencao.EhPedidoAtendimentoHumano(texto) ||
-            AtendimentoEmailPolitica.ExigeRevisaoHumana(texto))
+        var decisao = await _decisaoEmail.AnalisarAsync(texto, ct);
+        if (decisao != DecisaoEmail.PrepararRascunho)
         {
+            _logger.LogInformation("Retomada de e-mail {ConversaId} interrompida. Decisao={Decisao}", conversa.Id, decisao);
             await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
-            return ResultadoRetomadaEmail.RequerEquipe;
+            return decisao == DecisaoEmail.Equipe
+                ? ResultadoRetomadaEmail.RequerEquipe
+                : ResultadoRetomadaEmail.FalhaNaGeracao;
         }
 
         var historico = await _conversas.CarregarHistoricoPacienteAsync(
