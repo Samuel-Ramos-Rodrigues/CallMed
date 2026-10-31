@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using MKSANCrud.DTOs.Atendimento;
 using MKSANCrud.Options;
 using System.Text.Json;
