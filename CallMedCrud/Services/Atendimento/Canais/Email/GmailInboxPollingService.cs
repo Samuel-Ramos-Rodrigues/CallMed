@@ -8,7 +8,7 @@ namespace MKSANCrud.Services.Atendimento.Canais.Email;
 
 /// <summary>
 /// Lê mensagens novas do Gmail e cria rascunhos de resposta da IA na Central.
-/// Nenhum rascunho é enviado sem aprovação explícita da equipe.
+/// Cada mensagem externa é processada individualmente; rascunhos aguardam aprovação da equipe.
 /// </summary>
 public sealed class GmailInboxPollingService : BackgroundService
 {

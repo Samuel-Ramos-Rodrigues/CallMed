@@ -129,10 +129,16 @@ public sealed class AtendimentoConversaService
                         ct);
             }
 
-            paciente ??= await _identidade.ResolverPacienteAsync(
-                canal,
-                normalizado,
-                ct);
+            // A desativação da identificação automática também vale para conversas
+            // existentes. Apenas pacienteId explícito pode vincular nesse caso.
+            // Não apague vínculos que já foram confirmados pela equipe.
+            if (resolverIdentidade)
+            {
+                paciente ??= await _identidade.ResolverPacienteAsync(
+                    canal,
+                    normalizado,
+                    ct);
+            }
 
             AnexarPacienteExistente(paciente);
 

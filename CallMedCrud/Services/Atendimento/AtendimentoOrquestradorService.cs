@@ -123,7 +123,10 @@ public sealed class AtendimentoOrquestradorService
                 StatusMensagemAtendimento.AguardandoAprovacao,
                 erro: "Rascunho gerado pela IA. Revise antes de enviar ao paciente.",
                 ct: ct);
-            await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+
+            // Gerar um rascunho não significa que um atendente assumiu a conversa.
+            // Preserve o modo atual para que novas mensagens do mesmo remetente
+            // continuem sendo analisadas pela IA. A equipe pode assumir explicitamente.
         }
         catch (OperationCanceledException) when (ct.IsCancellationRequested)
         {

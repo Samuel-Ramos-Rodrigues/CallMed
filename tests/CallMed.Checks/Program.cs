@@ -93,6 +93,7 @@ handler.Status = HttpStatusCode.OK; handler.Body = "invalid";
 Check(!(await sender.VerificarConexaoAsync()).Conectado, "Resposta inválida é tratada");
 await HistoricoExamesChecks.RunAsync(Check);
 await AgendamentoChecks.RunAsync(Check);
+await AtendimentoIdentidadeChecks.RunAsync(Check);
 await PortalAcessoChecks.RunAsync(Check);
 await EvolutionEnvioChecks.RunAsync(Check);
 Console.WriteLine("Verificações concluídas. Nenhuma mensagem real foi enviada.");
