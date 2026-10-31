@@ -123,13 +123,13 @@
                         {
                             <span class="mode-pill mode-waiting">● Aguardando equipe</span>
                             <form asp-action="Assumir" method="post" class="atendimento-state-form" data-action-name="Assumir atendimento"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn small">Assumir</button></form>
-                            <form asp-action="DevolverParaIa" method="post" class="atendimento-state-form" data-action-name="Devolver para IA"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Devolver para IA</button></form>
+                            <form asp-action="DevolverParaIa" asp-antiforgery="true" method="post" class="atendimento-state-form" data-action-name="Devolver para IA"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Devolver para IA</button></form>
                             <form asp-action="Encerrar" method="post" class="atendimento-state-form" data-action-name="Encerrar conversa" data-confirm="Encerrar esta conversa? O histórico será preservado."><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Encerrar</button></form>
                         }
                         else if (conversa.ResponsavelUsuarioId == usuarioAtualId)
                         {
                             <span class="mode-pill mode-humano">● Assumido por você</span>
-                            <form asp-action="DevolverParaIa" method="post" class="atendimento-state-form" data-action-name="Devolver para IA"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Devolver para IA</button></form>
+                            <form asp-action="DevolverParaIa" asp-antiforgery="true" method="post" class="atendimento-state-form" data-action-name="Devolver para IA"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Devolver para IA</button></form>
                             <form asp-action="Encerrar" method="post" class="atendimento-state-form" data-action-name="Encerrar conversa" data-confirm="Encerrar esta conversa? O histórico será preservado."><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Encerrar</button></form>
                         }
                         else

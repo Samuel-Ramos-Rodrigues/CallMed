@@ -16,17 +16,20 @@ public sealed class AtendimentoController : Controller
     private readonly MKSANContext _context;
     private readonly AtendimentoConversaService _conversas;
     private readonly AtendimentoEnvioService _envio;
+    private readonly AtendimentoOrquestradorService _orquestrador;
     private readonly UsuarioVinculoService _vinculos;
 
     public AtendimentoController(
         MKSANContext context,
         AtendimentoConversaService conversas,
         AtendimentoEnvioService envio,
+        AtendimentoOrquestradorService orquestrador,
         UsuarioVinculoService vinculos)
     {
         _context = context;
         _conversas = conversas;
         _envio = envio;
+        _orquestrador = orquestrador;
         _vinculos = vinculos;
     }
 
@@ -353,11 +356,31 @@ public sealed class AtendimentoController : Controller
         if (conversa is null)
             return NotFound();
 
-        await _conversas.DevolverParaIaAsync(
-            conversa,
-            ct);
+        await _conversas.DevolverParaIaAsync(conversa, ct);
 
-        TempData["Sucesso"] = "A conversa voltou para o Assistente CallMed.";
+        if (conversa.Canal == CanalAtendimento.Email)
+        {
+            var resultado = await _orquestrador.RetomarUltimoEmailPendenteAsync(conversa, ct);
+            switch (resultado)
+            {
+                case ResultadoRetomadaEmail.RascunhoCriado:
+                    TempData["Sucesso"] = "Conversa devolvida à IA. Um rascunho para a última mensagem foi criado e aguarda sua aprovação (nenhum e-mail foi enviado).";
+                    break;
+                case ResultadoRetomadaEmail.RequerEquipe:
+                    TempData["Erro"] = "A última mensagem exige revisão humana ou solicita um atendente. A conversa permanece na fila da equipe; nenhum e-mail foi enviado.";
+                    break;
+                case ResultadoRetomadaEmail.FalhaNaGeracao:
+                    TempData["Erro"] = "A IA não conseguiu criar o rascunho. A conversa foi mantida com a equipe para não perder a mensagem. Confira os logs do Render.";
+                    break;
+                default:
+                    TempData["Sucesso"] = "Conversa devolvida à IA. Não existe mensagem pendente para responder; a IA analisará os próximos e-mails.";
+                    break;
+            }
+        }
+        else
+        {
+            TempData["Sucesso"] = "A conversa voltou para o Assistente CallMed. A IA atenderá as próximas mensagens.";
+        }
         return RedirectToAction(nameof(Index), new { id });
     }
 

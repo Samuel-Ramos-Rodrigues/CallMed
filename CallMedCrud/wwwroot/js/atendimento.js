@@ -213,11 +213,21 @@
                 return;
             }
 
+            // Não desabilitar o submitter durante o próprio evento submit:
+            // alguns navegadores deixam de enviar o formulário. O POST nativo
+            // (com antiforgery) deve prosseguir, e o servidor redirecionará.
+            if (form.dataset.submitting === 'true') {
+                event.preventDefault();
+                return;
+            }
+            form.dataset.submitting = 'true';
             const button = form.querySelector('button[type="submit"]');
             if (button) {
-                button.disabled = true;
+                button.setAttribute('aria-disabled', 'true');
                 button.dataset.originalText = button.textContent || '';
-                button.textContent = 'Aguarde...';
+                button.textContent = form.dataset.actionName === 'Devolver para IA'
+                    ? 'Reativando IA...'
+                    : 'Aguarde...';
             }
         });
     });

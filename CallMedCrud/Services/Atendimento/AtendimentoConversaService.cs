@@ -311,6 +311,24 @@ public sealed class AtendimentoConversaService
         return mensagem;
     }
 
+    /// <summary>
+    /// Apenas a última entrada ainda sem resposta pode ser retomada pela IA.
+    /// Uma saída posterior (inclusive rascunho) impede rascunhos duplicados.
+    /// </summary>
+    public async Task<MensagemAtendimento?> ObterUltimaEntradaPendenteAsync(
+        long conversaId,
+        CancellationToken ct = default)
+    {
+        var ultima = await _context.MensagensAtendimento.AsNoTracking()
+            .Where(m => m.ConversaAtendimentoId == conversaId)
+            .OrderByDescending(m => m.Id)
+            .FirstOrDefaultAsync(ct);
+
+        return ultima is { Direcao: DirecaoMensagemAtendimento.Entrada,
+                            Autor: AutorMensagemAtendimento.Paciente }
+            ? ultima : null;
+    }
+
     public async Task<IReadOnlyList<MensagemHistoricoAgente>>
         CarregarHistoricoPacienteAsync(
             int? pacienteId,
@@ -325,7 +343,8 @@ public sealed class AtendimentoConversaService
                 .AsNoTracking()
                 .Include(m => m.Conversa)
                 .Where(m => m.Status != StatusMensagemAtendimento.AguardandoAprovacao &&
-                            m.Status != StatusMensagemAtendimento.Ignorada);
+                            m.Status != StatusMensagemAtendimento.Ignorada &&
+                            (!excluirMensagemId.HasValue || m.Id != excluirMensagemId.Value));
 
         query = pacienteId.HasValue
             ? query.Where(m =>
