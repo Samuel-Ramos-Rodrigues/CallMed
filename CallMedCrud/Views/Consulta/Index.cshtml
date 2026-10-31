@@ -35,14 +35,14 @@
         { <div class="v16-empty"><span>▦</span><strong>Nenhuma consulta encontrada.</strong><p>Os agendamentos aparecerão aqui.</p></div> }
         else
         {
-            <div class="table-scroll"><table class="v16-table"><thead><tr>@if(!User.IsInRole("Paciente")){<th>Paciente</th>}<th>Médico</th><th>Especialidade</th><th>Data</th><th>Horário</th><th>Situação</th><th>Pagamento</th><th>Validação do convênio</th><th></th></tr></thead><tbody>
+            <p class="table-scroll-hint">Deslize a tabela para os lados para ver as demais colunas e ações.</p><div class="table-scroll"><table class="v16-table cm-record-table cm-record-table--consultations"><thead><tr>@if(!User.IsInRole("Paciente")){<th>Paciente</th>}<th>Médico</th><th>Especialidade</th><th>Data</th><th>Horário</th><th>Situação</th><th>Pagamento</th><th>Validação do convênio</th><th></th></tr></thead><tbody>
             @foreach (var item in lista)
             {
                 <tr>
                     @if(!User.IsInRole("Paciente")){<td><strong>@item.Paciente?.Nome</strong></td>}
                     <td><div class="entity-cell"><span class="entity-avatar doctor">@(item.Medico?.Nome?.Substring(0,1).ToUpper() ?? "M")</span><div><strong>@item.Medico?.Nome</strong></div></div></td>
                     <td>@item.Medico?.Especialidade</td><td><span class="date-chip">@item.Data.ToString("dd/MM/yyyy")</span></td><td><span class="time-chip">@item.Horario</span></td><td><span class="status-pill status-@item.Status.ToLowerInvariant()">@item.Status</span></td><td><span class="soft-pill">@item.TipoPagamento</span></td><td>@if(item.TipoPagamento == TipoPagamentoConsulta.Convenio || item.StatusElegibilidadeConvenio != ElegibilidadeConvenioStatus.NaoAplicavel){<span class="soft-pill">@ElegibilidadeConvenioStatus.Rotulo(item.StatusElegibilidadeConvenio)</span>}else{<span>—</span>}</td>
-                    <td><details class="row-menu"><summary>•••</summary><div><a asp-action="Details" asp-route-id="@item.Id">Ver detalhes</a>@if(ConsultaStatus.PodeRemarcar(item.Status)){<a asp-action="Remarcar" asp-route-id="@item.Id">Remarcar</a>}@if(ehEquipe && ConsultaStatus.PodeRemarcar(item.Status)){<a asp-action="Edit" asp-route-id="@item.Id">Editar</a>}</div></details></td>
+                    <td class="row-actions-cell"><div class="row-actions" aria-label="Ações da consulta"><a class="row-action" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>@if(ConsultaStatus.PodeRemarcar(item.Status)){<a class="row-action" asp-action="Remarcar" asp-route-id="@item.Id">Remarcar</a>}@if(ehEquipe && ConsultaStatus.PodeRemarcar(item.Status)){<a class="row-action" asp-action="Edit" asp-route-id="@item.Id">Editar</a>}</div></td>
                 </tr>
             }
             </tbody></table></div>

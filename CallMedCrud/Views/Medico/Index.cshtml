@@ -19,8 +19,8 @@
 
     <div class="cm25-panel v16-card table-card">
         <div class="v16-card-head"><div><h2>Profissionais</h2><p>Abra a agenda ou edite as informações do médico.</p></div></div>
-        <div class="table-scroll">
-            <table class="table modern-table v16-table">
+        <p class="table-scroll-hint">Deslize a tabela para os lados para ver as demais colunas e ações.</p><div class="table-scroll">
+            <table class="table modern-table v16-table cm-record-table cm-record-table--doctors">
                 <thead><tr><th>Profissional</th><th>Especialidade</th><th>CRM</th><th>Acesso</th><th>Situação</th><th></th></tr></thead>
                 <tbody>
                 @foreach (var item in lista)
@@ -31,16 +31,13 @@
                         <td>@(string.IsNullOrWhiteSpace(item.Crm) ? "—" : item.Crm)</td>
                         <td><span class="access-pill @(!string.IsNullOrWhiteSpace(item.UsuarioId) ? "linked" : "unlinked")">@(!string.IsNullOrWhiteSpace(item.UsuarioId) ? "Vinculado" : "Não configurado")</span></td>
                         <td><span class="status-dot-pill @(item.Ativo ? "active" : "inactive")"><i></i>@(item.Ativo ? "Ativo" : "Inativo")</span></td>
-                        <td>
-                            <details class="row-menu">
-                                <summary aria-label="Ações">•••</summary>
-                                <div>
-                                    <a asp-controller="Agenda" asp-action="Index" asp-route-medicoId="@item.Id">Ver agenda</a>
-                                    <a asp-action="Edit" asp-route-id="@item.Id">Editar médico</a>
-                                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes e acesso</a>
-                                    <a class="danger" asp-action="Delete" asp-route-id="@item.Id">Excluir / desativar</a>
-                                </div>
-                            </details>
+                        <td class="row-actions-cell">
+                            <div class="row-actions" aria-label="Ações de @item.Nome">
+                                <a class="row-action" asp-controller="Agenda" asp-action="Index" asp-route-medicoId="@item.Id">Agenda</a>
+                                <a class="row-action" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                                <a class="row-action" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+                                <a class="row-action danger" asp-action="Delete" asp-route-id="@item.Id">Desativar</a>
+                            </div>
                         </td>
                     </tr>
                 }
