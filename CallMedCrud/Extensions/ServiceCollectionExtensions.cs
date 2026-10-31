@@ -114,11 +114,8 @@ public static class ServiceCollectionExtensions
             configuration.GetSection(EvolutionWhatsAppOptions.SectionName));
         services.Configure<SmsHttpOptions>(
             configuration.GetSection(SmsHttpOptions.SectionName));
-        services.Configure<AtendimentoEmailInboundOptions>(
-            configuration.GetSection(AtendimentoEmailInboundOptions.SectionName));
         services.Configure<GmailInboxOptions>(
             configuration.GetSection(GmailInboxOptions.SectionName));
-        services.AddSingleton<AtendimentoEmailReplyAddressService>();
         services.AddHttpClient("GmailApi");
         services.AddSingleton<GmailApiClient>();
         services.AddHostedService<GmailInboxPollingService>();

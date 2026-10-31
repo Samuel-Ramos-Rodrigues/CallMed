@@ -15,7 +15,6 @@ public sealed class AtendimentoEnvioService(
     MKSANContext context,
     TimeProvider clock,
     ILogger<AtendimentoEnvioService> logger,
-    AtendimentoEmailReplyAddressService emailReplyAddresses,
     IOptions<GmailInboxOptions> gmailInboxOptions)
 {
     private readonly GmailInboxOptions _gmailInboxOptions = gmailInboxOptions.Value;
@@ -167,7 +166,7 @@ public sealed class AtendimentoEnvioService(
                     ? (_gmailInboxOptions.Enabled &&
                        MailAddress.TryCreate(_gmailInboxOptions.MailboxEmail?.Trim(), out var gmailMailbox)
                         ? gmailMailbox.Address
-                        : emailReplyAddresses.CriarEndereco(conversa.Id))
+                        : null)
                     : null;
                 resultado = await sender.EnviarAsync(
                     conversa.IdentificadorExterno,

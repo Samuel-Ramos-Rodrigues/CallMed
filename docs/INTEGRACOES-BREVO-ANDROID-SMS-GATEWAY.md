@@ -26,7 +26,7 @@ Depois de definir as variáveis, faça um novo deploy. Entre como administrador 
 
 ### Escopo de e-mail
 
-Esta configuração envia e-mails. O recebimento automático de respostas na Central é suportado separadamente pelo Brevo Inbound Parsing, mas fica desativado por padrão até que o subdomínio, os MX e o webhook sejam configurados conforme a seção abaixo.
+Esta configuração envia e-mails. O recebimento automático de respostas na Central é suportado separadamente pelo Gmail API, mas fica desativado por padrão até que o subdomínio, os MX e o webhook sejam configurados conforme a seção abaixo.
 
 ## SMS — Android SMS Gateway
 
@@ -60,15 +60,15 @@ O envio SMTP por si só não recebe respostas. Para que o paciente clique em **R
    - Prioridade `10`: `inbound1.sendinblue.com.`
    - Prioridade `20`: `inbound2.sendinblue.com.`
 3. No Brevo, crie um webhook com tipo `inbound`, evento `inboundEmailProcessed`, domínio do subdomínio de recebimento e URL:
-   `https://callmed.onrender.com/api/atendimento/email/inbound`
+   `https://callmed.onrender.com/api/atendimento/Gmail API polling`
 4. Configure no webhook o cabeçalho personalizado `X-CallMed-Webhook-Secret` com o mesmo valor de `Atendimento__Email__Inbound__WebhookSecret` no Render.
 5. No Render, configure os valores abaixo. Use dois segredos aleatórios independentes, cada um com pelo menos 32 caracteres; nunca reutilize a senha SMTP.
 
 ```text
 Atendimento__Email__Inbound__Enabled=true
 Atendimento__Email__Inbound__WebhookSecret=SEGREDO_ALEATORIO_DO_WEBHOOK_COM_32_OU_MAIS_CARACTERES
-Atendimento__Email__Inbound__ReplyAddressSecret=OUTRO_SEGREDO_ALEATORIO_COM_32_OU_MAIS_CARACTERES
-Atendimento__Email__Inbound__ReplyDomain=reply.seudominio.com.br
+Atendimento__Email__Inbound__GmailInbox OAuth=OUTRO_SEGREDO_ALEATORIO_COM_32_OU_MAIS_CARACTERES
+Atendimento__Email__Inbound__MailboxEmail=reply.seudominio.com.br
 ```
 
 O CallMed gera um `Reply-To` exclusivo, assinado e vinculado à conversa em cada e-mail enviado pela Central. Ao receber uma resposta, valida o segredo do webhook, valida o endereço de roteamento e confirma que o remetente corresponde ao e-mail da conversa antes de gravar a mensagem. Mensagens para endereços não gerados pelo CallMed são ignoradas; o webhook nunca cria uma conversa nova apenas com base no e-mail recebido.

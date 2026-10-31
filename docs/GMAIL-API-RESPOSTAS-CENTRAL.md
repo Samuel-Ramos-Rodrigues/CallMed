@@ -87,7 +87,7 @@ Smtp__ReplyToEmail=callmed.atendimento@gmail.com
 Smtp__EnableSsl=true
 ```
 
-Salve as variáveis e faça um novo deploy. Remova do Render qualquer variável antiga `Atendimento__Email__Inbound__Enabled`, `Atendimento__Email__Inbound__WebhookSecret`, `Atendimento__Email__Inbound__ReplyAddressSecret` ou `Atendimento__Email__Inbound__ReplyDomain` usada pelo parser pago do Brevo. Não publique os segredos no repositório.
+Salve as variáveis e faça um novo deploy. O recebimento de e-mails é feito exclusivamente pela Gmail API; não configure webhook/parser de entrada do Brevo. Não publique os segredos no repositório.
 
 ## 5. Como validar
 

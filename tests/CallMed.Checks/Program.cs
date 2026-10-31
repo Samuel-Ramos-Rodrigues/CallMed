@@ -78,20 +78,6 @@ var smtpSemRemetente = new SmtpEmailService(Options.Create(new SmtpOptions
 }), NullLogger<SmtpEmailService>.Instance);
 Check(!smtpSemRemetente.Configurado, "Brevo SMTP não aparece configurado sem remetente autorizado definido");
 
-var inboundEmailOptions = Options.Create(new AtendimentoEmailInboundOptions
-{
-    Enabled = true,
-    WebhookSecret = new string('W', 48),
-    ReplyAddressSecret = new string('R', 48),
-    ReplyDomain = "reply.example.com"
-});
-var replyAddressService = new AtendimentoEmailReplyAddressService(inboundEmailOptions);
-var replyAddress = replyAddressService.CriarEndereco(12345);
-Check(replyAddressService.Configurado && !string.IsNullOrWhiteSpace(replyAddress), "Brevo inbound gera Reply-To exclusivo para conversa quando os segredos/domínio estão configurados");
-Check(replyAddressService.TentarObterConversaId(replyAddress, out var conversaReplyId) && conversaReplyId == 12345, "Alias Reply-To válido resolve somente a conversa assinada");
-Check(!replyAddressService.TentarObterConversaId("c12346-000000000000000000000000@reply.example.com", out _), "Alias Reply-To adulterado é rejeitado");
-Check(replyAddressService.ValidarWebhookSecret(new string('W', 48)), "Webhook Brevo aceita o segredo correto");
-Check(!replyAddressService.ValidarWebhookSecret("segredo-incorreto"), "Webhook Brevo rejeita segredo incorreto");
 
 var options = Options.Create(new EvolutionWhatsAppOptions { Enabled = true, BaseUrl = "https://evolution.test", ApiKey = "test-only", InstanceName = "callmed" });
 var handler = new FakeHandler();

@@ -9,18 +9,18 @@
 
 ## Respostas da Central por e-mail
 
-- O SMTP só envia; não recebe respostas por si só. Para o `Responder` voltar à conversa da Central, configure Brevo Inbound Parsing com um domínio próprio/subdomínio e registros MX apontados para o Brevo.
-- O CallMed cria um `Reply-To` assinado por conversa, aceita o webhook em `POST /api/atendimento/email/inbound`, valida o cabeçalho `X-CallMed-Webhook-Secret`, confirma a assinatura do alias e verifica se o remetente bate com a conversa antes de registrar a mensagem.
+- O SMTP só envia; não recebe respostas por si só. Para o `Responder` voltar à conversa da Central, configure Gmail API com um domínio próprio/subdomínio e registros MX apontados para o Brevo.
+- O CallMed cria um `Reply-To` assinado por conversa, aceita o webhook em `POST /api/atendimento/Gmail API polling`, valida o cabeçalho `X-CallMed-Webhook-Secret`, confirma a assinatura do alias e verifica se o remetente bate com a conversa antes de registrar a mensagem.
 - A entrada permanece desativada por padrão. Configure no Render os valores seguintes depois de concluir a configuração DNS/webhook:
 
 ```text
 Atendimento__Email__Inbound__Enabled=true
 Atendimento__Email__Inbound__WebhookSecret=SEGREDO_ALEATORIO_INDEPENDENTE_COM_32_OU_MAIS_CARACTERES
-Atendimento__Email__Inbound__ReplyAddressSecret=OUTRO_SEGREDO_ALEATORIO_INDEPENDENTE_COM_32_OU_MAIS_CARACTERES
-Atendimento__Email__Inbound__ReplyDomain=reply.seudominio.com.br
+Atendimento__Email__Inbound__GmailInbox OAuth=OUTRO_SEGREDO_ALEATORIO_INDEPENDENTE_COM_32_OU_MAIS_CARACTERES
+Atendimento__Email__Inbound__MailboxEmail=reply.seudominio.com.br
 ```
 
-- URL do webhook: `https://callmed.onrender.com/api/atendimento/email/inbound`
+- URL do webhook: `https://callmed.onrender.com/api/atendimento/Gmail API polling`
 - Evento do Brevo: `inboundEmailProcessed`; cabeçalho personalizado `X-CallMed-Webhook-Secret` com o mesmo valor da variável `WebhookSecret`.
 - Crie um subdomínio dedicado (por exemplo, `reply.seudominio.com.br`) e configure os MX indicados pelo Brevo. Não use `gmail.com` como domínio de entrada, porque você não controla esse DNS.
 

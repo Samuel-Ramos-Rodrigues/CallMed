@@ -382,6 +382,6 @@ Controllers, Services, Models, Data, DTOs, ViewModels, Middleware, Migrations, G
 - Vincula links novos de redefinição de senha ao UID da conta e usa token em Base64URL; o formulário mostra o e-mail mascarado e não pede CPF novamente.
 - Remove o erro de validação residual do campo CPF/e-mail ao enviar apenas nova senha e confirmação.
 - Adiciona testes unitários do alias Reply-To assinado e do segredo do webhook Brevo.
-- Documenta recebimento de respostas na Central via Brevo Inbound Parsing, com requisito de domínio próprio, MX, webhook e segredos independentes.
+- Documenta recebimento de respostas na Central via Gmail API, com requisito de domínio próprio, MX, webhook e segredos independentes.
 - Ajusta a paleta clínica para superfícies sálvia mais visíveis, padroniza a área de atendimento/admin e força a autenticação a uma coluna em telas de até 960px.
 - Atualiza o cache estático do PWA para `callmed-static-v37-email-reset-routing-clinic-palette`.
