@@ -334,7 +334,8 @@ public sealed class AtendimentoConversaService
             int? pacienteId,
             long conversaAtualId,
             int limite = 24,
-            CancellationToken ct = default)
+            CancellationToken ct = default,
+            long? excluirMensagemId = null)
     {
         limite = Math.Clamp(limite, 1, 40);
 
@@ -343,8 +344,12 @@ public sealed class AtendimentoConversaService
                 .AsNoTracking()
                 .Include(m => m.Conversa)
                 .Where(m => m.Status != StatusMensagemAtendimento.AguardandoAprovacao &&
-                            m.Status != StatusMensagemAtendimento.Ignorada &&
-                            (!excluirMensagemId.HasValue || m.Id != excluirMensagemId.Value));
+                            m.Status != StatusMensagemAtendimento.Ignorada);
+
+        // No processamento de retomada, a mensagem de entrada mais recente
+        // ja e enviada separadamente ao agente. Evite repeti-la no historico.
+        if (excluirMensagemId is long mensagemIdParaExcluir)
+            query = query.Where(m => m.Id != mensagemIdParaExcluir);
 
         query = pacienteId.HasValue
             ? query.Where(m =>
