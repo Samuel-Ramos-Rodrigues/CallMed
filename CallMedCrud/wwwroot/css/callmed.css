@@ -3869,17 +3869,6 @@ body { line-height: 1.58; }
 
 
 /* === Refinos por perfil: login, paciente, médico, atendente e admin === */
-.login-shell-plus .identity-showcase-plus{display:flex;flex-direction:column;justify-content:space-between;gap:18px}
-.identity-role-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.identity-role-grid article{padding:14px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(255,255,255,.08)}
-.identity-role-grid strong{display:block;color:#fff;font-size:.95rem}
-.identity-role-grid small{display:block;margin-top:6px;color:#d8dcff;line-height:1.35}
-.identity-benefits-list{display:grid;gap:8px;margin:0;padding-left:18px;color:#dfe3ff;font-size:.86rem}
-.identity-card-plus{display:flex;flex-direction:column;gap:0}
-.identity-help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
-.identity-help-grid>div{padding:12px 14px;border:1px solid var(--cm-border);border-radius:14px;background:var(--cm-surface-muted)}
-.identity-help-grid strong{display:block;margin-bottom:4px;color:var(--cm-ink)}
-.identity-help-grid small{display:block;color:var(--cm-muted);line-height:1.4}
 
 .patient-home-plus{gap:18px}
 .patient-hero-plus{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.85fr);gap:18px;padding:24px;border:1px solid var(--cm-border);border-radius:var(--cm-radius-xl);background:radial-gradient(circle at right top, rgba(130,108,255,.14), transparent 32%),linear-gradient(180deg,var(--cm-surface-raised),var(--cm-surface));box-shadow:var(--cm-shadow)}
