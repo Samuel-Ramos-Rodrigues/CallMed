@@ -4,33 +4,32 @@
 @{
     ViewData["Title"] = "Solicitações de atendimento";
     string CanalNome(CanalAtendimento c) => c switch { CanalAtendimento.WhatsApp => "WhatsApp", CanalAtendimento.Sms => "SMS", CanalAtendimento.Email => "E-mail", CanalAtendimento.Telefone => "Telefone", CanalAtendimento.Presencial => "Presencial", _ => "Site/PWA" };
-    string CanalIcone(CanalAtendimento c) => c switch { CanalAtendimento.Email => "mail", CanalAtendimento.Telefone => "phone-call", CanalAtendimento.Presencial => "user", _ => "message-circle" };
     string StatusNome(StatusSolicitacaoAtendimento s) => s switch
     {
         StatusSolicitacaoAtendimento.Nova or StatusSolicitacaoAtendimento.EmTriagem => "Recebidas",
         StatusSolicitacaoAtendimento.BuscandoHorario => "Escolhendo horário",
         StatusSolicitacaoAtendimento.AguardandoPaciente => "Aguardando paciente",
-        StatusSolicitacaoAtendimento.Confirmada => "Consultas agendadas",
-        StatusSolicitacaoAtendimento.Cancelada => "Cancelada",
-        _ => "Encerrada"
+        _ => "Consultas agendadas"
     };
     string EtapaAjuda(StatusSolicitacaoAtendimento s) => s switch
     {
         StatusSolicitacaoAtendimento.Nova => "Organize os dados do pedido",
         StatusSolicitacaoAtendimento.BuscandoHorario => "Encontre uma vaga disponível",
         StatusSolicitacaoAtendimento.AguardandoPaciente => "Acompanhe o retorno do contato",
-        _ => "Agendamento concluído"
+        _ => "Agendamentos confirmados"
     };
     string EtapaIcone(StatusSolicitacaoAtendimento s) => s switch { StatusSolicitacaoAtendimento.Nova => "mail", StatusSolicitacaoAtendimento.BuscandoHorario => "calendar", StatusSolicitacaoAtendimento.AguardandoPaciente => "message-circle", _ => "calendar-check" };
     int TotalEtapa(StatusSolicitacaoAtendimento s) => s switch { StatusSolicitacaoAtendimento.Nova => Model.TotalRecebidas, StatusSolicitacaoAtendimento.BuscandoHorario => Model.TotalBuscando, StatusSolicitacaoAtendimento.AguardandoPaciente => Model.TotalAguardando, _ => Model.TotalConfirmadas };
     var colunas = new[] { StatusSolicitacaoAtendimento.Nova, StatusSolicitacaoAtendimento.BuscandoHorario, StatusSolicitacaoAtendimento.AguardandoPaciente, StatusSolicitacaoAtendimento.Confirmada };
     var temFiltro = !string.IsNullOrWhiteSpace(Model.Busca) || !string.IsNullOrWhiteSpace(Model.Canal);
-    var emAberto = Model.TotalRecebidas + Model.TotalBuscando + Model.TotalAguardando;
-    var encerradas = Model.Itens.Where(x => x.Status is StatusSolicitacaoAtendimento.Cancelada or StatusSolicitacaoAtendimento.Encerrada).Take(20).ToList();
+    var pendentes = Model.Pendentes;
+    var realizadas = Model.Realizadas;
+    var historico = Model.Historico;
+    var emAberto = Model.TotalRecebidas + Model.TotalBuscando + Model.TotalAguardando + pendentes.Count;
 }
 <section class="cm25-screen cm21-request-page cm-requests-screen" data-cm25-view="Solicitacoes/Index.cshtml">
     <header class="cm-requests-hero">
-        <div class="cm-requests-title"><span class="cm-requests-hero-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#headset"></use></svg></span><div><span class="eyebrow">ADMINISTRAÇÃO E ATENDIMENTO</span><h1>Solicitações de atendimento</h1><p>Do primeiro contato à consulta marcada. Acompanhe cada pedido em um só lugar.</p></div></div>
+        <div class="cm-requests-title"><span class="cm-requests-hero-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#headset"></use></svg></span><div><span class="eyebrow">ADMINISTRAÇÃO E ATENDIMENTO</span><h1>Solicitações de atendimento</h1><p>Do primeiro contato à consulta realizada. Acompanhe cada etapa em um só lugar.</p></div></div>
         <div class="cm-requests-hero-actions"><span><strong>@emAberto</strong> em aberto no resultado</span><a class="btn" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg>Nova solicitação</a></div>
     </header>
     <div class="cm-requests-metrics" aria-label="Etapas das solicitações no resultado atual">
@@ -39,62 +38,60 @@
             <a class="cm-request-stat status-@etapa.ToString().ToLowerInvariant()" href="#solicitacoes-@etapa.ToString().ToLowerInvariant()"><span class="cm-request-stat-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#@EtapaIcone(etapa)"></use></svg></span><span class="cm-request-stat-copy"><small>@StatusNome(etapa)</small><strong>@TotalEtapa(etapa)</strong><span>@EtapaAjuda(etapa)</span></span><span class="cm-request-stat-arrow" aria-hidden="true">↗</span></a>
         }
     </div>
+    <nav class="cm-requests-consult-overview" aria-label="Confirmações e atendimentos realizados no resultado">
+        <a href="#consultas-pendentes" class="is-pending"><span class="cm-consult-overview-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#bell"></use></svg></span><span><strong>@pendentes.Count</strong><b>Aguardando confirmação</b><small>Consultas de hoje em diante · confirme por aqui</small></span><span aria-hidden="true">↗</span></a>
+        <a href="#consultas-realizadas" class="is-completed"><span class="cm-consult-overview-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#badge-check"></use></svg></span><span><strong>@realizadas.Count</strong><b>Consultas realizadas</b><small>Atendimentos concluídos, com data e profissional</small></span><span aria-hidden="true">↗</span></a>
+    </nav>
     <section class="cm-requests-filter-panel" aria-labelledby="requests-filter-title">
-        <div class="cm-requests-filter-heading"><h2 id="requests-filter-title">Encontre uma solicitação</h2><span>Busque pelo contato ou escolha o canal de origem.</span></div>
+        <div class="cm-requests-filter-heading"><h2 id="requests-filter-title">Encontre um atendimento</h2><span>Busque pelo contato ou escolha o canal de origem.</span></div>
         <form method="get" class="cm-requests-filters">
             <label class="cm-requests-search"><span class="visually-hidden">Buscar por paciente, CPF, telefone ou e-mail</span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg><input type="search" name="busca" value="@Model.Busca" placeholder="Paciente, CPF, telefone ou e-mail" /></label>
-            <label class="cm-requests-channel-filter"><span class="visually-hidden">Canal de origem</span><select name="canal"><option value="">Todos os canais</option>@foreach (var c in Enum.GetValues<CanalAtendimento>()) { <option value="@c" selected="@(Model.Canal == c.ToString() ? "selected" : null)">@CanalNome(c)</option> }</select></label>
+            <label class="cm-requests-channel-filter"><span class="visually-hidden">Canal de origem</span><select name="canal"><option value="">Todos os canais</option>@foreach (var c in Enum.GetValues<CanalAtendimento>()) { <option value="@c" selected="@(Model.Canal == c.ToString() ? "selected" : null)">@CanalNome(c)</option> }<option value="SemCanal" selected="@(Model.Canal == "SemCanal" ? "selected" : null)">Canal não informado</option></select></label>
             <button class="btn secondary" type="submit"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#settings"></use></svg>Filtrar</button>
             @if (temFiltro) { <a class="text-link" asp-action="Index">Limpar filtros</a> }
         </form>
+        @if (temFiltro)
+        { <p class="cm-requests-result-note">Contadores e listas mostram apenas o resultado destes filtros. <a asp-action="Index">Ver todos os atendimentos</a></p> }
     </section>
-    <div class="cm-requests-board-heading"><div><span class="eyebrow">ACOMPANHAMENTO</span><h2>Fila de solicitações</h2></div><span>@Model.Itens.Count registros no resultado</span></div>
-    @if (!Model.Itens.Any())
-    {
-        <div class="cm-requests-empty"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#mail"></use></svg><div><h2>@(temFiltro ? "Nenhuma solicitação encontrada" : "A fila está pronta para receber pedidos")</h2><p>@(temFiltro ? "Tente outro contato ou canal para ampliar a busca." : "Registre um pedido ou acompanhe aqui os contatos recebidos pelos canais da clínica.")</p></div></div>
-    }
-    @if (Model.Itens.Count >= 400)
-    { <p class="cm-requests-result-note">Exibindo os primeiros 400 resultados. Use os filtros para localizar outros pedidos.</p> }
+    <section class="cm-requests-consult-panel is-pending" id="consultas-pendentes" aria-labelledby="pending-consult-title">
+        <header><div><span class="eyebrow">CONFIRMAÇÕES PENDENTES</span><h2 id="pending-consult-title">Aguardando confirmação <span>@pendentes.Count</span></h2><p>Confira os dados e confirme a consulta por aqui.</p></div><a class="text-link" asp-controller="Confirmacoes" asp-action="Index">Abrir central de confirmações ↗</a></header>
+        @if (pendentes.Count == 0)
+        { <p class="cm-requests-consult-empty">@(temFiltro ? "Nenhuma confirmação pendente neste resultado." : "Nenhuma consulta aguardando confirmação.")</p> }
+        else
+        { <div class="cm-requests-consult-grid" tabindex="0" aria-label="Consultas aguardando confirmação">@foreach (var item in pendentes) { <partial name="~/Views/Solicitacoes/_Card.cshtml" model="item" /> }</div> }
+    </section>
+    <div class="cm-requests-board-heading"><div><span class="eyebrow">ACOMPANHAMENTO</span><h2>Fila de solicitações</h2></div><span>@Model.Registros.Count registros no resultado</span></div>
+    @if (!Model.Registros.Any())
+    { <div class="cm-requests-empty"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#mail"></use></svg><div><h2>@(temFiltro ? "Nenhum atendimento encontrado" : "A fila está pronta para receber pedidos")</h2><p>@(temFiltro ? "Tente outro contato ou canal para ampliar a busca." : "Registre um pedido ou acompanhe aqui os atendimentos da clínica.")</p></div></div> }
     <div class="cm-requests-board">
         @foreach (var coluna in colunas)
         {
-            var itens = Model.Itens.Where(x => coluna == StatusSolicitacaoAtendimento.Nova ? x.Status is StatusSolicitacaoAtendimento.Nova or StatusSolicitacaoAtendimento.EmTriagem : x.Status == coluna).ToList();
+            var itens = Model.Registros.Where(x => coluna == StatusSolicitacaoAtendimento.Nova ? x.Etapa is StatusSolicitacaoAtendimento.Nova or StatusSolicitacaoAtendimento.EmTriagem : x.Etapa == coluna).OrderBy(x => x.Consulta?.Data ?? x.CriadoEm).ThenBy(x => x.Consulta?.Horario).ToList();
             <section class="cm-request-column status-@coluna.ToString().ToLowerInvariant()" id="solicitacoes-@coluna.ToString().ToLowerInvariant()" aria-label="@StatusNome(coluna)">
                 <header><div><span class="cm-request-column-dot" aria-hidden="true"></span><h3>@StatusNome(coluna)</h3><span class="cm-request-column-count">@itens.Count</span></div><p>@EtapaAjuda(coluna)</p></header>
                 <div class="cm-request-list" tabindex="0" aria-label="Pedidos: @StatusNome(coluna)">
                     @if (itens.Count == 0)
-                    { <div class="cm-request-column-empty"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#badge-check"></use></svg><strong>Tudo em dia nesta etapa</strong><span>Nenhuma solicitação por aqui.</span></div> }
-                    @foreach (var item in itens)
-                    {
-                        var nomeContato = item.Paciente?.Nome ?? item.NomeContato;
-                        var nomePaciente = string.IsNullOrWhiteSpace(nomeContato) ? "Contato não identificado" : nomeContato.Trim();
-                        var inicial = nomePaciente[..1].ToUpperInvariant();
-                        <article class="cm-request-card">
-                            <div class="cm-request-card-meta"><span class="cm-request-channel"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#@CanalIcone(item.Canal)"></use></svg>@CanalNome(item.Canal)</span><span class="cm-request-protocol">#@item.Id</span></div>
-                            <div class="cm-request-person"><span class="cm-request-avatar" aria-hidden="true">@inicial</span><div><h4>@nomePaciente</h4><p>@(item.Especialidade?.Nome ?? "Especialidade a definir")</p></div></div>
-                            <div class="cm-request-preferences">
-                                <span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#clock"></use></svg>Recebida @ClinicaClock.ConverterUtc(item.CriadoEm).ToString("dd/MM · HH:mm")</span>
-                                @if (item.DataPreferida.HasValue)
-                                { <span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg>Preferência: @item.DataPreferida.Value.ToString("dd/MM") · @item.PeriodoPreferido</span> }
-                                @if (item.Medico is not null)
-                                { <span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#stethoscope"></use></svg>@item.Medico.Nome</span> }
-                            </div>
-                            @if (!string.IsNullOrWhiteSpace(item.Observacao))
-                            { <p class="cm-request-note">@item.Observacao</p> }
-                            @if (item.Consulta is not null)
-                            { <div class="cm-request-booked"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar-check"></use></svg><span>Consulta #@item.Consulta.Id<strong>@item.Consulta.Data.ToString("dd/MM") às @item.Consulta.Horario</strong></span></div> }
-                            <a class="cm-request-card-action" asp-action="Detalhes" asp-route-id="@item.Id">@(item.Consulta is null ? "Organizar agendamento" : "Ver solicitação")<span aria-hidden="true">→</span></a>
-                            @if (item.ConversaAtendimentoId.HasValue)
-                            { <a class="cm-request-origin-link" asp-controller="Atendimento" asp-action="Index" asp-route-id="@item.ConversaAtendimentoId">Abrir conversa de origem ↗</a> }
-                        </article>
-                    }
+                    { <div class="cm-request-column-empty"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#badge-check"></use></svg><strong>Tudo em dia nesta etapa</strong><span>Nenhum atendimento por aqui.</span></div> }
+                    @foreach (var item in itens) { <partial name="~/Views/Solicitacoes/_Card.cshtml" model="item" /> }
                 </div>
             </section>
         }
     </div>
-    <aside class="cm-requests-offline"><span class="cm-requests-offline-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#clipboard"></use></svg></span><div><h2>Pedidos recebidos sem conexão</h2><p>Confira os registros de contingência e continue o atendimento.</p></div><a class="btn secondary" asp-action="Contingencia">Ver pedidos offline</a><a class="text-link" href="/contingencia.html">Formulário de contingência ↗</a></aside>
-    @if (encerradas.Any())
+    <section class="cm-requests-consult-panel is-completed" id="consultas-realizadas" aria-labelledby="completed-consult-title">
+        <header><div><span class="eyebrow">ATENDIMENTOS CONCLUÍDOS</span><h2 id="completed-consult-title">Consultas realizadas <span>@realizadas.Count</span></h2><p>Histórico dos atendimentos marcados como realizados.</p></div></header>
+        @if (realizadas.Count == 0)
+        { <p class="cm-requests-consult-empty">@(temFiltro ? "Nenhuma consulta realizada neste resultado." : "Nenhuma consulta marcada como realizada.")</p> }
+        else
+        { <div class="cm-requests-consult-grid" tabindex="0" aria-label="Consultas realizadas">@foreach (var item in realizadas) { <partial name="~/Views/Solicitacoes/_Card.cshtml" model="item" /> }</div> }
+    </section>
+    @if (historico.Any())
     {
-        <details class="cm-requests-closed"><summary>Canceladas e encerradas recentes <span>@encerradas.Count</span></summary><div>@foreach (var item in encerradas) { <a asp-action="Detalhes" asp-route-id="@item.Id"><strong>#@item.Id · @(item.Paciente?.Nome ?? item.NomeContato ?? "Contato não identificado")</strong><span>@StatusNome(item.Status) · @CanalNome(item.Canal)<b aria-hidden="true">↗</b></span></a> }</div></details>
+        <details class="cm-requests-closed"><summary>Canceladas, ausências e outros registros <span>@historico.Count</span></summary><div>@foreach (var item in historico) {
+            @if (item.Consulta is not null)
+            { <a asp-controller="Consulta" asp-action="Details" asp-route-id="@item.Consulta.Id"><strong>Consulta #@item.Consulta.Id · @item.NomePaciente</strong><span>@item.Situacao · @item.Consulta.Data.ToString("dd/MM/yyyy") às @item.Consulta.Horario @(item.PendenteAnterior ? "· data anterior a hoje" : "")<b aria-hidden="true">↗</b></span></a> }
+            else
+            { <a asp-action="Detalhes" asp-route-id="@(item.Solicitacao!.Id)"><strong>Pedido #@(item.Solicitacao!.Id) · @item.NomePaciente</strong><span>@item.Situacao · @item.CanalNome<b aria-hidden="true">↗</b></span></a> }
+        }</div></details>
     }
+    <aside class="cm-requests-offline"><span class="cm-requests-offline-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#clipboard"></use></svg></span><div><h2>Pedidos recebidos sem conexão</h2><p>Confira os registros de contingência e continue o atendimento.</p></div><a class="btn secondary" asp-action="Contingencia">Ver pedidos offline</a><a class="text-link" href="/contingencia.html">Formulário de contingência ↗</a></aside>
 </section>

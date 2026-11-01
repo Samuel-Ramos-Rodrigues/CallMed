@@ -16,30 +16,47 @@ public sealed class SolicitacoesController : Controller
 {
     private readonly MKSANContext _context;
     private readonly SolicitacaoAtendimentoService _service;
+    private readonly IClinicaClock _clock;
 
     public SolicitacoesController(
         MKSANContext context,
-        SolicitacaoAtendimentoService service)
+        SolicitacaoAtendimentoService service,
+        IClinicaClock clock)
     {
         _context = context;
         _service = service;
+        _clock = clock;
     }
 
     public async Task<IActionResult> Index(string? busca, string? canal, CancellationToken ct)
     {
+        canal = canal?.Trim();
+        if (!string.IsNullOrEmpty(canal) && canal != "SemCanal")
+            canal = Enum.TryParse<CanalAtendimento>(canal, true, out var origem) && Enum.IsDefined(origem)
+                ? origem.ToString() : null;
         var query = _context.SolicitacoesAtendimento
             .AsNoTracking()
             .Include(x => x.Paciente)
             .Include(x => x.Especialidade)
             .Include(x => x.Medico)
             .Include(x => x.Consulta)
+                .ThenInclude(x => x!.Paciente)
+            .Include(x => x.Consulta)
+                .ThenInclude(x => x!.Medico)
+                    .ThenInclude(x => x!.EspecialidadeCadastro)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(busca))
         {
             var termo = busca.Trim().ToLower();
             query = query.Where(x =>
-                (x.Paciente != null && (x.Paciente.Nome.ToLower().Contains(termo) || x.Paciente.Cpf.Contains(termo))) ||
+                (x.Paciente != null && (x.Paciente.Nome.ToLower().Contains(termo) || x.Paciente.Cpf.Contains(termo) ||
+                    (x.Paciente.Telefone != null && x.Paciente.Telefone.Contains(termo)) ||
+                    (x.Paciente.Email != null && x.Paciente.Email.ToLower().Contains(termo)))) ||
+                (x.Consulta != null && x.Consulta.Paciente != null &&
+                    (x.Consulta.Paciente.Nome.ToLower().Contains(termo) || x.Consulta.Paciente.Cpf.Contains(termo) ||
+                     (x.Consulta.Paciente.Telefone != null && x.Consulta.Paciente.Telefone.Contains(termo)) ||
+                     (x.Consulta.Paciente.Email != null && x.Consulta.Paciente.Email.ToLower().Contains(termo)))) ||
                 (x.NomeContato != null && x.NomeContato.ToLower().Contains(termo)) ||
                 (x.TelefoneContato != null && x.TelefoneContato.Contains(termo)) ||
                 (x.EmailContato != null && x.EmailContato.ToLower().Contains(termo)));
@@ -47,16 +64,38 @@ public sealed class SolicitacoesController : Controller
 
         if (!string.IsNullOrWhiteSpace(canal) && Enum.TryParse<CanalAtendimento>(canal, true, out var canalEnum))
             query = query.Where(x => x.Canal == canalEnum);
+        if (canal == "SemCanal") query = query.Where(x => false);
 
         var itens = await query
             .OrderBy(x => x.Status == StatusSolicitacaoAtendimento.Confirmada || x.Status == StatusSolicitacaoAtendimento.Encerrada)
             .ThenBy(x => x.CriadoEm)
-            .Take(400)
             .ToListAsync(ct);
+
+        // Inclui consultas antigas/diretas sem criar registros durante a leitura.
+        var consultasQuery = _context.Consultas.AsNoTracking()
+            .Include(x => x.Paciente)
+            .Include(x => x.Medico).ThenInclude(x => x!.EspecialidadeCadastro)
+            .Where(x => !_context.SolicitacoesAtendimento.Any(s => s.ConsultaId == x.Id));
+        if (!string.IsNullOrWhiteSpace(busca))
+        {
+            var termo = busca.Trim().ToLower();
+            consultasQuery = consultasQuery.Where(x => x.Paciente != null &&
+                (x.Paciente.Nome.ToLower().Contains(termo) || x.Paciente.Cpf.Contains(termo) ||
+                 (x.Paciente.Telefone != null && x.Paciente.Telefone.Contains(termo)) ||
+                 (x.Paciente.Email != null && x.Paciente.Email.ToLower().Contains(termo))));
+        }
+        // O canal de uma consulta sem solicitação é desconhecido.
+        var consultas = string.IsNullOrWhiteSpace(canal) || canal == "SemCanal"
+            ? await consultasQuery.OrderByDescending(x => x.Data).ToListAsync(ct)
+            : new List<Consulta>();
 
         ViewData["Title"] = "Fluxo de solicitações";
         ViewData["Subtitle"] = "Organize o pedido e escolha uma vaga. A consulta fica confirmada assim que o agendamento é concluído.";
-        return View(new SolicitacoesPainelViewModel { Itens = itens, Busca = busca, Canal = canal });
+        return View(new SolicitacoesPainelViewModel
+        {
+            Registros = SolicitacoesPainelViewModel.Unificar(itens, consultas, _clock.Hoje),
+            Busca = busca, Canal = canal
+        });
     }
 
     [HttpGet]

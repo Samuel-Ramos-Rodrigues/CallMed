@@ -52,6 +52,10 @@ public sealed class ConfirmacoesService
         }
         else if (usuario.IsInRole("Funcionario") || usuario.IsInRole("Admin"))
         {
+            // O sino mostra o total real, mesmo quando a prévia só exibe três itens.
+            model.TotalPendencias = await _context.SolicitacoesAtendimento
+                .CountAsync(ConsultaPendencias.SolicitacoesEmAberto, ct)
+                + await _context.Consultas.CountAsync(ConsultaPendencias.AguardandoConfirmacao(_clock.Hoje), ct);
             await AdicionarSolicitacoesAsync(model.Itens, limite, ct);
             await AdicionarConsultasAsync(model.Itens, null, null, limite, ct);
         }
@@ -74,10 +78,7 @@ public sealed class ConfirmacoesService
             .AsNoTracking()
             .Include(x => x.Paciente)
             .Include(x => x.Especialidade)
-            .Where(x =>
-                x.Status == StatusSolicitacaoAtendimento.Nova ||
-                x.Status == StatusSolicitacaoAtendimento.EmTriagem ||
-                x.Status == StatusSolicitacaoAtendimento.BuscandoHorario)
+            .Where(ConsultaPendencias.SolicitacoesEmAberto)
             .OrderBy(x => x.CriadoEm)
             .Take(Math.Max(1, limite))
             .ToListAsync(ct);
@@ -118,9 +119,7 @@ public sealed class ConfirmacoesService
             .AsNoTracking()
             .Include(c => c.Paciente)
             .Include(c => c.Medico)
-            .Where(c =>
-                c.Data.Date >= hoje &&
-                (c.Status == ConsultaStatus.Pendente || c.Status == ConsultaStatus.Remarcada));
+            .Where(ConsultaPendencias.AguardandoConfirmacao(hoje));
 
         if (pacienteId.HasValue)
             query = query.Where(c => c.PacienteId == pacienteId.Value);

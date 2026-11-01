@@ -1,0 +1,46 @@
+@model MKSANCrud.ViewModels.SolicitacaoPainelItemViewModel
+@{
+    var nome = string.IsNullOrWhiteSpace(Model.NomePaciente) ? "Contato não identificado" : Model.NomePaciente.Trim();
+    var consulta = Model.Consulta;
+    var pedido = Model.Solicitacao;
+}
+<article class="cm-request-card" data-consulta-id="@consulta?.Id" data-solicitacao-id="@pedido?.Id">
+    <div class="cm-request-card-meta"><span class="cm-request-channel"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#@Model.CanalIcone"></use></svg>@Model.CanalNome</span><span class="cm-request-protocol">@(pedido is not null ? $"Pedido #{pedido.Id}" : $"Consulta #{consulta!.Id}")</span></div>
+    <div class="cm-request-person"><span class="cm-request-avatar" aria-hidden="true">@(nome[..1].ToUpperInvariant())</span><div><h4>@nome</h4><p>@Model.Especialidade</p></div></div>
+    @if (consulta is not null)
+    { <span class="cm-request-consult-status is-@Model.SituacaoCss">@(Model.AguardandoConfirmacao ? (consulta.Status == "Remarcada" ? "Remarcada · confirmar" : "Aguardando confirmação") : Model.Situacao)</span> }
+    <div class="cm-request-preferences">
+        <span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#clock"></use></svg>Registrada @ClinicaClock.ConverterUtc(Model.CriadoEm).ToString("dd/MM · HH:mm")</span>
+        @if (pedido?.DataPreferida is not null && consulta is null)
+        { <span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg>Preferência: @pedido.DataPreferida.Value.ToString("dd/MM") · @pedido.PeriodoPreferido</span> }
+        @if (!string.IsNullOrWhiteSpace(Model.MedicoNome))
+        { <span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#stethoscope"></use></svg>@Model.MedicoNome</span> }
+    </div>
+    @if (!string.IsNullOrWhiteSpace(Model.Observacao))
+    { <p class="cm-request-note">@Model.Observacao</p> }
+    @if (consulta is not null)
+    {
+        <div class="cm-request-booked"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar-check"></use></svg><span>Consulta #@consulta.Id<strong>@consulta.Data.ToString("dd/MM/yyyy") às @consulta.Horario</strong></span></div>
+        @if (Model.Realizada && consulta.RealizadaEm.HasValue)
+        { <small class="cm-request-completed-at">Realizada em @ClinicaClock.ConverterUtc(consulta.RealizadaEm.Value).ToString("dd/MM/yyyy · HH:mm")</small> }
+        @if (Model.PendenteAnterior)
+        { <p class="cm-request-note">Data anterior a hoje. Confira o desfecho do atendimento.</p> }
+        <div class="cm-request-consult-actions">
+            @if (Model.AguardandoConfirmacao)
+            {
+                <form asp-controller="Consulta" asp-action="Confirmar" method="post">
+                    <input type="hidden" name="id" value="@consulta.Id" />
+                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                    <button type="submit" class="btn">Confirmar consulta</button>
+                </form>
+            }
+            <a class="btn secondary" asp-controller="Consulta" asp-action="Details" asp-route-id="@consulta.Id">Ver consulta</a>
+        </div>
+    }
+    @if (pedido is not null)
+    {
+        <a class="cm-request-card-action" asp-action="Detalhes" asp-route-id="@pedido.Id">@(consulta is null ? "Organizar agendamento" : "Ver solicitação")<span aria-hidden="true">→</span></a>
+        @if (pedido.ConversaAtendimentoId.HasValue)
+        { <a class="cm-request-origin-link" asp-controller="Atendimento" asp-action="Index" asp-route-id="@pedido.ConversaAtendimentoId">Abrir conversa de origem ↗</a> }
+    }
+</article>

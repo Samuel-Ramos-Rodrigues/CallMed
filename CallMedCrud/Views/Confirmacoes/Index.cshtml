@@ -25,6 +25,8 @@
     }
     else
     {
+        @if (Model.Total > Model.Itens.Count)
+        { <p class="cm-requests-result-note">Exibindo @Model.Itens.Count de @Model.Total pendências. As próximas aparecem conforme as atuais forem resolvidas.</p> }
         <div class="cm-confirm-list">
             @foreach (var item in Model.Itens)
             {
