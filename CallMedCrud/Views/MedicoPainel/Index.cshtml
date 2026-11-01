@@ -1,118 +1,122 @@
 @model MKSANCrud.ViewModels.MedicoPainelViewModel
+@using System.Globalization
 @{
-    ViewData["Title"] = "Minha Agenda";
-    var proximaHoje = Model.AgendaHoje.FirstOrDefault(c => c.Status != MKSANCrud.Models.ConsultaStatus.Cancelada && c.Status != MKSANCrud.Models.ConsultaStatus.Realizada);
+    ViewData["Title"] = "Minha agenda";
+    var proximaHoje = Model.AgendaHoje.FirstOrDefault(c => c.Status is ConsultaStatus.Pendente or ConsultaStatus.Confirmada or ConsultaStatus.Remarcada);
+    var concluidasHoje = Model.AgendaHoje.Count(c => c.Status == ConsultaStatus.Realizada);
+    var progresso = Model.ConsultasHoje == 0 ? 0 : Math.Clamp(concluidasHoje * 100 / Model.ConsultasHoje, 0, 100);
+    var cultura = CultureInfo.GetCultureInfo("pt-BR");
     var nomes = new[] { "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb" };
 }
-<section class="cm25-screen cm25-page v16-page doctor-home-v16" data-cm25-view="MedicoPainel/Index.cshtml">
-    <div class="doctor-welcome-v16">
-        <div><span class="cm25-kicker v16-eyebrow">ÁREA DO MÉDICO</span><h1>Olá, @Model.Medico.Nome</h1><p>@Model.Medico.Especialidade · sua agenda e seus próximos pacientes.</p></div>
-        <span class="doctor-crm-pill">@(string.IsNullOrWhiteSpace(Model.Medico.Crm) ? "CRM não informado" : Model.Medico.Crm)</span>
+<section class="cm25-screen cm25-page v16-page cm-doctor-screen" data-cm25-view="MedicoPainel/Index.cshtml">
+    <header class="cm-doctor-hero">
+        <div class="cm-doctor-intro">
+            <span class="eyebrow">SEU ESPAÇO CLÍNICO</span>
+            <h1>Olá, @Model.Medico.Nome<span class="heading-dot">.</span></h1>
+            <p>Sua agenda organizada para acompanhar cada paciente.</p>
+            <div class="cm-doctor-credentials"><span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#stethoscope"></use></svg>@Model.Medico.Especialidade</span><span>@(string.IsNullOrWhiteSpace(Model.Medico.Crm) ? "CRM não informado" : Model.Medico.Crm)</span></div>
+            <nav class="cm-doctor-shortcuts" aria-label="Seções da minha agenda"><a href="#agenda-do-dia">Agenda de hoje <span aria-hidden="true">↓</span></a><a href="#proximos-pacientes">Próximos pacientes <span aria-hidden="true">↓</span></a><a href="#meus-horarios">Gerenciar horários <span aria-hidden="true">↓</span></a></nav>
+        </div>
+        <aside class="cm-doctor-next" aria-labelledby="next-patient-title">
+            @if (proximaHoje is not null)
+            {
+                <div class="cm-doctor-next-heading"><span class="eyebrow" id="next-patient-title">PRÓXIMO ATENDIMENTO</span><span class="status-pill status-@proximaHoje.Status.ToLowerInvariant()">@proximaHoje.Status</span></div>
+                <div class="cm-doctor-next-person"><span class="cm-doctor-next-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#user-round-check"></use></svg></span><div><h2>@(proximaHoje.Paciente?.Nome ?? "Paciente")</h2><p><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#clock"></use></svg>Hoje, às <strong>@proximaHoje.Horario</strong></p></div></div>
+                <div class="cm-doctor-next-actions">
+                    @if (proximaHoje.Status == ConsultaStatus.Pendente)
+                    {
+                        <form asp-action="Confirmar" method="post"><input type="hidden" name="consultaId" value="@proximaHoje.Id" /><button class="btn" type="submit">Confirmar consulta</button></form>
+                    }
+                    else if (proximaHoje.Status is ConsultaStatus.Confirmada or ConsultaStatus.Remarcada)
+                    {
+                        <form asp-action="Concluir" method="post"><input type="hidden" name="consultaId" value="@proximaHoje.Id" /><button class="btn" type="submit">Concluir atendimento</button></form>
+                    }
+                    <a class="text-link" asp-controller="HistoricoExames" asp-action="Index" asp-route-pacienteId="@proximaHoje.PacienteId">Ver exames <span aria-hidden="true">↗</span></a>
+                </div>
+            }
+            else
+            {
+                <span class="eyebrow" id="next-patient-title">AGENDA DO DIA</span><span class="cm-doctor-next-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar-check"></use></svg></span><h2>Nenhum atendimento aguardando</h2><p>Não há consulta pendente ou confirmada aguardando atendimento hoje.</p><a class="text-link" href="#proximos-pacientes">Conferir próximos pacientes ↗</a>
+            }
+        </aside>
+    </header>
+    <div class="cm-doctor-metrics" aria-label="Resumo da minha agenda">
+        <article><span class="cm-doctor-metric-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg></span><div><small>Consultas hoje</small><strong>@Model.ConsultasHoje</strong><span>na sua agenda</span></div></article>
+        <article><span class="cm-doctor-metric-icon teal" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#user"></use></svg></span><div><small>Pacientes hoje</small><strong>@Model.PacientesHoje</strong><span>pessoas para acompanhar</span></div></article>
+        <article><span class="cm-doctor-metric-icon violet" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar-check"></use></svg></span><div><small>Próximos 7 dias</small><strong>@Model.ConsultasSemana</strong><span>consultas agendadas</span></div></article>
+        <article><span class="cm-doctor-metric-icon amber" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#clock"></use></svg></span><div><small>Vagas livres hoje</small><strong>@Model.VagasHoje</strong><span>na disponibilidade atual</span></div></article>
     </div>
-
-    @if (proximaHoje is not null)
-    {
-        <section class="doctor-next-patient">
-            <div class="doctor-next-time"><span>PRÓXIMO PACIENTE</span><strong>@proximaHoje.Horario</strong><small>hoje</small></div>
-            <div class="doctor-next-copy"><span class="status-pill status-@proximaHoje.Status.ToLowerInvariant()">@proximaHoje.Status</span><h2>@proximaHoje.Paciente?.Nome</h2><p>Consulta de @Model.Medico.Especialidade</p></div>
-            <div class="doctor-next-actions">
-                @if (proximaHoje.Status == MKSANCrud.Models.ConsultaStatus.Pendente)
-                {
-                    <form asp-action="Confirmar" method="post"><input type="hidden" name="consultaId" value="@proximaHoje.Id"/><button class="btn" type="submit">Confirmar consulta</button></form>
-                }
-                @if (proximaHoje.Status == MKSANCrud.Models.ConsultaStatus.Confirmada || proximaHoje.Status == MKSANCrud.Models.ConsultaStatus.Remarcada)
-                {
-                    <form asp-action="Concluir" method="post"><input type="hidden" name="consultaId" value="@proximaHoje.Id"/><button class="btn" type="submit">Concluir atendimento</button></form>
-                }
-            </div>
-        </section>
-    }
-
-    <div class="v16-kpi-grid doctor-kpi-grid">
-        <article class="v16-kpi"><span class="v16-kpi-icon green">▦</span><div><small>Consultas hoje</small><strong>@Model.ConsultasHoje</strong><span>atendimentos do dia</span></div></article>
-        <article class="v16-kpi"><span class="v16-kpi-icon blue">7</span><div><small>Próximos 7 dias</small><strong>@Model.ConsultasSemana</strong><span>consultas agendadas</span></div></article>
-        <article class="v16-kpi"><span class="v16-kpi-icon purple">♙</span><div><small>Pacientes hoje</small><strong>@Model.PacientesHoje</strong><span>pacientes distintos</span></div></article>
-        <article class="v16-kpi"><span class="v16-kpi-icon amber">＋</span><div><small>Vagas livres hoje</small><strong>@Model.VagasHoje</strong><span>pela agenda atual</span></div></article>
-    </div>
-
-    <div class="doctor-home-grid-v16">
-        <section class="cm25-panel v16-card doctor-day-card">
-            <div class="v16-card-head"><div><h2>Agenda de hoje</h2><p>Consultas na ordem dos horários.</p></div></div>
+    <div class="cm-doctor-main-grid">
+        <section class="cm-doctor-panel" id="agenda-do-dia" aria-labelledby="doctor-day-title">
+            <header class="cm-doctor-section-head"><div><span class="eyebrow">ATENDIMENTOS</span><h2 id="doctor-day-title">Agenda de hoje</h2><p>@ClinicaClock.Hoje.ToString("dddd, dd 'de' MMMM", cultura)</p></div><span class="cm-doctor-count">@Model.AgendaHoje.Count consultas</span></header>
             @if (!Model.AgendaHoje.Any())
             {
-                <div class="v16-empty compact"><span>✓</span><strong>Nenhuma consulta marcada para hoje.</strong></div>
+                <div class="cm-doctor-empty"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><h3>Nenhuma consulta para hoje</h3><p>Os atendimentos marcados aparecerão aqui, na ordem dos horários.</p><a class="text-link" href="#meus-horarios">Conferir meus horários ↓</a></div>
             }
             else
             {
-                <div class="doctor-timeline-v16">
+                <div class="cm-doctor-timeline">
                     @foreach (var c in Model.AgendaHoje)
                     {
-                        <div class="doctor-timeline-row">
-                            <div class="doctor-time-dot"><strong>@c.Horario</strong><i></i></div>
-                            <div class="doctor-patient-v16"><strong>@c.Paciente?.Nome</strong><small>@c.Status</small><a asp-controller="HistoricoExames" asp-action="Index" asp-route-pacienteId="@c.PacienteId">Exames realizados</a></div>
-                            <div class="doctor-actions-v16">
-                                @if (c.Status == MKSANCrud.Models.ConsultaStatus.Pendente)
-                                { <form asp-action="Confirmar" method="post"><input type="hidden" name="consultaId" value="@c.Id"/><button class="btn small" type="submit">Confirmar</button></form> }
-                                @if (c.Status == MKSANCrud.Models.ConsultaStatus.Confirmada || c.Status == MKSANCrud.Models.ConsultaStatus.Remarcada)
-                                { <form asp-action="Concluir" method="post"><input type="hidden" name="consultaId" value="@c.Id"/><button class="btn secondary small" type="submit">Concluir</button></form> }
+                        <article class="cm-doctor-appointment">
+                            <time class="cm-doctor-time">@c.Horario</time><span class="cm-doctor-patient-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#user"></use></svg></span>
+                            <div class="cm-doctor-patient"><h3>@(c.Paciente?.Nome ?? "Paciente")</h3><span class="status-pill status-@c.Status.ToLowerInvariant()">@c.Status</span><a asp-controller="HistoricoExames" asp-action="Index" asp-route-pacienteId="@c.PacienteId">Histórico de exames ↗</a></div>
+                            <div class="cm-doctor-appointment-actions">
+                                @if (c.Status == ConsultaStatus.Pendente)
+                                { <form asp-action="Confirmar" method="post"><input type="hidden" name="consultaId" value="@c.Id" /><button class="btn small" type="submit">Confirmar</button></form> }
+                                @if (c.Status is ConsultaStatus.Confirmada or ConsultaStatus.Remarcada)
+                                { <form asp-action="Concluir" method="post"><input type="hidden" name="consultaId" value="@c.Id" /><button class="btn secondary small" type="submit">Concluir</button></form> }
+                                @if (c.Status == ConsultaStatus.Realizada)
+                                { <span class="cm-doctor-done"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg>Concluída</span> }
                             </div>
-                        </div>
+                        </article>
                     }
                 </div>
             }
         </section>
-
-        <section class="cm25-panel v16-card doctor-week-card">
-            <div class="v16-card-head"><div><h2>Minha semana padrão</h2><p>Horários configurados pela clínica.</p></div></div>
-            @if (!Model.AgendaSemanal.Any())
-            {
-                <div class="v16-empty compact"><strong>Agenda semanal ainda não configurada.</strong></div>
-            }
-            else
-            {
-                <div class="doctor-week-v16">
-                    @foreach (var g in Model.AgendaSemanal.GroupBy(x => x.DiaSemana).OrderBy(x => x.Key == 0 ? 7 : x.Key))
-                    {
-                        <div><span>@nomes[g.Key]</span><div>@foreach (var h in g.OrderBy(x => x.Horario)){<b>@h.Horario</b>}</div></div>
-                    }
-                </div>
-            }
-        </section>
+        <aside class="cm-doctor-sidebar">
+            <section class="cm-doctor-panel cm-doctor-progress" aria-labelledby="doctor-progress-title"><span class="eyebrow">ANDAMENTO DO DIA</span><h2 id="doctor-progress-title">Cada atendimento conta</h2><div><strong>@concluidasHoje <small>de @Model.ConsultasHoje</small></strong><span>consultas concluídas</span></div><progress max="100" value="@progresso" aria-label="Percentual de consultas concluídas hoje">@progresso%</progress><p>O resumo é atualizado ao concluir um atendimento.</p></section>
+            <section class="cm-doctor-panel" aria-labelledby="doctor-week-title">
+                <header class="cm-doctor-section-head"><div><span class="eyebrow">DISPONIBILIDADE</span><h2 id="doctor-week-title">Minha semana padrão</h2><p>Horários configurados pela clínica.</p></div></header>
+                @if (!Model.AgendaSemanal.Any())
+                { <div class="cm-doctor-empty compact"><p>A clínica ainda não configurou sua semana padrão.</p></div> }
+                else
+                {
+                    <div class="cm-doctor-week">
+                        @foreach (var g in Model.AgendaSemanal.GroupBy(x => x.DiaSemana).OrderBy(x => x.Key == 0 ? 7 : x.Key))
+                        { <div><strong>@nomes[g.Key]</strong><div>@foreach (var h in g.OrderBy(x => x.Horario)) { <span>@h.Horario</span> }</div></div> }
+                    </div>
+                }
+            </section>
+        </aside>
     </div>
-
-    <section class="cm25-panel v16-card doctor-upcoming-card">
-        <div class="v16-card-head"><div><h2>Próximos pacientes</h2><p>Agenda futura após hoje.</p></div></div>
+    <section class="cm-doctor-panel" id="proximos-pacientes" aria-labelledby="doctor-upcoming-title">
+        <header class="cm-doctor-section-head"><div><span class="eyebrow">NA SUA AGENDA</span><h2 id="doctor-upcoming-title">Próximos pacientes</h2><p>Atendimentos a partir de hoje, organizados por data e horário.</p></div><svg class="cm-doctor-section-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar-check"></use></svg></header>
         @if (!Model.ProximasConsultas.Any())
-        { <div class="v16-empty compact"><strong>Nenhuma consulta futura.</strong></div> }
+        { <div class="cm-doctor-empty compact"><p>Nenhum atendimento previsto nesta lista.</p></div> }
         else
         {
-            <div class="v16-appointment-list">
-            @foreach (var c in Model.ProximasConsultas.Take(10))
-            {
-                <div class="v16-appointment-row static"><div class="v16-date-badge"><strong>@c.Data.Day</strong><span>@c.Data.ToString("MMM")</span></div><div class="v16-appointment-person"><strong>@c.Paciente?.Nome</strong><small>@c.Status</small></div><span class="v16-time">@c.Horario</span></div>
-            }
+            <div class="cm-doctor-upcoming">
+                @foreach (var c in Model.ProximasConsultas.Take(10))
+                {
+                    <article><time class="cm-doctor-date" datetime="@c.Data.ToString("yyyy-MM-dd")"><strong>@c.Data.Day</strong><span>@c.Data.ToString("MMM", cultura)</span></time><div><h3>@(c.Paciente?.Nome ?? "Paciente")</h3><small>@c.Data.ToString("dddd", cultura) · @c.Horario</small><span class="status-pill status-@c.Status.ToLowerInvariant()">@c.Status</span></div><a class="cm-doctor-exams" asp-controller="HistoricoExames" asp-action="Index" asp-route-pacienteId="@c.PacienteId" aria-label="Ver exames de @(c.Paciente?.Nome ?? "paciente")"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#file-medical"></use></svg><span>Exames</span></a></article>
+                }
             </div>
         }
     </section>
-
-    <div class="doctor-slots-grid-v16">
-        <section class="cm25-panel v16-card doctor-slot-card-v16">
-            <div class="v16-card-head"><div><h2>Bloquear horário livre</h2><p>Próximas vagas dos próximos 14 dias.</p></div></div>
+    <div id="meus-horarios" class="cm-doctor-slots-heading"><div><span class="eyebrow">SUA DISPONIBILIDADE</span><h2>Controle dos horários</h2><p>Bloqueie uma vaga livre ou reabra um horário fechado manualmente.</p></div></div>
+    <div class="cm-doctor-slot-grid">
+        <section class="cm-doctor-panel"><header class="cm-doctor-section-head"><div><h2>Vagas disponíveis</h2><p>Próximas vagas nos próximos 14 dias.</p></div><span class="cm-doctor-count">@Model.ProximasVagasLivres.Count</span></header>
             @if (!Model.ProximasVagasLivres.Any())
-            { <div class="v16-empty compact"><strong>Nenhuma vaga livre no período.</strong></div> }
+            { <div class="cm-doctor-empty compact"><p>Nenhuma vaga livre neste período.</p></div> }
             else
-            {
-                <div class="slot-grid v16-slot-grid">@foreach (var vaga in Model.ProximasVagasLivres){<form asp-action="BloquearHorario" method="post" class="slot-card v16-slot"><input type="hidden" name="disponibilidadeId" value="@vaga.Id"/><span>@vaga.Data!.Value.ToString("dd/MM")</span><strong>@vaga.Horario</strong><button type="submit" class="btn-link danger">Bloquear</button></form>}</div>
-            }
+            { <div class="cm-doctor-slots">@foreach (var vaga in Model.ProximasVagasLivres) { <form asp-action="BloquearHorario" method="post"><input type="hidden" name="disponibilidadeId" value="@vaga.Id" /><span>@vaga.Data!.Value.ToString("dd/MM")</span><strong>@vaga.Horario</strong><button class="btn-link danger" type="submit">Bloquear</button></form> }</div> }
         </section>
-        <section class="cm25-panel v16-card doctor-slot-card-v16">
-            <div class="v16-card-head"><div><h2>Meus bloqueios</h2><p>Horários que você fechou manualmente.</p></div></div>
+        <section class="cm-doctor-panel"><header class="cm-doctor-section-head"><div><h2>Meus bloqueios</h2><p>Horários fechados por você.</p></div><span class="cm-doctor-count">@Model.BloqueiosManuais.Count</span></header>
             @if (!Model.BloqueiosManuais.Any())
-            { <div class="v16-empty compact"><strong>Nenhum bloqueio futuro.</strong></div> }
+            { <div class="cm-doctor-empty compact"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#shield-check"></use></svg><p>Nenhum bloqueio manual ativo.</p></div> }
             else
-            {
-                <div class="slot-grid v16-slot-grid">@foreach (var vaga in Model.BloqueiosManuais){<form asp-action="DesbloquearHorario" method="post" class="slot-card v16-slot"><input type="hidden" name="disponibilidadeId" value="@vaga.Id"/><span>@vaga.Data!.Value.ToString("dd/MM")</span><strong>@vaga.Horario</strong><button type="submit" class="btn-link">Desbloquear</button></form>}</div>
-            }
+            { <div class="cm-doctor-slots blocked">@foreach (var vaga in Model.BloqueiosManuais) { <form asp-action="DesbloquearHorario" method="post"><input type="hidden" name="disponibilidadeId" value="@vaga.Id" /><span>@vaga.Data!.Value.ToString("dd/MM")</span><strong>@vaga.Horario</strong><button class="btn-link" type="submit">Desbloquear</button></form> }</div> }
         </section>
     </div>
 </section>
