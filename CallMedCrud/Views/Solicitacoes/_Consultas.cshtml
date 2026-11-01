@@ -1,0 +1,54 @@
+@model MKSANCrud.ViewModels.SolicitacoesPainelViewModel
+@{
+    var itens = Model.ConsultasDaPagina;
+    var total = Model.ConsultasFiltradas.Count;
+    var inicio = total == 0 ? 0 : (Model.PaginaAtualConsulta - 1) * MKSANCrud.ViewModels.SolicitacoesPainelViewModel.ConsultasPorPagina + 1;
+    var fim = inicio + itens.Count - 1;
+}
+@if (itens.Count == 0)
+{
+    <div class="cm-requests-empty cm-requests-tab-empty"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><div><h3>Nenhuma consulta neste resultado</h3><p>Escolha outra situação ou altere a busca para ampliar o resultado.</p>
+        @if (Model.SituacaoConsulta != "todas") { <a class="btn secondary" asp-action="Index" asp-route-aba="consultas" asp-route-busca="@Model.Busca" asp-route-canal="@Model.Canal">Ver todas as situações</a> }
+    </div></div>
+}
+else
+{
+    <div class="cm-consult-table-wrap">
+        <table class="cm-consult-table">
+            <caption class="visually-hidden">Consultas no resultado atual</caption>
+            <thead><tr><th scope="col">Paciente</th><th scope="col">Agendamento</th><th scope="col">Situação</th><th scope="col">Origem</th><th scope="col">Ações</th></tr></thead>
+            <tbody>
+                @foreach (var item in itens)
+                {
+                    var consulta = item.Consulta!;
+                    var nome = string.IsNullOrWhiteSpace(item.NomePaciente) ? "Contato não identificado" : item.NomePaciente.Trim();
+                    var dataAnterior = consulta.Data.Date < item.Hoje.Date && (consulta.Status is "Confirmada" or "Pendente" or "Remarcada");
+                    <tr data-consulta-id="@consulta.Id" data-consulta-status="@consulta.Status">
+                        <th scope="row"><div class="cm-consult-patient"><span class="cm-request-avatar" aria-hidden="true">@(nome[..1].ToUpperInvariant())</span><div><strong>@nome</strong><small>@item.Especialidade · Consulta #@consulta.Id</small></div></div></th>
+                        <td data-label="Agendamento"><strong>@consulta.Data.ToString("dd/MM/yyyy") <span>às @consulta.Horario</span></strong><small>@item.MedicoNome</small></td>
+                        <td data-label="Situação"><span class="cm-request-consult-status is-@item.SituacaoCss">@(item.AguardandoConfirmacao ? (consulta.Status == "Remarcada" ? "Remarcada · confirmar" : "Aguardando confirmação") : item.Situacao)</span>
+                            @if (dataAnterior) { <small class="cm-consult-past">Data passada · conferir desfecho</small> }
+                            @if (item.Realizada && consulta.RealizadaEm.HasValue) { <small>Realizada em @ClinicaClock.ConverterUtc(consulta.RealizadaEm.Value).ToString("dd/MM/yyyy")</small> }
+                        </td>
+                        <td data-label="Origem"><span class="cm-consult-origin">@item.CanalNome</span>@if (item.Solicitacao is not null) { <a class="text-link" asp-action="Detalhes" asp-route-id="@item.Solicitacao.Id">Pedido #@item.Solicitacao.Id ↗</a> }</td>
+                        <td data-label="Ações"><div class="cm-consult-row-actions">
+                            @if (item.AguardandoConfirmacao)
+                            { <form asp-controller="Consulta" asp-action="Confirmar" method="post"><input type="hidden" name="id" value="@consulta.Id" /><input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" /><button class="btn" type="submit">Confirmar</button></form> }
+                            <a class="btn secondary" asp-controller="Consulta" asp-action="Details" asp-route-id="@consulta.Id">Ver consulta</a>
+                        </div></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <footer class="cm-consult-pagination"><span>Exibindo @inicio–@fim de @total consultas</span>
+        @if (Model.TotalPaginasConsulta > 1)
+        {
+            <nav aria-label="Páginas de consultas">
+                @if (Model.PaginaAtualConsulta > 1) { <a class="btn secondary" rel="prev" asp-action="Index" asp-route-aba="consultas" asp-route-situacao="@Model.SituacaoConsulta" asp-route-busca="@Model.Busca" asp-route-canal="@Model.Canal" asp-route-pagina="@(Model.PaginaAtualConsulta - 1)">Anterior</a> }
+                <span>Página @Model.PaginaAtualConsulta de @Model.TotalPaginasConsulta</span>
+                @if (Model.PaginaAtualConsulta < Model.TotalPaginasConsulta) { <a class="btn secondary" rel="next" asp-action="Index" asp-route-aba="consultas" asp-route-situacao="@Model.SituacaoConsulta" asp-route-busca="@Model.Busca" asp-route-canal="@Model.Canal" asp-route-pagina="@(Model.PaginaAtualConsulta + 1)">Próxima</a> }
+            </nav>
+        }
+    </footer>
+}

@@ -2,6 +2,8 @@
 
 Data: 31/10/2026.
 
+Atualização de apresentação: a tela foi posteriormente separada em duas abas. Consulte ORGANIZACAO-SOLICITACOES-CONSULTAS-2026-10-31.md para a organização atual. As correções de dados descritas neste registro foram preservadas.
+
 ## Problema corrigido
 
 O sino carregava consultas pendentes diretamente de Consultas, mas o painel carregava apenas SolicitacoesAtendimento. Assim, consultas antigas ou diretas sem solicitação vinculada não apareciam. Além disso, marcar uma consulta como realizada encerrava sua solicitação; a tela retirava esse pedido das quatro colunas e deixava o atendimento concluído em um histórico recolhido.

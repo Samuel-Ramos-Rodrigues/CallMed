@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v53-solicitacoes-consultas';
+const CACHE_NAME = 'callmed-static-v55-contingencia-mais-opcoes';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.

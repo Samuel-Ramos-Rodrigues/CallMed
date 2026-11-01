@@ -28,7 +28,7 @@ public sealed class SolicitacoesController : Controller
         _clock = clock;
     }
 
-    public async Task<IActionResult> Index(string? busca, string? canal, CancellationToken ct)
+    public async Task<IActionResult> Index(string? busca, string? canal, string? aba, string? situacao, int? pagina, CancellationToken ct)
     {
         canal = canal?.Trim();
         if (!string.IsNullOrEmpty(canal) && canal != "SemCanal")
@@ -94,7 +94,14 @@ public sealed class SolicitacoesController : Controller
         return View(new SolicitacoesPainelViewModel
         {
             Registros = SolicitacoesPainelViewModel.Unificar(itens, consultas, _clock.Hoje),
-            Busca = busca, Canal = canal
+            Busca = busca, Canal = canal,
+            Aba = string.Equals(aba, "consultas", StringComparison.OrdinalIgnoreCase) ? "consultas" : "solicitacoes",
+            SituacaoConsulta = situacao?.Trim().ToLowerInvariant() switch
+            {
+                "pendentes" => "pendentes", "agendadas" => "agendadas",
+                "realizadas" => "realizadas", "historico" => "historico", _ => "todas"
+            },
+            PaginaConsulta = pagina ?? 1
         });
     }
 

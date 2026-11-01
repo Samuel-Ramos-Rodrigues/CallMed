@@ -53,6 +53,15 @@ internal static class SolicitacoesPainelChecks
         var volume = new SolicitacoesPainelViewModel { Registros = SolicitacoesPainelViewModel.Unificar([], muitas, hoje) };
         check(volume.Realizadas.Count == 450 && volume.Pendentes.Count == 1,
             "Histórico com mais de 400 consultas não oculta a confirmação pendente");
+        check(model.PedidosAbertos.Count == 4 && model.Consultas.Count == 9 &&
+            model.PedidosAbertos.Count + model.HistoricoPedidos.Count + model.Consultas.Count == model.Registros.Count,
+            "As abas separam pedidos sem agendamento das consultas, sem perder registros");
+        var realizadasFiltradas = new SolicitacoesPainelViewModel { Registros = model.Registros, Aba = "consultas", SituacaoConsulta = "realizadas" };
+        check(realizadasFiltradas.ConsultasFiltradas.Count == 2 && realizadasFiltradas.ConsultasDaPagina.All(x => x.Realizada),
+            "O filtro Realizadas não mistura consultas confirmadas ou pendentes");
+        var ultimaPagina = new SolicitacoesPainelViewModel { Registros = volume.Registros, Aba = "consultas", SituacaoConsulta = "realizadas", PaginaConsulta = 999 };
+        check(ultimaPagina.PaginaAtualConsulta == 23 && ultimaPagina.ConsultasDaPagina.Count == 10 && ultimaPagina.ConsultasFiltradas.Count == 450,
+            "A paginação mantém o total completo e limita páginas fora do intervalo");
         var resumo = new ConfirmacoesViewModel { TotalPendencias = 12, Itens = [new(), new(), new()] };
         check(resumo.Total == 12, "O contador real do sino independe do número de itens da prévia");
     }
