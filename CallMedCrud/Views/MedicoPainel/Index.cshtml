@@ -3,49 +3,16 @@
     ViewData["Title"] = "Minha Agenda";
     var proximaHoje = Model.AgendaHoje.FirstOrDefault(c => c.Status != MKSANCrud.Models.ConsultaStatus.Cancelada && c.Status != MKSANCrud.Models.ConsultaStatus.Realizada);
     var nomes = new[] { "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb" };
-    var confirmadasHoje = Model.AgendaHoje.Count(c => c.Status == MKSANCrud.Models.ConsultaStatus.Confirmada || c.Status == MKSANCrud.Models.ConsultaStatus.Remarcada);
-    var pendentesHoje = Model.AgendaHoje.Count(c => c.Status == MKSANCrud.Models.ConsultaStatus.Pendente);
 }
-<section class="cm25-screen cm25-page v16-page doctor-home-v16 doctor-home-plus" data-cm25-view="MedicoPainel/Index.cshtml">
-    <div class="doctor-home-top-plus">
-        <section class="doctor-welcome-v16 doctor-welcome-plus">
-            <div>
-                <span class="cm25-kicker v16-eyebrow">ÁREA DO MÉDICO</span>
-                <h1>Olá, @Model.Medico.Nome</h1>
-                <p>@Model.Medico.Especialidade · acompanhe sua agenda, seus pacientes e os próximos horários disponíveis.</p>
-                <div class="doctor-hero-actions-plus">
-                    <a class="btn" href="#minhas-vagas">Gerenciar meus horários</a>
-                    <a class="btn secondary" href="#agenda-do-dia">Ver agenda do dia</a>
-                </div>
-            </div>
-            <div class="doctor-welcome-side-plus">
-                <span class="doctor-crm-pill">@(string.IsNullOrWhiteSpace(Model.Medico.Crm) ? "CRM não informado" : Model.Medico.Crm)</span>
-                <div class="doctor-mini-kpis-plus">
-                    <article><strong>@confirmadasHoje</strong><small>confirmadas hoje</small></article>
-                    <article><strong>@pendentesHoje</strong><small>pendentes hoje</small></article>
-                    <article><strong>@Model.BloqueiosManuais.Count</strong><small>bloqueios futuros</small></article>
-                </div>
-            </div>
-        </section>
-
-        <aside class="doctor-focus-card-plus cm25-panel v16-card">
-            <div class="v16-card-head"><div><h2>Foco do dia</h2><p>Resumo rápido da sua operação clínica.</p></div></div>
-            <div class="doctor-focus-grid-plus">
-                <article><small>Consultas hoje</small><strong>@Model.ConsultasHoje</strong></article>
-                <article><small>Pacientes hoje</small><strong>@Model.PacientesHoje</strong></article>
-                <article><small>Vagas livres</small><strong>@Model.VagasHoje</strong></article>
-                <article><small>Próximos 7 dias</small><strong>@Model.ConsultasSemana</strong></article>
-            </div>
-            <div class="doctor-focus-links-plus">
-                <a href="#agenda-do-dia">Abrir agenda de hoje ↗</a>
-                <a href="#minhas-vagas">Bloquear horários ↗</a>
-            </div>
-        </aside>
+<section class="cm25-screen cm25-page v16-page doctor-home-v16" data-cm25-view="MedicoPainel/Index.cshtml">
+    <div class="doctor-welcome-v16">
+        <div><span class="cm25-kicker v16-eyebrow">ÁREA DO MÉDICO</span><h1>Olá, @Model.Medico.Nome</h1><p>@Model.Medico.Especialidade · sua agenda e seus próximos pacientes.</p></div>
+        <span class="doctor-crm-pill">@(string.IsNullOrWhiteSpace(Model.Medico.Crm) ? "CRM não informado" : Model.Medico.Crm)</span>
     </div>
 
     @if (proximaHoje is not null)
     {
-        <section class="doctor-next-patient doctor-next-patient-plus">
+        <section class="doctor-next-patient">
             <div class="doctor-next-time"><span>PRÓXIMO PACIENTE</span><strong>@proximaHoje.Horario</strong><small>hoje</small></div>
             <div class="doctor-next-copy"><span class="status-pill status-@proximaHoje.Status.ToLowerInvariant()">@proximaHoje.Status</span><h2>@proximaHoje.Paciente?.Nome</h2><p>Consulta de @Model.Medico.Especialidade</p></div>
             <div class="doctor-next-actions">
@@ -55,7 +22,7 @@
                 }
                 @if (proximaHoje.Status == MKSANCrud.Models.ConsultaStatus.Confirmada || proximaHoje.Status == MKSANCrud.Models.ConsultaStatus.Remarcada)
                 {
-                    <form asp-action="Concluir" method="post"><input type="hidden" name="consultaId" value="@proximaHoje.Id"/><button class="btn secondary" type="submit">Concluir atendimento</button></form>
+                    <form asp-action="Concluir" method="post"><input type="hidden" name="consultaId" value="@proximaHoje.Id"/><button class="btn" type="submit">Concluir atendimento</button></form>
                 }
             </div>
         </section>
@@ -68,8 +35,8 @@
         <article class="v16-kpi"><span class="v16-kpi-icon amber">＋</span><div><small>Vagas livres hoje</small><strong>@Model.VagasHoje</strong><span>pela agenda atual</span></div></article>
     </div>
 
-    <div class="doctor-home-grid-v16 doctor-home-grid-plus">
-        <section class="cm25-panel v16-card doctor-day-card" id="agenda-do-dia">
+    <div class="doctor-home-grid-v16">
+        <section class="cm25-panel v16-card doctor-day-card">
             <div class="v16-card-head"><div><h2>Agenda de hoje</h2><p>Consultas na ordem dos horários.</p></div></div>
             @if (!Model.AgendaHoje.Any())
             {
@@ -95,7 +62,7 @@
             }
         </section>
 
-        <section class="cm25-panel v16-card doctor-week-card" id="semana-medica">
+        <section class="cm25-panel v16-card doctor-week-card">
             <div class="v16-card-head"><div><h2>Minha semana padrão</h2><p>Horários configurados pela clínica.</p></div></div>
             @if (!Model.AgendaSemanal.Any())
             {
@@ -113,33 +80,22 @@
         </section>
     </div>
 
-    <div class="doctor-secondary-grid-plus">
-        <section class="cm25-panel v16-card doctor-upcoming-card">
-            <div class="v16-card-head"><div><h2>Próximos pacientes</h2><p>Agenda futura após hoje.</p></div></div>
-            @if (!Model.ProximasConsultas.Any())
-            { <div class="v16-empty compact"><strong>Nenhuma consulta futura.</strong></div> }
-            else
+    <section class="cm25-panel v16-card doctor-upcoming-card">
+        <div class="v16-card-head"><div><h2>Próximos pacientes</h2><p>Agenda futura após hoje.</p></div></div>
+        @if (!Model.ProximasConsultas.Any())
+        { <div class="v16-empty compact"><strong>Nenhuma consulta futura.</strong></div> }
+        else
+        {
+            <div class="v16-appointment-list">
+            @foreach (var c in Model.ProximasConsultas.Take(10))
             {
-                <div class="v16-appointment-list">
-                @foreach (var c in Model.ProximasConsultas.Take(10))
-                {
-                    <div class="v16-appointment-row static"><div class="v16-date-badge"><strong>@c.Data.Day</strong><span>@c.Data.ToString("MMM")</span></div><div class="v16-appointment-person"><strong>@c.Paciente?.Nome</strong><small>@c.Status</small></div><span class="v16-time">@c.Horario</span></div>
-                }
-                </div>
+                <div class="v16-appointment-row static"><div class="v16-date-badge"><strong>@c.Data.Day</strong><span>@c.Data.ToString("MMM")</span></div><div class="v16-appointment-person"><strong>@c.Paciente?.Nome</strong><small>@c.Status</small></div><span class="v16-time">@c.Horario</span></div>
             }
-        </section>
-
-        <section class="cm25-panel v16-card doctor-routine-card-plus">
-            <div class="v16-card-head"><div><h2>Rotina médica</h2><p>Atalhos e organização pessoal.</p></div></div>
-            <div class="doctor-routine-list-plus">
-                <a href="#minhas-vagas"><strong>Gerenciar meus bloqueios</strong><small>Bloqueie ou libere vagas disponíveis do seu atendimento.</small></a>
-                <a href="#agenda-do-dia"><strong>Exames dos pacientes</strong><small>Use o acesso de exames associado a cada consulta de hoje.</small></a>
-                <a href="#semana-medica"><strong>Minha semana padrão</strong><small>Confira os horários configurados pela clínica.</small></a>
             </div>
-        </section>
-    </div>
+        }
+    </section>
 
-    <div class="doctor-slots-grid-v16" id="minhas-vagas">
+    <div class="doctor-slots-grid-v16">
         <section class="cm25-panel v16-card doctor-slot-card-v16">
             <div class="v16-card-head"><div><h2>Bloquear horário livre</h2><p>Próximas vagas dos próximos 14 dias.</p></div></div>
             @if (!Model.ProximasVagasLivres.Any())

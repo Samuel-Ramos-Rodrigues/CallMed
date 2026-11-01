@@ -3867,115 +3867,180 @@ body { line-height: 1.58; }
   .patient-toolbar .v16-search-form {max-width:100%}
 }
 
-
-/* === Refinos por perfil: login, paciente, médico, atendente e admin === */
-
-.patient-home-plus{gap:18px}
-.patient-hero-plus{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.85fr);gap:18px;padding:24px;border:1px solid var(--cm-border);border-radius:var(--cm-radius-xl);background:radial-gradient(circle at right top, rgba(130,108,255,.14), transparent 32%),linear-gradient(180deg,var(--cm-surface-raised),var(--cm-surface));box-shadow:var(--cm-shadow)}
-.patient-hero-copy-plus h1{margin:4px 0 8px;font-size:clamp(2rem,3vw,2.8rem)}
-.patient-hero-copy-plus p{max-width:760px;margin:0;color:var(--cm-muted-2);font-size:.95rem}
-.patient-hero-actions-plus{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}
-.patient-mini-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.patient-mini-stats article{padding:14px;border:1px solid var(--cm-border);border-radius:16px;background:var(--cm-surface-muted)}
-.patient-mini-stats strong{display:block;color:var(--cm-ink);font-size:1.15rem}
-.patient-mini-stats small{display:block;margin-top:4px;color:var(--cm-muted);font-size:.78rem}
-.patient-profile-slab{display:flex;flex-direction:column;gap:14px;padding:18px;border:1px solid var(--cm-border);border-radius:18px;background:var(--cm-surface-muted)}
-.patient-profile-highlight{padding:16px;border-radius:16px;background:linear-gradient(135deg,var(--cm-primary-soft),rgba(255,255,255,.02));border:1px solid rgba(124,112,255,.2)}
-.patient-profile-highlight.empty{background:var(--cm-surface)}
-.patient-profile-highlight small,.patient-profile-slab ul span{display:block;color:var(--cm-muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.05em}
-.patient-profile-highlight strong{display:block;margin:6px 0 4px;color:var(--cm-ink);font-size:1rem}
-.patient-profile-highlight span,.patient-profile-slab ul strong{color:var(--cm-ink-2);font-size:.83rem;line-height:1.35}
-.patient-profile-slab ul{display:grid;gap:10px;list-style:none;margin:0;padding:0}
-.patient-profile-slab li{padding:10px 0;border-top:1px solid var(--cm-border)}
-.patient-profile-slab li:first-child{border-top:0;padding-top:0}
-.patient-action-grid-plus{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.patient-action-card{display:flex;flex-direction:column;gap:8px;padding:18px;border:1px solid var(--cm-border);border-radius:18px;background:var(--cm-surface);box-shadow:var(--cm-shadow-sm);transition:transform var(--cm-motion),border-color var(--cm-motion),background var(--cm-motion)}
-.patient-action-card:hover{transform:translateY(-2px);border-color:var(--cm-primary);background:var(--cm-primary-soft)}
-.patient-action-card span:first-child{font-size:1.4rem}
-.patient-action-card strong{color:var(--cm-ink)}
-.patient-action-card small{color:var(--cm-muted);line-height:1.35}
-.patient-home-grid-plus,.patient-detail-grid-plus{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,.95fr);gap:18px}
-.patient-next-panel-plus,.patient-checklist-panel,.patient-support-plus,.patient-upcoming-plus{padding:22px}
-.patient-appointment-body.plus{display:grid;grid-template-columns:110px minmax(0,1fr);gap:16px;align-items:center;margin-top:8px}
-.patient-inline-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
-.patient-checklist-list{display:grid;gap:14px}
-.patient-checklist-list article{display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px;align-items:flex-start}
-.patient-check-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:var(--cm-primary-soft);color:var(--cm-primary);font-weight:800}
-.patient-checklist-list strong{display:block;color:var(--cm-ink)}
-.patient-checklist-list small{display:block;margin-top:4px;color:var(--cm-muted);line-height:1.45}
-.patient-support-stack{display:grid;gap:10px;margin-bottom:14px}
-.patient-support-stack>div{padding:14px;border-radius:14px;background:var(--cm-surface-muted);border:1px solid var(--cm-border)}
-.patient-support-stack small{display:block;color:var(--cm-muted);font-size:.75rem}
-.patient-support-stack strong{display:block;margin-top:4px;color:var(--cm-ink)}
-.patient-support-links{display:grid;gap:10px}
-.patient-upcoming-list-plus{display:grid;gap:10px}
-
-.doctor-home-plus{gap:18px}
-.doctor-home-top-plus{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(320px,.95fr);gap:18px;align-items:stretch}
-.doctor-welcome-plus{display:flex;justify-content:space-between;gap:18px;min-width:0}
-.doctor-hero-actions-plus{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-.doctor-welcome-side-plus{display:flex;flex-direction:column;align-items:flex-end;gap:12px;min-width:220px}
-.doctor-mini-kpis-plus{display:grid;gap:10px;width:100%}
-.doctor-mini-kpis-plus article{padding:12px 14px;border:1px solid rgba(255,255,255,.16);border-radius:14px;background:rgba(255,255,255,.08);text-align:right}
-.doctor-mini-kpis-plus strong{display:block;color:#fff;font-size:1.05rem}
-.doctor-mini-kpis-plus small{display:block;margin-top:4px;color:#d7dcff;font-size:.74rem}
-.doctor-focus-card-plus{padding:20px}
-.doctor-focus-grid-plus{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:6px}
-.doctor-focus-grid-plus article{padding:14px;border:1px solid var(--cm-border);border-radius:14px;background:var(--cm-surface-muted)}
-.doctor-focus-grid-plus small{display:block;color:var(--cm-muted);font-size:.74rem}
-.doctor-focus-grid-plus strong{display:block;margin-top:6px;color:var(--cm-ink);font-size:1.3rem}
-.doctor-focus-links-plus{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px}
-.doctor-focus-links-plus a{color:var(--cm-primary);font-weight:700}
-.doctor-next-patient-plus{border-color:rgba(122,111,255,.25);box-shadow:var(--cm-shadow)}
-.doctor-home-grid-plus{align-items:start}
-.doctor-secondary-grid-plus{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.9fr);gap:18px}
-.doctor-routine-card-plus{padding:20px}
-.doctor-routine-list-plus{display:grid;gap:12px}
-.doctor-routine-list-plus a{display:block;padding:14px;border:1px solid var(--cm-border);border-radius:14px;background:var(--cm-surface-muted)}
-.doctor-routine-list-plus strong{display:block;color:var(--cm-ink)}
-.doctor-routine-list-plus small{display:block;margin-top:4px;color:var(--cm-muted);line-height:1.4}
-
-.cm-dashboard-plus{gap:18px}
-.cm-dashboard-top-grid-plus{align-items:stretch}
-.cm-dashboard-hero-plus{position:relative}
-.cm-hero-mini-stats-plus{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px;max-width:620px}
-.cm-hero-mini-stats-plus article{padding:12px;border:1px solid rgba(255,255,255,.15);border-radius:14px;background:rgba(255,255,255,.08)}
-.cm-hero-mini-stats-plus strong{display:block;color:#fff;font-size:1.15rem}
-.cm-hero-mini-stats-plus small{display:block;margin-top:4px;color:#dbe0ff;font-size:.73rem}
-.cm-dashboard-metric-strip-plus{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.cm-dashboard-metric-strip-plus article{padding:18px;border:1px solid var(--cm-border);border-radius:18px;background:var(--cm-surface);box-shadow:var(--cm-shadow-sm)}
-.cm-dashboard-metric-strip-plus small{display:block;color:var(--cm-muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.05em}
-.cm-dashboard-metric-strip-plus strong{display:block;margin:8px 0 6px;color:var(--cm-ink);font-size:1.55rem;line-height:1.08}
-.cm-dashboard-metric-strip-plus span{display:block;color:var(--cm-muted-2);font-size:.78rem}
-.cm-dashboard-content-grid-plus{align-items:start}
-.cm-dashboard-aside-plus{gap:16px}
-.cm-ops-grid-plus{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.95fr);gap:18px}
-.cm-insights-card-plus,.cm-management-card-plus{padding:22px}
-.cm-insights-split-plus{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:10px}
-.cm-insights-split-plus h3{margin:0 0 10px;font-size:.98rem}
-.cm-ranking-list-plus{display:grid;gap:10px}
-.cm-ranking-row-plus{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--cm-border);border-radius:14px;background:var(--cm-surface-muted)}
-.cm-ranking-row-plus span{color:var(--cm-ink)}
-.cm-ranking-row-plus strong{color:var(--cm-primary)}
-.cm-muted-copy-plus{margin:0;color:var(--cm-muted);line-height:1.45}
-.cm-management-grid-plus{display:grid;gap:12px;margin-top:8px}
-.cm-management-grid-plus a{display:block;padding:14px;border:1px solid var(--cm-border);border-radius:14px;background:var(--cm-surface-muted)}
-.cm-management-grid-plus strong{display:block;color:var(--cm-ink)}
-.cm-management-grid-plus small{display:block;margin-top:4px;color:var(--cm-muted);line-height:1.4}
-
-@media (max-width: 1100px){
-  .patient-hero-plus,.patient-home-grid-plus,.patient-detail-grid-plus,.doctor-home-top-plus,.doctor-secondary-grid-plus,.cm-ops-grid-plus{grid-template-columns:minmax(0,1fr)}
-  .patient-action-grid-plus,.cm-dashboard-metric-strip-plus{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .cm-insights-split-plus{grid-template-columns:minmax(0,1fr)}
+/* Correções preservadas: relatórios e calendário. Painéis com composição clássica. */
+/* Relatórios: cada indicador secundário ganha um cartão real. Antes os
+   números eram renderizados sem layout e colidiam com os rótulos. */
+.v18-report-page { gap: 20px; }
+.v18-report-page > .cm25-page-hero { margin-bottom: 2px; }
+.v18-report-page .cm21-report-challenge {
+  display: grid;
+  grid-template-columns: repeat(5,minmax(0,1fr));
+  gap: 12px;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
 }
-@media (max-width: 768px){
-  .identity-role-grid,.identity-help-grid,.patient-mini-stats,.patient-action-grid-plus,.cm-dashboard-metric-strip-plus,.cm-hero-mini-stats-plus,.doctor-focus-grid-plus{grid-template-columns:minmax(0,1fr)}
-  .patient-hero-plus{padding:18px}
-  .patient-appointment-body.plus{grid-template-columns:1fr}
-  .doctor-welcome-plus{flex-direction:column}
-  .doctor-welcome-side-plus{align-items:stretch;min-width:0}
-  .cm-dashboard-hero-plus .cm-hero-mini-stats-plus{max-width:none}
+.v18-report-page .cm21-report-challenge > article {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  min-width: 0;
+  min-height: 142px;
+  padding: clamp(15px,1.5vw,19px);
+  border-radius: 16px;
+  border: 1px solid var(--cm-border);
+  background: var(--cm-surface);
+  box-shadow: var(--cm-shadow-sm);
+  overflow-wrap: anywhere;
 }
+.v18-report-page .cm21-report-challenge > article small {
+  display: block;
+  color: var(--cm-muted);
+  font-weight: 700;
+  font-size: .78rem;
+  line-height: 1.4;
+}
+.v18-report-page .cm21-report-challenge > article strong {
+  display: block;
+  margin-top: 1px;
+  color: var(--cm-ink);
+  font-size: clamp(1.4rem,2.05vw,1.95rem);
+  line-height: 1.14;
+  font-weight: 800;
+  letter-spacing: -.045em;
+}
+.v18-report-page .cm21-report-challenge > article span {
+  display: block;
+  margin-top: auto;
+  color: var(--cm-muted-2);
+  font-size: .75rem;
+  line-height: 1.4;
+}
+.v18-report-page .cm21-report-channels { min-width: 0; }
+.v18-report-page .cm21-channel-strip {
+  display:grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+  padding: 17px 20px 21px;
+  border: 0;
+  border-top: 1px solid var(--cm-border);
+  background: transparent;
+}
+.v18-report-page .cm21-channel-strip > div {
+  min-width: 0;
+  padding: 13px 15px;
+  border-radius: 13px;
+  border: 1px solid var(--cm-border);
+  background: var(--cm-surface-muted);
+}
+.v18-report-page .cm21-channel-strip > div > span {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom: 10px;
+}
+.v18-report-page .cm21-channel-strip b {color:var(--cm-ink);font-size:.84rem;}
+.v18-report-page .cm21-channel-strip em {color:var(--cm-muted);font-size:.78rem;font-style:normal;}
+.v18-report-page .cm21-channel-strip i {display:block;height:7px;overflow:hidden;border-radius:99px;background:var(--cm-surface-strong);}
+.v18-report-page .cm21-channel-strip i u {display:block;height:100%;border-radius:inherit;background:var(--cm-primary);}
+.v18-report-page .v18-report-grid > .v18-card {min-width:0;overflow:hidden;}
 
-/* Layout patient standard respects accessibility simple-mode toggle. */
-.patient-standard-plus{display:flex;flex-direction:column;gap:18px;min-width:0}
+/* Agendamento: calendário do mês, dias disponíveis clicáveis.
+   O elemento select nativo continua enviando a data ao servidor. */
+.cm19-booking-card {max-width:1180px;margin-inline:auto;}
+.cm19-booking-section {scroll-margin-top:110px;}
+.cm19-booking-section[data-section="date"] {min-width:0;}
+.cm19-booking-section .cm19-date-choices {display:block;max-width:760px;min-width:0;}
+.cm-booking-calendar {
+  padding:clamp(13px,2vw,22px);
+  border:1px solid var(--cm-border);
+  border-radius:20px;
+  background:var(--cm-surface);
+  box-shadow:var(--cm-shadow-sm);
+  width:100%;
+  box-sizing:border-box;
+}
+.cm-booking-calendar-toolbar {display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:21px;}
+.cm-booking-calendar-title {display:flex;flex-direction:column;gap:4px;min-width:0;}
+.cm-booking-calendar-title strong {color:var(--cm-ink);font-size:1.04rem;line-height:1.35;}
+.cm-booking-calendar-title small {color:var(--cm-muted);font-size:.8rem;}
+.cm-booking-calendar-nav {display:flex;gap:7px;flex:none;}
+.cm-calendar-nav-button {
+  display:grid;place-items:center;
+  width:38px;height:38px;
+  border:1px solid var(--cm-border-strong);
+  border-radius:11px;
+  background:var(--cm-surface-muted);
+  color:var(--cm-ink);
+  font-size:1.4rem;
+  cursor:pointer;
+}
+.cm-calendar-nav-button:hover:not(:disabled) {border-color:var(--cm-primary);background:var(--cm-primary-soft);}
+.cm-calendar-nav-button:disabled {opacity:.3;cursor:not-allowed;}
+.cm-booking-calendar-weekdays,.cm-booking-calendar-days {
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:clamp(3px,.6vw,8px);
+}
+.cm-booking-calendar-weekdays {margin-bottom:8px;}
+.cm-booking-calendar-weekdays > span {padding:8px 0;color:var(--cm-muted);font-size:.75rem;text-align:center;font-weight:700;}
+.cm-calendar-spacer {min-height:43px;}
+.cm-calendar-date {
+  display:grid;place-items:center;min-width:0;
+  width:100%;height:clamp(40px,4.4vw,50px);
+  padding:0;border:1px solid transparent;
+  border-radius:11px;
+  background:transparent;
+  color:var(--cm-muted-2);
+  font:inherit;font-weight:700;font-size:.86rem;
+}
+.cm-calendar-date.unavailable {cursor:default;opacity:.42;}
+.cm-calendar-date.available {
+  border-color:color-mix(in srgb,var(--cm-primary) 28%,var(--cm-border));
+  color:var(--cm-ink);
+  background:var(--cm-primary-soft);
+  cursor:pointer;
+}
+.cm-calendar-date.available:hover {border-color:var(--cm-primary);box-shadow:var(--cm-ring);}
+.cm-calendar-date.selected {
+  border-color:var(--cm-primary);
+  background:var(--cm-primary);
+  color:var(--cm-primary-ink);
+  box-shadow:0 6px 16px color-mix(in srgb,var(--cm-primary) 16%,transparent);
+}
+.cm-calendar-date.selected:hover {color:var(--cm-primary-ink);background:var(--cm-primary-hover);}
+.cm-booking-calendar-legend {display:flex;flex-wrap:wrap;align-items:center;gap:18px;padding-top:15px;margin-top:17px;border-top:1px solid var(--cm-border);color:var(--cm-muted);font-size:.77rem;}
+.cm-booking-calendar-legend .calendar-available {color:var(--cm-primary);}
+.cm-booking-calendar-legend .calendar-selected {color:var(--cm-ink);}
+.cm19-booking-section .cm19-time-choices {grid-template-columns:repeat(5,minmax(0,1fr));}
+.cm19-booking-section .cm19-time-option {min-height:48px;padding:10px;}
+.cm19-booking-section .cm19-choice-placeholder {grid-column:1/-1;}
+
+
+@media (max-width:1250px) {
+  .v18-report-page .cm21-report-challenge {grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+@media (max-width:980px) {
+  .v18-report-page .cm21-report-challenge {grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width:640px) {
+  .v18-report-page .cm21-report-challenge {grid-template-columns:1fr;gap:10px;}
+  .v18-report-page .cm21-report-challenge > article {min-height:102px;padding:14px 17px;}
+  .v18-report-page .cm21-channel-strip {grid-template-columns:1fr;padding:14px;}
+  .cm19-booking-section .cm19-time-choices {grid-template-columns:repeat(3,minmax(0,1fr));}
+  .cm-booking-calendar {padding:12px;border-radius:15px;}
+  .cm-calendar-date {height:40px;font-size:.8rem;}
+  .cm-booking-calendar-weekdays > span {font-size:.68rem;}
+  .cm19-booking-card {padding:16px;}
+}
+@media (max-width:360px) {
+  .cm-booking-calendar-weekdays,.cm-booking-calendar-days {gap:2px;}
+  .cm-calendar-date {height:38px;}
+}
+.v18-report-page .cm21-report-channels {display:block;}
+.v18-report-page .cm21-report-channels > .v18-card-header {display:flex;align-items:center;justify-content:space-between;width:100%;padding:21px 23px 17px;}
+.v18-report-page .cm21-report-channels > .v18-card-header > div {min-width:0;}
