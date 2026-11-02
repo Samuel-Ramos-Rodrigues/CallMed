@@ -52,15 +52,32 @@
         const conversationChannel = messages.dataset.channel || 'Web';
         const channelLabel = channelLabels[conversationChannel] || 'Site';
         const createChannelIcon = () => document.querySelector('#cm-origem-channel-template .cm-channel')?.cloneNode(true) || null;
+        const deliveryStates = new WeakMap();
 
         const updateDelivery = (article, item) => {
             let delivery = article.querySelector('.message-delivery');
             if (!delivery) { delivery = document.createElement('div'); delivery.className = 'message-delivery'; article.append(delivery); }
+            const next = item.proximaTentativaEm ? new Date(item.proximaTentativaEm) : null;
+            const waiting = Boolean(next && next.getTime() > Date.now());
+            const state = JSON.stringify([item.status, item.erro || '', item.proximaTentativaEm || '', Boolean(item.reenvioBloqueado), waiting]);
+            // A confirmação mantém uma referência ao formulário original. Recriá-lo a
+            // cada polling faz a confirmação ser aceita sem que nenhum POST ocorra.
+            if (deliveryStates.get(delivery) === state) return;
+            deliveryStates.set(delivery, state);
+            // Preserva também o formulário Razor antes da primeira atualização.
+            if (item.status === 'AguardandoAprovacao' && delivery.querySelector('.email-draft-review')) return;
+            if (article.classList.contains('outgoing')) {
+                const label = article.querySelector('.message-meta strong');
+                if (label) label.textContent = item.status === 'AguardandoAprovacao'
+                    ? `Rascunho para ${channelLabel} · CallMed`
+                    : `${authorLabel(item.autor || article.dataset.author)} · ${channelLabel}`;
+            }
+            delivery.removeAttribute('aria-busy');
             delivery.replaceChildren();
             if (item.status === 'AguardandoAprovacao') {
                 const panel = document.createElement('div'); panel.className = 'email-draft-review'; panel.setAttribute('role', 'status');
                 const title = document.createElement('strong'); title.textContent = 'Rascunho da IA · ainda não enviado';
-                const note = document.createElement('p'); note.textContent = 'Revise o conteúdo antes de enviar ao paciente.';
+                const note = document.createElement('p'); note.textContent = 'Revise o conteúdo antes de enviar ao paciente. Aprovar envia apenas este e-mail. Agendamentos e alterações devem ser concluídos pela recepção ou pelo portal do paciente.';
                 const actions = document.createElement('div'); actions.className = 'email-draft-actions';
                 const token = document.querySelector('input[name="__RequestVerificationToken"]');
                 const makeAction = (path, label, confirmText, secondary) => {
@@ -86,13 +103,15 @@
                 delivery.append(note);
                 return;
             }
+            if (item.status === 'Enviada' && conversationChannel === 'Email') {
+                const note = document.createElement('small'); note.className = 'message-sent'; note.setAttribute('role', 'status');
+                note.textContent = 'Enviada · aceita pelo servidor de e-mail'; delivery.append(note); return;
+            }
             if (item.status !== 'Falhou') return;
             const failure = document.createElement('div'); failure.className = 'message-failure';
             const error = document.createElement('small'); error.className = 'message-error';
             error.textContent = `Falha no envio: ${item.erro || 'erro não informado'}`;
             failure.append(error);
-            const next = item.proximaTentativaEm ? new Date(item.proximaTentativaEm) : null;
-            const waiting = next && next.getTime() > Date.now();
             if (waiting) {
                 const note = document.createElement('small');
                 note.textContent = `Nova tentativa a partir de ${next.toLocaleString('pt-BR')}.`;
@@ -109,12 +128,37 @@
             delivery.append(failure);
         };
 
+        // O envio segue por POST nativo, após a confirmação de feedback.js.
+        // Mostra andamento durante a navegação e impede cliques repetidos.
+        document.addEventListener('submit', event => {
+            const form = event.target;
+            if (event.defaultPrevented || !(form instanceof HTMLFormElement)) return;
+            const delivery = form.closest('.message-delivery');
+            if (!delivery) return;
+            const action = new URL(form.action, window.location.href).pathname.split('/').pop();
+            if (!['AprovarRascunho', 'DescartarRascunho', 'Reenviar'].includes(action)) return;
+            if (form.dataset.submitting === 'true' || delivery.getAttribute('aria-busy') === 'true') {
+                event.preventDefault(); return;
+            }
+            form.dataset.submitting = 'true';
+            delivery.setAttribute('aria-busy', 'true');
+            const button = event.submitter || form.querySelector('button[type="submit"]');
+            // Mantém o submitter habilitado até o POST nativo ser iniciado.
+            // O estado do formulário bloqueia uma segunda submissão.
+            delivery.querySelectorAll('button').forEach(control => {
+                control.setAttribute('aria-disabled', 'true');
+                if (control !== button) control.disabled = true;
+            });
+            if (button) button.textContent = action === 'DescartarRascunho' ? 'Descartando…' : 'Enviando…';
+        });
+
         const appendMessage = item => {
             messages.querySelector('.empty-state')?.remove();
 
             const article = document.createElement('article');
             article.className = `atendimento-message ${item.direcao === 'Entrada' ? 'incoming' : 'outgoing'}`;
             article.dataset.messageId = String(item.id);
+            article.dataset.author = item.autor || '';
 
             const meta = document.createElement('div');
             meta.className = 'message-meta';
@@ -260,22 +304,7 @@
         conversationLinks.forEach(link => { link.hidden = !normalize(link.textContent).includes(query); });
     });
 
-    document.addEventListener('submit', event => {
-        if (!event.target.matches('.atendimento-retry-form')) return;
-        const button = event.target.querySelector('button[type="submit"]');
-        if (button) { button.disabled = true; button.textContent = 'Enviando...'; }
-    });
-
     // As demais ações mantêm o POST tradicional do navegador.
-    document.querySelectorAll('.email-draft-actions form').forEach(form => {
-        form.addEventListener('submit', event => {
-            const button = form.querySelector('button[type="submit"]');
-            if (form.dataset.submitting === 'true') { event.preventDefault(); return; }
-            form.dataset.submitting = 'true';
-            if (button) { button.setAttribute('aria-disabled', 'true'); button.textContent = 'Aguarde...'; }
-        });
-    });
-
     document.querySelectorAll('.atendimento-state-form:not([data-ia-action])').forEach(form => {
         form.addEventListener('submit', event => {
             // Não desabilitar o submitter durante o próprio evento submit:

@@ -170,7 +170,9 @@ public sealed class ListaEsperaService
                 $"Olá, {item.Paciente.Nome}! Abriu uma vaga na sua lista de espera: " +
                 $"{vaga.Medico?.Nome} — {_especialidades.CanonicalizarNome(vaga.Medico?.Especialidade ?? item.Especialidade?.Nome ?? string.Empty)}, " +
                 $"dia {vaga.Data!.Value:dd/MM/yyyy} às {vaga.Horario}. " +
-                "Entre no app para aceitar a vaga ou responda por aqui se precisar de ajuda. A vaga continua sujeita à disponibilidade.";
+                (destino.Value.Canal == CanalAtendimento.Email
+                    ? "Acesse sua conta no CallMed para aceitar a vaga ou entre em contato com a recepção. Responder a este e-mail não reserva o horário. Se solicitar ajuda por e-mail, aguarde a confirmação da equipe. A vaga continua sujeita à disponibilidade."
+                    : "Entre no app para aceitar a vaga ou responda por aqui se precisar de ajuda. A vaga continua sujeita à disponibilidade.");
 
             var msg = await _envio.EnviarAvisoAsync(conversa, texto, $"lista-espera:{item.Id}:vaga:{vaga.Id}", ct);
             if (msg.Status == StatusMensagemAtendimento.Enviada)

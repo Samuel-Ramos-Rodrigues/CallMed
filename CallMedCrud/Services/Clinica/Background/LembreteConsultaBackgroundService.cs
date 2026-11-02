@@ -93,8 +93,13 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
                 }
                 var conversa = await conversas.ObterOuCriarAsync(destino.Value.Canal, destino.Value.Identificador, c.PacienteId, "Lembrete de consulta CallMed", ct: ct);
                 var texto = tipo24
-                    ? $"Olá, {c.Paciente.Nome}! Lembrete CallMed: sua consulta com {c.Medico?.Nome} está marcada para {c.Data:dd/MM} às {c.Horario}. Responda CONFIRMAR para confirmar presença, REMARCAR para escolher outro horário ou CANCELAR para liberar a vaga."
-                    : $"Olá, {c.Paciente.Nome}! Sua consulta CallMed com {c.Medico?.Nome} será em {c.Data:dd/MM} às {c.Horario}. Se estiver tudo certo, responda CONFIRMAR. Se precisar, responda REMARCAR ou CANCELAR.";
+                    ? $"Olá, {c.Paciente.Nome}! Lembrete CallMed: sua consulta com {c.Medico?.Nome} está marcada para {c.Data:dd/MM} às {c.Horario}."
+                    : $"Olá, {c.Paciente.Nome}! Sua consulta CallMed com {c.Medico?.Nome} será em {c.Data:dd/MM} às {c.Horario}.";
+                texto += destino.Value.Canal == CanalAtendimento.Email
+                    ? "\n\nPara confirmar presença, remarcar ou cancelar, acesse sua conta no CallMed ou entre em contato com a recepção. Responder a este e-mail não conclui essas ações automaticamente. Se solicitar ajuda por e-mail, aguarde a confirmação da equipe."
+                    : tipo24
+                        ? " Responda CONFIRMAR para confirmar presença, REMARCAR para escolher outro horário ou CANCELAR para liberar a vaga."
+                        : " Se estiver tudo certo, responda CONFIRMAR. Se precisar, responda REMARCAR ou CANCELAR.";
                 texto += "\n\n" + orientacoes.Texto(c);
                 var chave = $"lembrete:{c.Id}:{(tipo24 ? "24h" : "2h")}:{c.MedicoId}:{c.Data:yyyyMMdd}:{c.Horario}";
                 var msg = await envio.EnviarAvisoAsync(conversa, texto, chave, ct);

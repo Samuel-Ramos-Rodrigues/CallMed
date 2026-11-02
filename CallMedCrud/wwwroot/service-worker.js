@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v58-progresso-ia-rascunho';
+const CACHE_NAME = 'callmed-static-v60-email-administrativo';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.

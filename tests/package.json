@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "test:dom": "node contingencia-dom.mjs",
-    "test:browser": "node contingencia-browser.cjs"
+    "test:browser": "node contingencia-browser.cjs",
+    "test:atendimento-envio": "node atendimento-envio-browser.cjs"
   },
   "devDependencies": {
     "happy-dom": "20.14.5",

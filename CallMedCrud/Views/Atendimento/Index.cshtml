@@ -182,7 +182,7 @@
                         @foreach (var mensagem in Model.Mensagens)
                         {
                             var entrada = mensagem.Direcao == DirecaoMensagemAtendimento.Entrada;
-                            <article class="atendimento-message @(entrada ? "incoming" : "outgoing")" data-message-id="@mensagem.Id">
+                            <article class="atendimento-message @(entrada ? "incoming" : "outgoing")" data-message-id="@mensagem.Id" data-author="@mensagem.Autor">
                                 <div class="message-meta">
                                     <span class="cm-origem-message-source"><partial name="_CanalIcon" model="conversa.Canal" /><strong>@(entrada ? $"Recebido por {CanalLabel(conversa.Canal)}" : mensagem.Status == StatusMensagemAtendimento.AguardandoAprovacao ? $"Rascunho para {CanalLabel(conversa.Canal)} · CallMed" : $"{AutorLabel(mensagem.Autor)} · {CanalLabel(conversa.Canal)}")</strong></span>
                                     <time datetime="@mensagem.CriadoEm.ToString("O")">@ClinicaClock.ConverterUtc(mensagem.CriadoEm).ToString("dd/MM HH:mm")</time>
@@ -193,7 +193,7 @@
                                     {
                                         <div class="email-draft-review" role="status">
                                             <strong>Rascunho da IA · ainda não enviado</strong>
-                                            <p>Revise o conteúdo antes de enviar ao paciente.</p>
+                                            <p>Revise o conteúdo antes de enviar ao paciente. Aprovar envia apenas este e-mail. Agendamentos e alterações devem ser concluídos pela recepção ou pelo portal do paciente.</p>
                                             <div class="email-draft-actions">
                                                 <form asp-action="AprovarRascunho" method="post" data-confirm="Enviar este rascunho por e-mail ao paciente?">
                                                     @Html.AntiForgeryToken()
@@ -233,6 +233,10 @@
                                     else if (!entrada && mensagem.Status == StatusMensagemAtendimento.Processando)
                                     {
                                         <small>Envio em processamento. Aguarde a confirmação.</small>
+                                    }
+                                    else if (!entrada && conversa.Canal == CanalAtendimento.Email && mensagem.Status == StatusMensagemAtendimento.Enviada)
+                                    {
+                                        <small class="message-sent" role="status">Enviada · aceita pelo servidor de e-mail</small>
                                     }
                                 </div>
                             </article>
