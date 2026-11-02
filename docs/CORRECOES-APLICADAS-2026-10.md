@@ -51,3 +51,11 @@ npm run test:browser
 ```
 
 Não foram executados testes integrados com PostgreSQL, Evolution, SMTP, SMS ou HIS neste ambiente. Antes da produção, teste reservas simultâneas no mesmo horário, tentativas idempotentes, autenticação dos webhooks, permissões por paciente/perfil, sincronização offline, backups/restauração e entrega de lembretes, usando dados fictícios e ambiente controlado.
+
+## Atualização de 02/11/2026 — diagnóstico de saída da Evolution
+
+- `BaseUrl` e `InstanceName` têm espaços externos removidos; o prefixo do proxy e a grafia da instância são preservados. Endereço do Manager, rota completa no lugar da raiz, credenciais na URL, query e fragmento são rejeitados antes de chamar a API.
+- HTTP 404 distingue mensagem explícita de instância ausente, rota `Cannot POST/GET`, página HTML e erro sem causa identificável. O corpo bruto não é apresentado. Não há tentativa automática em outra rota/instância após HTTP 404.
+- O diagnóstico administrativo informa URL consultada, instância e HTTP sem mostrar a chave. A rota de envio aparece como configurada e não testada.
+- Build aprovado (dois avisos já existentes) e 255 verificações automatizadas aprovadas. As 20 novas verificações usam HTTP simulado; não comprovam a configuração da Evolution em produção.
+- Procedimento e variáveis: [Evolution no projeto](integracoes/EVOLUTION-NO-PROPRIO-PROJETO.md#diagnóstico-de-http-404-no-envio).

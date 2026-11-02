@@ -78,6 +78,28 @@ Webhook: `https://seu-callmed.com/api/atendimento/whatsapp/evolution`, com o cab
 
 `localhost` dentro de um container aponta para o próprio container. No Compose fornecido, os nomes `evolution-api` e `callmed` resolvem pela rede interna. Se o CallMed roda no Visual Studio no Windows e a Evolution em Docker, o callback local pode apontar para `http://host.docker.internal:PORTA/api/atendimento/whatsapp/evolution`, usando a porta HTTP correta e acessível do projeto.
 
+## Diagnóstico de HTTP 404 no envio
+
+O envio usa `POST {BaseUrl}/message/sendText/{InstanceName}`, com a chave no cabeçalho `apikey`. A consulta de conexão usa `GET {BaseUrl}/instance/connectionState/{InstanceName}`. O segredo do webhook autentica a entrada na CallMed e não altera essas rotas de saída.
+
+Na revisão de 02/11/2026, o backend passou a remover espaços externos de `BaseUrl` e `InstanceName`, preservando maiúsculas/minúsculas, espaços internos do nome e prefixos de proxy. Não acrescente `/manager` ou a rota de envio à BaseUrl. URLs com credenciais embutidas, query ou fragmento são rejeitadas antes da requisição. O sistema não adivinha outro servidor, prefixo ou nome de instância.
+
+Como administrador, abra **Integrações → Verificar conexão com a Evolution** e expanda **Detalhes da conexão usada pelo CallMed**. A tela informa a instância, a URL GET efetivamente consultada, o status HTTP e a rota POST configurada. A consulta não envia mensagens e um estado `open` não comprova funcionamento da rota de envio ou do webhook.
+
+| Resposta observada | Diagnóstico apresentado |
+|---|---|
+| HTTP 404 com mensagem `Instance not found` ou `instance does not exist` | A API informou que não encontrou a instância. Compare o nome exato e o servidor consultado. |
+| HTTP 404 com `Cannot POST` / `Cannot GET` | O servidor não reconheceu a rota. Compare BaseUrl, prefixo do proxy e rotas da versão instalada. |
+| HTTP 404 com página HTML | Confira se o endereço é da API e se o proxy publica a rota. |
+| HTTP 404 sem detalhe reconhecido | A causa permanece indeterminada. Não atribuir automaticamente à chave, à instância ou às variáveis. |
+| HTTP 401 / 403 | A autenticação ou a permissão de acesso foi recusada. |
+
+As mensagens exibidas são classificações fixas; o corpo bruto do provedor não é exposto. Um HTTP 404 não dispara tentativas automáticas com outras rotas ou payloads. Depois de corrigir a causa, use o reenvio da mesma mensagem na Central; não recrie a conversa.
+
+As variáveis `Atendimento__WhatsApp__Evolution__*` são vinculadas à seção `Atendimento:WhatsApp:Evolution` pelo .NET. No Compose, `EVOLUTION_API_KEY` alimenta tanto `ApiKey` do CallMed quanto `AUTHENTICATION_API_KEY` da Evolution; `EVOLUTION_INSTANCE` alimenta `InstanceName`. Fora do Compose, use os nomes completos `Atendimento__...` no serviço do CallMed. Os valores efetivamente carregados em produção não podem ser confirmados apenas pelo código ou por uma captura de tela.
+
+Validação desta revisão: build .NET 8 aprovado e 255 verificações automatizadas aprovadas, incluindo 20 cenários novos de URL, diagnóstico, privacidade e ausência de reenvio em HTTP 404. Os testes HTTP usam respostas simuladas. A Evolution de produção não foi consultada e nenhuma mensagem real foi enviada nesta validação.
+
 ## Produção
 
 Usar domínio/HTTPS e proxy configurado para o CallMed, `ASPNETCORE_ENVIRONMENT=Production`, credenciais em variáveis do servidor e volumes persistentes. Configure `ReverseProxy:KnownProxies` (por exemplo, `ReverseProxy__KnownProxies__0=10.0.0.10`) com os endereços IP exatos dos proxies que encaminham requisições para o CallMed. Não limpe a lista de proxies confiáveis nem aceite `X-Forwarded-For` de origens não confiáveis; isso pode permitir falsificação de IP e contornar o rate limit. O exemplo não provisiona domínio, certificados, backups nem monitoramento. Desative BootstrapAdmin depois do provisionamento. Reinicie mantendo os volumes; `docker compose down -v` apaga os dados persistidos.
@@ -88,6 +110,7 @@ O serviço precisa permanecer ligado para receber mensagens e executar lembretes
 
 - Instalação Docker e dependências: https://docs.evolutionfoundation.com.br/en/evolution-api/install/docker
 - Estado da instância: https://docs.evolutionfoundation.com.br/en/evolution-api/get-connection-state
+- Envio de texto: https://docs.evolutionfoundation.com.br/en/evolution-api/send-text-message
 - Configuração do webhook: https://docs.evolutionfoundation.com.br/evolution-api/set-webhook
 - Releases: https://github.com/evolution-foundation/evolution-api/releases
 

@@ -29,45 +29,56 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
 
     public CanalAtendimento Canal => CanalAtendimento.WhatsApp;
 
-    public bool Configurado =>
-        _options.Enabled &&
-        Uri.TryCreate(_options.BaseUrl, UriKind.Absolute, out var url) &&
-        (url.Scheme == Uri.UriSchemeHttp || url.Scheme == Uri.UriSchemeHttps) &&
-        !string.IsNullOrWhiteSpace(_options.ApiKey) &&
-        !string.IsNullOrWhiteSpace(_options.InstanceName);
+    public bool Configurado => TentarObterEndpoints(out _, out _, out _);
 
     public async Task<(bool Conectado, string Mensagem)> VerificarConexaoAsync(CancellationToken ct = default)
     {
-        if (!Configurado) return (false, "Configure URL, chave e nome da instância da Evolution no servidor.");
+        var resultado = await DiagnosticarAsync(ct);
+        return (resultado.Conectado, resultado.Mensagem);
+    }
+
+    public async Task<EvolutionDiagnosticoResultado> DiagnosticarAsync(CancellationToken ct = default)
+    {
+        if (!TentarObterEndpoints(out var consulta, out var envio, out var erro))
+            return new(false, erro);
+
+        EvolutionDiagnosticoResultado Resultado(bool conectado, string mensagem, int? status = null) =>
+            new(conectado, mensagem, _options.InstanceName.Trim(), consulta, envio, status);
         using var limite = CancellationTokenSource.CreateLinkedTokenSource(ct);
         limite.CancelAfter(TimeSpan.FromSeconds(8));
-        using var request = new HttpRequestMessage(HttpMethod.Get,
-            $"{_options.BaseUrl.TrimEnd('/')}/instance/connectionState/{Uri.EscapeDataString(_options.InstanceName)}");
+        using var request = new HttpRequestMessage(HttpMethod.Get, consulta);
         request.Headers.TryAddWithoutValidation("apikey", _options.ApiKey);
+        int? statusRecebido = null;
         try
         {
             using var response = await _http.SendAsync(request, limite.Token);
+            statusRecebido = (int)response.StatusCode;
             if (response.StatusCode == HttpStatusCode.TooManyRequests)
-                return (false, "Evolution limitou as consultas (HTTP 429). Aguarde antes de verificar novamente.");
+                return Resultado(false, "Evolution limitou as consultas (HTTP 429). Aguarde antes de verificar novamente.", 429);
+            var corpo = await response.Content.ReadAsStringAsync(limite.Token);
             if (!response.IsSuccessStatusCode)
-                return (false, $"Evolution respondeu HTTP {(int)response.StatusCode}. Confira a chave e a instância.");
-            using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync(limite.Token));
+                return Resultado(false, DescreverFalha(response.StatusCode, corpo), (int)response.StatusCode);
+            using var json = JsonDocument.Parse(corpo);
             var root = json.RootElement;
             if (root.ValueKind != JsonValueKind.Object ||
                 !root.TryGetProperty("instance", out var instance) || instance.ValueKind != JsonValueKind.Object ||
                 !instance.TryGetProperty("state", out var state) || state.ValueKind != JsonValueKind.String)
-                return (false, "Evolution respondeu, mas o estado da instância não foi reconhecido.");
+                return Resultado(false, "Evolution respondeu, mas o estado da instância não foi reconhecido.", (int)response.StatusCode);
             return string.Equals(state.GetString(), "open", StringComparison.OrdinalIgnoreCase)
-                ? (true, "WhatsApp conectado à instância. O recebimento do webhook ainda deve ser testado.")
-                : (false, "A instância está desconectada ou conectando. Confira o QR Code no painel da Evolution.");
+                ? Resultado(true, "A API confirmou a instância conectada. Esta consulta não testa o envio nem o recebimento de mensagens.", (int)response.StatusCode)
+                : Resultado(false, "A instância está desconectada ou conectando. Confira o QR Code no painel da Evolution.", (int)response.StatusCode);
         }
         catch (OperationCanceledException) when (!ct.IsCancellationRequested)
         {
-            return (false, "Evolution não respondeu em até 8 segundos.");
+            return Resultado(false, "Evolution não respondeu em até 8 segundos.");
         }
-        catch (Exception ex) when (ex is HttpRequestException or JsonException)
+        catch (JsonException)
         {
-            return (false, "Não foi possível consultar a Evolution. Confira o endereço e a rede do servidor.");
+            return Resultado(false, "O endereço respondeu, mas não retornou o JSON esperado da Evolution. Confira se BaseUrl aponta para a API, e não para o painel.", statusRecebido);
+        }
+        catch (HttpRequestException)
+        {
+            return Resultado(false, "Não foi possível consultar a Evolution. Confira o endereço e a rede do servidor.", statusRecebido);
         }
     }
 
@@ -78,8 +89,8 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
         CancellationToken ct = default,
         string? replyTo = null)
     {
-        if (!Configurado)
-            return CanalEnvioResultado.Falha("Evolution API não configurada.");
+        if (!TentarObterEndpoints(out _, out var endpoint, out var erro))
+            return CanalEnvioResultado.Falha(erro);
 
         var numero = AtendimentoIdentidadeService.NormalizarTelefone(destinatario);
 
@@ -99,7 +110,6 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
             var partesEnviadas = 0;
             foreach (var parte in DividirMensagem(texto.Trim(), 3500))
             {
-                var endpoint = $"{_options.BaseUrl.TrimEnd('/')}/message/sendText/{Uri.EscapeDataString(_options.InstanceName)}";
                 TentativaEnvio tentativa;
                 try
                 {
@@ -128,7 +138,7 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
                         };
                     return tentativa.ProximaTentativaEm is DateTime quando
                         ? LimiteDeEnvio(quando)
-                        : CanalEnvioResultado.Falha($"Evolution retornou HTTP {(int)tentativa.StatusCode}. Confira a instância e a configuração do provedor.");
+                        : CanalEnvioResultado.Falha(DescreverFalha(tentativa.StatusCode, tentativa.Corpo));
                 }
                 _controle.RegistrarSucesso();
                 partesEnviadas++;
@@ -137,6 +147,99 @@ public sealed class EvolutionWhatsAppSender : ICanalAtendimentoSender
             return CanalEnvioResultado.Ok(ultimoId);
         }
         finally { _controle.Fila.Release(); }
+    }
+
+    private bool TentarObterEndpoints(out string consulta, out string envio, out string erro)
+    {
+        consulta = envio = string.Empty;
+        erro = "Configure URL, chave e nome da instância da Evolution no servidor.";
+        if (!_options.Enabled || string.IsNullOrWhiteSpace(_options.ApiKey) || string.IsNullOrWhiteSpace(_options.InstanceName))
+            return false;
+        if (!Uri.TryCreate(_options.BaseUrl?.Trim(), UriKind.Absolute, out var url) ||
+            (url.Scheme != Uri.UriSchemeHttp && url.Scheme != Uri.UriSchemeHttps))
+        {
+            erro = "BaseUrl da Evolution precisa ser um endereço HTTP ou HTTPS válido.";
+            return false;
+        }
+        if (!string.IsNullOrEmpty(url.UserInfo) || !string.IsNullOrEmpty(url.Query) || !string.IsNullOrEmpty(url.Fragment))
+        {
+            erro = "BaseUrl da Evolution deve conter somente a raiz da API, sem credenciais, parâmetros ou fragmentos.";
+            return false;
+        }
+        var caminho = url.AbsolutePath.TrimEnd('/');
+        if (caminho.EndsWith("/manager", StringComparison.OrdinalIgnoreCase) ||
+            caminho.EndsWith("/message/sendText", StringComparison.OrdinalIgnoreCase) ||
+            caminho.Contains("/message/sendText/", StringComparison.OrdinalIgnoreCase) ||
+            caminho.EndsWith("/instance/connectionState", StringComparison.OrdinalIgnoreCase) ||
+            caminho.Contains("/instance/connectionState/", StringComparison.OrdinalIgnoreCase))
+        {
+            erro = "BaseUrl da Evolution deve apontar para a raiz da API, sem /manager e sem a rota de envio ou de consulta. Preserve o prefixo do proxy, se houver.";
+            return false;
+        }
+        var instancia = _options.InstanceName.Trim();
+        if (instancia is "." or "..")
+        {
+            erro = "Informe o nome exato da instância da Evolution em InstanceName.";
+            return false;
+        }
+        var raiz = url.AbsoluteUri.TrimEnd('/');
+        var nome = Uri.EscapeDataString(instancia);
+        consulta = $"{raiz}/instance/connectionState/{nome}";
+        envio = $"{raiz}/message/sendText/{nome}";
+        return true;
+    }
+
+    private static string DescreverFalha(HttpStatusCode status, string corpo)
+    {
+        if (status is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
+            return $"Evolution recusou a autenticação ou o acesso (HTTP {(int)status}). Confira a chave e a permissão para a instância.";
+        if (status != HttpStatusCode.NotFound)
+            return $"Evolution retornou HTTP {(int)status}. Consulte Integrações → Verificar conexão com a Evolution.";
+
+        // Identifica mensagens conhecidas e páginas HTML. Nunca repassa o corpo do provedor,
+        // que pode conter telefone, texto enviado, chave ou outros dados privados.
+        var mensagens = ExtrairMensagensDeErro(corpo);
+        if (mensagens.Any(m =>
+            (m.Contains("instance", StringComparison.OrdinalIgnoreCase) || m.Contains("instância", StringComparison.OrdinalIgnoreCase)) &&
+            (m.Contains("does not exist", StringComparison.OrdinalIgnoreCase) ||
+             m.Contains("not found", StringComparison.OrdinalIgnoreCase) ||
+             m.Contains("não existe", StringComparison.OrdinalIgnoreCase) ||
+             m.Contains("não encontrada", StringComparison.OrdinalIgnoreCase))))
+            return "Evolution informou que a instância não existe ou não foi encontrada nesta API (HTTP 404). Compare o InstanceName exato e o servidor em Integrações.";
+        if (mensagens.Any(m => m.StartsWith("Cannot POST ", StringComparison.OrdinalIgnoreCase) ||
+                              m.StartsWith("Cannot GET ", StringComparison.OrdinalIgnoreCase)) ||
+            corpo.TrimStart().StartsWith("Cannot POST ", StringComparison.OrdinalIgnoreCase) ||
+            corpo.TrimStart().StartsWith("Cannot GET ", StringComparison.OrdinalIgnoreCase) ||
+            corpo.Contains("<pre>Cannot POST ", StringComparison.OrdinalIgnoreCase) ||
+            corpo.Contains("<pre>Cannot GET ", StringComparison.OrdinalIgnoreCase))
+            return "O servidor não reconheceu a rota solicitada (HTTP 404). Confira a raiz da API, o prefixo do proxy e as rotas da versão instalada em Integrações.";
+        if (corpo.TrimStart().StartsWith('<'))
+            return "O endereço retornou uma página HTML com HTTP 404. Confira se BaseUrl aponta para a API e se o proxy publica a rota solicitada.";
+        return "Evolution retornou HTTP 404 sem identificar se a falha é na rota ou na instância. Consulte o diagnóstico em Integrações.";
+    }
+
+    private static List<string> ExtrairMensagensDeErro(string corpo)
+    {
+        var mensagens = new List<string>();
+        void Adicionar(JsonElement item)
+        {
+            if (item.ValueKind == JsonValueKind.String) mensagens.Add(item.GetString()!);
+            else if (item.ValueKind == JsonValueKind.Array)
+                foreach (var valor in item.EnumerateArray())
+                    if (valor.ValueKind == JsonValueKind.String) mensagens.Add(valor.GetString()!);
+        }
+        try
+        {
+            using var doc = JsonDocument.Parse(corpo);
+            var root = doc.RootElement;
+            if (root.ValueKind != JsonValueKind.Object) return mensagens;
+            if (root.TryGetProperty("message", out var message)) Adicionar(message);
+            foreach (var campo in new[] { "response", "error" })
+                if (root.TryGetProperty(campo, out var envelope) && envelope.ValueKind == JsonValueKind.Object &&
+                    envelope.TryGetProperty("message", out var detalhe)) Adicionar(detalhe);
+        }
+        catch (JsonException) { }
+        return mensagens;
     }
 
     private static CanalEnvioResultado LimiteDeEnvio(DateTime ate) => new()

@@ -28,8 +28,7 @@ public sealed class IntegracoesController : Controller
     public async Task<IActionResult> EvolutionStatus(
         [FromServices] EvolutionWhatsAppSender evolution, CancellationToken ct)
     {
-        var resultado = await evolution.VerificarConexaoAsync(ct);
-        return Json(new { conectado = resultado.Conectado, mensagem = resultado.Mensagem });
+        return Json(await evolution.DiagnosticarAsync(ct));
     }
 
     [HttpGet]

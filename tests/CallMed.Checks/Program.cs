@@ -126,6 +126,7 @@ await AtendimentoEmailIaChecks.RunAsync(Check);
 await AtendimentoRetomadaChecks.RunAsync(Check);
 await PortalAcessoChecks.RunAsync(Check);
 await EvolutionEnvioChecks.RunAsync(Check);
+await EvolutionDiagnosticoChecks.RunAsync(Check);
 Console.WriteLine("Verificações concluídas. Nenhuma mensagem real foi enviada.");
 sealed class FakeHandler : HttpMessageHandler
 {

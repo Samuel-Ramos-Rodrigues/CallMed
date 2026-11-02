@@ -38,7 +38,21 @@
         <p>Leia <code>docs/GMAIL-API-RESPOSTAS-CENTRAL.md</code> para criar o projeto no Google Cloud e gerar o refresh token. Não cole credenciais nesta tela nem no chat.</p>
         <span class="@(gmailInbox ? "status-chip success" : "status-chip neutral")">@(gmailInbox ? "Credenciais preenchidas" : "Aguardando configuração do Gmail")</span>
     </div>
-    <div class="cm25-panel cm25-content-card"><h2>Conexão do WhatsApp</h2><p>Consulte a instância sem enviar mensagens.</p><button type="button" class="btn secondary" id="evolutionCheck">Verificar conexão com a Evolution</button><p id="evolutionResult" role="status" aria-live="polite">A conexão ainda não foi verificada.</p></div>
+    <div class="cm25-panel cm25-content-card">
+        <h2>Conexão do WhatsApp</h2>
+        <p>Consulte a instância sem enviar mensagens.</p>
+        <button type="button" class="btn secondary" id="evolutionCheck">Verificar conexão com a Evolution</button>
+        <p id="evolutionResult" role="status" aria-live="polite">A conexão ainda não foi verificada.</p>
+        <details id="evolutionDetails" hidden>
+            <summary>Detalhes da conexão usada pelo CallMed</summary>
+            <dl class="cm25-definition-grid">
+                <div><dt>Instância</dt><dd id="evolutionInstance"></dd></div>
+                <div><dt>Consulta realizada (GET)</dt><dd id="evolutionQuery"></dd></div>
+                <div><dt>HTTP da consulta</dt><dd id="evolutionHttp"></dd></div>
+                <div><dt>Rota de envio configurada (POST, não testada)</dt><dd id="evolutionSend"></dd></div>
+            </dl>
+        </details>
+    </div>
     <p class="cm19-security-note">Nenhuma chave, senha ou connection string é exibida nesta tela.</p>
 </section>
 
@@ -49,12 +63,21 @@
   evolutionButton.addEventListener('click', async () => {
     evolutionButton.disabled = true;
     const output = document.getElementById('evolutionResult');
+    const details = document.getElementById('evolutionDetails');
+    details.hidden = true;
     output.textContent = 'Consultando a instância…';
     try {
       const response = await fetch('/Integracoes/EvolutionStatus', {credentials:'same-origin', cache:'no-store', redirect:'error'});
       if (!response.ok) throw new Error();
       const data = await response.json();
       output.textContent = data.mensagem;
+      if (data.urlConsulta && data.urlEnvio) {
+        document.getElementById('evolutionInstance').textContent = data.instancia;
+        document.getElementById('evolutionQuery').textContent = data.urlConsulta;
+        document.getElementById('evolutionHttp').textContent = data.statusHttp ?? 'Sem resposta HTTP';
+        document.getElementById('evolutionSend').textContent = data.urlEnvio;
+        details.hidden = false;
+      }
     } catch { output.textContent = 'Não foi possível verificar. Confira sua sessão e tente novamente.'; }
     finally { evolutionButton.disabled = false; }
   });
