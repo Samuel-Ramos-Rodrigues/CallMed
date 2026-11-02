@@ -4,13 +4,13 @@ Esta versão aplica correções pontuais decorrentes do parecer técnico. Não s
 
 ## 1. Webhooks de atendimento
 
-- `WhatsAppEvolution`, `Sms` e `Email` exigem o segredo via cabeçalho HTTP.
+- Os endpoints que usam `AtendimentoWebhookSecretValidator` exigem um segredo configurado e correspondente na requisição.
 - Cabeçalhos aceitos: `X-CallMed-Webhook-Secret` (preferencial) e `X-MKSAN-Webhook-Secret` (legado).
-- O segredo em query string não é mais aceito para evitar exposição em logs, proxies, histórico e telemetria.
+- Atualização de 02/11/2026: `?secret=...` é aceito como alternativa quando os dois cabeçalhos estiverem ausentes ou em branco. Um cabeçalho preenchido e incorreto não permite fallback para outra fonte. A URL pode aparecer em logs, proxies, histórico e telemetria; prefira cabeçalhos quando disponíveis.
 - Os corpos das requisições estão limitados a 1 MiB por endpoint.
 - Testes automatizados foram adicionados em `tests/CallMed.Checks/Program.cs`.
 
-**Ação de implantação:** reconfigure qualquer fornecedor que ainda transmita segredo em URL para usar um dos cabeçalhos acima. O endpoint retornará `401 Unauthorized` para esse método antigo.
+**Ação de implantação:** prefira um dos cabeçalhos acima. Quando o fornecedor não permitir cabeçalhos personalizados, use o parâmetro `secret` com o valor codificado para URL. Segredo ausente ou incorreto continua sendo rejeitado.
 
 ## 2. Proxies confiáveis
 

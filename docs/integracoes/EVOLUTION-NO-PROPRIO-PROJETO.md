@@ -48,7 +48,8 @@ Configuração da instância:
 - URL no Compose: `http://callmed:10000/api/atendimento/whatsapp/evolution`.
 - Webhook por evento: desabilitado, para não acrescentar sufixos à rota.
 - Cabeçalho: `X-CallMed-Webhook-Secret` com o mesmo valor de `CALLMED_WEBHOOK_SECRET`.
-- O cabeçalho legado `X-MKSAN-Webhook-Secret` continua aceito. O segredo é obrigatório em cabeçalho; envio por query string é rejeitado.
+- O cabeçalho legado `X-MKSAN-Webhook-Secret` continua aceito. Se os dois cabeçalhos estiverem ausentes ou em branco, o validador usa `?secret=...` como alternativa. Um cabeçalho preenchido e incorreto é rejeitado, mesmo que a query contenha o segredo correto.
+- Alternativa para provedores sem cabeçalhos personalizados: `https://seu-callmed.com/api/atendimento/whatsapp/evolution?secret=SEU_SEGREDO`. Codifique o valor para URL se ele tiver caracteres especiais. O segredo na URL pode aparecer em logs; prefira cabeçalho quando possível. O valor configurado continua obrigatório e a comparação usa `FixedTimeEquals`.
 
 Em seguida entre no CallMed como administrador e vá a **Integrações → Verificar conexão com a Evolution**. Um estado conectado confirma apenas a sessão da instância; valide uma conversa real de teste para comprovar ida e volta.
 

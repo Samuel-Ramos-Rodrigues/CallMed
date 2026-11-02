@@ -20,7 +20,7 @@ static void Check(bool condition, string message)
 }
 var webhookSemHeader = new DefaultHttpContext();
 webhookSemHeader.Request.QueryString = new QueryString("?secret=segredo-teste");
-Check(!AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-teste"), "Webhook rejeita segredo em query string");
+Check(AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-teste"), "Webhook aceita segredo em query string quando não há cabeçalhos");
 webhookSemHeader.Request.Headers["X-CallMed-Webhook-Secret"] = "segredo-teste";
 Check(AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-teste"), "Webhook aceita segredo correto no cabeçalho CallMed");
 webhookSemHeader.Request.Headers.Remove("X-CallMed-Webhook-Secret");
@@ -29,6 +29,33 @@ Check(AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segre
 webhookSemHeader.Request.Headers["X-MKSAN-Webhook-Secret"] = "incorreto";
 Check(!AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-teste"), "Webhook rejeita segredo incorreto");
 Check(!AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, ""), "Webhook nega acesso quando segredo não está configurado");
+webhookSemHeader.Request.Headers["X-CallMed-Webhook-Secret"] = "incorreto";
+webhookSemHeader.Request.Headers["X-MKSAN-Webhook-Secret"] = "segredo-teste";
+Check(!AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-teste"), "CallMed incorreto não pode ser substituído pelo legado ou pela query corretos");
+webhookSemHeader.Request.Headers["X-CallMed-Webhook-Secret"] = "segredo-teste";
+webhookSemHeader.Request.Headers["X-MKSAN-Webhook-Secret"] = "incorreto";
+webhookSemHeader.Request.QueryString = new QueryString("?secret=incorreto");
+Check(AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-teste"), "Cabeçalho CallMed correto tem prioridade sobre legado e query incorretos");
+webhookSemHeader.Request.Headers["X-CallMed-Webhook-Secret"] = " ";
+webhookSemHeader.Request.Headers["X-MKSAN-Webhook-Secret"] = "segredo-teste";
+Check(AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-teste"), "CallMed vazio permite usar cabeçalho legado antes da query");
+webhookSemHeader.Request.Headers["X-MKSAN-Webhook-Secret"] = " ";
+webhookSemHeader.Request.QueryString = new QueryString("?secret=segredo-teste");
+Check(AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-teste"), "Cabeçalhos em branco permitem o fallback para a query");
+webhookSemHeader.Request.Headers.Clear();
+webhookSemHeader.Request.QueryString = new QueryString("?secret=incorreto");
+Check(!AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-teste"), "Query incorreta não autentica o webhook");
+webhookSemHeader.Request.QueryString = QueryString.Empty;
+Check(!AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-teste"), "Webhook rejeita requisição sem segredo em nenhuma fonte");
+Check(!AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, null), "Webhook rejeita configuração nula");
+webhookSemHeader.Request.QueryString = new QueryString("?secret=segredo-teste&secret=outro");
+Check(!AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-teste"), "Query com valores duplicados não é aceita como segredo único");
+webhookSemHeader.Request.QueryString = QueryString.Create("secret", "segredo-ação-🔒");
+Check(AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-ação-🔒"), "Webhook compara corretamente segredo UTF-8 recebido pela query");
+var rejeitouRequestNulo = false;
+try { AtendimentoWebhookSecretValidator.Validar(null!, "segredo-teste"); }
+catch (ArgumentNullException) { rejeitouRequestNulo = true; }
+Check(rejeitouRequestNulo, "Validador mantém a verificação de HttpRequest nulo");
 
 var paciente = new Paciente { Nome = "Paciente de teste", Cpf = "52998224725", Email = null };
 Check(Validator.TryValidateObject(paciente, new ValidationContext(paciente), [], true), "Cadastro administrativo aceita e-mail ausente");

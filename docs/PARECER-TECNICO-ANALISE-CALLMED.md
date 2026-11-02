@@ -22,7 +22,7 @@ Este parecer não representa certificação de segurança ou comprovação de fu
 
 ### P0 — Segurança e privacidade
 
-1. **Autenticação de webhooks — corrigido no código:** os endpoints aceitam o segredo apenas nos cabeçalhos `X-CallMed-Webhook-Secret` ou `X-MKSAN-Webhook-Secret` (compatibilidade legada). Segredos em query string são rejeitados. Atualize qualquer integração antiga que ainda envie `?secret=...`.
+1. **Autenticação de webhooks — atualização de 02/11/2026:** o validador prioriza `X-CallMed-Webhook-Secret`, depois `X-MKSAN-Webhook-Secret` e, quando ambos estiverem ausentes ou em branco, `?secret=...`. Um cabeçalho preenchido e incorreto é rejeitado sem tentar a query. Prefira cabeçalhos para reduzir exposição do segredo em URLs e logs.
 2. **Autorização por paciente e profissional:** executar testes negativos nas páginas e APIs, incluindo acesso direto a identificadores de outros pacientes, consultas sem vínculo autorizado e sessão expirada.
 3. **LGPD e operação:** revisar minimização de dados, base legal e finalidade, retenção, acesso aos registros, trilha de auditoria, backups, resposta a incidentes e compartilhamento com provedores externos. A avaliação deve envolver os responsáveis pela operação e proteção de dados.
 4. **Proxies e cabeçalhos encaminhados — corrigido no código:** o sistema não limpa mais a lista de proxies/redes confiáveis padrão e permite adicionar IPs de proxy em `ReverseProxy:KnownProxies`. Em produção, preencha essa lista com os IPs exatos dos proxies reversos confiáveis. A lista vazia é deliberada e não deve ser preenchida com IPs de clientes.
@@ -53,10 +53,10 @@ Este parecer não representa certificação de segurança ou comprovação de fu
 ## Alterações aplicadas ao código nesta revisão
 
 - A validação do segredo dos webhooks foi extraída para `Services/Atendimento/AtendimentoWebhookSecretValidator.cs` para permitir testes diretos e reutilização.
-- Os três endpoints de webhook passaram a aceitar segredo somente em cabeçalho e receberam limite de requisição de 1 MiB.
+- Os webhooks mantêm o limite de requisição de 1 MiB. A validação atual aceita cabeçalhos e fallback para query conforme a prioridade descrita acima.
 - A configuração de `ForwardedHeadersOptions` deixou de confiar em qualquer origem. IPs adicionais de proxy devem ser informados em `ReverseProxy:KnownProxies`.
-- Foram adicionados testes ao projeto `tests/CallMed.Checks` para segredo correto, segredo incorreto, segredo ausente, cabeçalho legado e rejeição de segredo na query string.
-- As instruções de integração Evolution foram atualizadas para documentar o cabeçalho obrigatório e a configuração do proxy confiável.
+- Os testes em `tests/CallMed.Checks` cobrem segredo correto, incorreto e ausente, cabeçalho legado, fallback para query e a precedência das fontes, inclusive valores duplicados e UTF-8.
+- As instruções de integração Evolution documentam a preferência por cabeçalhos, o fallback por URL e a configuração do proxy confiável.
 
 ## Verificações executadas neste ambiente
 
