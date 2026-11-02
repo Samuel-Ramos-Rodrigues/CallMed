@@ -5,7 +5,7 @@ using MKSANCrud.DTOs.Agente;
 
 namespace MKSANCrud.Services.Atendimento;
 
-public enum DecisaoEmail { PrepararRascunho, Equipe, Indisponivel }
+public enum DecisaoEmail { PrepararRascunho, Equipe, Indisponivel, OrientarPortal }
 
 /// <summary>
 /// Avalia semanticamente uma mensagem de e-mail, sem comparações de palavras-
@@ -36,28 +36,34 @@ RASCUNHO: uma resposta administrativa segura é possível, inclusive consultar
 médicos/horários, continuar uma consulta pública de disponibilidade, explicar os
 próximos passos ou fazer uma pergunta de esclarecimento. Mensagem curta ou falta
 de contexto, por si só, não exigem equipe. Aceitar consultar vagas não autoriza reserva.
-EQUIPE: o pedido exige revelar dados pessoais, efetivar uma operação privada,
-orientação clínica, urgência ou atendimento humano explícito. Confirmação de uma
-operação privada segue sendo privada, mesmo se a mensagem atual disser apenas "sim".
-Se o pedido atual misturar assunto público e privado, escolha EQUIPE.
+Pedidos como "Quero marcar uma consulta com o dr david", "quero cardiologista",
+"tem vaga amanhã?" ou "quero o primeiro horário" podem receber consulta de vagas
+e orientação para concluir no portal: RASCUNHO. Não classifique como EQUIPE só
+pela intenção de agendar. O nome RASCUNHO é um código interno para resposta administrativa.
+PORTAL: concluir uma reserva já escolhida, confirmar/remarcar/cancelar uma consulta
+existente, consultar dados individuais ou apresentar documento/identificador pessoal.
+Nesse caso o sistema enviará uma orientação fixa para a área autenticada, sem
+consultar prontuário, identificar o paciente nem alterar dados pelo e-mail.
+EQUIPE: orientação clínica, urgência, reclamação que exige intervenção ou pedido
+explícito de atendente. Perguntar por médico/especialidade não é orientação clínica.
 
 Exemplo de continuidade pública: recepção pergunta "Deseja que eu verifique a
 disponibilidade de horários do cardiologista?"; paciente diz "Sim pfvr": RASCUNHO.
 Exemplo privado: recepção pergunta sobre cancelar uma consulta pessoal; paciente
-confirma o cancelamento: EQUIPE. Não transforme pedido de diagnóstico em administrativo.
+confirma o cancelamento: PORTAL. Não transforme pedido de diagnóstico em administrativo.
 Se não houver contexto e a intenção não indicar assunto sensível, escolha RASCUNHO
-para pedir esclarecimento. Se houver risco de dados privados ou orientação clínica,
-escolha EQUIPE. Não execute ações nem inclua justificativa.
-Responda SOMENTE com { "acao": "RASCUNHO" } ou { "acao": "EQUIPE" }.
+para pedir esclarecimento. Para dados privados, escolha PORTAL. Para orientação
+clínica ou atendimento humano, escolha EQUIPE. Não execute ações nem inclua justificativa.
+Responda SOMENTE com { "acao": "RASCUNHO" }, { "acao": "PORTAL" } ou { "acao": "EQUIPE" }.
 """;
 
     public async Task<DecisaoEmail> AnalisarAsync(string mensagem, CancellationToken ct,
-        IReadOnlyList<MensagemHistoricoAgente>? historico = null)
+        IReadOnlyList<MensagemHistoricoAgente>? historico = null, bool orientarPortal = false)
     {
         mensagem = AtendimentoEmailTexto.Normalizar(mensagem);
         if (string.IsNullOrWhiteSpace(mensagem) ||
             AtendimentoEmailPolitica.ContemIdentificadorSensivel(mensagem))
-            return DecisaoEmail.Equipe;
+            return orientarPortal ? DecisaoEmail.OrientarPortal : DecisaoEmail.Equipe;
 
         mensagem = AtendimentoEmailPolitica.OmitirTelefones(mensagem);
         var contexto = AtendimentoEmailPolitica.PrepararHistorico(historico);
@@ -117,6 +123,7 @@ Responda SOMENTE com { "acao": "RASCUNHO" } ou { "acao": "EQUIPE" }.
             using var doc = JsonDocument.Parse(resposta);
             var acao = doc.RootElement.GetProperty("acao").GetString();
             if (string.Equals(acao, "RASCUNHO", StringComparison.OrdinalIgnoreCase)) return DecisaoEmail.PrepararRascunho;
+            if (string.Equals(acao, "PORTAL", StringComparison.OrdinalIgnoreCase)) return DecisaoEmail.OrientarPortal;
             return string.Equals(acao, "EQUIPE", StringComparison.OrdinalIgnoreCase) ? DecisaoEmail.Equipe : DecisaoEmail.Indisponivel;
         }
         catch (JsonException) { return DecisaoEmail.Indisponivel; }

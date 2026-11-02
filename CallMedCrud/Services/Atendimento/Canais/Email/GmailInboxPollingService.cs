@@ -7,8 +7,8 @@ using MKSANCrud.Services.Atendimento;
 namespace MKSANCrud.Services.Atendimento.Canais.Email;
 
 /// <summary>
-/// Lê mensagens novas do Gmail e cria rascunhos de resposta da IA na Central.
-/// Cada mensagem externa é processada individualmente; rascunhos aguardam aprovação da equipe.
+/// Lê mensagens novas do Gmail para o atendimento administrativo automático.
+/// Respostas e retomadas seguem as opções do canal e o modo da conversa.
 /// </summary>
 public sealed class GmailInboxPollingService : BackgroundService
 {
@@ -115,7 +115,7 @@ public sealed class GmailInboxPollingService : BackgroundService
                     ct);
 
                 await _gmail.MarcarComoProcessadaAsync(mensagem.Id, ct);
-                _logger.LogInformation("Mensagem Gmail processada pela Central (rascunho ou fila da equipe conforme classificação). GmailMessageId={MessageId}.", mensagem.Id);
+                _logger.LogInformation("Mensagem Gmail processada pela Central conforme o modo do atendimento. GmailMessageId={MessageId}.", mensagem.Id);
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {

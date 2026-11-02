@@ -3,6 +3,8 @@ using MKSANCrud.DTOs.Agente;
 using MKSANCrud.Models.Atendimento;
 using MKSANCrud.Services.Agente;
 using MKSANCrud.Services.Clinica;
+using MKSANCrud.Options;
+using Microsoft.Extensions.Options;
 
 namespace MKSANCrud.Services.Atendimento;
 
@@ -19,7 +21,10 @@ public sealed class AtendimentoOrquestradorService
     public Task<ResultadoRetomadaAtendimento> GerarRascunhoEmailAsync(ConversaAtendimento conversa, CancellationToken ct = default) =>
         RetomarComExclusaoAsync(conversa, devolver: false, ct, rascunhoManual: true);
 
-    private async Task<ResultadoRetomadaAtendimento> RetomarComExclusaoAsync(ConversaAtendimento conversa, bool devolver, CancellationToken ct, bool rascunhoManual = false)
+    public Task<ResultadoRetomadaAtendimento> RetomarEmailAutomaticamenteAsync(ConversaAtendimento conversa, CancellationToken ct = default) =>
+        RetomarComExclusaoAsync(conversa, devolver: false, ct, recuperacaoAutomatica: true);
+
+    private async Task<ResultadoRetomadaAtendimento> RetomarComExclusaoAsync(ConversaAtendimento conversa, bool devolver, CancellationToken ct, bool rascunhoManual = false, bool recuperacaoAutomatica = false)
     {
         var trava = TravasRetomada[(int)(conversa.Id % TravasRetomada.Length)];
         await trava.WaitAsync(ct);
@@ -27,6 +32,15 @@ public sealed class AtendimentoOrquestradorService
         {
             // A conversa pode ter sido assumida/encerrada enquanto aguardávamos a trava.
             await _conversas.RecarregarAsync(conversa, ct);
+            if (recuperacaoAutomatica && conversa.Canal == CanalAtendimento.Email && conversa.Ativa &&
+                conversa.ResponsavelUsuarioId is null && conversa.Modo == ModoAtendimento.Humano &&
+                conversa.IaPoliticaVersao != AtendimentoEmailOptions.PoliticaAtual && conversa.IaEstado is "equipe" or "falha")
+            {
+                var pendente = await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct);
+                if (pendente is null || AtendimentoIntencao.EhPedidoAtendimentoHumano(pendente.Texto))
+                    return ResultadoRetomadaAtendimento.RequerEquipe;
+                await _conversas.DevolverParaIaAsync(conversa, ct);
+            }
             if (devolver) await _conversas.DevolverParaIaAsync(conversa, ct);
             if (!conversa.Ativa || (conversa.Modo != ModoAtendimento.IA && !rascunhoManual))
                 return ResultadoRetomadaAtendimento.SemMensagemPendente;
@@ -89,6 +103,7 @@ public sealed class AtendimentoOrquestradorService
     private readonly ConvenioService _convenio;
     private readonly SolicitacaoAtendimentoService _solicitacoes;
     private readonly ILogger<AtendimentoOrquestradorService> _logger;
+    private readonly AtendimentoEmailOptions _emailOptions;
 
     public AtendimentoOrquestradorService(
         IAgenteClinicaService agente,
@@ -97,7 +112,8 @@ public sealed class AtendimentoOrquestradorService
         AtendimentoEmailDecisaoService decisaoEmail,
         ConvenioService convenio,
         SolicitacaoAtendimentoService solicitacoes,
-        ILogger<AtendimentoOrquestradorService> logger)
+        ILogger<AtendimentoOrquestradorService> logger,
+        IOptions<AtendimentoEmailOptions> emailOptions)
     {
         _agente = agente;
         _conversas = conversas;
@@ -106,11 +122,12 @@ public sealed class AtendimentoOrquestradorService
         _convenio = convenio;
         _solicitacoes = solicitacoes;
         _logger = logger;
+        _emailOptions = emailOptions.Value;
     }
 
     /// <summary>
-    /// Trata uma mensagem recebida pela Gmail API e salva uma sugestão da IA para revisão.
-    /// Diferente dos webhooks conversacionais, este fluxo nunca envia automaticamente a resposta.
+    /// Trata e-mail recebido. Em modo automático, envia respostas administrativas;
+    /// a ação manual Gerar rascunho continua preservando a revisão pela equipe.
     /// </summary>
     public async Task ProcessarEntradaEmailComoRascunhoAsync(
         CanalMensagemEntrada entrada,
@@ -143,7 +160,8 @@ public sealed class AtendimentoOrquestradorService
     /// <summary>
     /// Ao clicar "Devolver para IA", tenta preparar um rascunho para a última
     /// entrada que chegou no modo humano e ainda não possui resposta. Não
-    /// reimporta a mensagem do Gmail e nunca envia e-mail sem aprovação.
+    /// reimporta a mensagem do Gmail. O modo automático responde pelo canal;
+    /// Gerar rascunho mantém a revisão manual.
     /// </summary>
     private async Task<ResultadoRetomadaAtendimento> RetomarUltimoEmailPendenteAsync(
         ConversaAtendimento conversa,
@@ -157,31 +175,53 @@ public sealed class AtendimentoOrquestradorService
         if (ultima is null)
             return ResultadoRetomadaAtendimento.SemMensagemPendente;
 
-        await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "analisando", ct);
+        await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "analisando", ct, manual: rascunhoManual);
         var texto = NormalizarTextoEntrada(ultima.Texto, CanalAtendimento.Email);
         var historico = await _conversas.CarregarHistoricoEmailAsync(conversa.Id, ultima.Id, ct);
-        var decisao = await _decisaoEmail.AnalisarAsync(texto, ct, historico);
-        if (decisao != DecisaoEmail.PrepararRascunho)
+        if (AtendimentoIntencao.EhPedidoAtendimentoHumano(texto))
+        {
+            if (conversa.Modo == ModoAtendimento.IA) await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+            await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "equipe", ct);
+            await AvisarFilaEmailAsync(conversa, ultima.Id, rascunhoManual, ct);
+            return ResultadoRetomadaAtendimento.RequerEquipe;
+        }
+        var decisao = await _decisaoEmail.AnalisarAsync(texto, ct, historico, orientarPortal: _emailOptions.EnviarRespostasAutomaticamente);
+        if (decisao is not (DecisaoEmail.PrepararRascunho or DecisaoEmail.OrientarPortal))
         {
             _logger.LogInformation("Retomada de e-mail {ConversaId} interrompida. Decisao={Decisao}", conversa.Id, decisao);
-            if (conversa.Modo == ModoAtendimento.IA)
+            if (conversa.Modo == ModoAtendimento.IA && (decisao == DecisaoEmail.Equipe || !_emailOptions.EnviarRespostasAutomaticamente))
                 await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
             await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, decisao == DecisaoEmail.Equipe ? "equipe" : "falha", ct);
+            if (decisao == DecisaoEmail.Equipe) await AvisarFilaEmailAsync(conversa, ultima.Id, rascunhoManual, ct);
             return decisao == DecisaoEmail.Equipe
                 ? ResultadoRetomadaAtendimento.RequerEquipe
                 : ResultadoRetomadaAtendimento.FalhaNaGeracao;
         }
 
         await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "gerando", ct);
-        return await CriarRascunhoEmailAsync(conversa, texto, ultima.Id, historico, ct);
+        var portal = decisao == DecisaoEmail.OrientarPortal
+            ? "Você pode concluir agendamentos, confirmações, remarcações e cancelamentos pela sua conta no CallMed. " +
+              "Entre na área de consultas para fazer a operação desejada. Nenhuma alteração foi feita apenas por esta mensagem. " +
+              "Se precisar de um atendente, responda pedindo para falar com a recepção.\n\n" +
+              (_emailOptions.UrlPortal("Consulta") is string url ? "Acesse suas consultas: " + url : "Acesse sua conta pelo site oficial da clínica.")
+            : null;
+        return await PrepararRespostaEmailAsync(conversa, texto, ultima.Id, historico, ct, rascunhoManual, portal);
     }
 
-    private async Task<ResultadoRetomadaAtendimento> CriarRascunhoEmailAsync(
+    private async Task AvisarFilaEmailAsync(ConversaAtendimento conversa, long entradaId, bool manual, CancellationToken ct)
+    {
+        if (_emailOptions.EnviarRespostasAutomaticamente && !manual)
+            await _envio.EnviarAvisoAsync(conversa,
+                "Recebemos sua mensagem e encaminhamos à recepção para análise. Aguarde o retorno da equipe por este e-mail.",
+                $"email:equipe:{conversa.Id}:{entradaId}", ct);
+    }
+
+    private async Task<ResultadoRetomadaAtendimento> PrepararRespostaEmailAsync(
         ConversaAtendimento conversa,
         string textoEntrada,
         long entradaId,
         IReadOnlyList<MensagemHistoricoAgente> historico,
-        CancellationToken ct)
+        CancellationToken ct, bool rascunhoManual, string? respostaPronta)
     {
         var sessaoInicial = conversa.SessionId;
         var usuario = new AgenteUsuarioContexto
@@ -190,6 +230,8 @@ public sealed class AtendimentoOrquestradorService
             Canal = "E-mail",
             PodeGerenciarOutrosPacientes = false,
             ConversaAtendimentoId = conversa.Id,
+            EmailRespostaAutomatica = _emailOptions.EnviarRespostasAutomaticamente && !rascunhoManual,
+            PortalAgendamentoUrl = _emailOptions.UrlPortal("Consulta/Create"),
             // E-mail não é prova de identidade, mesmo se a conversa estiver
             // vinculada manualmente a um paciente.
             PacienteId = null,
@@ -202,7 +244,7 @@ public sealed class AtendimentoOrquestradorService
 
         try
         {
-            var resposta = await _agente.EnviarAsync(
+            var resposta = respostaPronta is not null ? new AgenteResposta { Resposta = respostaPronta, SessionId = conversa.SessionId } : await _agente.EnviarAsync(
                 AtendimentoEmailPolitica.OmitirTelefones(textoEntrada),
                 conversa.SessionId,
                 usuario,
@@ -221,6 +263,19 @@ public sealed class AtendimentoOrquestradorService
             // como respondida por um rascunho que foi preparado para a mensagem anterior.
             var pendente = await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct);
             if (pendente?.Id != entradaId) return ResultadoRetomadaAtendimento.SemMensagemPendente;
+            if (_emailOptions.EnviarRespostasAutomaticamente && !rascunhoManual)
+            {
+                if (conversa.Modo != ModoAtendimento.IA || conversa.ResponsavelUsuarioId is not null)
+                    return ResultadoRetomadaAtendimento.RequerEquipe;
+                var conteudo = resposta.Resposta;
+                if (respostaPronta is null && _emailOptions.UrlPortal("Consulta/Create") is string url && !conteudo.Contains(url, StringComparison.Ordinal))
+                    conteudo += "\n\nPara concluir um agendamento pela sua conta: " + url;
+                var enviada = await _envio.EnviarRespostaIaAsync(conversa, conteudo, entradaId, ct);
+                await _conversas.AtualizarEstadoIaAsync(conversa, entradaId, "concluida", ct);
+                return enviada.Status == StatusMensagemAtendimento.Enviada ? ResultadoRetomadaAtendimento.RespostaEnviada
+                    : enviada.Status == StatusMensagemAtendimento.Processando ? ResultadoRetomadaAtendimento.RespostaEmProcessamento
+                    : ResultadoRetomadaAtendimento.FalhaNoEnvio;
+            }
             var chave = await _conversas.ChaveRascunhoAsync(conversa.Id, entradaId, ct);
             await _conversas.RegistrarSaidaAsync(
                 conversa,
@@ -245,7 +300,7 @@ public sealed class AtendimentoOrquestradorService
                 "Falha ao gerar rascunho de e-mail para a conversa {ConversaId}.",
                 conversa.Id);
             await _conversas.RecarregarAsync(conversa, ct);
-            if (conversa.Ativa && conversa.SessionId == sessaoInicial && conversa.Modo == ModoAtendimento.IA)
+            if (conversa.Ativa && conversa.SessionId == sessaoInicial && conversa.Modo == ModoAtendimento.IA && !_emailOptions.EnviarRespostasAutomaticamente)
                 await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
             await _conversas.AtualizarEstadoIaAsync(conversa, entradaId, "falha", ct);
             return ResultadoRetomadaAtendimento.FalhaNaGeracao;
@@ -302,6 +357,14 @@ public sealed class AtendimentoOrquestradorService
                 ct: ct);
         }
 
+        // E-mail por webhook/alias usa a mesma política da Gmail API, após validar
+        // a conversa e o remetente acima. Evita um caminho paralelo sem triagem.
+        if (entrada.Canal == CanalAtendimento.Email)
+        {
+            await ProcessarEntradaEmailComoRascunhoAsync(entrada, ct);
+            return;
+        }
+
         var historico = await _conversas.CarregarHistoricoPacienteAsync(
             conversa.PacienteId,
             conversa.Id,
@@ -317,8 +380,8 @@ public sealed class AtendimentoOrquestradorService
         if (nova is null)
             return;
 
-        // Todo pedido de marcação/remarcação vira também uma solicitação operacional.
-        // Assim WhatsApp, e-mail, SMS e PWA entram no mesmo fluxo de solicitações e agendamento.
+        // Os demais canais mantêm a solicitação operacional de marcação/remarcação.
+        // O e-mail administrativo segue o fluxo automático e o portal acima.
         if (AtendimentoIntencao.EhPedidoAgendamento(textoEntrada))
         {
             await _solicitacoes.ObterOuCriarDaConversaAsync(
@@ -359,10 +422,7 @@ public sealed class AtendimentoOrquestradorService
                 historico,
                 ct);
 
-            if (entrada.Canal == CanalAtendimento.Email)
-                await _envio.EnviarAsync(conversa, resposta.Resposta, AutorMensagemAtendimento.Assistente, assunto: entrada.Assunto, ct: ct);
-            else
-                await _envio.EnviarRespostaIaAsync(conversa, resposta.Resposta, nova.Id, ct);
+            await _envio.EnviarRespostaIaAsync(conversa, resposta.Resposta, nova.Id, ct);
             await _conversas.AtualizarEstadoIaAsync(conversa, nova.Id, "concluida", ct);
         }
         catch (OperationCanceledException) when (ct.IsCancellationRequested)

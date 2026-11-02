@@ -116,6 +116,12 @@ public static class ServiceCollectionExtensions
             configuration.GetSection(SmsHttpOptions.SectionName));
         services.Configure<GmailInboxOptions>(
             configuration.GetSection(GmailInboxOptions.SectionName));
+        services.Configure<AtendimentoEmailOptions>(configuration.GetSection(AtendimentoEmailOptions.SectionName));
+        services.PostConfigure<AtendimentoEmailOptions>(options =>
+        {
+            if (string.IsNullOrWhiteSpace(options.PortalBaseUrl))
+                options.PortalBaseUrl = configuration["RENDER_EXTERNAL_URL"] ?? configuration["Twa:Origin"] ?? string.Empty;
+        });
         services.AddHttpClient("GmailApi");
         services.AddSingleton<GmailApiClient>();
         services.AddHostedService<GmailInboxPollingService>();
@@ -124,6 +130,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AtendimentoEnvioService>();
         services.AddScoped<AtendimentoOrquestradorService>();
         services.AddScoped<AtendimentoEmailDecisaoService>();
+        services.AddScoped<AtendimentoEmailAutomaticoService>();
+        services.AddHostedService<AtendimentoEmailAutomaticoBackgroundService>();
 
         services.AddSingleton(TimeProvider.System);
         services.AddSingleton<EvolutionEnvioControle>();
@@ -179,6 +187,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<DatabaseSchemaV24Initializer>();
         services.AddScoped<DatabaseSchemaV25Initializer>();
         services.AddScoped<DatabaseSchemaV26Initializer>();
+        services.AddScoped<DatabaseSchemaV27Initializer>();
         return services;
     }
 

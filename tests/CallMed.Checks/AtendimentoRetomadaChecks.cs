@@ -293,6 +293,230 @@ internal static class AtendimentoRetomadaChecks
             check(f.Gemini.Historico?.Last().Texto == pergunta && resultado == ResultadoRetomadaAtendimento.RequerEquipe && f.Agente.Calls == 0,
                 "Confirmação privada mantém contexto e respeita encaminhamento sem executar operação");
         }
+        await RunAutomaticoAsync(check);
+    }
+
+    private static AtendimentoEmailAutomaticoService Worker(Fixture f) => new(f.Db, f.Conversas, f.Orquestrador,
+        Options.Create(new AtendimentoEmailOptions()), NullLogger<AtendimentoEmailAutomaticoService>.Instance);
+
+    private static async Task RunAutomaticoAsync(Action<bool, string> check)
+    {
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quero marcar uma consulta com o dr david", true))
+        {
+            f.Conversa.IaEstado = "equipe"; f.Conversa.IaEntradaId = f.Entrada.Id;
+            await f.Db.SaveChangesAsync();
+            check(await Worker(f).ProcessarPendenciasAsync() == 1 && f.Canal.Calls == 1 && f.Conversa.Modo == ModoAtendimento.IA,
+                "Pendência recente da política antiga é reanalisada e respondida sem clique nem aprovação");
+            var enviada = await f.Db.MensagensAtendimento.SingleAsync(m => m.Direcao == DirecaoMensagemAtendimento.Saida);
+            check(enviada.Status == StatusMensagemAtendimento.Enviada && enviada.Texto.Contains("https://portal.example.test/Consulta/Create") &&
+                f.Agente.Usuario is { PacienteId: null, EmailRespostaAutomatica: true } && !await f.Db.Consultas.AnyAsync(),
+                "Resposta automática oferece portal, não autentica remetente e não cria consulta");
+            check(await Worker(f).ProcessarPendenciasAsync() == 0 && f.Canal.Calls == 1,
+                "Novo ciclo não repete o e-mail automático já enviado");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Primeiro pedido", true))
+        {
+            await f.Conversas.DevolverParaIaAsync(f.Conversa);
+            var entrada = new CanalMensagemEntrada { Canal = CanalAtendimento.Email, Identificador = f.Conversa.IdentificadorExterno,
+                Texto = "Quais médicos atendem?", MensagemExternaId = "gmail:auto-novo" };
+            await f.Orquestrador.ProcessarEntradaEmailComoRascunhoAsync(entrada);
+            await f.Orquestrador.ProcessarEntradaEmailComoRascunhoAsync(entrada);
+            check(f.Canal.Calls == 1 && await f.Db.MensagensAtendimento.CountAsync(m => m.Status == StatusMensagemAtendimento.AguardandoAprovacao) == 0,
+                "Entrada Gmail nova é respondida uma vez sem depender de Aprovar e enviar");
+            entrada = new CanalMensagemEntrada { Canal = CanalAtendimento.Email, Identificador = f.Conversa.IdentificadorExterno,
+                Texto = "E amanhã?", MensagemExternaId = "gmail:auto-seguinte" };
+            await f.Orquestrador.ProcessarEntradaEmailComoRascunhoAsync(entrada);
+            check(f.Canal.Calls == 2 && f.Agente.Historico!.Any(m => m.Papel == "bot"),
+                "Próxima resposta do paciente mantém continuidade automática com o histórico enviado");
+            await f.Conversas.AssumirAsync(f.Conversa, "atendente-teste");
+            entrada = new CanalMensagemEntrada { Canal = CanalAtendimento.Email, Identificador = f.Conversa.IdentificadorExterno,
+                Texto = "Mais uma pergunta", MensagemExternaId = "gmail:auto-pausado" };
+            await f.Orquestrador.ProcessarEntradaEmailComoRascunhoAsync(entrada);
+            check(f.Canal.Calls == 2 && await Worker(f).ProcessarPendenciasAsync() == 0,
+                "Assumir atendimento pausa o envio automático e a retomada respeita o responsável");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quero cancelar minha consulta", true))
+        {
+            f.Gemini.Acao = "PORTAL";
+            await f.Orquestrador.DevolverParaIaERetomarAsync(f.Conversa);
+            var saida = await f.Db.MensagensAtendimento.SingleAsync(m => m.Direcao == DirecaoMensagemAtendimento.Saida);
+            check(f.Agente.Calls == 0 && f.Canal.Calls == 1 && saida.Texto.Contains("https://portal.example.test/Consulta") && !await f.Db.Consultas.AnyAsync(),
+                "Operação privada recebe orientação automática para o portal, sem chamada de ferramenta privada");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Primeiro pedido", true))
+        {
+            await f.Conversas.DevolverParaIaAsync(f.Conversa);
+            await f.Orquestrador.ProcessarEntradaAsync(new CanalMensagemEntrada { Canal = CanalAtendimento.Email,
+                Identificador = f.Conversa.IdentificadorExterno, ConversaAtendimentoId = f.Conversa.Id,
+                MensagemExternaId = "webhook:auto", Texto = "Quais horários do Dr. David?" });
+            check(f.Canal.Calls == 1 && f.Gemini.Calls == 1 && f.Agente.Usuario?.PacienteId is null,
+                "Entrada de e-mail por webhook segue a mesma triagem, contexto público e envio automático do Gmail");
+            await f.Orquestrador.ProcessarEntradaAsync(new CanalMensagemEntrada { Canal = CanalAtendimento.Email,
+                Identificador = "outro@example.test", ConversaAtendimentoId = f.Conversa.Id,
+                MensagemExternaId = "webhook:outro", Texto = "Quais horários?" });
+            check(f.Canal.Calls == 1 && f.Gemini.Calls == 1,
+                "Alias de conversa continua rejeitando remetente diferente do contato original");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Meu CPF é 52998224725", true))
+        {
+            await f.Orquestrador.DevolverParaIaERetomarAsync(f.Conversa);
+            check(f.Gemini.Calls == 0 && f.Agente.Calls == 0 && f.Canal.Calls == 1 &&
+                !(await f.Db.MensagensAtendimento.SingleAsync(m => m.Direcao == DirecaoMensagemAtendimento.Saida)).Texto.Contains("52998224725"),
+                "Identificador sensível recebe orientação fixa sem exposição ao Gemini ou eco na resposta");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quero falar com um atendente", true))
+        {
+            await f.Orquestrador.DevolverParaIaERetomarAsync(f.Conversa);
+            check(f.Gemini.Calls == 0 && f.Agente.Calls == 0 && f.Canal.Calls == 1 && f.Conversa.Modo == ModoAtendimento.Humano,
+                "Pedido explícito de atendente gera confirmação de recebimento e preserva fila humana");
+            check(await Worker(f).ProcessarPendenciasAsync() == 0 && f.Canal.Calls == 1,
+                "Retomada não desfaz o encaminhamento humano da política atual");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quais horários?", true))
+        {
+            f.Agente.Falhar = true;
+            await f.Orquestrador.DevolverParaIaERetomarAsync(f.Conversa);
+            check(f.Conversa.Modo == ModoAtendimento.IA && f.Conversa.IaTentativas == 1 && f.Canal.Calls == 0,
+                "Falha técnica de análise preserva a automação sem enviar resposta fictícia");
+            check(await Worker(f).ProcessarPendenciasAsync() == 0, "Falha técnica respeita espera antes da nova tentativa");
+            for (var i = 0; i < 2; i++)
+            {
+                f.Conversa.IaAtualizadoEm = DateTime.UtcNow.AddMinutes(-2); await f.Db.SaveChangesAsync();
+                await Worker(f).ProcessarPendenciasAsync();
+            }
+            f.Conversa.IaAtualizadoEm = DateTime.UtcNow.AddMinutes(-2); await f.Db.SaveChangesAsync();
+            check(f.Conversa.IaTentativas == 3 && await Worker(f).ProcessarPendenciasAsync() == 0 && f.Canal.Calls == 0,
+                "Análise com falha persistente para após três tentativas por mensagem");
+            f.Agente.Falhar = false;
+            await f.Conversas.RegistrarEntradaAsync(f.Conversa, "Quais médicos atendem?", "gmail:entrada-apos-interrupcao");
+            check(await Worker(f).ProcessarPendenciasAsync() == 1 && f.Canal.Calls == 1 && f.Conversa.IaTentativas == 1,
+                "Entrada nova persistida antes de uma interrupção retoma sozinha e renova o limite de tentativas");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quais médicos?", true))
+        {
+            await f.Conversas.DevolverParaIaAsync(f.Conversa);
+            f.Agente.Falhar = true;
+            await f.Orquestrador.GerarRascunhoEmailAsync(f.Conversa);
+            check(await Worker(f).ProcessarPendenciasAsync() == 0 && f.Canal.Calls == 0,
+                "Falha ao gerar rascunho manual não vira envio automático em segundo plano");
+            f.Agente.Falhar = false;
+            await f.Orquestrador.GerarRascunhoEmailAsync(f.Conversa);
+            check(f.Canal.Calls == 0 && (await f.Conversas.ObterEstadoIaAsync(f.Conversa, default)).Estado == "rascunho",
+                "Gerar rascunho manual continua exigindo revisão mesmo com automação habilitada");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quais médicos?", true))
+        {
+            f.Canal.Incerto = true;
+            await f.Orquestrador.DevolverParaIaERetomarAsync(f.Conversa);
+            var falha = await f.Db.MensagensAtendimento.SingleAsync(m => m.Direcao == DirecaoMensagemAtendimento.Saida);
+            await Worker(f).ProcessarPendenciasAsync(); await f.Envio.ReenviarAsync(falha.Id);
+            check(falha.Status == StatusMensagemAtendimento.Falhou && falha.ReenvioBloqueado && f.Canal.Calls == 1,
+                "Envio sem confirmação bloqueia repetição automática e manual para evitar duplicidade");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quais médicos?", true))
+        {
+            f.Agente.DuranteGeracao = () => f.Conversas.AssumirAsync(f.Conversa, "atendente-durante-ia");
+            await f.Orquestrador.DevolverParaIaERetomarAsync(f.Conversa);
+            check(f.Canal.Calls == 0 && f.Conversa.ResponsavelUsuarioId == "atendente-durante-ia",
+                "Tomada humana durante a geração impede o envio automático em andamento");
+        }
+        check(AgenteToolDefinitions.CriarParaEmail().Count == 5 &&
+            AgenteToolDefinitions.CriarParaEmail().All(x => AgenteToolDefinitions.PermitidaNoEmail(x!["name"]!.GetValue<string>())),
+            "Modelo do e-mail recebe somente as cinco ferramentas públicas autorizadas");
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Pergunta antiga", true))
+        {
+            f.Conversa.IaEstado = "equipe"; f.Entrada.CriadoEm = DateTime.UtcNow.AddDays(-2);
+            await f.Db.SaveChangesAsync();
+            check(await Worker(f).ProcessarPendenciasAsync() == 0 && f.Canal.Calls == 0,
+                "Retomada padrão não dispara respostas para mensagens com mais de 24 horas");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quero marcar com o Dr. David", true))
+        {
+            f.Conversa.IaEstado = "equipe"; f.Conversa.IaAtualizadoEm = DateTime.UtcNow;
+            for (var i = 2; i <= 26; i++)
+            {
+                f.Db.ConversasAtendimento.Add(new ConversaAtendimento { Id = i, Canal = CanalAtendimento.Email,
+                    IdentificadorExterno = $"antigo{i}@example.test", SessionId = $"antigo{i}", Modo = ModoAtendimento.IA,
+                    IaEstado = "falha", IaAtualizadoEm = DateTime.UtcNow.AddDays(-2) });
+                f.Db.MensagensAtendimento.Add(new MensagemAtendimento { ConversaAtendimentoId = i,
+                    Direcao = DirecaoMensagemAtendimento.Entrada, Autor = AutorMensagemAtendimento.Paciente,
+                    Status = StatusMensagemAtendimento.Recebida, Texto = "Mensagem antiga", CriadoEm = DateTime.UtcNow.AddDays(-2) });
+            }
+            await f.Db.SaveChangesAsync();
+            check(await Worker(f).ProcessarPendenciasAsync() == 1 && f.Canal.Calls == 1,
+                "Mensagens antigas não ocupam o limite do lote nem bloqueiam uma pendência recente");
+        }
+        var captura = new CapturaEmail();
+        var smtp = new MKSANCrud.Services.Atendimento.Canais.Email.SmtpAtendimentoSender(captura,
+            Options.Create(new AtendimentoEmailOptions { PortalBaseUrl = "https://portal.example.test" }));
+        await smtp.EnviarAsync("ficticio@example.test", "Escolha: https://portal.example.test/Consulta/Create?medicoId=1&data=2026-11-02&horario=10%3A00");
+        check(captura.Html.Contains("href=\"https://portal.example.test/Consulta/Create?medicoId=1&amp;data=2026-11-02&amp;horario=10%3A00\""),
+            "Link de conclusão no e-mail HTML preserva médico, data e horário e escapa os parâmetros");
+        check(new AtendimentoEmailOptions { PortalBaseUrl = "javascript:alert(1)" }.UrlPortal("Consulta") is null &&
+            new AtendimentoEmailOptions { PortalBaseUrl = "https://user:pass@example.test" }.UrlPortal("Consulta") is null,
+            "Portal rejeita protocolo inseguro e credenciais embutidas na URL");
+        await CheckAgendaRealAsync(check);
+    }
+
+    private sealed class CapturaEmail : MKSANCrud.Services.Email.IEmailService
+    {
+        public bool Configurado => true;
+        public string Html = string.Empty;
+        public Task<bool> EnviarAsync(string destinatario, string assunto, string corpoHtml, CancellationToken ct = default, string? replyTo = null)
+        { Html = corpoHtml; return Task.FromResult(true); }
+    }
+
+    private static async Task CheckAgendaRealAsync(Action<bool, string> check)
+    {
+        await using var f = await Fixture.Create(CanalAtendimento.Email, "Quero marcar uma consulta com o dr david", true);
+        var clock = new Clock();
+        f.Db.AddRange(new Especialidade { Id = 1, Nome = "Urologia", Ativo = true },
+            new Medico { Id = 1, Nome = "Dr. David Kaio", Especialidade = "Urologia", EspecialidadeId = 1, Ativo = true },
+            new Disponibilidade { Id = 1, MedicoId = 1, Data = clock.Hoje.AddDays(1), Horario = "10:00", Ativo = true });
+        await f.Db.SaveChangesAsync();
+        var especialidades = new EspecialidadeService(f.Db); var convenio = new ConvenioService(clock);
+        var agenda = new MKSANCrud.Services.Agendamento.AgendamentoService(f.Db, clock, especialidades, convenio,
+            new ConvenioElegibilidadeService(f.Db, convenio), NullLogger<MKSANCrud.Services.Agendamento.AgendamentoService>.Instance);
+        var solicitacoes = new SolicitacaoAtendimentoService(f.Db, new AuditoriaService(f.Db, new HttpContextAccessor(), NullLogger<AuditoriaService>.Instance));
+        var tools = new AgenteToolsService(f.Db, null!, new Microsoft.Extensions.Configuration.ConfigurationBuilder().Build(), agenda,
+            especialidades, convenio, clock, null!, solicitacoes, f.Conversas, NullLogger<AgenteToolsService>.Instance);
+        var script = new RoteiroAgenda();
+        var geminiOptions = Options.Create(new GeminiOptions { ApiKey = "teste-apenas", TimeoutSeconds = 10 });
+        var gemini = new GeminiClient(new HttpClient(script), geminiOptions, NullLogger<GeminiClient>.Instance);
+        var real = new AgenteClinicaService(gemini, tools, geminiOptions, NullLogger<AgenteClinicaService>.Instance);
+        var triagem = new AtendimentoEmailDecisaoService(new GeminiClient(new HttpClient(f.Gemini), geminiOptions, NullLogger<GeminiClient>.Instance), NullLogger<AtendimentoEmailDecisaoService>.Instance);
+        var orq = new AtendimentoOrquestradorService(real, f.Conversas, f.Envio, triagem, convenio, solicitacoes,
+            NullLogger<AtendimentoOrquestradorService>.Instance, Options.Create(new AtendimentoEmailOptions { PortalBaseUrl = "https://portal.example.test" }));
+        await orq.DevolverParaIaERetomarAsync(f.Conversa);
+        var enviada = await f.Db.MensagensAtendimento.SingleAsync(m => m.Direcao == DirecaoMensagemAtendimento.Saida);
+        check(script.Publicas && script.Calls == 2 && f.Canal.Calls == 1 && enviada.Status == StatusMensagemAtendimento.Enviada &&
+            enviada.Texto.Contains("Dr. David Kaio") && enviada.Texto.Contains("10:00") && enviada.Texto.Contains("medicoId=1&data=2026-11-02&horario=10%3A00"),
+            "Fluxo com agente e agenda reais consulta vaga do Dr. David e envia link preenchido, usando Gemini simulado");
+        check(!await f.Db.Consultas.AnyAsync() && (await f.Db.Disponibilidades.SingleAsync()).Ativo,
+            "Oferta de vaga por e-mail mantém o horário livre até o paciente concluir no portal");
+    }
+
+    private sealed class RoteiroAgenda : HttpMessageHandler
+    {
+        public int Calls; public bool Publicas = true;
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
+        {
+            Calls++;
+            var root = System.Text.Json.Nodes.JsonNode.Parse(await request.Content!.ReadAsStringAsync(ct))!;
+            Publicas &= root["tools"]![0]!["functionDeclarations"]!.AsArray().Count == 5;
+            System.Text.Json.Nodes.JsonObject part;
+            if (Calls == 1)
+                part = new() { ["functionCall"] = new System.Text.Json.Nodes.JsonObject { ["name"] = "buscar_opcoes_agendamento",
+                    ["args"] = new System.Text.Json.Nodes.JsonObject { ["nomeMedico"] = "David", ["especialidade"] = "" } } };
+            else
+            {
+                var opcao = root["contents"]!.AsArray().Last()!["parts"]![0]!["functionResponse"]!["response"]!["result"]!["dados"]!["opcoes"]![0]!;
+                part = new() { ["text"] = $"Encontrei {opcao["medico"]!.GetValue<string>()} às {opcao["horario"]!.GetValue<string>()}. Conclua pela sua conta: {opcao["urlAgendamento"]!.GetValue<string>()}" };
+            }
+            var response = new System.Text.Json.Nodes.JsonObject { ["candidates"] = new System.Text.Json.Nodes.JsonArray(new System.Text.Json.Nodes.JsonObject {
+                ["content"] = new System.Text.Json.Nodes.JsonObject { ["role"] = "model", ["parts"] = new System.Text.Json.Nodes.JsonArray(part) } }) };
+            return new(HttpStatusCode.OK) { Content = new StringContent(response.ToJsonString(), Encoding.UTF8, "application/json") };
+        }
     }
 
     private sealed class Fixture : IAsyncDisposable
@@ -306,7 +530,7 @@ internal static class AtendimentoRetomadaChecks
         public required FakeAgente Agente;
         public required FakeCanal Canal;
         public required Classificador Gemini;
-        public static async Task<Fixture> Create(CanalAtendimento canal, string texto)
+        public static async Task<Fixture> Create(CanalAtendimento canal, string texto, bool automatico = false)
         {
             var db = new MKSANContext(new DbContextOptionsBuilder<MKSANContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
             var clock = new Clock();
@@ -316,7 +540,8 @@ internal static class AtendimentoRetomadaChecks
             db.ConversasAtendimento.Add(conversa);
             var entrada = new MensagemAtendimento { Id = 1, ConversaAtendimentoId = 1, Direcao = DirecaoMensagemAtendimento.Entrada, Autor = AutorMensagemAtendimento.Paciente, Texto = texto, Status = StatusMensagemAtendimento.Recebida };
             db.MensagensAtendimento.Add(entrada);await db.SaveChangesAsync();
-            var conversas = new AtendimentoConversaService(db, new AtendimentoIdentidadeService(db));
+            var emailOptions = Options.Create(new AtendimentoEmailOptions { EnviarRespostasAutomaticamente = automatico, PortalBaseUrl = "https://portal.example.test" });
+            var conversas = new AtendimentoConversaService(db, new AtendimentoIdentidadeService(db), emailOptions);
             var fake = new FakeCanal { Canal = canal };
             var envio = new AtendimentoEnvioService([fake], db, TimeProvider.System, NullLogger<AtendimentoEnvioService>.Instance, Options.Create(new GmailInboxOptions()));
             var handler = new Classificador();
@@ -324,7 +549,7 @@ internal static class AtendimentoRetomadaChecks
             var decisao = new AtendimentoEmailDecisaoService(client, NullLogger<AtendimentoEmailDecisaoService>.Instance);
             var agente = new FakeAgente();
             var solicitacoes = new SolicitacaoAtendimentoService(db, new AuditoriaService(db, new HttpContextAccessor(), NullLogger<AuditoriaService>.Instance));
-            var orq = new AtendimentoOrquestradorService(agente, conversas, envio, decisao, new ConvenioService(clock), solicitacoes, NullLogger<AtendimentoOrquestradorService>.Instance);
+            var orq = new AtendimentoOrquestradorService(agente, conversas, envio, decisao, new ConvenioService(clock), solicitacoes, NullLogger<AtendimentoOrquestradorService>.Instance, emailOptions);
             return new() { Db=db, Conversa=conversa, Entrada=entrada, Conversas=conversas, Envio=envio, Orquestrador=orq, Agente=agente, Canal=fake, Gemini=handler };
         }
         public AtendimentoController Controller()
@@ -346,9 +571,9 @@ internal static class AtendimentoRetomadaChecks
     }
     private sealed class FakeCanal : ICanalAtendimentoSender
     {
-        public CanalAtendimento Canal { get; init; }public bool Configurado=>true;public int Calls;public bool Falhar;
+        public CanalAtendimento Canal { get; init; }public bool Configurado=>true;public int Calls;public bool Falhar;public bool Incerto;
         public Task<CanalEnvioResultado> EnviarAsync(string destinatario,string texto,string? assunto=null,CancellationToken ct=default,string? replyTo=null)
-        {Calls++;return Task.FromResult(Falhar ? CanalEnvioResultado.Falha("Falha fictícia de transporte") : CanalEnvioResultado.Ok("teste-envio"));}
+        {Calls++;if(Incerto)throw new HttpRequestException("Envio sem confirmação no teste");return Task.FromResult(Falhar ? CanalEnvioResultado.Falha("Falha fictícia de transporte") : CanalEnvioResultado.Ok("teste-envio"));}
     }
     private sealed class Classificador : HttpMessageHandler
     {

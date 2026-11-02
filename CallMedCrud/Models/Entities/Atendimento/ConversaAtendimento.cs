@@ -33,6 +33,9 @@ public class ConversaAtendimento
     public string? IaEstado { get; set; }
     public long? IaEntradaId { get; set; }
     public DateTime? IaAtualizadoEm { get; set; }
+    public int IaTentativas { get; set; }
+    [StringLength(32)]
+    public string? IaPoliticaVersao { get; set; }
 
     public bool Ativa { get; set; } = true;
     public DateTime CriadoEm { get; set; } = DateTime.UtcNow;

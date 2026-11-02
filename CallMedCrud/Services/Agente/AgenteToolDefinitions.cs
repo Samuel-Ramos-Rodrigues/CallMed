@@ -4,6 +4,13 @@ namespace MKSANCrud.Services.Agente;
 
 public static class AgenteToolDefinitions
 {
+    public static bool PermitidaNoEmail(string nome) => nome is
+        "listar_medicos" or "consultar_horarios_data" or "consultar_proximas_datas" or "buscar_opcoes_agendamento" or "informacoes_clinica";
+
+    public static JsonArray CriarParaEmail() => new(Criar()
+        .Where(x => x?["name"]?.GetValue<string>() is string nome && PermitidaNoEmail(nome))
+        .Select(x => x!.DeepClone()).ToArray());
+
     public static JsonArray Criar()
     {
         return new JsonArray

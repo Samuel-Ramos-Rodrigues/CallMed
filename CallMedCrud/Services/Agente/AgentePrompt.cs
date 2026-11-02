@@ -1078,7 +1078,7 @@ Não tente contornar essa validação.
 ================================================================
 57. PERMISSÕES E ENTREGA DEFINIDAS PELO BACKEND
 ================================================================
-{{AgenteRegrasCanais.Execucao(usuario.Canal)}}
+{{AgenteRegrasCanais.Execucao(usuario.Canal, usuario.EmailRespostaAutomatica, usuario.PortalAgendamentoUrl)}}
 
 LISTA DE ESPERA
 Ofereça a lista quando uma busca oficial não tiver vagas e houver interesse.

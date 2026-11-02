@@ -66,14 +66,14 @@ public sealed class AgenteToolsService
         try
         {
             if (string.Equals(usuario.Canal, "E-mail", StringComparison.OrdinalIgnoreCase) &&
-                nome is not ("listar_medicos" or "consultar_horarios_data" or "consultar_proximas_datas" or "buscar_opcoes_agendamento" or "informacoes_clinica"))
+                !AgenteToolDefinitions.PermitidaNoEmail(nome))
                 return Falha("No rascunho de e-mail, use apenas informações públicas. Não identifique pacientes, não leia dados individuais e não altere a agenda. Oriente o portal ou a recepção para operações que exigem identificação.");
 
             var bloqueioIdentidade = BloqueioPorIdentidade(nome, usuario);
             if (bloqueioIdentidade is not null)
                 return bloqueioIdentidade;
 
-            return nome switch
+            var resultado = nome switch
             {
                 "listar_medicos" => await ListarMedicos(cancellationToken),
                 "buscar_paciente_cpf" => await BuscarPacienteCpf(Texto(args, "cpf"), usuario, cancellationToken),
@@ -94,6 +94,18 @@ public sealed class AgenteToolsService
                 "informacoes_clinica" => InformacoesClinica(),
                 _ => Falha("Função não reconhecida pelo sistema.")
             };
+            if (nome == "buscar_opcoes_agendamento" && usuario.Canal.Equals("E-mail", StringComparison.OrdinalIgnoreCase) &&
+                usuario.PortalAgendamentoUrl is string portal && Uri.TryCreate(portal, UriKind.Absolute, out var portalUri) &&
+                (portalUri.Scheme == Uri.UriSchemeHttps || (portalUri.IsLoopback && portalUri.Scheme == Uri.UriSchemeHttp)) &&
+                resultado["dados"]?["opcoes"] is JsonArray opcoes)
+            {
+                foreach (var opcao in opcoes.OfType<JsonObject>())
+                    opcao["urlAgendamento"] = portal + (portalUri.Query.Length > 0 ? "&" : "?") +
+                        "medicoId=" + opcao["medicoId"]!.GetValue<int>() +
+                        "&data=" + Uri.EscapeDataString(opcao["data"]!.GetValue<string>()) +
+                        "&horario=" + Uri.EscapeDataString(opcao["horario"]!.GetValue<string>());
+            }
+            return resultado;
         }
         catch (OperationCanceledException)
         {

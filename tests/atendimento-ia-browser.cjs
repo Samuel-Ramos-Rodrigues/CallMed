@@ -11,6 +11,8 @@ const states = {
     analisando: { estado: 'analisando', titulo: 'IA analisando a mensagem…', detalhe: 'Verificando o pedido e as informações disponíveis.', trabalhando: true, podeGerarRascunho: false },
     gerando: { estado: 'gerando', titulo: 'IA gerando rascunho…', detalhe: 'A resposta aparecerá no histórico para sua aprovação.', trabalhando: true, podeGerarRascunho: false },
     rascunho: { estado: 'rascunho', titulo: 'Rascunho pronto · aguardando aprovação', detalhe: 'Revise o rascunho no histórico e aprove o envio.', trabalhando: false, podeGerarRascunho: false },
+    respondida: { estado: 'respondida', titulo: 'Resposta da IA enviada', detalhe: 'A mensagem recebeu resposta automática.', trabalhando: false, podeGerarRascunho: false },
+    gerandoAuto: { estado: 'gerando', titulo: 'IA preparando resposta…', detalhe: 'Preparando a resposta para este canal.', trabalhando: true, podeGerarRascunho: false },
     falha: { estado: 'falha', titulo: 'Não foi possível concluir a IA', detalhe: 'O serviço de IA falhou ou está indisponível.', trabalhando: false, podeGerarRascunho: true }
 };
 let state = states.pendente, posts = 0, updatesFail = false, pendingPost;
@@ -21,8 +23,8 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/Atendimento/Atualizacoes') {
         if (updatesFail) { res.writeHead(503); return res.end(); }
         res.setHeader('Content-Type', 'application/json');
-        const draft = state.estado === 'rascunho' && Number(url.searchParams.get('afterId')) < 2;
-        return res.end(JSON.stringify({ modo: 'IA', ativa: true, ia: state, estados: [], mensagens: draft ? [{ id: 2, direcao: 'Saida', autor: 'Assistente', texto: 'Olá! Estes são os médicos da clínica.', status: 'AguardandoAprovacao', criadoEm: new Date().toISOString() }] : [] }));
+        const draft = ['rascunho', 'respondida'].includes(state.estado) && Number(url.searchParams.get('afterId')) < 2;
+        return res.end(JSON.stringify({ modo: 'IA', ativa: true, ia: state, estados: [], mensagens: draft ? [{ id: 2, direcao: 'Saida', autor: 'Assistente', texto: 'Olá! Estes são os médicos da clínica.', status: state.estado === 'respondida' ? 'Enviada' : 'AguardandoAprovacao', criadoEm: new Date().toISOString() }] : [] }));
     }
     if (req.method === 'POST') {
         for await (const _ of req) {} // consome FormData
@@ -76,6 +78,14 @@ const server = http.createServer(async (req, res) => {
         await page.waitForFunction(() => document.querySelector('#cmIaTitle').textContent.includes('<img'));
         assert.equal(await page.locator('#cmIaTitle img').count(), 0);
         console.log('PASS textos dinâmicos não são interpretados como HTML');
+        state = states.gerandoAuto; await page.goto(origin);
+        await page.waitForFunction(() => document.querySelector('#cmIaTitle').textContent === 'IA preparando resposta…');
+        state = states.respondida; await refresh();
+        await page.locator('.message-sent').waitFor();
+        assert.equal(await page.locator('.email-draft-review').count(), 0);
+        assert(await page.locator('#cmGerarRascunho').isHidden());
+        assert.equal(posts, 1);
+        console.log('PASS resposta automática aparece enviada sem formulário de aprovação nem clique adicional');
         state = states.analisando; await page.goto(origin);
         for (const theme of ['dark', 'light']) {
             await page.evaluate(theme => document.documentElement.dataset.theme = theme, theme);

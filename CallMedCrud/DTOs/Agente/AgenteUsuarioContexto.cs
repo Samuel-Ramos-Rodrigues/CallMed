@@ -6,6 +6,8 @@ public sealed class AgenteUsuarioContexto
     public string? Telefone { get; init; }
     public string Canal { get; init; } = "Site";
     public bool PodeGerenciarOutrosPacientes { get; init; }
+    public bool EmailRespostaAutomatica { get; init; }
+    public string? PortalAgendamentoUrl { get; init; }
 
     // Identifica a conversa de atendimento que originou o contexto.
     // É preenchido apenas pelo backend e permite vincular um contato externo

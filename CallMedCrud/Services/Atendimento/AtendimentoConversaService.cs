@@ -4,6 +4,8 @@ using Npgsql;
 using MKSANCrud.Data;
 using MKSANCrud.Models;
 using MKSANCrud.Models.Atendimento;
+using MKSANCrud.Options;
+using Microsoft.Extensions.Options;
 
 namespace MKSANCrud.Services.Atendimento;
 
@@ -12,13 +14,16 @@ public sealed class AtendimentoConversaService
     private const int LimiteMensagens = 250;
     private readonly MKSANContext _context;
     private readonly AtendimentoIdentidadeService _identidade;
+    private readonly bool _emailAutomatico;
 
     public AtendimentoConversaService(
         MKSANContext context,
-        AtendimentoIdentidadeService identidade)
+        AtendimentoIdentidadeService identidade,
+        IOptions<AtendimentoEmailOptions>? emailOptions = null)
     {
         _context = context;
         _identidade = identidade;
+        _emailAutomatico = emailOptions?.Value.EnviarRespostasAutomaticamente ?? false;
     }
 
     public Task<ConversaAtendimento?> ObterPorIdAsync(
@@ -344,8 +349,14 @@ public sealed class AtendimentoConversaService
         return respondida ? null : ultima;
     }
 
-    public async Task AtualizarEstadoIaAsync(ConversaAtendimento conversa, long entradaId, string estado, CancellationToken ct)
+    public async Task AtualizarEstadoIaAsync(ConversaAtendimento conversa, long entradaId, string estado, CancellationToken ct, bool manual = false)
     {
+        if (estado == "analisando")
+        {
+            conversa.IaTentativas = conversa.IaEntradaId == entradaId ? conversa.IaTentativas + 1 : 1;
+            if (conversa.Canal == CanalAtendimento.Email)
+                conversa.IaPoliticaVersao = manual ? AtendimentoEmailOptions.PoliticaManual : AtendimentoEmailOptions.PoliticaAtual;
+        }
         conversa.IaEntradaId = entradaId;
         conversa.IaEstado = estado;
         conversa.IaAtualizadoEm = DateTime.UtcNow;
@@ -365,7 +376,8 @@ public sealed class AtendimentoConversaService
                 m.Direcao == DirecaoMensagemAtendimento.Saida &&
                 (m.Autor == AutorMensagemAtendimento.Assistente || m.Autor == AutorMensagemAtendimento.Funcionario))
             .OrderByDescending(m => m.Id).FirstOrDefaultAsync(ct);
-        return AtendimentoIaStatus.Criar(conversa, entrada, saida, DateTime.UtcNow);
+        return AtendimentoIaStatus.Criar(conversa, entrada, saida, DateTime.UtcNow,
+            _emailAutomatico && conversa.IaPoliticaVersao != AtendimentoEmailOptions.PoliticaManual);
     }
 
     public async Task<string> ChaveRascunhoAsync(long conversaId, long entradaId, CancellationToken ct)

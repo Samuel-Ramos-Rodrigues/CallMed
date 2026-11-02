@@ -63,6 +63,8 @@ public sealed class SmtpEmailService : IEmailService
                 HeadersEncoding = System.Text.Encoding.UTF8
             };
             mensagem.To.Add(destinatarioValidado);
+            // Mensagens transacionais não devem disparar respostas de robôs externos.
+            mensagem.Headers.Add("X-Auto-Response-Suppress", "All");
 
             var enderecoResposta = !string.IsNullOrWhiteSpace(replyTo)
                 ? replyTo.Trim()

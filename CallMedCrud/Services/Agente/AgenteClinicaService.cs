@@ -72,6 +72,15 @@ public sealed class AgenteClinicaService : IAgenteClinicaService
         {
             sessao.UltimoUsoUtc = DateTime.UtcNow;
 
+            if (usuario.Canal.Equals("E-mail", StringComparison.OrdinalIgnoreCase))
+            {
+                // Somente falas efetivamente recebidas/enviadas entram no próximo
+                // e-mail. Sugestões manuais não enviadas não viram contexto do paciente.
+                sessao.Historico.Clear();
+                sessao.UltimaBuscaAgendamentoArgs = null;
+                sessao.UltimoResultadoAgendamento = null;
+                LimparMutacaoPendente(sessao);
+            }
             if (sessao.Historico.Count == 0)
                 RecuperarHistoricoCliente(sessao.Historico, historicoCliente);
 
@@ -355,7 +364,8 @@ public sealed class AgenteClinicaService : IAgenteClinicaService
                     new JsonObject
                     {
                         ["functionDeclarations"] =
-                            AgenteToolDefinitions.Criar()
+                            usuario.Canal.Equals("E-mail", StringComparison.OrdinalIgnoreCase)
+                                ? AgenteToolDefinitions.CriarParaEmail() : AgenteToolDefinitions.Criar()
                     }),
             ["generationConfig"] =
                 new JsonObject

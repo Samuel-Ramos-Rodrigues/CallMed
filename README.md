@@ -4,6 +4,8 @@
 
 <h1 align="center">CallMed</h1>
 
+> **E-mail administrativo automático:** consulta médicos e vagas, envia respostas sem aprovação da recepção e oferece links para concluir o agendamento no portal. Gerar rascunho continua sendo uma ação manual. [Configuração, retomada de pendências e validação](docs/EMAIL-AUTOMATICO-2026-11-02.md).
+
 > **Áreas separadas por perfil:** login de Médico, Atendente e Administrador, com criação de contas pela administração. [Como usar e verificar os acessos](docs/ACESSOS-DA-EQUIPE.md).
 >
 > **Envio WhatsApp corrigido:** espera após HTTP 429, reenvio da mesma mensagem e avisos automáticos sem duplicação. [Correção, configuração e atualização do banco](docs/CORRECAO-ENVIO-WHATSAPP.md).

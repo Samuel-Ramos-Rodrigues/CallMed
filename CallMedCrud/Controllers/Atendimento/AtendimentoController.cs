@@ -421,10 +421,10 @@ public sealed class AtendimentoController : Controller
                 TempData["Aviso"] = "A mensagem exige atendimento humano por envolver identificação, dados individuais, assunto clínico ou pedido de um atendente. O histórico foi preservado; nenhuma resposta foi enviada automaticamente.";
                 break;
             case ResultadoRetomadaAtendimento.FalhaNaGeracao:
-                TempData["Erro"] = "Não foi possível preparar a resposta da IA. A conversa foi preservada na fila humana. Confira a disponibilidade do serviço de IA e tente novamente.";
+                TempData["Erro"] = "Não foi possível preparar a resposta da IA. Confira o indicador para acompanhar a próxima tentativa ou solicitar nova análise.";
                 break;
             default:
-                TempData["Sucesso"] = "A IA está ativa e não há mensagem pendente sem resposta. Se houver um rascunho de e-mail, revise e aprove; as próximas mensagens serão processadas automaticamente.";
+                TempData["Sucesso"] = "A IA está ativa e não há mensagem pendente sem resposta. Rascunhos manuais continuam aguardando revisão; as próximas mensagens seguem o modo configurado do canal.";
                 break;
         }
     }

@@ -35,7 +35,7 @@ INFORMAÇÕES E AÇÕES
   e confirmação válida. Se isso faltar, oriente a etapa de verificação disponível;
   não execute nem anuncie uma alteração como concluída.
 - Encaminhe para a equipe quando houver pedido explícito de atendente, necessidade
-  de dados privados sem autorização ou orientação clínica: diagnóstico, interpretação
+  de intervenção humana ou orientação clínica: diagnóstico, interpretação
   de exames, prescrição, tratamento ou urgência. Não diagnostique nem prescreva.
   Em risco imediato, oriente procurar atendimento de emergência sem esperar a conversa.
 - Considere o pedido atual e seu contexto relevante. Um assunto sensível antigo não
@@ -50,19 +50,30 @@ As condições de execução fornecidas pelo backend têm prioridade sobre exemp
 que pressuponham uma permissão que não esteja disponível nesta conversa.
 """;
 
-    public static string Execucao(string canal) => canal.Equals("E-mail", StringComparison.OrdinalIgnoreCase)
+    public static string Execucao(string canal, bool respostaAutomatica = false, string? portalAgendamentoUrl = null) => canal.Equals("E-mail", StringComparison.OrdinalIgnoreCase)
         ? """
 CONDIÇÕES DE EXECUÇÃO DESTA CONVERSA — E-MAIL
 O remetente não está autenticado apenas pelo endereço. Neste fluxo o backend
 habilita somente informações públicas: médicos, horários, próximas vagas,
 opções de agenda e informações da clínica. Não execute identificação, cadastro,
 agendamento, confirmação, remarcação, cancelamento ou acesso a dados individuais.
-Use as mesmas regras de conversa para esclarecer pedidos e consultar informações;
-para efetivar uma operação privada, oriente o portal autenticado ou a recepção.
+PEDIDO PARA MARCAR = BUSCAR OPÇÕES, SEM RESERVAR
+"Quero marcar uma consulta com o Dr. David" é um pedido administrativo de busca.
+Consulte buscar_opcoes_agendamento imediatamente pelo médico ou especialidade e
+apresente até três vagas reais. Não encaminhe para a equipe apenas porque a pessoa
+usou marcar/agendar. Não diga que o e-mail não pode verificar horários: ele pode.
+Use as mesmas regras de conversa para esclarecer pedidos e consultar informações.
+Para concluir o agendamento ou alterar uma consulta, oriente o portal autenticado.
+Apresente o link do portal fornecido pelo sistema para a pessoa concluir sozinha.
+Quando uma opção tiver urlAgendamento, apresente esse link junto da vaga: ele abre
+o formulário com médico, dia e horário preenchidos. Use URLs em texto simples.
+Indique a recepção quando a pessoa pedir ou houver uma situação que exija a equipe.
 Não solicite senha, token, CPF completo nem nascimento por e-mail.
-A resposta será um RASCUNHO. Ela só será enviada após a aprovação de um funcionário
-na Central. Preparar uma resposta não significa enviá-la nem realizar a operação pedida.
-"""
+Nunca anuncie reserva ou alteração concluída: somente o portal efetiva essas ações.
+""" + "\n" + (respostaAutomatica
+            ? "ENTREGA: a resposta administrativa será enviada automaticamente ao remetente. Responda como a recepção, sem falar em rascunho, revisão ou aprovação de funcionário."
+            : "ENTREGA: a resposta será um rascunho para revisão da equipe antes do envio.") +
+            (string.IsNullOrWhiteSpace(portalAgendamentoUrl) ? string.Empty : "\nPortal de agendamento oficial: " + portalAgendamentoUrl)
         : """
 CONDIÇÕES DE EXECUÇÃO DESTA CONVERSA
 Responda pelo canal atual. Consulte e opere somente por ferramentas autorizadas
