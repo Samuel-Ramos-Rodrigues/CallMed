@@ -334,11 +334,69 @@ public sealed class AtendimentoConversaService
         if (ultima is null) return null;
         // Avisos do sistema, como "encaminhado para equipe", não respondem ao pedido.
         // Resposta humana, resposta da IA ou rascunho posterior já tratam a entrada.
+        // Falha de transporte mantém a ação de reenvio da mesma mensagem;
+        // somente um rascunho descartado libera geração de uma nova sugestão.
         var respondida = await _context.MensagensAtendimento.AsNoTracking().AnyAsync(m =>
             m.ConversaAtendimentoId == conversaId && m.Id > ultima.Id &&
             m.Direcao == DirecaoMensagemAtendimento.Saida &&
+            m.Status != StatusMensagemAtendimento.Ignorada &&
             (m.Autor == AutorMensagemAtendimento.Funcionario || m.Autor == AutorMensagemAtendimento.Assistente), ct);
         return respondida ? null : ultima;
+    }
+
+    public async Task AtualizarEstadoIaAsync(ConversaAtendimento conversa, long entradaId, string estado, CancellationToken ct)
+    {
+        conversa.IaEntradaId = entradaId;
+        conversa.IaEstado = estado;
+        conversa.IaAtualizadoEm = DateTime.UtcNow;
+        await _context.SaveChangesAsync(ct);
+    }
+
+    public Task RecarregarAsync(ConversaAtendimento conversa, CancellationToken ct) => _context.Entry(conversa).ReloadAsync(ct);
+
+    public async Task<AtendimentoIaStatus> ObterEstadoIaAsync(ConversaAtendimento conversa, CancellationToken ct)
+    {
+        var entrada = await _context.MensagensAtendimento.AsNoTracking()
+            .Where(m => m.ConversaAtendimentoId == conversa.Id && m.Direcao == DirecaoMensagemAtendimento.Entrada &&
+                m.Autor == AutorMensagemAtendimento.Paciente)
+            .OrderByDescending(m => m.Id).FirstOrDefaultAsync(ct);
+        var saida = entrada is null ? null : await _context.MensagensAtendimento.AsNoTracking()
+            .Where(m => m.ConversaAtendimentoId == conversa.Id && m.Id > entrada.Id &&
+                m.Direcao == DirecaoMensagemAtendimento.Saida &&
+                (m.Autor == AutorMensagemAtendimento.Assistente || m.Autor == AutorMensagemAtendimento.Funcionario))
+            .OrderByDescending(m => m.Id).FirstOrDefaultAsync(ct);
+        return AtendimentoIaStatus.Criar(conversa, entrada, saida, DateTime.UtcNow);
+    }
+
+    public async Task<string> ChaveRascunhoAsync(long conversaId, long entradaId, CancellationToken ct)
+    {
+        var chave = $"ia:email:{conversaId}:{entradaId}";
+        // Um rascunho descartado pode ser gerado de novo por solicitação explícita.
+        var prefixo = chave + ":";
+        var anterior = await _context.MensagensAtendimento.AsNoTracking()
+            .Where(m => m.ChaveEnvio == chave || (m.ChaveEnvio != null && m.ChaveEnvio.StartsWith(prefixo)))
+            .OrderByDescending(m => m.Id).FirstOrDefaultAsync(ct);
+        if (anterior is null) return chave;
+        // A mesma tentativa usa a mesma chave até entre processos diferentes.
+        return anterior.Status == StatusMensagemAtendimento.Ignorada
+            ? $"{chave}:retry:{anterior.Id}" : anterior.ChaveEnvio!;
+    }
+
+    /// <summary>Somente esta conversa e falas efetivamente recebidas/enviadas antes da entrada atual.</summary>
+    public async Task<IReadOnlyList<MensagemHistoricoAgente>> CarregarHistoricoEmailAsync(
+        long conversaId, long antesDaEntradaId, CancellationToken ct = default)
+    {
+        var mensagens = await _context.MensagensAtendimento.AsNoTracking()
+            .Where(m => m.ConversaAtendimentoId == conversaId && m.Id < antesDaEntradaId &&
+                ((m.Direcao == DirecaoMensagemAtendimento.Entrada && m.Autor == AutorMensagemAtendimento.Paciente) ||
+                 (m.Direcao == DirecaoMensagemAtendimento.Saida && m.Status == StatusMensagemAtendimento.Enviada &&
+                  (m.Autor == AutorMensagemAtendimento.Assistente || m.Autor == AutorMensagemAtendimento.Funcionario))))
+            .OrderByDescending(m => m.Id).Take(16).OrderBy(m => m.Id)
+            .Select(m => new MensagemHistoricoAgente
+            {
+                Papel = m.Direcao == DirecaoMensagemAtendimento.Entrada ? "user" : "bot", Texto = m.Texto
+            }).ToListAsync(ct);
+        return AtendimentoEmailPolitica.PrepararHistorico(mensagens, limite: 16);
     }
 
     public async Task<IReadOnlyList<MensagemHistoricoAgente>>

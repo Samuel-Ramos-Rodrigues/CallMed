@@ -16,17 +16,29 @@ public sealed class AtendimentoOrquestradorService
     public Task<ResultadoRetomadaAtendimento> RetomarUltimaEntradaPendenteAsync(ConversaAtendimento conversa, CancellationToken ct = default) =>
         RetomarComExclusaoAsync(conversa, devolver: false, ct);
 
-    private async Task<ResultadoRetomadaAtendimento> RetomarComExclusaoAsync(ConversaAtendimento conversa, bool devolver, CancellationToken ct)
+    public Task<ResultadoRetomadaAtendimento> GerarRascunhoEmailAsync(ConversaAtendimento conversa, CancellationToken ct = default) =>
+        RetomarComExclusaoAsync(conversa, devolver: false, ct, rascunhoManual: true);
+
+    private async Task<ResultadoRetomadaAtendimento> RetomarComExclusaoAsync(ConversaAtendimento conversa, bool devolver, CancellationToken ct, bool rascunhoManual = false)
     {
         var trava = TravasRetomada[(int)(conversa.Id % TravasRetomada.Length)];
         await trava.WaitAsync(ct);
         try
         {
+            // A conversa pode ter sido assumida/encerrada enquanto aguardávamos a trava.
+            await _conversas.RecarregarAsync(conversa, ct);
             if (devolver) await _conversas.DevolverParaIaAsync(conversa, ct);
-            if (!conversa.Ativa || conversa.Modo != ModoAtendimento.IA) return ResultadoRetomadaAtendimento.SemMensagemPendente;
+            if (!conversa.Ativa || (conversa.Modo != ModoAtendimento.IA && !rascunhoManual))
+                return ResultadoRetomadaAtendimento.SemMensagemPendente;
             return conversa.Canal == CanalAtendimento.Email
-                ? await RetomarUltimoEmailPendenteAsync(conversa, ct)
+                ? await RetomarUltimoEmailPendenteAsync(conversa, ct, rascunhoManual)
                 : await RetomarCanalConversacionalAsync(conversa, ct);
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            if (conversa.IaEntradaId is long entradaId && conversa.IaEstado is "analisando" or "gerando")
+                await _conversas.AtualizarEstadoIaAsync(conversa, entradaId, "falha", CancellationToken.None);
+            throw;
         }
         finally { trava.Release(); }
     }
@@ -35,22 +47,27 @@ public sealed class AtendimentoOrquestradorService
     {
         var ultima = await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct);
         if (ultima is null) return ResultadoRetomadaAtendimento.SemMensagemPendente;
+        await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "analisando", ct);
         if (AtendimentoIntencao.EhPedidoAtendimentoHumano(ultima.Texto))
         {
             await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+            await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "equipe", ct);
             return ResultadoRetomadaAtendimento.RequerEquipe;
         }
         conversa = await _conversas.ObterPorIdAsync(conversa.Id, ct) ?? conversa;
         var historico = await _conversas.CarregarHistoricoPacienteAsync(conversa.PacienteId, conversa.Id, 24, ct, excluirMensagemId: ultima.Id);
         try
         {
+            await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "gerando", ct);
             var resposta = await _agente.EnviarAsync(NormalizarTextoEntrada(ultima.Texto, conversa.Canal), conversa.SessionId, CriarContextoUsuario(conversa), historico, ct);
             if (string.IsNullOrWhiteSpace(resposta.Resposta))
             {
                 await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+                await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "falha", ct);
                 return ResultadoRetomadaAtendimento.FalhaNaGeracao;
             }
             var saida = await _envio.EnviarRespostaIaAsync(conversa, resposta.Resposta, ultima.Id, ct);
+            await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "concluida", ct);
             return saida.Status == StatusMensagemAtendimento.Enviada ? ResultadoRetomadaAtendimento.RespostaEnviada
                 : saida.Status == StatusMensagemAtendimento.Processando ? ResultadoRetomadaAtendimento.RespostaEmProcessamento
                 : ResultadoRetomadaAtendimento.FalhaNoEnvio;
@@ -60,6 +77,7 @@ public sealed class AtendimentoOrquestradorService
         {
             _logger.LogWarning(ex, "Falha ao retomar IA na conversa {ConversaId}.", conversa.Id);
             await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+            await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "falha", ct);
             return ResultadoRetomadaAtendimento.FalhaNaGeracao;
         }
     }
@@ -113,41 +131,13 @@ public sealed class AtendimentoOrquestradorService
             ct: ct,
             // Um remetente de e-mail, por si só, não deve vincular a conversa a um prontuário.
             resolverIdentidade: false);
-        var jaEstavaEmAtendimentoHumano = conversa.Modo == ModoAtendimento.Humano;
-
-        // E-mail é um canal não autenticado: o histórico é restrito à própria conversa e
-        // os dados cadastrais do paciente não são enviados ao modelo só por conhecer o remetente.
-        var historico = await _conversas.CarregarHistoricoPacienteAsync(
-            pacienteId: null,
-            conversaAtualId: conversa.Id,
-            limite: 16,
-            ct: ct);
-
         var nova = await _conversas.RegistrarEntradaAsync(
-            conversa,
-            textoEntrada,
-            entrada.MensagemExternaId,
-            ct);
-        if (nova is null) return; // ID externo já registrado: idempotência da leitura Gmail.
+            conversa, textoEntrada, entrada.MensagemExternaId, ct);
+        if (nova is null) return; // Releitura Gmail não gera nova análise.
+        if (conversa.Modo == ModoAtendimento.Humano) return;
 
-        // E-mail não autenticado não cria solicitações operacionais automaticamente.
-        // Pedidos de agendamento/remarcação passam pela equipe, que pode verificar a identidade.
-
-        // Conversa já assumida pela equipe: registrar a entrada, mas não disputar a resposta.
-        if (jaEstavaEmAtendimentoHumano) return;
-
-        // A IA interpreta a intenção, não uma lista de frases rígidas.
-        // Dúvidas públicas recebem um rascunho; questões privadas ficam com a equipe.
-        var decisao = await _decisaoEmail.AnalisarAsync(textoEntrada, ct);
-        if (decisao != DecisaoEmail.PrepararRascunho)
-        {
-            _logger.LogInformation("E-mail {ConversaId} direcionado para equipe. Decisao={Decisao}", conversa.Id, decisao);
-            await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
-            return;
-        }
-
-        if (!await CriarRascunhoEmailAsync(conversa, textoEntrada, nova.Id, historico, ct))
-            await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+        // O caminho automático e os botões usam a mesma exclusão e as mesmas regras.
+        await RetomarUltimaEntradaPendenteAsync(conversa, ct);
     }
 
     /// <summary>
@@ -157,49 +147,43 @@ public sealed class AtendimentoOrquestradorService
     /// </summary>
     private async Task<ResultadoRetomadaAtendimento> RetomarUltimoEmailPendenteAsync(
         ConversaAtendimento conversa,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        bool rascunhoManual = false)
     {
-        if (conversa.Canal != CanalAtendimento.Email || conversa.Modo != ModoAtendimento.IA)
+        if (conversa.Canal != CanalAtendimento.Email || (conversa.Modo != ModoAtendimento.IA && !rascunhoManual))
             return ResultadoRetomadaAtendimento.SemMensagemPendente;
 
         var ultima = await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct);
         if (ultima is null)
             return ResultadoRetomadaAtendimento.SemMensagemPendente;
 
+        await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "analisando", ct);
         var texto = NormalizarTextoEntrada(ultima.Texto, CanalAtendimento.Email);
-        var decisao = await _decisaoEmail.AnalisarAsync(texto, ct);
+        var historico = await _conversas.CarregarHistoricoEmailAsync(conversa.Id, ultima.Id, ct);
+        var decisao = await _decisaoEmail.AnalisarAsync(texto, ct, historico);
         if (decisao != DecisaoEmail.PrepararRascunho)
         {
             _logger.LogInformation("Retomada de e-mail {ConversaId} interrompida. Decisao={Decisao}", conversa.Id, decisao);
-            await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+            if (conversa.Modo == ModoAtendimento.IA)
+                await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+            await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, decisao == DecisaoEmail.Equipe ? "equipe" : "falha", ct);
             return decisao == DecisaoEmail.Equipe
                 ? ResultadoRetomadaAtendimento.RequerEquipe
                 : ResultadoRetomadaAtendimento.FalhaNaGeracao;
         }
 
-        var historico = await _conversas.CarregarHistoricoPacienteAsync(
-            pacienteId: null,
-            conversaAtualId: conversa.Id,
-            limite: 16,
-            ct: ct,
-            excluirMensagemId: ultima.Id);
-
-        if (!await CriarRascunhoEmailAsync(conversa, texto, ultima.Id, historico, ct))
-        {
-            await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
-            return ResultadoRetomadaAtendimento.FalhaNaGeracao;
-        }
-
-        return ResultadoRetomadaAtendimento.RascunhoCriado;
+        await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "gerando", ct);
+        return await CriarRascunhoEmailAsync(conversa, texto, ultima.Id, historico, ct);
     }
 
-    private async Task<bool> CriarRascunhoEmailAsync(
+    private async Task<ResultadoRetomadaAtendimento> CriarRascunhoEmailAsync(
         ConversaAtendimento conversa,
         string textoEntrada,
         long entradaId,
         IReadOnlyList<MensagemHistoricoAgente> historico,
         CancellationToken ct)
     {
+        var sessaoInicial = conversa.SessionId;
         var usuario = new AgenteUsuarioContexto
         {
             Email = conversa.IdentificadorExterno,
@@ -222,12 +206,22 @@ public sealed class AtendimentoOrquestradorService
                 AtendimentoEmailPolitica.OmitirTelefones(textoEntrada),
                 conversa.SessionId,
                 usuario,
-                historico.Select(m => new MensagemHistoricoAgente { Papel = m.Papel, Texto = AtendimentoEmailPolitica.OmitirTelefones(AtendimentoEmailTexto.Normalizar(m.Texto)) })
-                    .Where(m => !string.IsNullOrWhiteSpace(m.Texto) && !AtendimentoEmailPolitica.ContemIdentificadorSensivel(m.Texto)).ToList(),
+                historico,
                 ct);
 
-            if (string.IsNullOrWhiteSpace(resposta.Resposta)) return false;
+            if (string.IsNullOrWhiteSpace(resposta.Resposta)) throw new InvalidOperationException("Resposta da IA vazia.");
 
+            await _conversas.RecarregarAsync(conversa, ct);
+            if (!conversa.Ativa || conversa.SessionId != sessaoInicial)
+            {
+                await _conversas.AtualizarEstadoIaAsync(conversa, entradaId, "equipe", ct);
+                return ResultadoRetomadaAtendimento.RequerEquipe;
+            }
+            // Uma nova entrada pode chegar durante a geração. Não trate a nova pergunta
+            // como respondida por um rascunho que foi preparado para a mensagem anterior.
+            var pendente = await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct);
+            if (pendente?.Id != entradaId) return ResultadoRetomadaAtendimento.SemMensagemPendente;
+            var chave = await _conversas.ChaveRascunhoAsync(conversa.Id, entradaId, ct);
             await _conversas.RegistrarSaidaAsync(
                 conversa,
                 resposta.Resposta,
@@ -235,10 +229,11 @@ public sealed class AtendimentoOrquestradorService
                 StatusMensagemAtendimento.AguardandoAprovacao,
                 erro: "Rascunho gerado pela IA. Revise antes de enviar ao paciente.",
                 ct: ct,
-                chaveEnvio: $"ia:email:{conversa.Id}:{entradaId}");
+                chaveEnvio: chave);
 
-            // Rascunho não transfere a conversa para atendimento humano.
-            return true;
+            await _conversas.AtualizarEstadoIaAsync(conversa, entradaId, "pronto", ct);
+            // Gerar manualmente não muda o responsável nem envia o e-mail.
+            return ResultadoRetomadaAtendimento.RascunhoCriado;
         }
         catch (OperationCanceledException) when (ct.IsCancellationRequested)
         {
@@ -249,7 +244,11 @@ public sealed class AtendimentoOrquestradorService
             _logger.LogWarning(ex,
                 "Falha ao gerar rascunho de e-mail para a conversa {ConversaId}.",
                 conversa.Id);
-            return false;
+            await _conversas.RecarregarAsync(conversa, ct);
+            if (conversa.Ativa && conversa.SessionId == sessaoInicial && conversa.Modo == ModoAtendimento.IA)
+                await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+            await _conversas.AtualizarEstadoIaAsync(conversa, entradaId, "falha", ct);
+            return ResultadoRetomadaAtendimento.FalhaNaGeracao;
         }
     }
 
@@ -349,6 +348,7 @@ public sealed class AtendimentoOrquestradorService
             return;
 
         var usuario = CriarContextoUsuario(conversa);
+        await _conversas.AtualizarEstadoIaAsync(conversa, nova.Id, "gerando", ct);
 
         try
         {
@@ -363,6 +363,12 @@ public sealed class AtendimentoOrquestradorService
                 await _envio.EnviarAsync(conversa, resposta.Resposta, AutorMensagemAtendimento.Assistente, assunto: entrada.Assunto, ct: ct);
             else
                 await _envio.EnviarRespostaIaAsync(conversa, resposta.Resposta, nova.Id, ct);
+            await _conversas.AtualizarEstadoIaAsync(conversa, nova.Id, "concluida", ct);
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            await _conversas.AtualizarEstadoIaAsync(conversa, nova.Id, "falha", CancellationToken.None);
+            throw;
         }
         catch (Exception ex)
         {
@@ -371,6 +377,7 @@ public sealed class AtendimentoOrquestradorService
                 "Falha ao processar atendimento {Canal}, conversa {ConversaId}.",
                 entrada.Canal,
                 conversa.Id);
+            await _conversas.AtualizarEstadoIaAsync(conversa, nova.Id, "falha", ct);
 
             await _envio.EnviarAsync(
                 conversa,

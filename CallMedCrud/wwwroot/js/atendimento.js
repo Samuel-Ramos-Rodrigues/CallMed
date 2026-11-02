@@ -11,6 +11,20 @@
         let currentResponsible = messages.dataset.responsavelId || '';
         let currentPatientId = messages.dataset.pacienteId || '';
         let polling = false;
+        let iaSubmitting = false;
+        const iaPanel = document.getElementById('cmIaStatus');
+        const iaTitle = document.getElementById('cmIaTitle');
+        const iaDetail = document.getElementById('cmIaDetail');
+        const iaConnection = document.getElementById('cmIaConnection');
+        const draftButton = document.getElementById('cmGerarRascunho');
+        const renderIa = state => {
+            if (!iaPanel || !state) return;
+            iaPanel.dataset.state = state.estado || 'aguardando';
+            iaPanel.setAttribute('aria-busy', String(Boolean(state.trabalhando)));
+            if (iaTitle && iaTitle.textContent !== state.titulo) iaTitle.textContent = state.titulo || '';
+            if (iaDetail && iaDetail.textContent !== state.detalhe) iaDetail.textContent = state.detalhe || '';
+            if (draftButton) draftButton.disabled = iaSubmitting || !state.podeGerarRascunho;
+        };
 
         const formatDate = value => {
             const date = new Date(value);
@@ -155,9 +169,11 @@
                     }
                 );
 
-                if (!response.ok) return;
+                if (!response.ok || response.redirected) throw new Error('Atualização indisponível');
 
                 const data = await response.json();
+                if (iaConnection) iaConnection.hidden = true;
+                renderIa(data.ia);
                 const nextResponsible = data.responsavelUsuarioId || '';
                 const nextPatientId = data.pacienteId == null ? '' : String(data.pacienteId);
 
@@ -167,8 +183,8 @@
                     (typeof data.ativa === 'boolean' && data.ativa !== currentActive) ||
                     nextResponsible !== currentResponsible ||
                     nextPatientId !== currentPatientId) {
-                    window.location.reload();
-                    return;
+                    if (!iaSubmitting) window.location.reload();
+                    if (!iaSubmitting) return;
                 }
 
                 currentMode = data.modo || currentMode;
@@ -192,13 +208,47 @@
                     if (nearBottom) messages.scrollTop = messages.scrollHeight;
                 }
             } catch {
-                // Polling é auxiliar; uma falha temporária não bloqueia a Central.
+                if (iaConnection) iaConnection.hidden = false;
             } finally {
                 polling = false;
             }
         };
 
-        window.setInterval(poll, 3500);
+        document.querySelectorAll('form[data-ia-action]').forEach(form => {
+            form.addEventListener('submit', async event => {
+                if (typeof window.fetch !== 'function') return; // POST nativo como alternativa.
+                event.preventDefault();
+                if (iaSubmitting) return;
+                iaSubmitting = true;
+                const buttons = [...document.querySelectorAll('form[data-ia-action] button')];
+                buttons.forEach(button => { button.disabled = true; });
+                renderIa({ estado: 'analisando', titulo: 'Solicitando análise da IA…',
+                    detalhe: 'Aguarde. O andamento será atualizado nesta conversa.', trabalhando: true });
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST', body: new FormData(form), credentials: 'same-origin',
+                        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                    if (!response.ok || response.redirected) throw new Error('Ação não confirmada');
+                    const data = await response.json();
+                    renderIa(data.ia);
+                    // Recarrega o histórico e os controles de modo ao concluir a ação.
+                    window.location.reload();
+                } catch {
+                    renderIa({ estado: 'interrompida', titulo: 'Não foi possível confirmar a solicitação',
+                        detalhe: 'A conexão foi interrompida. O andamento será consultado novamente antes de outra tentativa.',
+                        trabalhando: false, podeGerarRascunho: false });
+                    if (iaConnection) iaConnection.hidden = false;
+                } finally {
+                    iaSubmitting = false;
+                    buttons.forEach(button => { if (button !== draftButton) button.disabled = false; });
+                    await poll();
+                }
+            });
+        });
+        window.setInterval(poll, 2000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
+        poll();
     }
 
     // Busca instantânea somente nas conversas já carregadas. Filtros por canal e modo continuam no servidor.
@@ -216,8 +266,7 @@
         if (button) { button.disabled = true; button.textContent = 'Enviando...'; }
     });
 
-    // Ações de estado usam POST tradicional do navegador.
-    // Assim Assumir/Devolver/Encerrar continuam funcionando mesmo se o fetch/polling falhar.
+    // As demais ações mantêm o POST tradicional do navegador.
     document.querySelectorAll('.email-draft-actions form').forEach(form => {
         form.addEventListener('submit', event => {
             const button = form.querySelector('button[type="submit"]');
@@ -227,7 +276,7 @@
         });
     });
 
-    document.querySelectorAll('.atendimento-state-form').forEach(form => {
+    document.querySelectorAll('.atendimento-state-form:not([data-ia-action])').forEach(form => {
         form.addEventListener('submit', event => {
             // Não desabilitar o submitter durante o próprio evento submit:
             // alguns navegadores deixam de enviar o formulário. O POST nativo

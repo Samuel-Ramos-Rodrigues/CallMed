@@ -173,6 +173,7 @@ public sealed class AtendimentoController : Controller
         {
             Conversas = resumos,
             ConversaSelecionada = selecionada,
+            EstadoIa = selecionada is null ? null : await _conversas.ObterEstadoIaAsync(selecionada, ct),
             Mensagens = mensagens,
             PacientesParaVinculo = selecionada is null
                 ? Array.Empty<PacienteOpcaoAtendimentoViewModel>()
@@ -358,12 +359,12 @@ public sealed class AtendimentoController : Controller
 
         var resultado = await _orquestrador.DevolverParaIaERetomarAsync(conversa, ct);
         AplicarResultadoRetomada(resultado);
-        return RedirectToAction(nameof(Index), new { id });
+        return await ResponderAcaoIaAsync(conversa, resultado, ct);
     }
 
     /// <summary>
     /// Permite tentar novamente a análise de uma entrada de e-mail pendente mesmo
-    /// quando a conversa já está em modo IA. Não envia e-mail; gera só rascunho.
+    /// em conversas antigas, inclusive assumidas pela equipe. Não envia e-mail nem muda o responsável.
     /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -374,20 +375,30 @@ public sealed class AtendimentoController : Controller
         var conversa = await _context.ConversasAtendimento
             .FirstOrDefaultAsync(c => c.Id == id, ct);
         if (conversa is null) return NotFound();
-        if (!conversa.Ativa || conversa.Canal != CanalAtendimento.Email || conversa.Modo != ModoAtendimento.IA)
+        if (!conversa.Ativa || conversa.Canal != CanalAtendimento.Email)
         {
-            TempData["Erro"] = "A conversa precisa estar aberta e em modo Assistente IA para revisar um e-mail pendente.";
+            TempData["Erro"] = "Abra uma conversa de e-mail para gerar um rascunho.";
             return RedirectToAction(nameof(Index), new { id });
         }
 
-        await PrepararRascunhoPendenteAsync(conversa, ct);
-        return RedirectToAction(nameof(Index), new { id });
+        var resultado = await _orquestrador.GerarRascunhoEmailAsync(conversa, ct);
+        if (resultado == ResultadoRetomadaAtendimento.SemMensagemPendente)
+        {
+            var estado = await _conversas.ObterEstadoIaAsync(conversa, ct);
+            TempData["Aviso"] = $"{estado.Titulo}. {estado.Detalhe}";
+        }
+        else AplicarResultadoRetomada(resultado);
+        return await ResponderAcaoIaAsync(conversa, resultado, ct);
     }
 
-    private async Task PrepararRascunhoPendenteAsync(ConversaAtendimento conversa, CancellationToken ct)
+    private async Task<IActionResult> ResponderAcaoIaAsync(ConversaAtendimento conversa, ResultadoRetomadaAtendimento resultado, CancellationToken ct)
     {
-        var resultado = await _orquestrador.RetomarUltimaEntradaPendenteAsync(conversa, ct);
-        AplicarResultadoRetomada(resultado);
+        if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        {
+            // O cliente mantém a conversa e o progresso visíveis durante o POST.
+            return Json(new { resultado = resultado.ToString(), ia = await _conversas.ObterEstadoIaAsync(conversa, ct) });
+        }
+        return RedirectToAction(nameof(Index), new { id = conversa.Id });
     }
 
     private void AplicarResultadoRetomada(ResultadoRetomadaAtendimento resultado)
@@ -572,6 +583,7 @@ public sealed class AtendimentoController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
     public async Task<IActionResult> Atualizacoes(
         long id,
         long afterId = 0,
@@ -634,6 +646,7 @@ public sealed class AtendimentoController : Controller
             ativa = conversa.Ativa,
             responsavelUsuarioId = conversa.ResponsavelUsuarioId,
             pacienteId = conversa.PacienteId,
+            ia = await _conversas.ObterEstadoIaAsync(conversa, ct),
             estados,
             mensagens
         });

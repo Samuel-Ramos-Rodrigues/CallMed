@@ -139,6 +139,160 @@ internal static class AtendimentoRetomadaChecks
             check(await f.Orquestrador.DevolverParaIaERetomarAsync(f.Conversa) == ResultadoRetomadaAtendimento.SemMensagemPendente && f.Agente.Calls == 0,
                 "Resposta humana posterior impede que a IA repita o atendimento antigo");
         }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Oi, quais médicos têm aí?"))
+        {
+            var inicial = await f.Conversas.ObterEstadoIaAsync(f.Conversa, default);
+            check(inicial.Estado == "humano" && inicial.PodeGerarRascunho && !inicial.Trabalhando,
+                "Conversa antiga mostra IA pausada e permite gerar rascunho");
+            f.Conversa.ResponsavelUsuarioId = "atendente-ficticio";
+            await f.Db.SaveChangesAsync();
+            await f.Controller().GerarRascunhoPendente(1, default);
+            var pronto = await f.Conversas.ObterEstadoIaAsync(f.Conversa, default);
+            check(pronto.Estado == "rascunho" && !pronto.PodeGerarRascunho && !pronto.Trabalhando && f.Canal.Calls == 0,
+                "Gerar rascunho em conversa antiga conclui com aprovação pendente e não envia e-mail");
+            check(f.Conversa.Modo == ModoAtendimento.Humano && f.Conversa.ResponsavelUsuarioId == "atendente-ficticio",
+                "Gerar rascunho preserva modo humano e responsável atual");
+            await f.Controller().GerarRascunhoPendente(1, default);
+            check(f.Agente.Calls == 1, "Novo clique não duplica um rascunho aguardando aprovação");
+            var draft = await f.Db.MensagensAtendimento.SingleAsync(m => m.Status == StatusMensagemAtendimento.AguardandoAprovacao);
+            await f.Envio.DescartarRascunhoAsync(draft.Id, "atendente-ficticio");
+            var descartado = await f.Conversas.ObterEstadoIaAsync(f.Conversa, default);
+            check(descartado.Estado == "pendente" && descartado.PodeGerarRascunho,
+                "Rascunho descartado deixa a mensagem disponível para nova tentativa");
+            await f.Controller().GerarRascunhoPendente(1, default);
+            check(f.Agente.Calls == 2 && await f.Db.MensagensAtendimento.CountAsync(m => m.Status == StatusMensagemAtendimento.AguardandoAprovacao) == 1 &&
+                await f.Db.MensagensAtendimento.CountAsync(m => m.Status == StatusMensagemAtendimento.Ignorada) == 1,
+                "Regeneração cria uma nova sugestão e preserva o rascunho descartado no histórico");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quais médicos?"))
+        {
+            var analisando = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var liberarAnalise = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var gerando = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var liberarGeracao = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            f.Gemini.DuranteAnalise = async () => { analisando.SetResult(); await liberarAnalise.Task; };
+            f.Agente.DuranteGeracao = async () => { gerando.SetResult(); await liberarGeracao.Task; };
+            f.Conversa.Modo = ModoAtendimento.IA;
+            await f.Db.SaveChangesAsync();
+            var processo = f.Orquestrador.ProcessarEntradaEmailComoRascunhoAsync(new CanalMensagemEntrada {
+                Canal = CanalAtendimento.Email, Identificador = f.Conversa.IdentificadorExterno,
+                Texto = "Quais médicos têm aí?", MensagemExternaId = "gmail:progresso" });
+            await analisando.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            var estado = await f.Conversas.ObterEstadoIaAsync(f.Conversa, default);
+            check(estado.Estado == "analisando" && estado.Trabalhando && !estado.PodeGerarRascunho,
+                "Entrada automática persiste o estado analisando antes da classificação");
+            liberarAnalise.SetResult();
+            await gerando.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            estado = await f.Conversas.ObterEstadoIaAsync(f.Conversa, default);
+            check(estado.Estado == "gerando" && estado.Trabalhando,
+                "Durante a chamada ao agente o estado real é gerando rascunho");
+            liberarGeracao.SetResult(); await processo;
+            check((await f.Conversas.ObterEstadoIaAsync(f.Conversa, default)).Estado == "rascunho",
+                "Conclusão automática substitui o andamento por rascunho pronto");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quais médicos?"))
+        {
+            f.Agente.Falhar = true;
+            await f.Orquestrador.GerarRascunhoEmailAsync(f.Conversa);
+            var estado = await f.Conversas.ObterEstadoIaAsync(f.Conversa, default);
+            check(estado.Estado == "falha" && !estado.Trabalhando && estado.PodeGerarRascunho && f.Canal.Calls == 0,
+                "Falha do agente fica visível e permite nova tentativa sem enviar e-mail");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Meu CPF é 52998224725"))
+        {
+            await f.Orquestrador.DevolverParaIaERetomarAsync(f.Conversa);
+            check((await f.Conversas.ObterEstadoIaAsync(f.Conversa, default)).Estado == "equipe",
+                "Pedido que exige equipe é distinguido de falha técnica da IA");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quais médicos?"))
+        {
+            f.Gemini.Indisponivel = true;
+            await f.Orquestrador.GerarRascunhoEmailAsync(f.Conversa);
+            check((await f.Conversas.ObterEstadoIaAsync(f.Conversa, default)).Estado == "falha" && f.Agente.Calls == 0,
+                "Classificador indisponível aparece como falha, sem simular análise concluída");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quais médicos?"))
+        {
+            f.Conversa.IaEntradaId = f.Entrada.Id; f.Conversa.IaEstado = "gerando";
+            f.Conversa.IaAtualizadoEm = DateTime.UtcNow.AddMinutes(-11); await f.Db.SaveChangesAsync();
+            var estado = await f.Conversas.ObterEstadoIaAsync(f.Conversa, default);
+            check(estado.Estado == "interrompida" && !estado.Trabalhando && estado.PodeGerarRascunho,
+                "Processamento abandonado após reinício não deixa animação infinita");
+            f.Conversa.Ativa = false; await f.Db.SaveChangesAsync();
+            check(!(await f.Conversas.ObterEstadoIaAsync(f.Conversa, default)).PodeGerarRascunho,
+                "Conversa encerrada não permite gerar rascunho");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quais médicos?"))
+        {
+            using var cts = new CancellationTokenSource();
+            f.Agente.DuranteGeracao = () => { cts.Cancel(); return Task.CompletedTask; };
+            try { await f.Orquestrador.GerarRascunhoEmailAsync(f.Conversa, cts.Token); }
+            catch (OperationCanceledException) { }
+            check((await f.Conversas.ObterEstadoIaAsync(f.Conversa, default)).Estado == "falha",
+                "Cancelamento da chamada encerra o estado de trabalho persistido");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Pergunta antiga"))
+        {
+            f.Agente.DuranteGeracao = async () => {
+                await f.Conversas.RegistrarEntradaAsync(f.Conversa, "Nova pergunta", "teste:durante-geracao");
+            };
+            await f.Orquestrador.GerarRascunhoEmailAsync(f.Conversa);
+            var estado = await f.Conversas.ObterEstadoIaAsync(f.Conversa, default);
+            check(estado.Estado == "humano" && estado.PodeGerarRascunho &&
+                !await f.Db.MensagensAtendimento.AnyAsync(m => m.Status == StatusMensagemAtendimento.AguardandoAprovacao),
+                "Entrada nova durante a geração não é marcada como respondida pelo rascunho da pergunta antiga");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quais médicos?"))
+        {
+            var controller = f.Controller();
+            controller.Request.Headers["X-Requested-With"] = "XMLHttpRequest";
+            check(await controller.GerarRascunhoPendente(1, default) is JsonResult,
+                "Ação assíncrona devolve estado da IA em JSON com autorização e antiforgery preservados");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Preciso de cardiologista"))
+        {
+            const string pergunta = "Deseja que eu verifique a disponibilidade de horários do cardiologista?";
+            await f.Conversas.RegistrarSaidaAsync(f.Conversa, pergunta, AutorMensagemAtendimento.Assistente, StatusMensagemAtendimento.Enviada);
+            var atual = await f.Conversas.RegistrarEntradaAsync(f.Conversa, "Sim pfvr", "gmail:aceite-vagas");
+            var resultado = await f.Orquestrador.DevolverParaIaERetomarAsync(f.Conversa);
+            check(f.Gemini.Texto == "Sim pfvr" && f.Gemini.Historico?.Last().Texto == pergunta,
+                "Triagem recebe o Sim pfvr junto da pergunta real anterior sobre disponibilidade");
+            check(f.Gemini.Historico?.Count == 2 && f.Gemini.Historico.All(m => m.Texto != "Sim pfvr"),
+                "Mensagem atual é separada do contexto e aparece uma única vez no pedido de classificação");
+            check(resultado == ResultadoRetomadaAtendimento.RascunhoCriado && f.Canal.Calls == 0 &&
+                f.Agente.Historico?.Last().Texto == pergunta && f.Agente.Texto == "Sim pfvr",
+                "Decisão pública continua no agente com o mesmo contexto e prepara rascunho sem enviar");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Meu CPF é 52998224725"))
+        {
+            const string pergunta = "Deseja consultar horários? Meu telefone é 11987654321";
+            await f.Conversas.RegistrarSaidaAsync(f.Conversa, pergunta, AutorMensagemAtendimento.Funcionario, StatusMensagemAtendimento.Enviada);
+            await f.Conversas.RegistrarSaidaAsync(f.Conversa, "Rascunho que não foi enviado", AutorMensagemAtendimento.Assistente, StatusMensagemAtendimento.AguardandoAprovacao);
+            await f.Conversas.RegistrarSaidaAsync(f.Conversa, "Resposta que falhou", AutorMensagemAtendimento.Assistente, StatusMensagemAtendimento.Falhou);
+            await f.Conversas.RegistrarSaidaAsync(f.Conversa, "Aviso interno do sistema", AutorMensagemAtendimento.Sistema, StatusMensagemAtendimento.Enviada);
+            f.Db.ConversasAtendimento.Add(new ConversaAtendimento { Id = 2, Canal = CanalAtendimento.Email, IdentificadorExterno = "outro@example.test", SessionId = "outra" });
+            f.Db.MensagensAtendimento.Add(new MensagemAtendimento { ConversaAtendimentoId = 2, Texto = "Conteúdo de outra conversa", Direcao = DirecaoMensagemAtendimento.Entrada, Autor = AutorMensagemAtendimento.Paciente });
+            await f.Db.SaveChangesAsync();
+            await f.Conversas.RegistrarEntradaAsync(f.Conversa, "Sim pfvr", "gmail:historico-seguro");
+            await f.Orquestrador.GerarRascunhoEmailAsync(f.Conversa);
+            check(f.Gemini.Historico?.Count == 1 && f.Gemini.Historico[0].Papel == "bot",
+                "Contexto da triagem exclui CPF antigo, rascunho não enviado, falha, sistema e outra conversa");
+            check(f.Gemini.Pedido?.Contains("52998224725") == false && f.Gemini.Pedido.Contains("11987654321") == false &&
+                f.Gemini.Historico?[0].Texto.Contains("[telefone omitido]") == true,
+                "Histórico é sanitizado antes de ser enviado ao classificador");
+            check(f.Agente.Historico?.Count == 1 && f.Agente.Historico[0].Texto == f.Gemini.Historico?[0].Texto,
+                "Classificador e agente compartilham o histórico seguro da mesma conversa");
+        }
+        await using (var f = await Fixture.Create(CanalAtendimento.Email, "Quero cancelar minha consulta"))
+        {
+            const string pergunta = "Você confirma que deseja cancelar sua consulta pessoal?";
+            await f.Conversas.RegistrarSaidaAsync(f.Conversa, pergunta, AutorMensagemAtendimento.Funcionario, StatusMensagemAtendimento.Enviada);
+            await f.Conversas.RegistrarEntradaAsync(f.Conversa, "Sim pfvr", "gmail:aceite-privado");
+            f.Gemini.Acao = "EQUIPE"; // Decisão externa simulada, não um teste semântico do Gemini real.
+            var resultado = await f.Orquestrador.DevolverParaIaERetomarAsync(f.Conversa);
+            check(f.Gemini.Historico?.Last().Texto == pergunta && resultado == ResultadoRetomadaAtendimento.RequerEquipe && f.Agente.Calls == 0,
+                "Confirmação privada mantém contexto e respeita encaminhamento sem executar operação");
+        }
     }
 
     private sealed class Fixture : IAsyncDisposable
@@ -182,9 +336,13 @@ internal static class AtendimentoRetomadaChecks
     }
     private sealed class FakeAgente : IAgenteClinicaService
     {
+        public Func<Task>? DuranteGeracao; public bool Falhar;
         public int Calls;public string? Texto;public AgenteUsuarioContexto? Usuario;public IReadOnlyList<MensagemHistoricoAgente>? Historico;
         public async Task<AgenteResposta> EnviarAsync(string mensagem,string? sessionId,AgenteUsuarioContexto usuario,IReadOnlyList<MensagemHistoricoAgente>? historicoCliente=null,CancellationToken cancellationToken=default)
-        { Calls++;Texto=mensagem;Usuario=usuario;Historico=historicoCliente;await Task.Delay(5,cancellationToken);return new() { Resposta="Posso ajudar com informações sobre cardiologia e horários.",SessionId=sessionId ?? "teste" }; }
+        { Calls++;Texto=mensagem;Usuario=usuario;Historico=historicoCliente;
+            if (DuranteGeracao is not null) await DuranteGeracao();
+            if (Falhar) throw new InvalidOperationException("Falha fictícia da IA");
+            await Task.Delay(5,cancellationToken);return new() { Resposta="Posso ajudar com informações sobre cardiologia e horários.",SessionId=sessionId ?? "teste" }; }
     }
     private sealed class FakeCanal : ICanalAtendimentoSender
     {
@@ -194,11 +352,22 @@ internal static class AtendimentoRetomadaChecks
     }
     private sealed class Classificador : HttpMessageHandler
     {
-        public int Calls;public string? Texto;
+        public Func<Task>? DuranteAnalise; public bool Indisponivel;
+        public int Calls; public string? Texto; public string? Pedido; public string Acao = "RASCUNHO";
+        public List<MensagemHistoricoAgente>? Historico;
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,CancellationToken ct)
         {
-            Calls++;using var doc=System.Text.Json.JsonDocument.Parse(await request.Content!.ReadAsStringAsync(ct));Texto=doc.RootElement.GetProperty("contents")[0].GetProperty("parts")[0].GetProperty("text").GetString();
-            return new(HttpStatusCode.OK) { Content=new StringContent("{\"candidates\":[{\"content\":{\"parts\":[{\"text\":\"{\\\"acao\\\":\\\"RASCUNHO\\\"}\"}]}}]}",Encoding.UTF8,"application/json") };
+            if (DuranteAnalise is not null) await DuranteAnalise();
+            if (Indisponivel) return new(HttpStatusCode.ServiceUnavailable);
+            Calls++;
+            using var doc = System.Text.Json.JsonDocument.Parse(await request.Content!.ReadAsStringAsync(ct));
+            Pedido = doc.RootElement.GetProperty("contents")[0].GetProperty("parts")[0].GetProperty("text").GetString();
+            using var dados = System.Text.Json.JsonDocument.Parse(Pedido!);
+            Texto = dados.RootElement.GetProperty("mensagemAtual").GetString();
+            Historico = dados.RootElement.GetProperty("historico").EnumerateArray()
+                .Select(m => new MensagemHistoricoAgente { Papel = m.GetProperty("papel").GetString()!, Texto = m.GetProperty("texto").GetString()! }).ToList();
+            var resposta = System.Text.Json.JsonSerializer.Serialize(new { candidates = new[] { new { content = new { parts = new[] { new { text = System.Text.Json.JsonSerializer.Serialize(new { acao = Acao }) } } } } } });
+            return new(HttpStatusCode.OK) { Content = new StringContent(resposta, Encoding.UTF8, "application/json") };
         }
     }
     private sealed class Clock : IClinicaClock { public DateTime Agora=>new(2026,11,1,9,0,0);public DateTime Hoje=>Agora.Date;public DateTime ConverterUtc(DateTime utc)=>utc;public DateTime ConverterParaUtc(DateTime local)=>local; }

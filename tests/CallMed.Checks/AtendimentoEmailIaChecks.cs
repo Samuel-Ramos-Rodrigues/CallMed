@@ -21,6 +21,11 @@ internal static class AtendimentoEmailIaChecks
               == DecisaoEmail.Indisponivel,
             "Falha de interpretação não provoca envio nem rascunho indevido");
 
+        check(AtendimentoEmailDecisaoService.InterpretarResultado("{\"acao\":\"DESCONHECIDA\"}") == DecisaoEmail.Indisponivel &&
+              AtendimentoEmailDecisaoService.InterpretarResultado("{\"acao\":42}") == DecisaoEmail.Indisponivel &&
+              AtendimentoEmailDecisaoService.InterpretarResultado("[]") == DecisaoEmail.Indisponivel,
+            "Classificação desconhecida ou com formato incorreto é falha técnica, não decisão humana simulada");
+
         var options = new DbContextOptionsBuilder<MKSANContext>()
             .UseInMemoryDatabase("atendimento-retomada-" + Guid.NewGuid())
             .Options;

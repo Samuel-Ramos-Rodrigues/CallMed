@@ -126,13 +126,13 @@
                         {
                             <span class="mode-pill mode-waiting">● Aguardando equipe</span>
                             <form asp-action="Assumir" method="post" class="atendimento-state-form" data-action-name="Assumir atendimento"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn small">Assumir</button></form>
-                            <form asp-action="DevolverParaIa" asp-antiforgery="true" method="post" class="atendimento-state-form" data-action-name="Devolver para IA"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Devolver para IA</button></form>
+                            <form asp-action="DevolverParaIa" asp-antiforgery="true" method="post" class="atendimento-state-form" data-ia-action="true" data-action-name="Devolver para IA"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Devolver para IA</button></form>
                             <form asp-action="Encerrar" method="post" class="atendimento-state-form" data-action-name="Encerrar conversa" data-confirm="Encerrar esta conversa? O histórico será preservado."><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Encerrar</button></form>
                         }
                         else if (conversa.ResponsavelUsuarioId == usuarioAtualId)
                         {
                             <span class="mode-pill mode-humano">● Assumido por você</span>
-                            <form asp-action="DevolverParaIa" asp-antiforgery="true" method="post" class="atendimento-state-form" data-action-name="Devolver para IA"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Devolver para IA</button></form>
+                            <form asp-action="DevolverParaIa" asp-antiforgery="true" method="post" class="atendimento-state-form" data-ia-action="true" data-action-name="Devolver para IA"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Devolver para IA</button></form>
                             <form asp-action="Encerrar" method="post" class="atendimento-state-form" data-action-name="Encerrar conversa" data-confirm="Encerrar esta conversa? O histórico será preservado."><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small">Encerrar</button></form>
                         }
                         else
@@ -143,6 +143,24 @@
                         }
                     </div>
                 </header>
+                @if (Model.EstadoIa is { } estadoIa)
+                {
+                    <div class="cm-ia-status" id="cmIaStatus" data-state="@estadoIa.Estado" aria-busy="@estadoIa.Trabalhando.ToString().ToLowerInvariant()">
+                        <span class="cm-ia-status-mark" aria-hidden="true">✦</span>
+                        <div class="cm-ia-status-copy" role="status" aria-live="polite" aria-atomic="true">
+                            <strong id="cmIaTitle">@estadoIa.Titulo</strong>
+                            <p id="cmIaDetail">@estadoIa.Detalhe</p>
+                        </div>
+                        @if (conversa.Ativa && conversa.Canal == CanalAtendimento.Email)
+                        {
+                            <form asp-action="GerarRascunhoPendente" asp-antiforgery="true" method="post" class="atendimento-state-form cm-ia-draft-form" data-ia-action="true" data-action-name="Gerar rascunho">
+                                <input type="hidden" name="id" value="@conversa.Id" />
+                                <button type="submit" class="btn secondary small" id="cmGerarRascunho" disabled="@(!estadoIa.PodeGerarRascunho)">Gerar rascunho</button>
+                            </form>
+                        }
+                    </div>
+                    <small id="cmIaConnection" class="cm-ia-connection" role="status" hidden>Não foi possível atualizar o andamento agora. Tentando reconectar…</small>
+                }
                 @if (conversa.Paciente is null)
                 {
                     <div class="cm23-identity-warning" role="status">

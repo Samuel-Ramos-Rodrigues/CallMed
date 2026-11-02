@@ -28,6 +28,12 @@ public class ConversaAtendimento
     public string? ResponsavelUsuarioId { get; set; }
     public Usuario? ResponsavelUsuario { get; set; }
 
+    // Progresso real persistido: visível em outras abas e após recarregar a Central.
+    [StringLength(32)]
+    public string? IaEstado { get; set; }
+    public long? IaEntradaId { get; set; }
+    public DateTime? IaAtualizadoEm { get; set; }
+
     public bool Ativa { get; set; } = true;
     public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
     public DateTime AtualizadoEm { get; set; } = DateTime.UtcNow;

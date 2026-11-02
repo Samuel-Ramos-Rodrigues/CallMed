@@ -178,6 +178,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<DatabaseSchemaV23Initializer>();
         services.AddScoped<DatabaseSchemaV24Initializer>();
         services.AddScoped<DatabaseSchemaV25Initializer>();
+        services.AddScoped<DatabaseSchemaV26Initializer>();
         return services;
     }
 

@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using MKSANCrud.Services.Clinica;
+using MKSANCrud.DTOs.Agente;
 
 namespace MKSANCrud.Services.Atendimento;
 
@@ -10,6 +11,21 @@ namespace MKSANCrud.Services.Atendimento;
 /// </summary>
 public static class AtendimentoEmailPolitica
 {
+    public static IReadOnlyList<MensagemHistoricoAgente> PrepararHistorico(
+        IReadOnlyList<MensagemHistoricoAgente>? historico, int limite = 8)
+    {
+        return (historico ?? Array.Empty<MensagemHistoricoAgente>())
+            .Where(m => m.Papel is "user" or "bot")
+            .Select(m => new MensagemHistoricoAgente { Papel = m.Papel, Texto = AtendimentoEmailTexto.Normalizar(m.Texto) })
+            .Where(m => !string.IsNullOrWhiteSpace(m.Texto) && !ContemIdentificadorSensivel(m.Texto))
+            .TakeLast(Math.Clamp(limite, 1, 16))
+            .Select(m => new MensagemHistoricoAgente
+            {
+                Papel = m.Papel,
+                Texto = OmitirTelefones(m.Texto.Length > 1200 ? m.Texto[..1200] : m.Texto)
+            }).ToList();
+    }
+
     public static string OmitirTelefones(string? texto) => Regex.Replace(texto ?? string.Empty,
         @"(?<!\d)(?:\+?\d{12,13}|\d{10,11}|\(?\d{2}\)?[ .-]?\d{4,5}[- .]?\d{4})(?!\d)",
         "[telefone omitido]", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(100));

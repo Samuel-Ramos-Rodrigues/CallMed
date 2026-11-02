@@ -8,6 +8,7 @@ public sealed class AtendimentoCentralViewModel
         Array.Empty<ConversaResumoViewModel>();
 
     public ConversaAtendimento? ConversaSelecionada { get; init; }
+    public MKSANCrud.Services.Atendimento.AtendimentoIaStatus? EstadoIa { get; init; }
 
     public IReadOnlyList<MensagemAtendimento> Mensagens { get; init; } =
         Array.Empty<MensagemAtendimento>();

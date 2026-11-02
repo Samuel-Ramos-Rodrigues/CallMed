@@ -4590,3 +4590,20 @@ body { line-height: 1.58; }
   .cm-feedback-banner .cm-feedback-banner-body { font-size:.82rem; }
 }
 @media (prefers-reduced-motion:reduce) { .cm-feedback-dialog[open] { animation:none; } }
+
+/* Progresso real da IA: separado do modo de atendimento. */
+.cm-ia-status { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:12px 16px; margin:12px 14px; border:1px solid var(--line); border-radius:12px; background:var(--surface); color:var(--ink); flex-shrink:0; }
+.cm-ia-status-mark { display:grid; place-items:center; width:30px; height:30px; flex:0 0 30px; border-radius:50%; background:var(--cm-primary-soft); color:var(--cm-primary); }
+.cm-ia-status-copy { flex:1 1 180px; min-width:0; overflow-wrap:anywhere; }
+.cm-ia-status-copy strong { display:block; font-size:.85rem; }
+.cm-ia-status-copy p { margin:3px 0 0; font-size:.78rem; line-height:1.5; color:var(--muted); }
+.cm-ia-status form { margin:0; }
+.cm-ia-status[aria-busy="true"] { border-color:var(--cm-primary); }
+.cm-ia-status[aria-busy="true"] .cm-ia-status-mark { font-size:0; background:transparent; border:3px solid var(--cm-primary-soft); border-top-color:var(--cm-primary); animation:cm-ia-spin 1s linear infinite; }
+.cm-ia-status[data-state="rascunho"], .cm-ia-status[data-state="respondida"] { border-left:3px solid var(--success); }
+.cm-ia-status[data-state="falha"], .cm-ia-status[data-state="interrompida"] { border-left:3px solid var(--danger); }
+.cm-ia-connection { display:block; padding:0 16px 10px; color:var(--muted); }
+.cm-ia-connection[hidden] { display:none; }
+@keyframes cm-ia-spin { to { transform:rotate(360deg); } }
+@media (prefers-reduced-motion:reduce) { .cm-ia-status[aria-busy="true"] .cm-ia-status-mark { animation:none; } }
+@media (max-width:600px) { .cm-ia-status { margin:8px; padding:10px; gap:8px; } .cm-ia-draft-form { flex-basis:100%; } .cm-ia-draft-form button { width:100%; } }
