@@ -220,21 +220,15 @@
     // Assim Assumir/Devolver/Encerrar continuam funcionando mesmo se o fetch/polling falhar.
     document.querySelectorAll('.email-draft-actions form').forEach(form => {
         form.addEventListener('submit', event => {
-            const confirmation = form.dataset.confirm;
-            if (confirmation && !window.confirm(confirmation)) { event.preventDefault(); return; }
             const button = form.querySelector('button[type="submit"]');
-            if (button) { button.disabled = true; button.textContent = 'Aguarde...'; }
+            if (form.dataset.submitting === 'true') { event.preventDefault(); return; }
+            form.dataset.submitting = 'true';
+            if (button) { button.setAttribute('aria-disabled', 'true'); button.textContent = 'Aguarde...'; }
         });
     });
 
     document.querySelectorAll('.atendimento-state-form').forEach(form => {
         form.addEventListener('submit', event => {
-            const confirmation = form.dataset.confirm;
-            if (confirmation && !window.confirm(confirmation)) {
-                event.preventDefault();
-                return;
-            }
-
             // Não desabilitar o submitter durante o próprio evento submit:
             // alguns navegadores deixam de enviar o formulário. O POST nativo
             // (com antiforgery) deve prosseguir, e o servidor redirecionará.
@@ -248,7 +242,7 @@
                 button.setAttribute('aria-disabled', 'true');
                 button.dataset.originalText = button.textContent || '';
                 button.textContent = form.dataset.actionName === 'Devolver para IA'
-                    ? 'Reativando IA...'
+                    ? 'IA assumindo e analisando...'
                     : form.dataset.actionName === 'Verificar e-mail pendente' ? 'Analisando e-mail...' : 'Aguarde...';
             }
         });

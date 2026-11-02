@@ -161,7 +161,7 @@ internal static class EvolutionEnvioChecks
         var conv = new AtendimentoConversaService(db, new AtendimentoIdentidadeService(db));
         var eligible = new ConvenioElegibilidadeService(db, new ConvenioService(clock));
         var waitlist = new ListaEsperaService(db, clock, conv, Service(db, clock, channel), new EspecialidadeService(db), eligible,
-            new SolicitacaoAtendimentoService(db, eligible, new AuditoriaService(db, new HttpContextAccessor(), NullLogger<AuditoriaService>.Instance)));
+            new SolicitacaoAtendimentoService(db, new AuditoriaService(db, new HttpContextAccessor(), NullLogger<AuditoriaService>.Instance)));
         await waitlist.ProcessarNotificacoesAsync();
         await waitlist.ProcessarNotificacoesAsync();
         check(item.NotificadoEm is null && channel.Calls == 1 && await db.MensagensAtendimento.CountAsync() == 1,
@@ -174,7 +174,7 @@ internal static class EvolutionEnvioChecks
     }
 
     private static AtendimentoEnvioService Service(MKSANContext db, Clock clock, Channel channel) =>
-        new([channel], db, clock, NullLogger<AtendimentoEnvioService>.Instance);
+        new([channel], db, clock, NullLogger<AtendimentoEnvioService>.Instance, Options.Create(new GmailInboxOptions()));
     private static HttpResponseMessage Ok() => new(HttpStatusCode.OK) { Content = new StringContent("{\"key\":{\"id\":\"test\"}}") };
     private static HttpResponseMessage Limited(RetryConditionHeaderValue? delay)
     {

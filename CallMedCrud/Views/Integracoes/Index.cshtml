@@ -75,7 +75,7 @@
       setState('whatsapp', Boolean(d.whatsapp?.enabled && d.whatsapp?.inboundConfigured && d.whatsapp?.outboundConfigured));
       setState('sms', Boolean(d.sms?.enabled && d.sms?.outboundConfigured), d.sms?.inboundConfigured ? 'Envio e recebimento configurados' : 'Envio configurado');
       setState('email', Boolean(d.email?.outboundConfigured), d.email?.gmailInboxConfigured ? 'Brevo + Gmail configurados; rascunhos exigem aprovação' : 'Envio configurado · Gmail pendente');
-    } catch { alert('Não foi possível consultar os canais agora.'); }
+    } catch { await window.CallMedUI.alert('Não foi possível consultar os canais agora. Tente novamente em alguns instantes.', { title: 'Falha ao verificar canais', type: 'error' }); }
     finally { button.disabled = false; button.textContent = original; }
   });
 })();

@@ -96,6 +96,7 @@ await AgendamentoChecks.RunAsync(Check);
 SolicitacoesPainelChecks.Run(Check);
 await AtendimentoIdentidadeChecks.RunAsync(Check);
 await AtendimentoEmailIaChecks.RunAsync(Check);
+await AtendimentoRetomadaChecks.RunAsync(Check);
 await PortalAcessoChecks.RunAsync(Check);
 await EvolutionEnvioChecks.RunAsync(Check);
 Console.WriteLine("Verificações concluídas. Nenhuma mensagem real foi enviada.");

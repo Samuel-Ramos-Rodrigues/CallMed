@@ -46,7 +46,7 @@
 
     function speakPage() {
         if (!('speechSynthesis' in window)) {
-            alert('A leitura em voz alta não está disponível neste navegador.');
+            window.CallMedUI.alert('A leitura em voz alta não está disponível neste navegador.', { title: 'Leitura em voz alta', type: 'info' });
             return;
         }
         window.speechSynthesis.cancel();

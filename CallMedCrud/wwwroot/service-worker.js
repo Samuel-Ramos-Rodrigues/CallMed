@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v55-contingencia-mais-opcoes';
+const CACHE_NAME = 'callmed-static-v57-retomada-ia-canais';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -9,6 +9,7 @@ const STATIC_ASSETS = [
     '/js/contingencia.js',
     '/js/solicitacao-medico-filter.js',
     '/js/preferences.js',
+    '/js/feedback.js',
     '/js/shell.js',
     '/js/login.js',
     '/js/theme.js',

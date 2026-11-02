@@ -200,6 +200,7 @@
     </dialog>
     <main class="app-main" id="conteudo" tabindex="-1">
         @if (TempData["Erro"] != null) { <div class="alert error" role="alert">@TempData["Erro"]</div> }
+        @if (TempData["Aviso"] != null) { <div class="alert warning" role="status">@TempData["Aviso"]</div> }
         @if (TempData["Sucesso"] != null) { <div class="alert success" role="status">@TempData["Sucesso"]</div> }
         @RenderBody()
     </main>

@@ -35,8 +35,16 @@ public sealed class AtendimentoEnvioService(
     }
 
     // Uma chave representa um evento de negócio, não uma tentativa de transporte.
-    public async Task<MensagemAtendimento> EnviarAvisoAsync(
-        ConversaAtendimento conversa, string texto, string chave, CancellationToken ct = default)
+    public Task<MensagemAtendimento> EnviarAvisoAsync(
+        ConversaAtendimento conversa, string texto, string chave, CancellationToken ct = default) =>
+        EnviarComChaveAsync(conversa, texto, chave, AutorMensagemAtendimento.Sistema, ct);
+
+    public Task<MensagemAtendimento> EnviarRespostaIaAsync(
+        ConversaAtendimento conversa, string texto, long entradaId, CancellationToken ct = default) =>
+        EnviarComChaveAsync(conversa, texto, $"ia:resposta:{conversa.Id}:{entradaId}", AutorMensagemAtendimento.Assistente, ct);
+
+    private async Task<MensagemAtendimento> EnviarComChaveAsync(
+        ConversaAtendimento conversa, string texto, string chave, AutorMensagemAtendimento autor, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(chave) || chave.Length > 160)
             throw new ArgumentException("Chave de aviso inválida.", nameof(chave));
@@ -46,13 +54,14 @@ public sealed class AtendimentoEnvioService(
 
         // Aproveita um aviso equivalente da versão anterior sem apagar o histórico.
         var conteudo = NormalizarTexto(texto);
-        var anterior = await context.MensagensAtendimento
-            .Where(m => m.ConversaAtendimentoId == conversa.Id && m.ChaveEnvio == null &&
-                m.Direcao == DirecaoMensagemAtendimento.Saida && m.Autor == AutorMensagemAtendimento.Sistema &&
-                m.Texto == conteudo)
-            .OrderByDescending(m => m.Status == StatusMensagemAtendimento.Enviada)
-            .ThenBy(m => m.Id).FirstOrDefaultAsync(ct);
-        var mensagem = anterior ?? NovaMensagem(conversa, conteudo, AutorMensagemAtendimento.Sistema, null);
+        var anterior = autor == AutorMensagemAtendimento.Sistema
+            ? await context.MensagensAtendimento
+                .Where(m => m.ConversaAtendimentoId == conversa.Id && m.ChaveEnvio == null &&
+                    m.Direcao == DirecaoMensagemAtendimento.Saida && m.Autor == autor && m.Texto == conteudo)
+                .OrderByDescending(m => m.Status == StatusMensagemAtendimento.Enviada)
+                .ThenBy(m => m.Id).FirstOrDefaultAsync(ct)
+            : null; // Respostas de entradas diferentes podem ter o mesmo texto legitimamente.
+        var mensagem = anterior ?? NovaMensagem(conversa, conteudo, autor, null);
         mensagem.ChaveEnvio = chave;
         mensagem.VersaoEnvio = Guid.NewGuid();
         if (anterior is null) context.MensagensAtendimento.Add(mensagem);

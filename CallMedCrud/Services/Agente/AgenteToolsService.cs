@@ -65,6 +65,10 @@ public sealed class AgenteToolsService
     {
         try
         {
+            if (string.Equals(usuario.Canal, "E-mail", StringComparison.OrdinalIgnoreCase) &&
+                nome is not ("listar_medicos" or "consultar_horarios_data" or "consultar_proximas_datas" or "buscar_opcoes_agendamento" or "informacoes_clinica"))
+                return Falha("No rascunho de e-mail, use apenas informações públicas. Não identifique pacientes, não leia dados individuais e não altere a agenda. Oriente o portal ou a recepção para operações que exigem identificação.");
+
             var bloqueioIdentidade = BloqueioPorIdentidade(nome, usuario);
             if (bloqueioIdentidade is not null)
                 return bloqueioIdentidade;

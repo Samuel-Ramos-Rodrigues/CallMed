@@ -54,7 +54,7 @@
                             @if (Model.Papel == "Paciente")
                             {
                                 <a class="btn secondary" asp-controller="Consulta" asp-action="Remarcar" asp-route-id="@item.Id">Remarcar</a>
-                                <form asp-controller="Consulta" asp-action="Cancelar" method="post" onsubmit="return confirm('Cancelar esta consulta?');">
+                                <form asp-controller="Consulta" asp-action="Cancelar" method="post" data-cm-confirm="Cancelar esta consulta?" data-cm-confirm-title="Cancelar consulta" data-cm-confirm-accept="Cancelar consulta" data-cm-confirm-tone="danger">
                                     <input type="hidden" name="id" value="@item.Id" />
                                     <input type="hidden" name="returnUrl" value="/Confirmacoes" />
                                     <button class="btn secondary danger-link" type="submit">Cancelar</button>
@@ -68,7 +68,7 @@
                         else if (item.Tipo == "lista-espera" && Model.Papel == "Paciente")
                         {
                             <form asp-controller="ListaEspera" asp-action="AceitarVaga" method="post"><input type="hidden" name="id" value="@item.ListaEsperaId" /><input type="hidden" name="returnUrl" value="/Confirmacoes" /><button class="btn" type="submit">Aceitar esta vaga</button></form>
-                            <form asp-controller="ListaEspera" asp-action="Cancelar" method="post" onsubmit="return confirm('Sair desta lista de espera?');">
+                            <form asp-controller="ListaEspera" asp-action="Cancelar" method="post" data-cm-confirm="Sair desta lista de espera?" data-cm-confirm-title="Sair da lista de espera" data-cm-confirm-accept="Sair da lista" data-cm-confirm-tone="danger">
                                 <input type="hidden" name="id" value="@item.ListaEsperaId" />
                                 <input type="hidden" name="returnUrl" value="/Confirmacoes" />
                                 <button class="btn secondary" type="submit">Não quero esta espera</button>

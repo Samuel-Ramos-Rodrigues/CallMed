@@ -71,7 +71,7 @@
                                 }
                                 @if (item.Ativa)
                                 {
-                                    <form asp-action="Cancelar" method="post" class="cm21-inline-form" onsubmit="return confirm('Sair desta lista de espera?');">
+                                    <form asp-action="Cancelar" method="post" class="cm21-inline-form" data-cm-confirm="Sair desta lista de espera?" data-cm-confirm-title="Sair da lista de espera" data-cm-confirm-accept="Sair da lista" data-cm-confirm-tone="danger">
                                         <input type="hidden" name="id" value="@item.Id" />
                                         <button class="btn-link-clean danger-link" type="submit">Cancelar</button>
                                     </form>

@@ -281,13 +281,15 @@ public sealed class AtendimentoConversaService
         string? autorUsuarioId = null,
         string? mensagemExternaId = null,
         string? erro = null,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        string? chaveEnvio = null)
     {
         var agora = DateTime.UtcNow;
 
         var mensagem = new MensagemAtendimento
         {
             ConversaAtendimentoId = conversa.Id,
+            ChaveEnvio = chaveEnvio,
             Direcao = DirecaoMensagemAtendimento.Saida,
             Autor = autor,
             Status = status,
@@ -305,7 +307,13 @@ public sealed class AtendimentoConversaService
         conversa.UltimaInteracaoEm = agora;
 
         _context.MensagensAtendimento.Add(mensagem);
-        await _context.SaveChangesAsync(ct);
+        try { await _context.SaveChangesAsync(ct); }
+        catch (DbUpdateException ex) when (!string.IsNullOrWhiteSpace(chaveEnvio) &&
+            ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: "IX_MensagensAtendimento_ChaveEnvio" })
+        {
+            _context.Entry(mensagem).State = EntityState.Detached;
+            return await _context.MensagensAtendimento.AsNoTracking().SingleAsync(m => m.ChaveEnvio == chaveEnvio, ct);
+        }
         await ApararAsync(conversa.Id, ct);
 
         return mensagem;
@@ -313,20 +321,24 @@ public sealed class AtendimentoConversaService
 
     /// <summary>
     /// Apenas a última entrada ainda sem resposta pode ser retomada pela IA.
-    /// Uma saída posterior (inclusive rascunho) impede rascunhos duplicados.
+    /// Uma resposta da equipe/IA posterior (inclusive rascunho) impede duplicação.
     /// </summary>
     public async Task<MensagemAtendimento?> ObterUltimaEntradaPendenteAsync(
         long conversaId,
         CancellationToken ct = default)
     {
         var ultima = await _context.MensagensAtendimento.AsNoTracking()
-            .Where(m => m.ConversaAtendimentoId == conversaId)
-            .OrderByDescending(m => m.Id)
-            .FirstOrDefaultAsync(ct);
-
-        return ultima is { Direcao: DirecaoMensagemAtendimento.Entrada,
-                            Autor: AutorMensagemAtendimento.Paciente }
-            ? ultima : null;
+            .Where(m => m.ConversaAtendimentoId == conversaId &&
+                m.Direcao == DirecaoMensagemAtendimento.Entrada && m.Autor == AutorMensagemAtendimento.Paciente)
+            .OrderByDescending(m => m.Id).FirstOrDefaultAsync(ct);
+        if (ultima is null) return null;
+        // Avisos do sistema, como "encaminhado para equipe", não respondem ao pedido.
+        // Resposta humana, resposta da IA ou rascunho posterior já tratam a entrada.
+        var respondida = await _context.MensagensAtendimento.AsNoTracking().AnyAsync(m =>
+            m.ConversaAtendimentoId == conversaId && m.Id > ultima.Id &&
+            m.Direcao == DirecaoMensagemAtendimento.Saida &&
+            (m.Autor == AutorMensagemAtendimento.Funcionario || m.Autor == AutorMensagemAtendimento.Assistente), ct);
+        return respondida ? null : ultima;
     }
 
     public async Task<IReadOnlyList<MensagemHistoricoAgente>>

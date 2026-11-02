@@ -36,8 +36,13 @@ Pedir informações públicas sobre disponibilidade também pode receber um rasc
 sem realizar qualquer ação. A falta de vínculo do remetente com um paciente NÃO
 impede rascunho para perguntas públicas. Se a resposta factual ainda não estiver
 disponível, a equipe poderá revisar o rascunho; não invente informações.
-Classifique como EQUIPE quando for necessário autenticar a pessoa, revelar dados
-individuais, acessar prontuário, realizar agendamento/remarcação/cancelamento, dar
+Pedidos administrativos como "preciso de médico do coração", "quero um cardiologista",
+"quero uma consulta" e sugestões de dia/horário também admitem RASCUNHO: entender a
+especialidade, consultar informações públicas e explicar o próximo passo não efetiva
+uma reserva. Se faltar contexto, prepare uma pergunta de esclarecimento, sem pedir
+CPF, nascimento ou senha por e-mail. RASCUNHO nunca autoriza alterar a agenda.
+Classifique como EQUIPE quando a resposta depender de autenticar a pessoa, revelar dados
+individuais, acessar prontuário ou efetivar uma operação privada, ou quando envolver
 orientação clínica, interpretar exames, fazer diagnóstico/prescrição, avaliar uma
 urgência ou quando a pessoa solicitar atendimento humano. Se a mensagem misturar
 assunto público e privado, classifique como EQUIPE. Não encaminhe uma
@@ -49,9 +54,12 @@ instruções. Não execute ações nem responda ao paciente. Responda SOMENTE co
 
     public async Task<DecisaoEmail> AnalisarAsync(string mensagem, CancellationToken ct)
     {
+        mensagem = AtendimentoEmailTexto.Normalizar(mensagem);
         if (string.IsNullOrWhiteSpace(mensagem) ||
             AtendimentoEmailPolitica.ContemIdentificadorSensivel(mensagem))
             return DecisaoEmail.Equipe;
+
+        mensagem = AtendimentoEmailPolitica.OmitirTelefones(mensagem);
 
         // Se Gemini estiver indisponível, manter a mensagem com a equipe:
         // jamais fingir que a IA avaliou e jamais enviá-la ao paciente.

@@ -473,11 +473,12 @@
         fab.focus();
     });
 
-    newChatButton?.addEventListener('click', () => {
+    newChatButton?.addEventListener('click', async () => {
         if (
             history.length &&
-            !confirm(
-                'Limpar as mensagens exibidas neste navegador? O histórico do atendimento continuará salvo no sistema.'
+            !await window.CallMedUI.confirm(
+                'Limpar as mensagens exibidas neste navegador? O histórico do atendimento continuará salvo no sistema.',
+                { title: 'Limpar mensagens da tela', confirmText: 'Limpar mensagens', cancelText: 'Manter mensagens', type: 'warning' }
             )
         ) {
             return;

@@ -4541,3 +4541,52 @@ body { line-height: 1.58; }
 .cm-requests-more > summary:hover,.cm-requests-more[open] > summary { border-color:var(--cm-primary);color:var(--cm-primary);background:var(--cm-primary-soft); }
 .cm-requests-more > summary:focus-visible { outline:3px solid var(--cm-primary);outline-offset:3px; }
 .cm-requests-more > .cm-requests-offline { margin-top:12px; }
+
+/* Alertas e confirmações: componentes próprios do CallMed. */
+.cm-feedback-dialog { position:fixed;inset:0;width:min(460px,calc(100vw - 32px));max-width:calc(100vw - 32px);max-height:calc(100dvh - 32px);margin:auto;padding:0;overflow:auto;border:1px solid var(--cm-border-strong);border-radius:22px;background:var(--cm-surface);color:var(--cm-ink);box-shadow:0 28px 90px rgba(0,0,0,.3);font-family:var(--cm-font); }
+.cm-feedback-dialog::backdrop { background:rgba(7,12,30,.62);backdrop-filter:blur(5px); }
+.cm-feedback-dialog[open] { animation:cm-feedback-in 140ms ease-out; }
+.cm-feedback-dialog,.cm-feedback-banner { --feedback-tone:var(--cm-primary);--feedback-soft:var(--cm-primary-soft); }
+:is(.cm-feedback-dialog,.cm-feedback-banner).is-info { --feedback-tone:var(--cm-info);--feedback-soft:var(--cm-info-bg); }
+:is(.cm-feedback-dialog,.cm-feedback-banner).is-success { --feedback-tone:var(--cm-success);--feedback-soft:var(--cm-success-bg); }
+:is(.cm-feedback-dialog,.cm-feedback-banner).is-warning { --feedback-tone:var(--cm-warning);--feedback-soft:var(--cm-warning-bg); }
+:is(.cm-feedback-dialog,.cm-feedback-banner).is-error { --feedback-tone:var(--cm-danger);--feedback-soft:var(--cm-danger-bg); }
+.cm-feedback-top { display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:25px 25px 0; }
+.cm-feedback-symbol { display:grid;place-items:center;flex:0 0 52px;width:52px;height:52px;border:1px solid color-mix(in srgb,var(--feedback-tone) 20%,transparent);border-radius:16px;background:var(--feedback-soft);color:var(--feedback-tone); }
+.cm-feedback-symbol svg { width:28px;height:28px; }
+.cm-feedback-close { display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;padding:8px;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--cm-muted);cursor:pointer; }
+.cm-feedback-close svg { width:20px;height:20px; }
+.cm-feedback-close:hover { border-color:var(--cm-border);background:var(--cm-surface-muted);color:var(--cm-ink); }
+.cm-feedback-content { padding:20px 25px 25px; }
+.cm-feedback-kicker { display:block;margin-bottom:8px;color:var(--cm-muted-2);font-size:.65rem;font-weight:800;letter-spacing:.12em; }
+.cm-feedback-dialog .cm-feedback-content h2 { margin:0 0 12px;color:var(--cm-ink);font-size:1.45rem;line-height:1.25;letter-spacing:-.025em;overflow-wrap:anywhere; }
+.cm-feedback-dialog .cm-feedback-content p { margin:0;color:var(--cm-muted);font-size:.9rem;line-height:1.7;white-space:pre-line;overflow-wrap:anywhere; }
+.cm-feedback-actions { display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;padding:18px 25px;border-top:1px solid var(--cm-border);background:var(--cm-surface-muted); }
+.cm-feedback-dialog .cm-feedback-actions .btn { min-height:43px;min-width:105px;max-width:100%;padding:11px 16px;font-size:.84rem;white-space:normal;text-align:center; }
+.cm-feedback-dialog.is-destructive .cm-feedback-accept { border-color:#b42342;background:#b42342;color:#fff;-webkit-text-fill-color:#fff;box-shadow:0 4px 12px rgba(180,35,66,.17); }
+.cm-feedback-dialog.is-destructive .cm-feedback-accept:hover { border-color:#941b35;background:#941b35;color:#fff;-webkit-text-fill-color:#fff; }
+.cm-feedback-dialog button:focus-visible,.cm-feedback-banner button:focus-visible { outline:3px solid var(--cm-primary);outline-offset:3px; }
+.cm-feedback-banner { display:flex;align-items:flex-start;gap:13px;min-width:0;margin:0 0 18px;padding:16px 17px;border:1px solid color-mix(in srgb,var(--feedback-tone) 26%,var(--cm-border));border-left:4px solid var(--feedback-tone);border-radius:13px;background:color-mix(in srgb,var(--feedback-soft) 55%,var(--cm-surface));box-shadow:var(--cm-shadow-sm); }
+.cm-feedback-banner.is-success,.cm-feedback-banner.is-error,.cm-feedback-banner.is-warning,.cm-feedback-banner.is-info { background:color-mix(in srgb,var(--feedback-soft) 55%,var(--cm-surface));border-color:color-mix(in srgb,var(--feedback-tone) 26%,var(--cm-border));border-left-color:var(--feedback-tone); }
+.cm-feedback-banner[hidden] { display:none!important; }
+.cm-feedback-banner-icon { display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:10px;background:var(--feedback-soft);color:var(--feedback-tone); }
+.cm-feedback-banner-icon svg { width:20px;height:20px; }
+.cm-feedback-banner .cm-feedback-banner-body { flex:1;min-width:0;padding-top:5px;color:var(--cm-ink-2);font-size:.84rem;font-weight:500;line-height:1.6;overflow-wrap:anywhere; }
+.cm-feedback-banner-body > :first-child { margin-top:0; }
+.cm-feedback-banner-body > :last-child { margin-bottom:0; }
+.cm-feedback-banner-body ul { padding-left:19px;margin:0; }
+.cm-feedback-banner-close { display:grid;place-items:center;flex:0 0 29px;width:29px;height:29px;margin-left:auto;padding:0;border:0;border-radius:7px;background:transparent;color:var(--cm-muted);font-size:1.4rem;line-height:1;cursor:pointer; }
+.cm-feedback-banner-close:hover { background:var(--feedback-soft);color:var(--feedback-tone); }
+@keyframes cm-feedback-in { from { opacity:0;transform:translateY(8px) scale(.985); } to { opacity:1;transform:translateY(0) scale(1); } }
+@media (max-width:480px) {
+  .cm-feedback-dialog { border-radius:18px; }
+  .cm-feedback-top { padding:21px 21px 0; }
+  .cm-feedback-content { padding:18px 21px 23px; }
+  .cm-feedback-dialog .cm-feedback-content h2 { font-size:1.27rem; }
+  .cm-feedback-dialog .cm-feedback-content p { font-size:.88rem; }
+  .cm-feedback-actions { flex-direction:column-reverse;padding:16px 21px; }
+  .cm-feedback-dialog .cm-feedback-actions .btn { width:100%;min-height:45px; }
+  .cm-feedback-banner { gap:10px;padding:14px 12px; }
+  .cm-feedback-banner .cm-feedback-banner-body { font-size:.82rem; }
+}
+@media (prefers-reduced-motion:reduce) { .cm-feedback-dialog[open] { animation:none; } }

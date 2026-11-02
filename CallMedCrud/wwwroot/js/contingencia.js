@@ -111,7 +111,7 @@
             }
             const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'secondary'; remove.textContent = 'Excluir pedido local';
             remove.addEventListener('click', () => guarded(async () => {
-                if (!confirm('Excluir este pedido do dispositivo? Se não foi enviado, será perdido.')) return;
+                if (!await window.CallMedUI.confirm('Excluir este pedido do dispositivo? Se não foi enviado, será perdido.', { title: 'Excluir pedido local', confirmText: 'Excluir pedido', cancelText: 'Manter pedido', type: 'warning', danger: true })) return;
                 await persist(rows.filter(x => x.chave !== row.chave)); render(); say('Pedido local excluído.');
             }));
             card.append(remove); list.append(card);

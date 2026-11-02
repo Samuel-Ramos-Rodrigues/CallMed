@@ -8,6 +8,62 @@ namespace MKSANCrud.Services.Atendimento;
 
 public sealed class AtendimentoOrquestradorService
 {
+    private static readonly SemaphoreSlim[] TravasRetomada = Enumerable.Range(0, 64).Select(_ => new SemaphoreSlim(1, 1)).ToArray();
+
+    public Task<ResultadoRetomadaAtendimento> DevolverParaIaERetomarAsync(ConversaAtendimento conversa, CancellationToken ct = default) =>
+        RetomarComExclusaoAsync(conversa, devolver: true, ct);
+
+    public Task<ResultadoRetomadaAtendimento> RetomarUltimaEntradaPendenteAsync(ConversaAtendimento conversa, CancellationToken ct = default) =>
+        RetomarComExclusaoAsync(conversa, devolver: false, ct);
+
+    private async Task<ResultadoRetomadaAtendimento> RetomarComExclusaoAsync(ConversaAtendimento conversa, bool devolver, CancellationToken ct)
+    {
+        var trava = TravasRetomada[(int)(conversa.Id % TravasRetomada.Length)];
+        await trava.WaitAsync(ct);
+        try
+        {
+            if (devolver) await _conversas.DevolverParaIaAsync(conversa, ct);
+            if (!conversa.Ativa || conversa.Modo != ModoAtendimento.IA) return ResultadoRetomadaAtendimento.SemMensagemPendente;
+            return conversa.Canal == CanalAtendimento.Email
+                ? await RetomarUltimoEmailPendenteAsync(conversa, ct)
+                : await RetomarCanalConversacionalAsync(conversa, ct);
+        }
+        finally { trava.Release(); }
+    }
+
+    private async Task<ResultadoRetomadaAtendimento> RetomarCanalConversacionalAsync(ConversaAtendimento conversa, CancellationToken ct)
+    {
+        var ultima = await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct);
+        if (ultima is null) return ResultadoRetomadaAtendimento.SemMensagemPendente;
+        if (AtendimentoIntencao.EhPedidoAtendimentoHumano(ultima.Texto))
+        {
+            await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+            return ResultadoRetomadaAtendimento.RequerEquipe;
+        }
+        conversa = await _conversas.ObterPorIdAsync(conversa.Id, ct) ?? conversa;
+        var historico = await _conversas.CarregarHistoricoPacienteAsync(conversa.PacienteId, conversa.Id, 24, ct, excluirMensagemId: ultima.Id);
+        try
+        {
+            var resposta = await _agente.EnviarAsync(NormalizarTextoEntrada(ultima.Texto, conversa.Canal), conversa.SessionId, CriarContextoUsuario(conversa), historico, ct);
+            if (string.IsNullOrWhiteSpace(resposta.Resposta))
+            {
+                await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+                return ResultadoRetomadaAtendimento.FalhaNaGeracao;
+            }
+            var saida = await _envio.EnviarRespostaIaAsync(conversa, resposta.Resposta, ultima.Id, ct);
+            return saida.Status == StatusMensagemAtendimento.Enviada ? ResultadoRetomadaAtendimento.RespostaEnviada
+                : saida.Status == StatusMensagemAtendimento.Processando ? ResultadoRetomadaAtendimento.RespostaEmProcessamento
+                : ResultadoRetomadaAtendimento.FalhaNoEnvio;
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Falha ao retomar IA na conversa {ConversaId}.", conversa.Id);
+            await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
+            return ResultadoRetomadaAtendimento.FalhaNaGeracao;
+        }
+    }
+
     private readonly IAgenteClinicaService _agente;
     private readonly AtendimentoConversaService _conversas;
     private readonly AtendimentoEnvioService _envio;
@@ -90,7 +146,7 @@ public sealed class AtendimentoOrquestradorService
             return;
         }
 
-        if (!await CriarRascunhoEmailAsync(conversa, textoEntrada, historico, ct))
+        if (!await CriarRascunhoEmailAsync(conversa, textoEntrada, nova.Id, historico, ct))
             await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
     }
 
@@ -99,16 +155,16 @@ public sealed class AtendimentoOrquestradorService
     /// entrada que chegou no modo humano e ainda não possui resposta. Não
     /// reimporta a mensagem do Gmail e nunca envia e-mail sem aprovação.
     /// </summary>
-    public async Task<ResultadoRetomadaEmail> RetomarUltimoEmailPendenteAsync(
+    private async Task<ResultadoRetomadaAtendimento> RetomarUltimoEmailPendenteAsync(
         ConversaAtendimento conversa,
         CancellationToken ct = default)
     {
         if (conversa.Canal != CanalAtendimento.Email || conversa.Modo != ModoAtendimento.IA)
-            return ResultadoRetomadaEmail.SemMensagemPendente;
+            return ResultadoRetomadaAtendimento.SemMensagemPendente;
 
         var ultima = await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct);
         if (ultima is null)
-            return ResultadoRetomadaEmail.SemMensagemPendente;
+            return ResultadoRetomadaAtendimento.SemMensagemPendente;
 
         var texto = NormalizarTextoEntrada(ultima.Texto, CanalAtendimento.Email);
         var decisao = await _decisaoEmail.AnalisarAsync(texto, ct);
@@ -117,8 +173,8 @@ public sealed class AtendimentoOrquestradorService
             _logger.LogInformation("Retomada de e-mail {ConversaId} interrompida. Decisao={Decisao}", conversa.Id, decisao);
             await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
             return decisao == DecisaoEmail.Equipe
-                ? ResultadoRetomadaEmail.RequerEquipe
-                : ResultadoRetomadaEmail.FalhaNaGeracao;
+                ? ResultadoRetomadaAtendimento.RequerEquipe
+                : ResultadoRetomadaAtendimento.FalhaNaGeracao;
         }
 
         var historico = await _conversas.CarregarHistoricoPacienteAsync(
@@ -128,18 +184,19 @@ public sealed class AtendimentoOrquestradorService
             ct: ct,
             excluirMensagemId: ultima.Id);
 
-        if (!await CriarRascunhoEmailAsync(conversa, texto, historico, ct))
+        if (!await CriarRascunhoEmailAsync(conversa, texto, ultima.Id, historico, ct))
         {
             await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
-            return ResultadoRetomadaEmail.FalhaNaGeracao;
+            return ResultadoRetomadaAtendimento.FalhaNaGeracao;
         }
 
-        return ResultadoRetomadaEmail.RascunhoCriado;
+        return ResultadoRetomadaAtendimento.RascunhoCriado;
     }
 
     private async Task<bool> CriarRascunhoEmailAsync(
         ConversaAtendimento conversa,
         string textoEntrada,
+        long entradaId,
         IReadOnlyList<MensagemHistoricoAgente> historico,
         CancellationToken ct)
     {
@@ -162,10 +219,11 @@ public sealed class AtendimentoOrquestradorService
         try
         {
             var resposta = await _agente.EnviarAsync(
-                textoEntrada,
+                AtendimentoEmailPolitica.OmitirTelefones(textoEntrada),
                 conversa.SessionId,
                 usuario,
-                historico,
+                historico.Select(m => new MensagemHistoricoAgente { Papel = m.Papel, Texto = AtendimentoEmailPolitica.OmitirTelefones(AtendimentoEmailTexto.Normalizar(m.Texto)) })
+                    .Where(m => !string.IsNullOrWhiteSpace(m.Texto) && !AtendimentoEmailPolitica.ContemIdentificadorSensivel(m.Texto)).ToList(),
                 ct);
 
             if (string.IsNullOrWhiteSpace(resposta.Resposta)) return false;
@@ -176,7 +234,8 @@ public sealed class AtendimentoOrquestradorService
                 AutorMensagemAtendimento.Assistente,
                 StatusMensagemAtendimento.AguardandoAprovacao,
                 erro: "Rascunho gerado pela IA. Revise antes de enviar ao paciente.",
-                ct: ct);
+                ct: ct,
+                chaveEnvio: $"ia:email:{conversa.Id}:{entradaId}");
 
             // Rascunho não transfere a conversa para atendimento humano.
             return true;
@@ -289,35 +348,7 @@ public sealed class AtendimentoOrquestradorService
         if (conversa.Modo == ModoAtendimento.Humano)
             return;
 
-        var paciente = conversa.Paciente;
-
-        var usuario = new AgenteUsuarioContexto
-        {
-            Email = paciente?.Email ??
-                    (entrada.Canal == CanalAtendimento.Email
-                        ? conversa.IdentificadorExterno
-                        : null),
-            Telefone = paciente?.Telefone ??
-                       (entrada.Canal is CanalAtendimento.WhatsApp or CanalAtendimento.Sms
-                           ? conversa.IdentificadorExterno
-                           : null),
-            Canal = NomeCanal(entrada.Canal),
-            PodeGerenciarOutrosPacientes = false,
-            ConversaAtendimentoId = conversa.Id,
-            PacienteId = paciente?.Id,
-            PacienteNome = paciente?.Nome,
-            PacienteCpfMascarado = paciente is null
-                ? null
-                : MascararCpf(paciente.Cpf),
-            PacienteDataNascimento = paciente?.DataNascimento,
-            PacienteTemConvenio = paciente is null
-                ? null
-                : _convenio.EhValido(paciente),
-            PacienteNomeConvenio =
-                paciente is not null && _convenio.EhValido(paciente)
-                    ? paciente.NomeConvenio
-                    : null
-        };
+        var usuario = CriarContextoUsuario(conversa);
 
         try
         {
@@ -328,12 +359,10 @@ public sealed class AtendimentoOrquestradorService
                 historico,
                 ct);
 
-            await _envio.EnviarAsync(
-                conversa,
-                resposta.Resposta,
-                AutorMensagemAtendimento.Assistente,
-                assunto: entrada.Assunto,
-                ct: ct);
+            if (entrada.Canal == CanalAtendimento.Email)
+                await _envio.EnviarAsync(conversa, resposta.Resposta, AutorMensagemAtendimento.Assistente, assunto: entrada.Assunto, ct: ct);
+            else
+                await _envio.EnviarRespostaIaAsync(conversa, resposta.Resposta, nova.Id, ct);
         }
         catch (Exception ex)
         {
@@ -352,6 +381,39 @@ public sealed class AtendimentoOrquestradorService
         }
     }
 
+    private AgenteUsuarioContexto CriarContextoUsuario(ConversaAtendimento conversa)
+    {
+        var paciente = conversa.Paciente;
+
+        return new AgenteUsuarioContexto
+        {
+            Email = paciente?.Email ??
+                    (conversa.Canal == CanalAtendimento.Email
+                        ? conversa.IdentificadorExterno
+                        : null),
+            Telefone = paciente?.Telefone ??
+                       (conversa.Canal is CanalAtendimento.WhatsApp or CanalAtendimento.Sms
+                           ? conversa.IdentificadorExterno
+                           : null),
+            Canal = NomeCanal(conversa.Canal),
+            PodeGerenciarOutrosPacientes = false,
+            ConversaAtendimentoId = conversa.Id,
+            PacienteId = paciente?.Id,
+            PacienteNome = paciente?.Nome,
+            PacienteCpfMascarado = paciente is null
+                ? null
+                : MascararCpf(paciente.Cpf),
+            PacienteDataNascimento = paciente?.DataNascimento,
+            PacienteTemConvenio = paciente is null
+                ? null
+                : _convenio.EhValido(paciente),
+            PacienteNomeConvenio =
+                paciente is not null && _convenio.EhValido(paciente)
+                    ? paciente.NomeConvenio
+                    : null
+        };
+    }
+
     private static string NormalizarTextoEntrada(
         string texto,
         CanalAtendimento canal)
@@ -362,33 +424,7 @@ public sealed class AtendimentoOrquestradorService
             .Replace('\r', '\n')
             .Trim();
 
-        if (canal == CanalAtendimento.Email)
-        {
-            // Remove citações simples de respostas anteriores para não mandar
-            // a thread inteira novamente ao modelo.
-            var linhas = valor.Split('\n');
-            var filtradas = new List<string>();
-
-            foreach (var linha in linhas)
-            {
-                var l = linha.Trim();
-
-                if (l.StartsWith('>'))
-                    continue;
-
-                if (l.StartsWith("Em ", StringComparison.OrdinalIgnoreCase) &&
-                    l.Contains("escreveu", StringComparison.OrdinalIgnoreCase))
-                    break;
-
-                if (l.StartsWith("On ", StringComparison.OrdinalIgnoreCase) &&
-                    l.Contains("wrote", StringComparison.OrdinalIgnoreCase))
-                    break;
-
-                filtradas.Add(linha);
-            }
-
-            valor = string.Join("\n", filtradas).Trim();
-        }
+        if (canal == CanalAtendimento.Email) return AtendimentoEmailTexto.Normalizar(valor);
 
         const int limite = 3000;
         return valor.Length <= limite

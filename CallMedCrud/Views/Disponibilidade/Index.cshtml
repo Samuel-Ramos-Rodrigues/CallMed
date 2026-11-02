@@ -78,7 +78,7 @@
                             <td>
                                 @if (item.Ativa)
                                 {
-                                    <form asp-action="Cancelar" method="post" onsubmit="return confirm('Encerrar esta exceção e recalcular a agenda?');">
+                                    <form asp-action="Cancelar" method="post" data-cm-confirm="Encerrar esta exceção e recalcular a agenda?" data-cm-confirm-title="Encerrar exceção de agenda" data-cm-confirm-accept="Encerrar exceção" data-cm-confirm-tone="danger">
                                         <input type="hidden" name="id" value="@item.Id" />
                                         <button type="submit" class="btn small secondary">Encerrar</button>
                                     </form>

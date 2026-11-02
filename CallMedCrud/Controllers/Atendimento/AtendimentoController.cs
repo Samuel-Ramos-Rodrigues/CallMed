@@ -356,16 +356,8 @@ public sealed class AtendimentoController : Controller
         if (conversa is null)
             return NotFound();
 
-        await _conversas.DevolverParaIaAsync(conversa, ct);
-
-        if (conversa.Canal == CanalAtendimento.Email)
-        {
-            await PrepararRascunhoPendenteAsync(conversa, ct);
-        }
-        else
-        {
-            TempData["Sucesso"] = "A conversa voltou para o Assistente CallMed. A IA atenderá as próximas mensagens.";
-        }
+        var resultado = await _orquestrador.DevolverParaIaERetomarAsync(conversa, ct);
+        AplicarResultadoRetomada(resultado);
         return RedirectToAction(nameof(Index), new { id });
     }
 
@@ -394,20 +386,34 @@ public sealed class AtendimentoController : Controller
 
     private async Task PrepararRascunhoPendenteAsync(ConversaAtendimento conversa, CancellationToken ct)
     {
-        var resultado = await _orquestrador.RetomarUltimoEmailPendenteAsync(conversa, ct);
+        var resultado = await _orquestrador.RetomarUltimaEntradaPendenteAsync(conversa, ct);
+        AplicarResultadoRetomada(resultado);
+    }
+
+    private void AplicarResultadoRetomada(ResultadoRetomadaAtendimento resultado)
+    {
         switch (resultado)
         {
-            case ResultadoRetomadaEmail.RascunhoCriado:
+            case ResultadoRetomadaAtendimento.RascunhoCriado:
                 TempData["Sucesso"] = "A IA criou um rascunho para a última mensagem. Confira o histórico e aprove o envio quando estiver correto. Nenhum e-mail foi enviado automaticamente.";
                 break;
-            case ResultadoRetomadaEmail.RequerEquipe:
-                TempData["Erro"] = "A análise indicou necessidade de atendimento humano (identificação, ação ou assunto sensível). A conversa voltou à fila da equipe; nenhum e-mail foi enviado.";
+            case ResultadoRetomadaAtendimento.RespostaEnviada:
+                TempData["Sucesso"] = "A IA retomou a mensagem pendente e enviou a resposta pelo canal da conversa.";
                 break;
-            case ResultadoRetomadaEmail.FalhaNaGeracao:
-                TempData["Erro"] = "Não foi possível gerar o rascunho da IA. A conversa foi preservada na fila humana. Confira a configuração do Gemini e os logs do Render.";
+            case ResultadoRetomadaAtendimento.RespostaEmProcessamento:
+                TempData["Sucesso"] = "A resposta da IA já está em processamento no canal. Não é necessário devolver a conversa novamente.";
+                break;
+            case ResultadoRetomadaAtendimento.FalhaNoEnvio:
+                TempData["Erro"] = "A IA preparou a resposta, mas o canal não confirmou o envio. Confira a mensagem e o estado do canal antes de tentar reenviar.";
+                break;
+            case ResultadoRetomadaAtendimento.RequerEquipe:
+                TempData["Aviso"] = "A mensagem exige atendimento humano por envolver identificação, dados individuais, assunto clínico ou pedido de um atendente. O histórico foi preservado; nenhuma resposta foi enviada automaticamente.";
+                break;
+            case ResultadoRetomadaAtendimento.FalhaNaGeracao:
+                TempData["Erro"] = "Não foi possível preparar a resposta da IA. A conversa foi preservada na fila humana. Confira a disponibilidade do serviço de IA e tente novamente.";
                 break;
             default:
-                TempData["Sucesso"] = "Não há mensagem de e-mail pendente sem resposta. Se um rascunho já aparecer no histórico, revise e aprove; novos e-mails serão analisados pela IA.";
+                TempData["Sucesso"] = "A IA está ativa e não há mensagem pendente sem resposta. Se houver um rascunho de e-mail, revise e aprove; as próximas mensagens serão processadas automaticamente.";
                 break;
         }
     }

@@ -30,7 +30,7 @@
             </div>
             @if (equipe)
             {
-                <form asp-action="Desativar" method="post" onsubmit="return confirm('Retirar este registro da lista? A auditoria será preservada.');">
+                <form asp-action="Desativar" method="post" data-cm-confirm="Retirar este registro da lista? A auditoria será preservada." data-cm-confirm-title="Retirar registro" data-cm-confirm-accept="Retirar registro" data-cm-confirm-tone="danger">
                     <input type="hidden" name="id" value="@exame.Id" />
                     <button class="btn secondary" type="submit">Desativar registro</button>
                 </form>

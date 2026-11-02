@@ -120,10 +120,6 @@
                         else if (conversa.Modo == ModoAtendimento.IA)
                         {
                             <span class="mode-pill mode-ia">✦ Assistente IA</span>
-                            @if (conversa.Canal == CanalAtendimento.Email)
-                            {
-                                <form asp-action="GerarRascunhoPendente" asp-antiforgery="true" method="post" class="atendimento-state-form" data-action-name="Verificar e-mail pendente"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small" title="Verificar a última mensagem ainda sem resposta e gerar um rascunho para revisão, se possível">Verificar e-mail pendente</button></form>
-                            }
                             <form asp-action="Assumir" method="post" class="atendimento-state-form" data-action-name="Assumir atendimento"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn small">Assumir</button></form>
                         }
                         else if (string.IsNullOrWhiteSpace(conversa.ResponsavelUsuarioId))

@@ -3,7 +3,7 @@
 
     const requestPermission = async () => {
         if (!('Notification' in window)) {
-            alert('Este navegador não oferece notificações do aplicativo.');
+            await window.CallMedUI.alert('Este navegador não oferece notificações do aplicativo.', { title: 'Avisos indisponíveis', type: 'info' });
             return;
         }
         const permission = await Notification.requestPermission();
@@ -11,7 +11,7 @@
             permissionButton && (permissionButton.textContent = 'Avisos ativados');
             localStorage.setItem('callmed-confirmacoes-notification-enabled', '1');
         } else {
-            alert('A permissão de notificações não foi concedida.');
+            await window.CallMedUI.alert('A permissão de notificações não foi concedida. Você pode continuar acompanhando suas pendências pelo sino.', { title: 'Avisos não ativados', type: 'warning' });
         }
     };
 
