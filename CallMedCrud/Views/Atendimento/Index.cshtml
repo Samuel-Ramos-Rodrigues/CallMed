@@ -109,7 +109,7 @@
                 <header class="atendimento-chat-header v16-chat-header">
                     <div class="atendimento-person">
                         <partial name="_CanalIcon" model="conversa.Canal" />
-                        <div><strong>@(conversa.Paciente?.Nome ?? conversa.IdentificadorExterno)</strong><small>@CanalLabel(conversa.Canal) · @conversa.IdentificadorExterno</small></div>
+                        <div><strong>@(conversa.Paciente?.Nome ?? conversa.IdentificadorExterno)</strong><small>@CanalLabel(conversa.Canal)@if (conversa.Paciente is not null){<text> · @conversa.IdentificadorExterno</text>}</small></div>
                     </div>
                     <div class="atendimento-header-actions">
                         @if (!conversa.Ativa)
@@ -149,11 +149,11 @@
                         <span class="cm-ia-status-mark" aria-hidden="true">✦</span>
                         <div class="cm-ia-status-copy" role="status" aria-live="polite" aria-atomic="true">
                             <strong id="cmIaTitle">@estadoIa.Titulo</strong>
-                            <p id="cmIaDetail">@estadoIa.Detalhe</p>
+                            <p id="cmIaDetail" hidden="@(estadoIa.Estado is not ("falha" or "interrompida" or "equipe"))">@estadoIa.Detalhe</p>
                         </div>
                         @if (conversa.Ativa && conversa.Canal == CanalAtendimento.Email)
                         {
-                            <form asp-action="GerarRascunhoPendente" asp-antiforgery="true" method="post" class="atendimento-state-form cm-ia-draft-form" data-ia-action="true" data-action-name="Gerar rascunho">
+                            <form asp-action="GerarRascunhoPendente" asp-antiforgery="true" method="post" class="atendimento-state-form cm-ia-draft-form" data-ia-action="true" data-action-name="Gerar rascunho" hidden="@(!estadoIa.PodeGerarRascunho)">
                                 <input type="hidden" name="id" value="@conversa.Id" />
                                 <button type="submit" class="btn secondary small" id="cmGerarRascunho" disabled="@(!estadoIa.PodeGerarRascunho)">Gerar rascunho</button>
                             </form>
@@ -161,7 +161,7 @@
                     </div>
                     <small id="cmIaConnection" class="cm-ia-connection" role="status" hidden>Não foi possível atualizar o andamento agora. Tentando reconectar…</small>
                 }
-                @if (conversa.Paciente is null)
+                @if (conversa.Paciente is null && conversa.Canal != CanalAtendimento.Email)
                 {
                     <div class="cm23-identity-warning" role="status">
                         <span class="cm23-identity-warning-icon" aria-hidden="true">!</span>
@@ -192,8 +192,7 @@
                                     @if (!entrada && mensagem.Status == StatusMensagemAtendimento.AguardandoAprovacao)
                                     {
                                         <div class="email-draft-review" role="status">
-                                            <strong>Rascunho da IA · ainda não enviado</strong>
-                                            <p>Revise o conteúdo antes de enviar ao paciente. Aprovar envia apenas este e-mail. Agendamentos e alterações devem ser concluídos pela recepção ou pelo portal do paciente.</p>
+                                            <strong>Rascunho · não enviado</strong>
                                             <div class="email-draft-actions">
                                                 <form asp-action="AprovarRascunho" method="post" data-confirm="Enviar este rascunho por e-mail ao paciente?">
                                                     @Html.AntiForgeryToken()
@@ -265,11 +264,11 @@
             <aside class="atendimento-context-v16">
                 <div class="context-profile">
                     <span class="context-avatar">@(conversa.Paciente?.Nome?.Substring(0,1).ToUpper() ?? "?")</span>
-                    <div><small>CONTATO</small><strong>@(conversa.Paciente?.Nome ?? "Não identificado")</strong><span>@CanalLabel(conversa.Canal)</span></div>
+                    <div><small>CONTATO</small><strong>@(conversa.Paciente?.Nome ?? "Contato sem vínculo")</strong><span>@CanalLabel(conversa.Canal)</span></div>
                 </div>
 
                 <div class="context-section">
-                    <h3>Dados do paciente</h3>
+                    <h3>@(conversa.Paciente is null ? "Dados do contato" : "Dados do paciente")</h3>
                     @if (conversa.Paciente is not null)
                     {
                         <div class="context-info-row"><span>E-mail</span><strong>@conversa.Paciente.Email</strong></div>
@@ -297,6 +296,15 @@
                             <form asp-action="DesvincularPaciente" method="post" class="context-unlink"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn-link-clean danger-link">Desvincular paciente</button></form>
                         }
                     </div>
+                }
+
+                @if (conversa.Canal == CanalAtendimento.Email)
+                {
+                    <details class="context-help">
+                        <summary>Como funciona o e-mail</summary>
+                        <p>A IA consulta médicos e horários e prepara rascunhos para revisão. Aprovar envia apenas a mensagem.</p>
+                        <p>Agendamentos e alterações são concluídos pela recepção ou pelo portal do paciente. Vincular o contato organiza o histórico; não autentica o remetente nem libera essas ações para a IA.</p>
+                    </details>
                 }
 
                 <div class="context-section">

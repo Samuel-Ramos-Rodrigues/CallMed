@@ -22,8 +22,15 @@
             iaPanel.dataset.state = state.estado || 'aguardando';
             iaPanel.setAttribute('aria-busy', String(Boolean(state.trabalhando)));
             if (iaTitle && iaTitle.textContent !== state.titulo) iaTitle.textContent = state.titulo || '';
-            if (iaDetail && iaDetail.textContent !== state.detalhe) iaDetail.textContent = state.detalhe || '';
-            if (draftButton) draftButton.disabled = iaSubmitting || !state.podeGerarRascunho;
+            if (iaDetail) {
+                if (iaDetail.textContent !== state.detalhe) iaDetail.textContent = state.detalhe || '';
+                iaDetail.hidden = !['falha', 'interrompida', 'equipe'].includes(state.estado);
+            }
+            if (draftButton) {
+                draftButton.disabled = iaSubmitting || !state.podeGerarRascunho;
+                const form = draftButton.closest('form');
+                if (form) form.hidden = !state.podeGerarRascunho;
+            }
         };
 
         const formatDate = value => {
@@ -76,8 +83,7 @@
             delivery.replaceChildren();
             if (item.status === 'AguardandoAprovacao') {
                 const panel = document.createElement('div'); panel.className = 'email-draft-review'; panel.setAttribute('role', 'status');
-                const title = document.createElement('strong'); title.textContent = 'Rascunho da IA · ainda não enviado';
-                const note = document.createElement('p'); note.textContent = 'Revise o conteúdo antes de enviar ao paciente. Aprovar envia apenas este e-mail. Agendamentos e alterações devem ser concluídos pela recepção ou pelo portal do paciente.';
+                const title = document.createElement('strong'); title.textContent = 'Rascunho · não enviado';
                 const actions = document.createElement('div'); actions.className = 'email-draft-actions';
                 const token = document.querySelector('input[name="__RequestVerificationToken"]');
                 const makeAction = (path, label, confirmText, secondary) => {
@@ -92,7 +98,7 @@
                         makeAction('/Atendimento/DescartarRascunho', 'Descartar', 'Descartar este rascunho? Nenhum e-mail será enviado.', true)
                     );
                 }
-                panel.append(title, note, actions); delivery.append(panel); return;
+                panel.append(title, actions); delivery.append(panel); return;
             }
             if (item.status === 'Ignorada' && (item.erro || '').toLowerCase().startsWith('rascunho descartado')) {
                 const note = document.createElement('small'); note.className = 'message-draft-discarded'; note.textContent = 'Rascunho descartado pela equipe; não foi enviado.'; delivery.append(note); return;

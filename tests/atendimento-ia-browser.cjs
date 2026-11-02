@@ -14,7 +14,8 @@ const states = {
     falha: { estado: 'falha', titulo: 'Não foi possível concluir a IA', detalhe: 'O serviço de IA falhou ou está indisponível.', trabalhando: false, podeGerarRascunho: true }
 };
 let state = states.pendente, posts = 0, updatesFail = false, pendingPost;
-const html = () => `<!doctype html><html lang="pt-BR" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/css/callmed.css"></head><body><main class="cm25-page"><h1>Central de Atendimento</h1><div class="atendimento-shell v16-atendimento-shell cm25-atendimento-shell"><aside class="atendimento-inbox"><div class="atendimento-inbox-title">Conversas</div><div class="atendimento-conversation-list"><a class="atendimento-conversation active">Contato fictício<br>E-mail · IA</a></div></aside><section class="atendimento-chat v16-chat"><header class="atendimento-chat-header"><div class="atendimento-person"><strong>Contato fictício · E-mail</strong></div><span class="mode-pill mode-ia">✦ Assistente IA</span></header><div class="cm-ia-status" id="cmIaStatus" data-state="${state.estado}" aria-busy="${state.trabalhando}"><span class="cm-ia-status-mark" aria-hidden="true">✦</span><div class="cm-ia-status-copy" role="status" aria-live="polite" aria-atomic="true"><strong id="cmIaTitle">${state.titulo}</strong><p id="cmIaDetail">${state.detalhe}</p></div><form action="/Atendimento/GerarRascunhoPendente" method="post" class="atendimento-state-form cm-ia-draft-form" data-ia-action="true" data-action-name="Gerar rascunho"><input type="hidden" name="id" value="1"><input type="hidden" name="__RequestVerificationToken" value="ficticio"><button type="submit" class="btn secondary small" id="cmGerarRascunho" ${state.podeGerarRascunho ? '' : 'disabled'}>Gerar rascunho</button></form></div><small id="cmIaConnection" class="cm-ia-connection" role="status" hidden>Não foi possível atualizar o andamento agora. Tentando reconectar…</small><div class="cm23-identity-warning"><span class="cm23-identity-warning-icon">!</span><div><strong>Contato ainda não identificado</strong><p>A IA pode informar médicos e horários; operações pessoais exigem identificação.</p></div></div><div class="atendimento-messages" id="atendimentoMessages" data-channel="Email" data-conversa-id="1" data-last-id="1" data-mode="IA" data-active="true" data-responsavel-id="" data-paciente-id=""><article class="atendimento-message incoming" data-message-id="1"><div class="message-meta"><strong>Recebido por E-mail</strong></div><p>Oi, quais médicos têm aí?</p></article></div><form class="atendimento-compose"><textarea placeholder="Digite uma mensagem para este atendimento..."></textarea><div class="compose-footer"><small>Resposta por E-mail</small><button class="btn">Enviar</button></div></form></section><aside class="atendimento-context-v16"><h3>Dados do contato</h3><p>Conversa fictícia de teste.</p></aside></div></main><script src="/js/atendimento.js"></script></body></html>`;
+const emailHelp = fs.readFileSync(path.join(root, '../Views/Atendimento/Index.cshtml'), 'utf8').match(/<details class="context-help">[\s\S]*?<\/details>/)[0];
+const html = () => `<!doctype html><html lang="pt-BR" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/css/callmed.css"></head><body><main class="cm25-page"><h1>Central de Atendimento</h1><div class="atendimento-shell v16-atendimento-shell cm25-atendimento-shell"><aside class="atendimento-inbox"><div class="atendimento-inbox-title">Conversas</div><div class="atendimento-conversation-list"><a class="atendimento-conversation active">Contato fictício<br>E-mail · IA</a></div></aside><section class="atendimento-chat v16-chat"><header class="atendimento-chat-header"><div class="atendimento-person"><strong>Contato fictício · E-mail</strong></div><span class="mode-pill mode-ia">✦ Assistente IA</span></header><div class="cm-ia-status" id="cmIaStatus" data-state="${state.estado}" aria-busy="${state.trabalhando}"><span class="cm-ia-status-mark" aria-hidden="true">✦</span><div class="cm-ia-status-copy" role="status" aria-live="polite" aria-atomic="true"><strong id="cmIaTitle">${state.titulo}</strong><p id="cmIaDetail" ${['falha', 'interrompida', 'equipe'].includes(state.estado) ? '' : 'hidden'}>${state.detalhe}</p></div><form action="/Atendimento/GerarRascunhoPendente" method="post" class="atendimento-state-form cm-ia-draft-form" data-ia-action="true" data-action-name="Gerar rascunho" ${state.podeGerarRascunho ? '' : 'hidden'}><input type="hidden" name="id" value="1"><input type="hidden" name="__RequestVerificationToken" value="ficticio"><button type="submit" class="btn secondary small" id="cmGerarRascunho" ${state.podeGerarRascunho ? '' : 'disabled'}>Gerar rascunho</button></form></div><small id="cmIaConnection" class="cm-ia-connection" role="status" hidden>Não foi possível atualizar o andamento agora. Tentando reconectar…</small><div class="atendimento-messages" id="atendimentoMessages" data-channel="Email" data-conversa-id="1" data-last-id="1" data-mode="IA" data-active="true" data-responsavel-id="" data-paciente-id=""><article class="atendimento-message incoming" data-message-id="1"><div class="message-meta"><strong>Recebido por E-mail</strong></div><p>Oi, quais médicos têm aí?</p></article></div><form class="atendimento-compose"><textarea placeholder="Digite uma mensagem para este atendimento..."></textarea><div class="compose-footer"><small>Resposta por E-mail</small><button class="btn">Enviar</button></div></form></section><aside class="atendimento-context-v16"><div class="context-profile"><span class="context-avatar">?</span><div><small>CONTATO</small><strong>Contato sem vínculo</strong><span>E-mail</span></div></div><div class="context-section"><h3>Dados do contato</h3><p class="context-muted">Este contato ainda não está ligado a um paciente.</p></div>${emailHelp}<div class="context-section"><h3>Conversa</h3><div class="context-info-row"><span>Situação</span><strong>Aberta</strong></div><div class="context-info-row"><span>Modo</span><strong>Assistente IA</strong></div></div></aside></div></main><script src="/js/atendimento.js"></script></body></html>`;
 const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, 'http://localhost');
     if (url.pathname === '/Atendimento/Atualizacoes') {
@@ -56,11 +57,16 @@ const server = http.createServer(async (req, res) => {
         await page.waitForFunction(() => document.querySelector('#cmIaStatus').dataset.state === 'rascunho');
         await page.locator('.email-draft-review').waitFor();
         assert(await page.locator('#cmGerarRascunho').isDisabled());
+        assert(await page.locator('#cmGerarRascunho').isHidden());
+        assert(await page.locator('#cmIaDetail').isHidden());
+        assert.equal(await page.locator('.email-draft-review p').count(), 0);
         assert.equal(await page.locator('.email-draft-review button').first().textContent(), 'Aprovar e enviar');
         console.log('PASS conclusão mostra rascunho e aprovação sem enviar automaticamente');
         state = states.falha; await refresh();
         await page.waitForFunction(() => document.querySelector('#cmIaStatus').dataset.state === 'falha');
         assert(await page.locator('#cmGerarRascunho').isEnabled());
+        assert(await page.locator('#cmGerarRascunho').isVisible());
+        assert(await page.locator('#cmIaDetail').isVisible());
         console.log('PASS falha encerra animação e libera nova tentativa');
         updatesFail = true; await refresh(); await page.locator('#cmIaConnection').waitFor({ state: 'visible' });
         assert.equal(await page.locator('#cmIaStatus').getAttribute('aria-busy'), 'false');
@@ -82,7 +88,34 @@ const server = http.createServer(async (req, res) => {
         }
         await page.setViewportSize({ width: 1440, height: 900 });
         await page.evaluate(() => document.documentElement.dataset.theme = 'dark');
-        if (process.env.QA_SCREENSHOT) await page.screenshot({ path: process.env.QA_SCREENSHOT, fullPage: true });
+        state = states.rascunho; await page.goto(origin);
+        await page.locator('.email-draft-review').waitFor();
+        assert((await page.locator('#cmIaStatus').boundingBox()).height < 65);
+        assert.equal(await page.locator('.email-draft-review').evaluate(el => getComputedStyle(el).backgroundColor), 'rgba(0, 0, 0, 0)');
+        const help = page.locator('.context-help');
+        assert.equal(await help.getAttribute('open'), null);
+        await help.locator('summary').click();
+        assert(await help.locator('p').first().isVisible());
+        await help.locator('summary').click();
+        console.log('PASS andamento compacto, ações neutras e explicação expansível');
+        if (process.env.QA_SCREENSHOT) {
+            for (const theme of ['dark', 'light']) {
+                await page.evaluate(theme => document.documentElement.dataset.theme = theme, theme);
+                for (const width of [390, 768, 1440]) {
+                    await page.setViewportSize({ width, height: 900 });
+                    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `rascunho ${theme}/${width}: overflow`);
+                    const panel = await page.locator('.email-draft-review').boundingBox();
+                    for (const button of await page.locator('.email-draft-review button').all()) {
+                        const box = await button.boundingBox();
+                        assert(box.x >= panel.x && box.x + box.width <= panel.x + panel.width + 1);
+                    }
+                    const output = theme === 'dark' && width === 1440
+                        ? process.env.QA_SCREENSHOT
+                        : process.env.QA_SCREENSHOT.replace('.png', `-${theme}-${width}.png`);
+                    await page.screenshot({ path: output, fullPage: true, animations: 'disabled' });
+                }
+            }
+        }
         assert.deepEqual(errors, []);
         console.log('PASS seis layouts em temas claro/escuro sem rolagem horizontal e sem erros JS');
     } finally { await browser.close(); server.close(); }
