@@ -1,3 +1,11 @@
+## 2026-11-04 — Avaliações ao encerrar o atendimento
+
+- Pesquisa opcional de 1 a 5 com comentário no WhatsApp, SMS, e-mail e agente do site.
+- Encerramento pela equipe, botão do site ou despedida explícita; fechar o widget não encerra a conversa.
+- Respostas separadas da IA e do agendamento, com deduplicação, persistência e envios em segundo plano.
+- Tela de avaliações por mês/canal com média, satisfação e comentários; patch aditivo V28 sem novas credenciais.
+- Guia: [AVALIACOES-ATENDIMENTO.md](AVALIACOES-ATENDIMENTO.md).
+
 ## 2026-11-03 — Integração de SMS com httpSMS
 
 - Substituído SMSGate por httpSMS: API Key, número From e formato from/to/content.

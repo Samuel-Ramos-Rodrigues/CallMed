@@ -4,6 +4,8 @@
 
 <h1 align="center">CallMed</h1>
 
+> **Avaliações ao encerrar:** notas de 1 a 5 e comentário opcional no WhatsApp, SMS, e-mail e agente do site, com acompanhamento pela equipe. [Fluxo, atualização do banco e testes](docs/AVALIACOES-ATENDIMENTO.md).
+
 > **E-mail administrativo automático:** consulta médicos e vagas, envia respostas sem aprovação da recepção e oferece links para concluir o agendamento no portal. Gerar rascunho continua sendo uma ação manual. [Configuração, retomada de pendências e validação](docs/EMAIL-AUTOMATICO-2026-11-02.md).
 
 > **Áreas separadas por perfil:** login de Médico, Atendente e Administrador, com criação de contas pela administração. [Como usar e verificar os acessos](docs/ACESSOS-DA-EQUIPE.md).

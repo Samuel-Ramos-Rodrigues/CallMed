@@ -73,6 +73,21 @@
              aria-live="polite"
              aria-relevant="additions"></div>
 
+        <div class="mksan-widget-endbar"><span id="mksan-widget-end-status" role="status"></span><button type="button" id="mksan-widget-end">Encerrar e avaliar</button></div>
+        <template id="mksan-feedback-template">
+            <form class="mksan-feedback-card" aria-label="Avaliação do atendimento">
+                <strong>Como foi seu atendimento?</strong>
+                <p>Escolha uma nota de 1 a 5. Sua opinião é opcional.</p>
+                <fieldset><legend class="visually-hidden">Nota do atendimento</legend><div class="mksan-feedback-options">
+                    @foreach (var item in new[] { (1, "Muito ruim"), (2, "Ruim"), (3, "Regular"), (4, "Bom"), (5, "Muito bom") })
+                    { <label><input type="radio" name="nota" value="@item.Item1" required /><span><b>@item.Item1</b><small>@item.Item2</small></span></label> }
+                </div></fieldset>
+                <label class="mksan-feedback-comment">Quer contar mais? <small>(opcional)</small><textarea name="comentario" rows="2" maxlength="1000" placeholder="O que podemos melhorar?"></textarea></label>
+                <div class="mksan-feedback-actions"><button type="submit" class="btn">Enviar avaliação</button><button type="button" class="btn secondary" data-feedback-skip>Agora não</button></div>
+                <p class="mksan-feedback-result" role="status" aria-live="polite"></p>
+            </form>
+        </template>
+
         <form id="mksan-widget-form"
               class="mksan-ai-widget-form">
 

@@ -426,7 +426,8 @@ public sealed class AtendimentoConversaService
                 .AsNoTracking()
                 .Include(m => m.Conversa)
                 .Where(m => m.Status != StatusMensagemAtendimento.AguardandoAprovacao &&
-                            m.Status != StatusMensagemAtendimento.Ignorada);
+                            m.Status != StatusMensagemAtendimento.Ignorada &&
+                            (m.ChaveEnvio == null || !m.ChaveEnvio.StartsWith("feedback:")));
 
         // No processamento de retomada, a mensagem de entrada mais recente
         // ja e enviada separadamente ao agente. Evite repeti-la no historico.

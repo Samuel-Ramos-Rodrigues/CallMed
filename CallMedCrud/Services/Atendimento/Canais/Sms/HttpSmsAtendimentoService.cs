@@ -10,10 +10,12 @@ namespace MKSANCrud.Services.Atendimento.Canais.Sms;
 public sealed class HttpSmsAtendimentoService(
     MKSANContext context, AtendimentoConversaService conversas,
     AtendimentoOrquestradorService orquestrador, IOptions<SmsHttpOptions> options,
-    ILogger<HttpSmsAtendimentoService> logger)
+    ILogger<HttpSmsAtendimentoService> logger, AtendimentoFeedbackService? feedback = null)
 {
     public async Task RegistrarEntradaAsync(string telefone, string texto, string id, CancellationToken ct)
     {
+        if (feedback is not null && await feedback.TratarEntradaAsync(new MKSANCrud.DTOs.Atendimento.CanalMensagemEntrada
+            { Canal = CanalAtendimento.Sms, Identificador = telefone, Texto = texto, MensagemExternaId = "httpsms:" + id }, ct)) return;
         var conversa = await conversas.ObterOuCriarAsync(CanalAtendimento.Sms, telefone, ct: ct);
         // O prefixo separa os novos eventos dos históricos de outros provedores.
         await conversas.RegistrarEntradaAsync(conversa, texto, "httpsms:" + id, ct);

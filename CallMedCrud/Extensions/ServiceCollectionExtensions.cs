@@ -128,6 +128,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AtendimentoIdentidadeService>();
         services.AddScoped<AtendimentoConversaService>();
         services.AddScoped<AtendimentoEnvioService>();
+        services.AddScoped<AtendimentoFeedbackService>();
+        services.AddHostedService<AtendimentoFeedbackBackgroundService>();
         services.AddScoped<AtendimentoOrquestradorService>();
         services.AddScoped<AtendimentoEmailDecisaoService>();
         services.AddScoped<AtendimentoEmailAutomaticoService>();
@@ -190,6 +192,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<DatabaseSchemaV25Initializer>();
         services.AddScoped<DatabaseSchemaV26Initializer>();
         services.AddScoped<DatabaseSchemaV27Initializer>();
+        services.AddScoped<DatabaseSchemaV28Initializer>();
         return services;
     }
 

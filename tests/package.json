@@ -4,7 +4,8 @@
   "scripts": {
     "test:dom": "node contingencia-dom.mjs",
     "test:browser": "node contingencia-browser.cjs",
-    "test:atendimento-envio": "node atendimento-envio-browser.cjs"
+    "test:atendimento-envio": "node atendimento-envio-browser.cjs",
+    "test:feedback": "node feedback-browser.cjs"
   },
   "devDependencies": {
     "happy-dom": "20.14.5",

@@ -3,6 +3,14 @@
     const widget = document.getElementById('mksan-ai-widget');
     const closeButton = document.getElementById('mksan-widget-close');
     const newChatButton = document.getElementById('mksan-widget-new');
+    const endButton = document.getElementById('mksan-widget-end');
+    const endStatus = document.getElementById('mksan-widget-end-status');
+    const feedbackTemplate = document.getElementById('mksan-feedback-template');
+    let feedbackCard = null;
+    let feedbackId = null;
+    let feedbackBusy = false;
+    let ending = false;
+    let conversationRevision = 0;
     const form = document.getElementById('mksan-widget-form');
     const input = document.getElementById('mksan-widget-input');
     const messages = document.getElementById('mksan-widget-messages');
@@ -361,9 +369,69 @@
         scrollToBottom();
     };
 
+    const feedbackRequest = async (url, body) => {
+        const token = form.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+        const response = await fetch(url, { method: 'POST', credentials: 'same-origin', headers: {
+            'Content-Type': 'application/json', 'RequestVerificationToken': token
+        }, body: JSON.stringify(body) });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.mensagem || 'Não foi possível salvar agora. Tente novamente.');
+        return data;
+    };
+
+    const showFeedback = avaliacao => {
+        if (!avaliacao?.id) {
+            if (!feedbackBusy) { feedbackCard?.remove(); feedbackCard = null; feedbackId = null; }
+            return;
+        }
+        if (feedbackId !== avaliacao.id) {
+            feedbackCard?.remove();
+            feedbackId = avaliacao.id;
+            feedbackCard = feedbackTemplate?.content.firstElementChild.cloneNode(true);
+            if (!feedbackCard) return;
+            const submit = async dispensar => {
+                if (feedbackBusy) return;
+                if (!dispensar && !feedbackCard.reportValidity()) return;
+                const card = feedbackCard;
+                const result = card.querySelector('.mksan-feedback-result');
+                const fields = new FormData(card);
+                conversationRevision++;
+                feedbackBusy = true;
+                card.querySelectorAll('button').forEach(b => b.disabled = true);
+                try {
+                    const data = await feedbackRequest('/Agente/Avaliar', { id: avaliacao.id,
+                        nota: dispensar ? null : Number(fields.get('nota')), comentario: String(fields.get('comentario') || ''), dispensar });
+                    card.remove(); feedbackCard = null; feedbackId = null;
+                    addMessage(data.mensagem || 'Obrigado pela avaliação!', 'bot', false);
+                } catch (err) {
+                    result.textContent = err.message;
+                    card.querySelectorAll('button').forEach(b => b.disabled = false);
+                } finally { feedbackBusy = false; }
+            };
+            feedbackCard.addEventListener('submit', event => { event.preventDefault(); submit(false); });
+            feedbackCard.querySelector('[data-feedback-skip]').addEventListener('click', () => submit(true));
+        }
+        if (!feedbackCard.isConnected) { messages.appendChild(feedbackCard); scrollToBottom(); }
+    };
+
+    endButton?.addEventListener('click', async () => {
+        if (ending || sendButton.disabled || feedbackBusy) return;
+        conversationRevision++;
+        ending = true; endButton.disabled = true; sendButton.disabled = true; input.disabled = true;
+        endStatus.textContent = 'Encerrando…';
+        try {
+            const data = await feedbackRequest('/Agente/Encerrar', {});
+            syncSession(data.sessionId); setMode('IA');
+            endStatus.textContent = 'Atendimento encerrado';
+            endButton.hidden = true;
+            showFeedback(data.avaliacao);
+        } catch (err) { endStatus.textContent = err.message; }
+        finally { ending = false; endButton.disabled = false; sendButton.disabled = false; input.disabled = false; }
+    });
+
     const pollHumanMessages = async () => {
         if (
-            polling ||
+            polling || ending || feedbackBusy || sendButton.disabled ||
             document.hidden ||
             !widget.classList.contains('open')
         ) {
@@ -371,6 +439,7 @@
         }
 
         polling = true;
+        const revision = conversationRevision;
 
         try {
             const response = await fetch(
@@ -390,6 +459,7 @@
             }
 
             const data = await response.json();
+            if (revision !== conversationRevision) return;
             syncSession(data.sessionId);
             setMode(data.modo);
 
@@ -427,6 +497,9 @@
             }
 
             saveHumanState();
+            showFeedback(data.avaliacao);
+            if (endStatus && !ending) endStatus.textContent = data.encerrada ? 'Atendimento encerrado' : '';
+            if (endButton) endButton.hidden = !!data.encerrada;
         } catch {
             // O polling é silencioso; o envio normal continua disponível.
         } finally {
@@ -455,6 +528,7 @@
 
         if (isOpen) {
             render();
+            if (feedbackCard) messages.appendChild(feedbackCard);
 
             setTimeout(() => {
                 input.focus({ preventScroll: true });
@@ -494,6 +568,7 @@
         // pelo backend para preservar atendimento humano e confirmações.
         history = [];
         render();
+        if (feedbackCard) messages.appendChild(feedbackCard);
         input.focus();
     });
 
@@ -502,7 +577,7 @@
 
         const mensagem = input.value.trim();
 
-        if (!mensagem || sendButton.disabled) {
+        if (!mensagem || sendButton.disabled || feedbackBusy || ending) {
             return;
         }
 
@@ -513,6 +588,7 @@
                 texto: item.text
             }));
 
+        conversationRevision++;
         addMessage(mensagem, 'user');
 
         input.value = '';
@@ -586,6 +662,11 @@
             }
 
             syncSession(data.sessionId);
+            if (response.ok) {
+                showFeedback(data.avaliacao);
+                if (endStatus) endStatus.textContent = data.encerrada ? 'Atendimento encerrado' : '';
+                if (endButton) endButton.hidden = !!data.encerrada;
+            }
 
             const modeBeforeSend = currentMode;
             setMode(data.modo || currentMode);
@@ -609,6 +690,7 @@
                     : (data.mensagem || 'Não consegui responder agora.');
 
                 addMessage(resposta, 'bot');
+                if (feedbackCard) { messages.appendChild(feedbackCard); scrollToBottom(); }
             }
         } catch {
             loading.remove();

@@ -22,6 +22,7 @@ public class AgenteController : Controller
     private readonly ConvenioService _convenio;
     private readonly AtendimentoConversaService _atendimento;
     private readonly ILogger<AgenteController> _logger;
+    private readonly AtendimentoFeedbackService? _feedback;
 
     public AgenteController(
         IAgenteClinicaService agente,
@@ -29,7 +30,7 @@ public class AgenteController : Controller
         AgenteHistoricoService historico,
         ConvenioService convenio,
         AtendimentoConversaService atendimento,
-        ILogger<AgenteController> logger)
+        ILogger<AgenteController> logger, AtendimentoFeedbackService? feedback = null)
     {
         _agente = agente;
         _vinculos = vinculos;
@@ -37,6 +38,7 @@ public class AgenteController : Controller
         _convenio = convenio;
         _atendimento = atendimento;
         _logger = logger;
+        _feedback = feedback;
     }
 
     [HttpPost]
@@ -87,6 +89,16 @@ public class AgenteController : Controller
         };
 
         var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+        if (_feedback is not null && await _feedback.TratarEntradaAsync(new MKSANCrud.DTOs.Atendimento.CanalMensagemEntrada
+            { Canal = CanalAtendimento.Web, Identificador = usuarioId, Texto = mensagem }, cancellationToken))
+        {
+            var encerrada = await _feedback.ObterWebAsync(usuarioId, cancellationToken);
+            var pendente = encerrada is null ? null : await _feedback.ObterPendenteAsync(encerrada, cancellationToken);
+            return Json(new { resposta = "Atendimento encerrado. Obrigado por conversar com a CallMed!", encerrada = true,
+                avaliacao = pendente is null ? null : new { id = pendente.Id, conversaId = encerrada!.Id },
+                sessionId = encerrada?.SessionId, modo = "IA", conversaId = encerrada?.Id });
+        }
 
         var conversaAtendimento = await _atendimento.ObterOuCriarAsync(
             CanalAtendimento.Web,
@@ -311,6 +323,8 @@ public class AgenteController : Controller
         if (string.IsNullOrWhiteSpace(usuarioId))
             return Unauthorized();
 
+        if (!await UsuarioAtivoAsync(cancellationToken)) return Forbid();
+
         var podeGerenciar =
             User.IsInRole("Funcionario") ||
             User.IsInRole("Admin");
@@ -334,8 +348,11 @@ public class AgenteController : Controller
                 Math.Max(0, afterId),
                 cancellationToken);
 
+        var pendente = _feedback is null ? null : await _feedback.ObterPendenteAsync(conversa, cancellationToken);
         return Json(new
         {
+            encerrada = !conversa.Ativa,
+            avaliacao = pendente is null ? null : new { id = pendente.Id, conversaId = conversa.Id },
             modo = conversa.Modo.ToString(),
             conversaId = conversa.Id,
             sessionId = conversa.SessionId,
@@ -346,6 +363,60 @@ public class AgenteController : Controller
                 criadoEm = m.CriadoEm
             })
         });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [EnableRateLimiting("agente")]
+    public async Task<IActionResult> Encerrar(CancellationToken cancellationToken)
+    {
+        if (!await UsuarioAtivoAsync(cancellationToken)) return Forbid();
+        if (_feedback is null) return StatusCode(503);
+        var id = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var conversa = await _feedback.ObterWebAsync(id, cancellationToken);
+        if (conversa is null) return Json(new { encerrada = true });
+        await _feedback.EncerrarAsync(conversa, cancellationToken);
+        var a = await _feedback.ObterPendenteAsync(conversa, cancellationToken);
+        return Json(new { encerrada = true, sessionId = conversa.SessionId,
+            avaliacao = a is null ? null : new { id = a.Id, conversaId = conversa.Id } });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [EnableRateLimiting("agente")]
+    public async Task<IActionResult> Avaliar([FromBody] AvaliacaoRequest request, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid || request is null) return BadRequest(new { mensagem = "Confira a nota e o comentário." });
+        if (!await UsuarioAtivoAsync(cancellationToken)) return Forbid();
+        if (_feedback is null) return StatusCode(503);
+        // O navegador informa apenas a avaliação; a conversa pertence ao usuário autenticado.
+        var conversa = await _feedback.ObterWebAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)!, cancellationToken);
+        if (conversa is null) return NotFound();
+        var resultado = await _feedback.RegistrarAsync(request.Id, conversa.Id, request.Nota, request.Comentario, request.Dispensar, ct: cancellationToken);
+        return resultado switch
+        {
+            ResultadoAvaliacao.Inexistente => NotFound(),
+            ResultadoAvaliacao.Invalida => BadRequest(new { mensagem = "Escolha uma nota de 1 a 5 e use até 1.000 caracteres no comentário." }),
+            ResultadoAvaliacao.Expirada => Conflict(new { mensagem = "Esta avaliação expirou ou uma nova conversa já começou." }),
+            _ => Json(new { sucesso = true, mensagem = request.Dispensar ? "Tudo bem. Você pode iniciar outra conversa quando precisar." : AtendimentoFeedbackService.Obrigado })
+        };
+    }
+
+    private async Task<bool> UsuarioAtivoAsync(CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(User.FindFirstValue(ClaimTypes.NameIdentifier))) return false;
+        if (User.IsInRole("Funcionario") || User.IsInRole("Admin"))
+            return (await _vinculos.ObterFuncionarioAsync(User, ct))?.Ativo == true;
+        return User.IsInRole("Paciente") && (await _vinculos.ObterPacienteAsync(User, ct))?.Ativo == true;
+    }
+
+    public sealed class AvaliacaoRequest
+    {
+        public Guid Id { get; set; }
+        public int? Nota { get; set; }
+        [System.ComponentModel.DataAnnotations.StringLength(1000)]
+        public string? Comentario { get; set; }
+        public bool Dispensar { get; set; }
     }
 
     private static string MascararCpf(string? cpf)

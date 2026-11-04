@@ -22,6 +22,7 @@ public class MKSANContext : IdentityDbContext<Usuario>
     public DbSet<ConversaAgente> ConversasAgente => Set<ConversaAgente>();
     public DbSet<MensagemConversaAgente> MensagensAgente => Set<MensagemConversaAgente>();
     public DbSet<ConversaAtendimento> ConversasAtendimento => Set<ConversaAtendimento>();
+    public DbSet<AvaliacaoAtendimento> AvaliacoesAtendimento => Set<AvaliacaoAtendimento>();
     public DbSet<MensagemAtendimento> MensagensAtendimento => Set<MensagemAtendimento>();
     public DbSet<ListaEspera> ListasEspera => Set<ListaEspera>();
     public DbSet<AgendaExcecao> AgendaExcecoes => Set<AgendaExcecao>();

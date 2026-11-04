@@ -18,19 +18,21 @@ public sealed class AtendimentoController : Controller
     private readonly AtendimentoEnvioService _envio;
     private readonly AtendimentoOrquestradorService _orquestrador;
     private readonly UsuarioVinculoService _vinculos;
+    private readonly AtendimentoFeedbackService? _feedback;
 
     public AtendimentoController(
         MKSANContext context,
         AtendimentoConversaService conversas,
         AtendimentoEnvioService envio,
         AtendimentoOrquestradorService orquestrador,
-        UsuarioVinculoService vinculos)
+        UsuarioVinculoService vinculos, AtendimentoFeedbackService? feedback = null)
     {
         _context = context;
         _conversas = conversas;
         _envio = envio;
         _orquestrador = orquestrador;
         _vinculos = vinculos;
+        _feedback = feedback;
     }
 
     [HttpGet]
@@ -446,9 +448,8 @@ public sealed class AtendimentoController : Controller
         if (conversa is null)
             return NotFound();
 
-        await _conversas.EncerrarAsync(
-            conversa,
-            ct);
+        if (_feedback is not null) await _feedback.EncerrarAsync(conversa, ct);
+        else await _conversas.EncerrarAsync(conversa, ct);
 
         TempData["Sucesso"] = "Conversa encerrada.";
         return RedirectToAction(nameof(Index), new { id });

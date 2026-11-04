@@ -118,6 +118,7 @@ public sealed class AtendimentoOrquestradorService
     private readonly SolicitacaoAtendimentoService _solicitacoes;
     private readonly ILogger<AtendimentoOrquestradorService> _logger;
     private readonly AtendimentoEmailOptions _emailOptions;
+    private readonly AtendimentoFeedbackService? _feedback;
 
     public AtendimentoOrquestradorService(
         IAgenteClinicaService agente,
@@ -127,7 +128,7 @@ public sealed class AtendimentoOrquestradorService
         ConvenioService convenio,
         SolicitacaoAtendimentoService solicitacoes,
         ILogger<AtendimentoOrquestradorService> logger,
-        IOptions<AtendimentoEmailOptions> emailOptions)
+        IOptions<AtendimentoEmailOptions> emailOptions, AtendimentoFeedbackService? feedback = null)
     {
         _agente = agente;
         _conversas = conversas;
@@ -137,6 +138,7 @@ public sealed class AtendimentoOrquestradorService
         _solicitacoes = solicitacoes;
         _logger = logger;
         _emailOptions = emailOptions.Value;
+        _feedback = feedback;
     }
 
     /// <summary>
@@ -151,6 +153,8 @@ public sealed class AtendimentoOrquestradorService
             string.IsNullOrWhiteSpace(entrada.Identificador) ||
             string.IsNullOrWhiteSpace(entrada.Texto))
             return;
+
+        if (_feedback is not null && await _feedback.TratarEntradaAsync(entrada, ct)) return;
 
         var textoEntrada = NormalizarTextoEntrada(entrada.Texto, CanalAtendimento.Email);
         if (string.IsNullOrWhiteSpace(textoEntrada)) return;
@@ -337,6 +341,8 @@ public sealed class AtendimentoOrquestradorService
 
         if (string.IsNullOrWhiteSpace(textoEntrada))
             return;
+
+        if (_feedback is not null && await _feedback.TratarEntradaAsync(entrada, ct)) return;
 
         ConversaAtendimento conversa;
         if (entrada.ConversaAtendimentoId is long conversaId)
