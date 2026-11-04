@@ -127,6 +127,7 @@ await AtendimentoRetomadaChecks.RunAsync(Check);
 await PortalAcessoChecks.RunAsync(Check);
 await EvolutionEnvioChecks.RunAsync(Check);
 await EvolutionDiagnosticoChecks.RunAsync(Check);
+await HttpSmsChecks.RunAsync(Check);
 Console.WriteLine("Verificações concluídas. Nenhuma mensagem real foi enviada.");
 sealed class FakeHandler : HttpMessageHandler
 {

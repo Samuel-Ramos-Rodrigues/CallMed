@@ -103,7 +103,7 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
                 texto += "\n\n" + orientacoes.Texto(c);
                 var chave = $"lembrete:{c.Id}:{(tipo24 ? "24h" : "2h")}:{c.MedicoId}:{c.Data:yyyyMMdd}:{c.Horario}";
                 var msg = await envio.EnviarAvisoAsync(conversa, texto, chave, ct);
-                if (msg.Status == StatusMensagemAtendimento.Enviada)
+                if (msg.Status is StatusMensagemAtendimento.Enviada or StatusMensagemAtendimento.Entregue)
                 {
                     if (tipo24) c.Lembrete24hEnviadoEm = DateTime.UtcNow; else c.Lembrete2hEnviadoEm = DateTime.UtcNow;
                     await db.SaveChangesAsync(ct);

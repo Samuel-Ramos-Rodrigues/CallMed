@@ -194,7 +194,7 @@ Para detalhes, consulte **[docs/ARQUITETURA.md](./docs/ARQUITETURA.md)**.
 | IA | Google Gemini |
 | WhatsApp | Evolution API |
 | E-mail | SMTP + webhook inbound opcional |
-| SMS | Gateway HTTP configurável |
+| SMS | httpSMS; [guia de configuração e variáveis do Render](docs/HTTP-SMS.md) |
 | Container | Docker |
 | Deploy | Render |
 

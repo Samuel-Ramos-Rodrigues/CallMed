@@ -1,3 +1,12 @@
+## 2026-11-03 — Integração de SMS com httpSMS
+
+- Substituído SMSGate por httpSMS: API Key, número From e formato from/to/content.
+- Webhook CloudEvents com JWT HS256, filtro do chip e deduplicação por ID da mensagem.
+- Entrada persistida antes de responder ao webhook; IA processada em segundo plano e retomada após reinicializações.
+- Status de fila, envio, entrega, falha e expiração atualizados por eventos autenticados.
+- Mantidos modo humano, solicitações de agendamento e histórico; demais canais conservam seus provedores.
+- Guia de variáveis do Render e configuração do webhook: [HTTP-SMS.md](HTTP-SMS.md).
+
 ## 2026-10-29 — Termos de Serviço e transparência Gmail OAuth
 
 - Adicionada a página pública `/termos-de-uso`, sem autenticação.

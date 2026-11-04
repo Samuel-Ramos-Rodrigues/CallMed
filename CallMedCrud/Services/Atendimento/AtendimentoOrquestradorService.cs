@@ -62,10 +62,16 @@ public sealed class AtendimentoOrquestradorService
         var ultima = await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct);
         if (ultima is null) return ResultadoRetomadaAtendimento.SemMensagemPendente;
         await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "analisando", ct);
+        if (conversa.Canal == CanalAtendimento.Sms && AtendimentoIntencao.EhPedidoAgendamento(ultima.Texto))
+            await _solicitacoes.ObterOuCriarDaConversaAsync(conversa, ultima.Texto, ct);
         if (AtendimentoIntencao.EhPedidoAtendimentoHumano(ultima.Texto))
         {
             await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
             await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "equipe", ct);
+            if (conversa.Canal == CanalAtendimento.Sms)
+                await _envio.EnviarAvisoAsync(conversa,
+                    "Certo. Encaminhei sua conversa para a equipe CallMed. Um atendente poderá continuar por este mesmo canal.",
+                    $"sms:equipe:{conversa.Id}:{ultima.Id}", ct);
             return ResultadoRetomadaAtendimento.RequerEquipe;
         }
         conversa = await _conversas.ObterPorIdAsync(conversa.Id, ct) ?? conversa;
@@ -80,10 +86,18 @@ public sealed class AtendimentoOrquestradorService
                 await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "falha", ct);
                 return ResultadoRetomadaAtendimento.FalhaNaGeracao;
             }
+            if (conversa.Canal == CanalAtendimento.Sms)
+            {
+                await _conversas.RecarregarAsync(conversa, ct);
+                if (!conversa.Ativa || conversa.Modo != ModoAtendimento.IA || conversa.ResponsavelUsuarioId is not null)
+                    return ResultadoRetomadaAtendimento.RequerEquipe;
+                var pendente = await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct);
+                if (pendente?.Id != ultima.Id) return ResultadoRetomadaAtendimento.SemMensagemPendente;
+            }
             var saida = await _envio.EnviarRespostaIaAsync(conversa, resposta.Resposta, ultima.Id, ct);
             await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "concluida", ct);
-            return saida.Status == StatusMensagemAtendimento.Enviada ? ResultadoRetomadaAtendimento.RespostaEnviada
-                : saida.Status == StatusMensagemAtendimento.Processando ? ResultadoRetomadaAtendimento.RespostaEmProcessamento
+            return saida.Status is StatusMensagemAtendimento.Enviada or StatusMensagemAtendimento.Entregue ? ResultadoRetomadaAtendimento.RespostaEnviada
+                : saida.Status is StatusMensagemAtendimento.Processando or StatusMensagemAtendimento.AguardandoEnvio ? ResultadoRetomadaAtendimento.RespostaEmProcessamento
                 : ResultadoRetomadaAtendimento.FalhaNoEnvio;
         }
         catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }

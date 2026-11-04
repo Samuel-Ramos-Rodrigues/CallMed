@@ -194,7 +194,9 @@ public sealed class AtendimentoEnvioService(
                 ReenvioBloqueado = true
             };
         }
-        mensagem.Status = resultado.Sucesso ? StatusMensagemAtendimento.Enviada : StatusMensagemAtendimento.Falhou;
+        mensagem.Status = resultado.Sucesso
+            ? resultado.StatusConfirmado ?? StatusMensagemAtendimento.Enviada
+            : StatusMensagemAtendimento.Falhou;
         mensagem.MensagemExternaId = resultado.MensagemExternaId;
         mensagem.Erro = resultado.Erro;
         mensagem.ProximaTentativaEm = resultado.ProximaTentativaEm;

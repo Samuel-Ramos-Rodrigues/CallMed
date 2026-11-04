@@ -113,6 +113,13 @@
                 const note = document.createElement('small'); note.className = 'message-sent'; note.setAttribute('role', 'status');
                 note.textContent = 'Enviada · aceita pelo servidor de e-mail'; delivery.append(note); return;
             }
+            if (conversationChannel === 'Sms' && ['AguardandoEnvio', 'Enviada', 'Entregue'].includes(item.status)) {
+                const note = document.createElement('small'); note.className = 'message-sent'; note.setAttribute('role', 'status');
+                note.textContent = item.status === 'AguardandoEnvio' ? 'SMS na fila · aguardando envio pelo celular'
+                    : item.status === 'Entregue' ? 'SMS entregue · confirmação registrada'
+                    : 'Envio aceito · entrega não confirmada';
+                delivery.append(note); return;
+            }
             if (item.status !== 'Falhou') return;
             const failure = document.createElement('div'); failure.className = 'message-failure';
             const error = document.createElement('small'); error.className = 'message-error';
@@ -389,7 +396,7 @@
                 statusBadge('WhatsApp', configuracao(data.whatsapp?.enabled, data.whatsapp?.inboundConfigured, data.whatsapp?.outboundConfigured),
                     'Evolution API: status de configuração; conexão não testada.'),
                 statusBadge('SMS', configuracao(data.sms?.enabled, data.sms?.inboundConfigured, data.sms?.outboundConfigured),
-                    'SMS: status de configuração; conexão não testada.'),
+                    `${data.sms?.provider || 'SMS'}: status de configuração; conexão não testada.`),
                 statusBadge('E-mail', configuracao(emailHabilitado, emailEntrada, emailSaida), emailDetails)
             );
         } catch {

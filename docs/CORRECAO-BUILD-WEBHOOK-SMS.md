@@ -1,3 +1,5 @@
+> Registro histórico para versões anteriores com SMSGate. Na versão atual o SMS usa httpSMS e JWT HS256; consulte [HTTP-SMS.md](HTTP-SMS.md).
+
 # Correção de build: webhook SMS Gateway
 
 ## Sintoma

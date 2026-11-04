@@ -7,15 +7,15 @@ public sealed class SmsHttpOptions
     public bool Enabled { get; set; }
 
     public string BaseUrl { get; set; } =
-        "https://api.sms-gate.app/3rdparty/v1";
+        "https://api.httpsms.com/v1";
 
     public string SendPath { get; set; } =
-        "/messages";
+        "/messages/send";
 
-    public string Username { get; set; } =
+    public string ApiKey { get; set; } =
         string.Empty;
 
-    public string Password { get; set; } =
+    public string From { get; set; } =
         string.Empty;
 
     public string WebhookSecret { get; set; } =

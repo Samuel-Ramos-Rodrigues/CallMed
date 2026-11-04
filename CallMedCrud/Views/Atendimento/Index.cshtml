@@ -237,6 +237,14 @@
                                     {
                                         <small class="message-sent" role="status">Enviada · aceita pelo servidor de e-mail</small>
                                     }
+                                    else if (!entrada && conversa.Canal == CanalAtendimento.Sms && mensagem.Status is StatusMensagemAtendimento.AguardandoEnvio or StatusMensagemAtendimento.Enviada or StatusMensagemAtendimento.Entregue)
+                                    {
+                                        <small class="message-sent" role="status">@(mensagem.Status switch {
+                                            StatusMensagemAtendimento.AguardandoEnvio => "SMS na fila · aguardando envio pelo celular",
+                                            StatusMensagemAtendimento.Entregue => "SMS entregue · confirmação registrada",
+                                            _ => "Envio aceito · entrega não confirmada"
+                                        })</small>
+                                    }
                                 </div>
                             </article>
                         }

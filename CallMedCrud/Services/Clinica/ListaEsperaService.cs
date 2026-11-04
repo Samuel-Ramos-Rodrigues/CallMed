@@ -175,7 +175,7 @@ public sealed class ListaEsperaService
                     : "Entre no app para aceitar a vaga ou responda por aqui se precisar de ajuda. A vaga continua sujeita à disponibilidade.");
 
             var msg = await _envio.EnviarAvisoAsync(conversa, texto, $"lista-espera:{item.Id}:vaga:{vaga.Id}", ct);
-            if (msg.Status == StatusMensagemAtendimento.Enviada)
+            if (msg.Status is StatusMensagemAtendimento.Enviada or StatusMensagemAtendimento.Entregue)
             {
                 MarcarComoNotificado(item, vaga);
                 await _context.SaveChangesAsync(ct);

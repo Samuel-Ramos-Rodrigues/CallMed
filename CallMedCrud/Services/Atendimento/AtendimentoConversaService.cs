@@ -617,7 +617,7 @@ public sealed class AtendimentoConversaService
                 m.Id > afterId &&
                 m.Direcao == DirecaoMensagemAtendimento.Saida &&
                 m.Autor == AutorMensagemAtendimento.Funcionario &&
-                m.Status == StatusMensagemAtendimento.Enviada)
+                (m.Status == StatusMensagemAtendimento.Enviada || m.Status == StatusMensagemAtendimento.Entregue))
             .OrderBy(m => m.Id)
             .Take(30)
             .ToListAsync(ct);
@@ -627,7 +627,7 @@ public sealed class AtendimentoConversaService
     {
         var ids = await _context.MensagensAtendimento
             .Where(m => m.ConversaAtendimentoId == conversaId && m.ChaveEnvio == null &&
-                m.Status != StatusMensagemAtendimento.Processando && m.ProximaTentativaEm == null)
+                m.Status != StatusMensagemAtendimento.Processando && m.Status != StatusMensagemAtendimento.AguardandoEnvio && m.ProximaTentativaEm == null)
             .OrderByDescending(m => m.CriadoEm)
             .ThenByDescending(m => m.Id)
             .Skip(LimiteMensagens)

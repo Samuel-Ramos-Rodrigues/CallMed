@@ -8,5 +8,8 @@ public enum StatusMensagemAtendimento
     Falhou = 4,
     Ignorada = 5,
     /// <summary>Rascunho da IA aguardando aprovação humana; ainda não foi enviado.</summary>
-    AguardandoAprovacao = 6
+    AguardandoAprovacao = 6,
+    /// <summary>Preservado para leitura de mensagens pendentes já armazenadas.</summary>
+    AguardandoEnvio = 7,
+    Entregue = 8
 }

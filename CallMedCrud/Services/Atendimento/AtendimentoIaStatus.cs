@@ -19,11 +19,13 @@ public sealed record AtendimentoIaStatus(string Estado, string Titulo, string De
         if (entrada is null) return Estado("aguardando", "Aguardando mensagem", "Ainda não há mensagem recebida para a IA analisar.");
         if (saida?.Status == StatusMensagemAtendimento.AguardandoAprovacao)
             return Estado("rascunho", "Rascunho pronto · aguardando aprovação", "A IA concluiu a resposta. Revise o rascunho no histórico e aprove o envio.");
-        if (saida?.Status == StatusMensagemAtendimento.Enviada)
+        if (saida?.Status is StatusMensagemAtendimento.Enviada or StatusMensagemAtendimento.Entregue)
             return Estado("respondida", saida.Autor == AutorMensagemAtendimento.Assistente ? "Resposta da IA enviada" : "Mensagem respondida pela equipe",
                 "A última mensagem recebida já tem resposta.");
         if (saida?.Status == StatusMensagemAtendimento.Processando)
             return Estado("enviando", "Enviando resposta", "Aguardando a confirmação do canal.", true);
+        if (saida?.Status == StatusMensagemAtendimento.AguardandoEnvio)
+            return Estado("fila_sms", "Resposta de SMS pendente", "O envio ainda não foi confirmado. Consulte o status no histórico.");
 
         if (conversa.IaEntradaId == entrada.Id)
         {
@@ -50,6 +52,8 @@ public sealed record AtendimentoIaStatus(string Estado, string Titulo, string De
             ? Estado("humano", "IA pausada · atendimento humano", email ? "Você pode gerar um rascunho para a última mensagem sem enviar o e-mail." : "Devolva para IA para retomar a mensagem pendente.", gerar: true)
             : Estado("pendente", "Mensagem aguardando análise da IA", email && emailAutomatico
                 ? "A resposta administrativa será preparada e enviada automaticamente."
-                : email ? "Para mensagens antigas, use Gerar rascunho. O e-mail só será enviado após aprovação." : "Devolva para IA para retomar esta mensagem.", gerar: true);
+                : email ? "Para mensagens antigas, use Gerar rascunho. O e-mail só será enviado após aprovação."
+                : conversa.Canal == CanalAtendimento.Sms ? "A IA preparará a resposta automaticamente."
+                : "Devolva para IA para retomar esta mensagem.", gerar: true);
     }
 }

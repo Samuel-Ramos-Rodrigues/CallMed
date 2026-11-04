@@ -1,4 +1,4 @@
-# Integrações de e-mail Brevo SMTP e Android SMS Gateway
+# Integrações de e-mail Brevo SMTP e SMS
 
 ## E-mail de saída — Brevo SMTP
 
@@ -28,20 +28,9 @@ Depois de definir as variáveis, faça um novo deploy. Entre como administrador 
 
 Esta configuração envia e-mails. O recebimento automático de respostas na Central é suportado separadamente pelo Gmail API, mas fica desativado por padrão até que o subdomínio, os MX e o webhook sejam configurados conforme a seção abaixo.
 
-## SMS — Android SMS Gateway
+## SMS — httpSMS
 
-O CallMed mantém o envio SMS pelo Android SMS Gateway. Configure no Render as variáveis:
-
-```text
-Atendimento__Sms__Http__Enabled=true
-Atendimento__Sms__Http__BaseUrl=https://api.sms-gate.app/3rdparty/v1
-Atendimento__Sms__Http__SendPath=/messages
-Atendimento__Sms__Http__Username=USUARIO_DO_GATEWAY
-Atendimento__Sms__Http__Password=SENHA_DO_GATEWAY
-Atendimento__Sms__Http__WebhookSecret=SEGREDO_DE_ASSINATURA_DO_WEBHOOK
-```
-
-Use credenciais do gateway, não as credenciais do Brevo. Configure o webhook de SMS para a rota `/api/atendimento/sms`, usando HTTPS e o segredo correspondente. Confirme no dispositivo Android que o gateway está conectado e possui permissão para enviar SMS.
+O provedor atual é o **httpSMS**. O guia completo, as variáveis do Render e os eventos do webhook estão em [HTTP-SMS.md](HTTP-SMS.md). As credenciais Username/Password e a assinatura do SMSGate deixaram de ser utilizadas.
 
 ## Validação
 

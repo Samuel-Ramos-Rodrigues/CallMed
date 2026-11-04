@@ -297,7 +297,7 @@ public sealed class AtendimentoController : Controller
             model.Assunto,
             ct);
 
-        if (saida.Status != StatusMensagemAtendimento.Enviada)
+        if (saida.Status is not (StatusMensagemAtendimento.Enviada or StatusMensagemAtendimento.Entregue or StatusMensagemAtendimento.AguardandoEnvio))
         {
             TempData["Erro"] =
                 saida.Erro ??
@@ -306,7 +306,9 @@ public sealed class AtendimentoController : Controller
         else
         {
             TempData["Sucesso"] =
-                $"Atendimento iniciado por {NomeCanal(model.Canal)}.";
+                saida.Status == StatusMensagemAtendimento.AguardandoEnvio
+                    ? "Atendimento iniciado. Mensagem na fila de SMS; aguarde o envio pelo aparelho."
+                    : $"Atendimento iniciado por {NomeCanal(model.Canal)}.";
         }
 
         return RedirectToAction(
@@ -570,9 +572,9 @@ public sealed class AtendimentoController : Controller
 
         var atual = await _envio.ReenviarAsync(mensagemId, ct);
         if (atual is null) return NotFound();
-        var enviada = atual.Status == StatusMensagemAtendimento.Enviada;
+        var enviada = atual.Status is StatusMensagemAtendimento.Enviada or StatusMensagemAtendimento.Entregue or StatusMensagemAtendimento.AguardandoEnvio;
         TempData[enviada ? "Sucesso" : "Erro"] = enviada
-            ? "Mensagem enviada."
+            ? atual.Status == StatusMensagemAtendimento.AguardandoEnvio ? "Mensagem na fila de SMS. Aguarde o envio pelo aparelho." : "Mensagem enviada."
             : atual.Status == StatusMensagemAtendimento.Processando
                 ? "Esta mensagem já está em processamento. Aguarde a confirmação."
                 : atual.Erro ?? "Aguarde antes de tentar novamente.";
@@ -705,7 +707,9 @@ public sealed class AtendimentoController : Controller
             userId,
             ct: ct);
 
-        if (saida.Status == StatusMensagemAtendimento.Enviada)
+        if (saida.Status == StatusMensagemAtendimento.AguardandoEnvio)
+            TempData["Sucesso"] = "Mensagem na fila de SMS. Aguarde o envio pelo aparelho.";
+        else if (saida.Status is StatusMensagemAtendimento.Enviada or StatusMensagemAtendimento.Entregue)
             TempData["Sucesso"] = "Mensagem enviada.";
         else
             TempData["Erro"] =

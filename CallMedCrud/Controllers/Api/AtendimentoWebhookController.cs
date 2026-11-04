@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
 using MKSANCrud.DTOs.Atendimento;
 using MKSANCrud.Options;
 using System.Text.Json;
@@ -68,9 +66,11 @@ public sealed class AtendimentoWebhookController : ControllerBase
         sms = new
         {
             enabled = _sms.Enabled,
+            provider = "httpSMS",
             inboundConfigured =
                 _sms.Enabled &&
-                !string.IsNullOrWhiteSpace(_sms.WebhookSecret),
+                System.Text.Encoding.UTF8.GetByteCount(_sms.WebhookSecret ?? string.Empty) >= 32 &&
+                AtendimentoIdentidadeService.NormalizarTelefone(_sms.From ?? string.Empty).Length is >= 12 and <= 15,
             outboundConfigured =
                 _envio.CanalConfigurado(CanalAtendimento.Sms)
         },
@@ -215,256 +215,52 @@ public sealed class AtendimentoWebhookController : ControllerBase
     [HttpPost("sms")]
     [RequestSizeLimit(1_048_576)]
     public async Task<IActionResult> Sms(
-        CancellationToken ct)
+        [FromServices] HttpSmsAtendimentoService recebimento, CancellationToken ct)
     {
-        if (!_sms.Enabled)
-            return NotFound();
-
-        string payload;
-
-        try
-        {
-            using var reader = new StreamReader(Request.Body);
-            payload = await reader.ReadToEndAsync(ct);
-        }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(
-                ex,
-                "Falha ao ler o payload do webhook SMS do SMS Gateway.");
-
-            return BadRequest();
-        }
-
-        if (string.IsNullOrWhiteSpace(payload))
-        {
-            _logger.LogWarning(
-                "Webhook SMS do SMS Gateway recebido com corpo vazio.");
-
-            return BadRequest();
-        }
-
-        /*
-         * SMS Gateway utiliza dois headers para assinatura:
-         *
-         * X-Signature
-         * X-Timestamp
-         *
-         * A assinatura é calculada através de HMAC-SHA256 utilizando:
-         *
-         * mensagem = payload + timestamp
-         * chave    = Signing Key configurado no aplicativo SMS Gateway
-         */
-        var assinatura =
-            Request.Headers["X-Signature"].ToString();
-
-        var timestamp =
-            Request.Headers["X-Timestamp"].ToString();
-
-        if (!ValidarAssinaturaSmsGateway(
-                payload,
-                assinatura,
-                timestamp,
-                _sms.WebhookSecret))
-        {
-            _logger.LogWarning(
-                "Webhook SMS do SMS Gateway rejeitado por assinatura inválida.");
-
+        if (!_sms.Enabled) return NotFound();
+        if (!HttpSmsWebhookValidator.Validar(Request.Headers.Authorization.ToString(), _sms.WebhookSecret))
             return Unauthorized();
-        }
-
         JsonDocument documento;
-
-        try
-        {
-            documento = JsonDocument.Parse(payload);
-        }
-        catch (JsonException ex)
-        {
-            _logger.LogWarning(
-                ex,
-                "Payload inválido recebido no webhook SMS do SMS Gateway.");
-
-            return BadRequest();
-        }
-
+        try { documento = await JsonDocument.ParseAsync(Request.Body, cancellationToken: ct); }
+        catch (JsonException) { return BadRequest(); }
         using (documento)
         {
             var root = documento.RootElement;
-
-            var evento =
-                Texto(root, "event");
-
-            /*
-             * O SMS Gateway envia eventos no formato:
-             *
-             * {
-             *   "deviceId": "...",
-             *   "event": "sms:received",
-             *   "id": "...",
-             *   "payload": {
-             *      "messageId": "...",
-             *      "sender": "...",
-             *      "recipient": "...",
-             *      "phoneNumber": "...",
-             *      "simNumber": 1,
-             *      "message": "...",
-             *      "receivedAt": "..."
-             *   },
-             *   "webhookId": "..."
-             * }
-             *
-             * Somente sms:received inicia uma nova conversa.
-             */
-            if (!string.Equals(
-                    evento,
-                    "sms:received",
-                    StringComparison.OrdinalIgnoreCase))
-            {
-                _logger.LogDebug(
-                    "Evento do SMS Gateway ignorado pelo fluxo de entrada. Evento={Evento}.",
-                    evento);
-
-                return Ok();
-            }
-
-            var payloadSms =
-                Propriedade(root, "payload");
-
-            if (payloadSms is not JsonElement dadosSms ||
-                dadosSms.ValueKind != JsonValueKind.Object)
-            {
-                _logger.LogWarning(
-                    "Webhook sms:received do SMS Gateway sem objeto payload.");
-
+            if (root.ValueKind != JsonValueKind.Object) return BadRequest();
+            var evento = Texto(root, "type");
+            var eventoHeader = Request.Headers["X-Event-Type"].ToString();
+            if (string.IsNullOrWhiteSpace(evento) ||
+                (!string.IsNullOrEmpty(eventoHeader) && eventoHeader != evento)) return BadRequest();
+            if (evento is not ("message.phone.received" or "message.phone.sent" or "message.phone.delivered" or
+                "message.send.failed" or "message.send.expired")) return Ok();
+            if (Propriedade(root, "data") is not JsonElement dados || dados.ValueKind != JsonValueKind.Object)
                 return BadRequest();
-            }
-
-            /*
-             * sender é o número que enviou o SMS.
-             *
-             * phoneNumber é mantido como fallback por compatibilidade
-             * com versões anteriores do SMS Gateway.
-             */
-            var from =
-                Texto(dadosSms, "sender") ??
-                Texto(dadosSms, "phoneNumber");
-
-            var texto =
-                Texto(dadosSms, "message");
-
-            /*
-             * O messageId interno do SMS é a melhor identificação externa.
-             * O id do evento raiz fica como fallback.
-             */
-            var id =
-                Texto(dadosSms, "messageId") ??
-                Texto(root, "id");
-
-            var recipient =
-                Texto(dadosSms, "recipient");
-
-            var simNumber =
-                Texto(dadosSms, "simNumber");
-
-            var receivedAt =
-                Texto(dadosSms, "receivedAt");
-
-            if (string.IsNullOrWhiteSpace(from) ||
-                string.IsNullOrWhiteSpace(texto))
-            {
-                _logger.LogWarning(
-                    "Webhook sms:received do SMS Gateway sem remetente ou mensagem. MessageId={MessageId}.",
-                    id);
-
-                return BadRequest();
-            }
-
-            _logger.LogInformation(
-                "SMS Gateway inbound recebido. MessageId={MessageId}, Remetente={Remetente}, Destinatario={Destinatario}, SIM={SimNumber}, RecebidoEm={ReceivedAt}.",
-                id,
-                MascararIdentificador(from),
-                MascararIdentificador(recipient ?? string.Empty),
-                simNumber,
-                receivedAt);
-
+            var owner = AtendimentoIdentidadeService.NormalizarTelefone(Texto(dados, "owner") ?? string.Empty);
+            var configurado = AtendimentoIdentidadeService.NormalizarTelefone(_sms.From ?? string.Empty);
+            if (owner.Length < 12 || configurado.Length < 12) return BadRequest();
+            if (!string.Equals(owner, configurado, StringComparison.Ordinal)) return Ok();
+            var id = Texto(dados, "message_id") ?? Texto(dados, "id");
+            if (string.IsNullOrWhiteSpace(id) || id.Length > 180) return BadRequest();
             try
             {
-                await _orquestrador.ProcessarEntradaAsync(
-                    new CanalMensagemEntrada
-                    {
-                        Canal = CanalAtendimento.Sms,
-                        Identificador = from,
-                        Texto = texto,
-                        MensagemExternaId = id
-                    },
-                    ct);
-
-                _logger.LogInformation(
-                    "SMS Gateway inbound processado com sucesso. MessageId={MessageId}, remetente={Remetente}.",
-                    id,
-                    MascararIdentificador(from));
-
-                return Ok();
+                if (evento != "message.phone.received")
+                    return await recebimento.AtualizarStatusAsync(evento, id, dados, ct)
+                        ? Ok() : StatusCode(StatusCodes.Status503ServiceUnavailable);
+                var from = AtendimentoIdentidadeService.NormalizarTelefone(Texto(dados, "contact") ?? string.Empty);
+                var texto = Texto(dados, "content");
+                if (from.Length is < 12 or > 15 || string.IsNullOrWhiteSpace(texto) || texto.Length > 5000)
+                    return BadRequest();
+                await recebimento.RegistrarEntradaAsync(from, texto, id, ct);
+                _logger.LogInformation("SMS recebido e persistido pelo httpSMS. MessageId={MessageId}.", id);
+                return Ok(); // A IA roda no serviço de fundo, fora do limite de 5 s do webhook.
             }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
             catch (Exception ex)
             {
-                _logger.LogError(
-                    ex,
-                    "Falha ao processar SMS recebido pelo SMS Gateway. MessageId={MessageId}, remetente={Remetente}.",
-                    id,
-                    MascararIdentificador(from));
-
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError);
+                _logger.LogError(ex, "Falha ao registrar evento httpSMS. Evento={Evento}, MessageId={MessageId}.", evento, id);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-    }
-
-    private static bool ValidarAssinaturaSmsGateway(
-        string payload,
-        string? assinatura,
-        string? timestamp,
-        string segredo)
-    {
-        if (string.IsNullOrWhiteSpace(payload) ||
-            string.IsNullOrWhiteSpace(assinatura) ||
-            string.IsNullOrWhiteSpace(timestamp) ||
-            string.IsNullOrWhiteSpace(segredo))
-        {
-            return false;
-        }
-
-        // Timestamp Unix em segundos; a janela limitada reduz reenvios de eventos antigos.
-        if (!long.TryParse(timestamp, out var timestampUnix))
-            return false;
-
-        var agoraUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        if (timestampUnix < agoraUnix - 300 || timestampUnix > agoraUnix + 300)
-            return false;
-
-        // HMAC-SHA256 com Signing Key do gateway e mensagem payload + timestamp.
-        var mensagem = payload + timestamp;
-
-        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(segredo));
-        var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(mensagem));
-        var assinaturaEsperada = Convert.ToHexString(hash).ToLowerInvariant();
-        var assinaturaRecebida = assinatura.Trim().ToLowerInvariant();
-
-        if (assinaturaEsperada.Length != assinaturaRecebida.Length)
-            return false;
-
-        return CryptographicOperations.FixedTimeEquals(
-            Encoding.UTF8.GetBytes(assinaturaEsperada),
-            Encoding.UTF8.GetBytes(assinaturaRecebida));
     }
 
     private bool SegredoValido(string configurado)

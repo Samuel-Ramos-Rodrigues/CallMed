@@ -140,6 +140,8 @@ public static class ServiceCollectionExtensions
             sp => sp.GetRequiredService<EvolutionWhatsAppSender>());
 
         services.AddHttpClient<SmsHttpSender>();
+        services.AddScoped<HttpSmsAtendimentoService>();
+        services.AddHostedService<HttpSmsAtendimentoBackgroundService>();
         services.AddScoped<ICanalAtendimentoSender>(
             sp => sp.GetRequiredService<SmsHttpSender>());
 
