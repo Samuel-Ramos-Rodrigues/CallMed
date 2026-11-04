@@ -1,5 +1,6 @@
 using MKSANCrud.Options;
 using System.Net;
+using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -70,6 +71,7 @@ public sealed class GeminiClient
              tentativa <= maxTentativas;
              tentativa++)
         {
+            var timer = Stopwatch.StartNew();
             using var message =
                 new HttpRequestMessage(
                     HttpMethod.Post,
@@ -105,6 +107,7 @@ public sealed class GeminiClient
                         throw new JsonException(
                             "Resposta do Gemini não é um objeto JSON válido.");
 
+                    _logger.LogInformation("Gemini concluído. Modelo={Modelo} Tentativa={Tentativa} DuracaoMs={DuracaoMs}.", Model, tentativa, timer.ElapsedMilliseconds);
                     return node;
                 }
 

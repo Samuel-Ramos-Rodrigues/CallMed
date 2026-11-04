@@ -4,6 +4,10 @@
 
 <h1 align="center">CallMed</h1>
 
+> **Redefinição de senha corrigida:** confirmação após verificar a senha gravada, desbloqueio temporário e links válidos entre reinícios. [Atualização e teste do fluxo](docs/CORRECAO-REDEFINICAO-SENHA.md).
+
+> **Chat com menos espera:** saudações sem chamada ao modelo, menos gravações do histórico e espera limitada sem reenviar o POST automaticamente. [Correção e diagnóstico](docs/DESEMPENHO-ASSISTENTE.md).
+
 > **Avaliações ao encerrar:** notas de 1 a 5 e comentário opcional no WhatsApp, SMS, e-mail e agente do site, com acompanhamento pela equipe. [Fluxo, atualização do banco e testes](docs/AVALIACOES-ATENDIMENTO.md).
 
 > **E-mail administrativo automático:** consulta médicos e vagas, envia respostas sem aprovação da recepção e oferece links para concluir o agendamento no portal. Gerar rascunho continua sendo uma ação manual. [Configuração, retomada de pendências e validação](docs/EMAIL-AUTOMATICO-2026-11-02.md).

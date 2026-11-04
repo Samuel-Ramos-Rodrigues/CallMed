@@ -250,6 +250,23 @@ public sealed class AtendimentoConversaService
         return mensagem;
     }
 
+    public async Task RegistrarInteracaoWebAsync(ConversaAtendimento conversa, string entrada, string resposta, CancellationToken ct = default)
+    {
+        if (conversa.Canal != CanalAtendimento.Web) throw new ArgumentException("A interação pertence ao chat do site.", nameof(conversa));
+        var agora = DateTime.UtcNow;
+        _context.MensagensAtendimento.AddRange(
+            new MensagemAtendimento { ConversaAtendimentoId = conversa.Id, Direcao = DirecaoMensagemAtendimento.Entrada,
+                Autor = AutorMensagemAtendimento.Paciente, Status = StatusMensagemAtendimento.Recebida,
+                Texto = Limitar(entrada, 5000) ?? string.Empty, CriadoEm = agora },
+            new MensagemAtendimento { ConversaAtendimentoId = conversa.Id, Direcao = DirecaoMensagemAtendimento.Saida,
+                Autor = AutorMensagemAtendimento.Assistente, Status = StatusMensagemAtendimento.Enviada,
+                Texto = Limitar(resposta, 5000) ?? string.Empty, CriadoEm = agora.AddTicks(1), EnviadoEm = agora });
+        conversa.AtualizadoEm = agora;
+        conversa.UltimaInteracaoEm = agora;
+        await _context.SaveChangesAsync(ct);
+        await ApararAsync(conversa.Id, ct);
+    }
+
     private void AnexarPacienteExistente(Paciente? paciente)
     {
         if (paciente is null)

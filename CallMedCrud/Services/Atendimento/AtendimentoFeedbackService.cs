@@ -96,6 +96,13 @@ public sealed class AtendimentoFeedbackService(
     public async Task<bool> TratarEntradaAsync(CanalMensagemEntrada entrada, CancellationToken ct = default)
     {
         if (!CanalDigital(entrada.Canal)) return false;
+        var bruto = entrada.Texto.Length > 5000 ? entrada.Texto[..5000] : entrada.Texto;
+        var texto = (entrada.Canal == CanalAtendimento.Email ? AtendimentoEmailTexto.Normalizar(bruto) : bruto).Trim();
+        var encerramento = EhEncerramento(texto);
+        var match = Regex.Match(texto, @"^(?:nota\s*[:=]?\s*)?([0-9]{1,2})(?:(?:\s*[-–—:,]\s*|\s+)(.*))?$", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromMilliseconds(100));
+        var pular = SemAcentos(texto) is "pular avaliacao" or "nao avaliar";
+        if (entrada.Canal == CanalAtendimento.Web && string.IsNullOrWhiteSpace(entrada.MensagemExternaId) &&
+            !encerramento && !match.Success && !pular) return false;
         var identificador = AtendimentoIdentidadeService.NormalizarIdentificador(entrada.Canal, entrada.Identificador);
         var conversa = await context.ConversasAtendimento.FirstOrDefaultAsync(c => c.Canal == entrada.Canal && c.IdentificadorExterno == identificador &&
             (!entrada.ConversaAtendimentoId.HasValue || c.Id == entrada.ConversaAtendimentoId.Value), ct);
@@ -105,9 +112,7 @@ public sealed class AtendimentoFeedbackService(
             a.ConversaAtendimentoId == conversa.Id && a.RespostaExternaId == entrada.MensagemExternaId, ct)) return true;
         if (!string.IsNullOrWhiteSpace(entrada.MensagemExternaId) && await context.MensagensAtendimento.AnyAsync(m =>
             m.ConversaAtendimentoId == conversa.Id && m.Direcao == DirecaoMensagemAtendimento.Entrada && m.MensagemExternaId == entrada.MensagemExternaId, ct)) return true;
-        var bruto = entrada.Texto.Length > 5000 ? entrada.Texto[..5000] : entrada.Texto;
-        var texto = (entrada.Canal == CanalAtendimento.Email ? AtendimentoEmailTexto.Normalizar(bruto) : bruto).Trim();
-        if (EhEncerramento(texto))
+        if (encerramento)
         {
             await using var transaction = context.Database.IsRelational() && context.Database.CurrentTransaction is null
                 ? await context.Database.BeginTransactionAsync(ct) : null;
@@ -131,8 +136,6 @@ public sealed class AtendimentoFeedbackService(
         var a = await context.AvaliacoesAtendimento.Where(a => a.ConversaAtendimentoId == conversa.Id && a.CriadoEm >= limite)
             .OrderByDescending(a => a.CriadoEm).FirstOrDefaultAsync(ct);
         if (a is null) return false;
-        var match = Regex.Match(texto, @"^(?:nota\s*[:=]?\s*)?([0-9]{1,2})(?:(?:\s*[-–—:,]\s*|\s+)(.*))?$", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromMilliseconds(100));
-        var pular = SemAcentos(texto) is "pular avaliacao" or "nao avaliar";
         if (!match.Success && !pular) return false;
         if (a.Nota.HasValue || a.DispensadaEm.HasValue) return true;
         int? nota = match.Success ? int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture) : null;

@@ -1,4 +1,7 @@
 using MKSANCrud.DTOs.Agente;
+using System.Diagnostics;
+using Microsoft.Extensions.Options;
+using MKSANCrud.Options;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +26,7 @@ public class AgenteController : Controller
     private readonly AtendimentoConversaService _atendimento;
     private readonly ILogger<AgenteController> _logger;
     private readonly AtendimentoFeedbackService? _feedback;
+    private readonly int _interactiveTimeoutSeconds;
 
     public AgenteController(
         IAgenteClinicaService agente,
@@ -30,7 +34,7 @@ public class AgenteController : Controller
         AgenteHistoricoService historico,
         ConvenioService convenio,
         AtendimentoConversaService atendimento,
-        ILogger<AgenteController> logger, AtendimentoFeedbackService? feedback = null)
+        ILogger<AgenteController> logger, AtendimentoFeedbackService? feedback = null, IOptions<GeminiOptions>? geminiOptions = null)
     {
         _agente = agente;
         _vinculos = vinculos;
@@ -39,6 +43,7 @@ public class AgenteController : Controller
         _atendimento = atendimento;
         _logger = logger;
         _feedback = feedback;
+        _interactiveTimeoutSeconds = Math.Clamp(geminiOptions?.Value.InteractiveTimeoutSeconds ?? 40, 1, 120);
     }
 
     [HttpPost]
@@ -48,6 +53,24 @@ public class AgenteController : Controller
         [FromBody] MensagemAgenteRequest request,
         CancellationToken cancellationToken)
     {
+        var timer = Stopwatch.StartNew();
+        using var limite = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        limite.CancelAfter(TimeSpan.FromSeconds(_interactiveTimeoutSeconds));
+        try { return await EnviarCoreAsync(request, limite.Token); }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogWarning("Chat excedeu o limite de {LimiteSegundos}s. TraceId={TraceId}.", _interactiveTimeoutSeconds, HttpContext.TraceIdentifier);
+            return StatusCode(504, new { mensagem = "O assistente demorou mais que o esperado. Você pode tentar novamente ou pedir um atendente." });
+        }
+        finally
+        {
+            _logger.LogInformation("Chat finalizado. TotalMs={TotalMs} TraceId={TraceId}.", timer.ElapsedMilliseconds, HttpContext.TraceIdentifier);
+        }
+    }
+
+    private async Task<IActionResult> EnviarCoreAsync(MensagemAgenteRequest request, CancellationToken cancellationToken)
+    {
+        var preparo = Stopwatch.StartNew();
         var mensagem = (request.Mensagem ?? string.Empty).Trim();
         if (mensagem.Length == 0)
             return BadRequest(new { mensagem = "Digite uma mensagem." });
@@ -198,6 +221,7 @@ public class AgenteController : Controller
 
         try
         {
+            _logger.LogInformation("Chat pronto para o agente. PreparacaoMs={PreparacaoMs} TraceId={TraceId}.", preparo.ElapsedMilliseconds, HttpContext.TraceIdentifier);
             // A sessão persistida da Central é a autoridade. Isso impede
             // que uma confirmação antiga sobreviva a uma troca IA ↔ humano.
             var resposta = await _agente.EnviarAsync(
@@ -207,43 +231,14 @@ public class AgenteController : Controller
                 historico,
                 cancellationToken);
 
-            if (!string.IsNullOrWhiteSpace(usuarioId))
-            {
-                try
-                {
-                    await _historico.SalvarInteracaoAsync(
-                        usuarioId,
-                        resposta.SessionId,
-                        mensagem,
-                        resposta.Resposta,
-                        cancellationToken);
-                }
-                catch (Exception exHistorico)
-                {
-                    // Falha de persistência não derruba o atendimento da IA.
-                    _logger.LogWarning(exHistorico, "Não foi possível persistir o histórico do chat.");
-                }
-            }
-
             try
             {
-                await _atendimento.RegistrarEntradaAsync(
-                    conversaAtendimento,
-                    mensagem,
-                    ct: cancellationToken);
-
-                await _atendimento.RegistrarSaidaAsync(
-                    conversaAtendimento,
-                    resposta.Resposta,
-                    AutorMensagemAtendimento.Assistente,
-                    StatusMensagemAtendimento.Enviada,
-                    ct: cancellationToken);
+                await _atendimento.RegistrarInteracaoWebAsync(conversaAtendimento, mensagem, resposta.Resposta, cancellationToken);
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception exAtendimento)
             {
-                _logger.LogWarning(
-                    exAtendimento,
-                    "Não foi possível persistir a conversa na Central de Atendimento.");
+                _logger.LogWarning(exAtendimento, "Não foi possível persistir a conversa na Central de Atendimento.");
             }
 
             return Json(new
@@ -304,6 +299,7 @@ public class AgenteController : Controller
                 mensagem = "Não foi possível conectar ao assistente agora. Tente novamente em alguns instantes."
             });
         }
+        catch (OperationCanceledException) { throw; }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro inesperado no assistente CallMed.");
@@ -323,8 +319,6 @@ public class AgenteController : Controller
         if (string.IsNullOrWhiteSpace(usuarioId))
             return Unauthorized();
 
-        if (!await UsuarioAtivoAsync(cancellationToken)) return Forbid();
-
         var podeGerenciar =
             User.IsInRole("Funcionario") ||
             User.IsInRole("Admin");
@@ -334,6 +328,12 @@ public class AgenteController : Controller
                 User,
                 cancellationToken)
             : null;
+
+        if (podeGerenciar)
+        {
+            if ((await _vinculos.ObterFuncionarioAsync(User, cancellationToken))?.Ativo != true) return Forbid();
+        }
+        else if (paciente?.Ativo != true) return Forbid();
 
         var conversa = await _atendimento.ObterOuCriarAsync(
             CanalAtendimento.Web,

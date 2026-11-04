@@ -14,7 +14,7 @@ partial = partial.slice(partial.indexOf('<div class="mksan-floating-actions"'), 
     .replace(/@foreach \(var item in new\[\][\s\S]*?<\/label> \}/,
         ['Muito ruim', 'Ruim', 'Regular', 'Bom', 'Muito bom'].map((label, i) => `<label><input type="radio" name="nota" value="${i+1}" required><span><b>${i+1}</b><small>${label}</small></span></label>`).join(''));
 assert(!partial.includes('@foreach'));
-let active = true, pending = null, rated = false, ends = 0, ratings = [], failRating = false, sends = 0;
+let active = true, pending = null, rated = false, ends = 0, ratings = [], failRating = false, sends = 0, sendMode = 'ok';
 const createSurvey = () => { active = false; if (!pending && !rated) pending = {id: '11111111-1111-4111-a111-111111111111', conversaId: 1}; };
 const html = `<!doctype html><html lang="pt-BR" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/css/callmed.css"></head><body><main class="cm25-page"><h1>Portal do paciente</h1><p>Assistente CallMed</p></main>${partial}<script>window.CallMedUI={confirm:async()=>true};</script><script src="/js/assistente-flutuante.js"></script></body></html>`;
 const server = http.createServer(async (req, res) => {
@@ -36,6 +36,9 @@ const server = http.createServer(async (req, res) => {
         }
         if (url.pathname === '/Agente/Enviar') {
             sends++;
+            if (sendMode === 'error') return json({mensagem:'O assistente demorou mais que o esperado.'},504);
+            if (sendMode === 'slow') await new Promise(r=>setTimeout(r,200));
+            if (sendMode === 'timeout') await new Promise(r=>setTimeout(r,1000));
             if (data.mensagem === 'tchau') { rated=false; createSurvey(); return json({resposta:'Atendimento encerrado.', encerrada:true, avaliacao:pending, sessionId:'teste', modo:'IA'}); }
             active=true; pending=null; rated=false;
             return json({resposta:'Olá! Posso ajudar?', modo:'IA', sessionId:'teste'});
@@ -90,6 +93,30 @@ const server = http.createServer(async (req, res) => {
             }
             console.log('PASS cartão sem transbordamento em três larguras e dois temas');
         }
+        await page.evaluate(()=>{
+            const original=window.setTimeout.bind(window);
+            window.setTimeout=(fn,ms,...args)=>original(fn,ms===55000?500:ms===8000?50:ms,...args);
+        });
+        sendMode='error';let before=sends;
+        await send('Quais médicos estão disponíveis?');
+        await page.waitForTimeout(800);
+        assert.equal(sends,before+1);assert(await page.locator('#mksan-widget-send').isEnabled());
+        assert.equal(await page.locator('.mksan-widget-msg.loading').count(),0);
+        console.log('PASS erro 504 libera o chat e não repete automaticamente o POST');
+        sendMode='slow';
+        await page.locator('#mksan-widget-input').fill('Quero informações');await page.locator('#mksan-widget-send').click();
+        await page.locator('.mksan-widget-msg.loading').filter({hasText:'demorando mais que o normal'}).waitFor();
+        await page.waitForFunction(()=>!document.querySelector('#mksan-widget-send').disabled);
+        console.log('PASS espera prolongada é sinalizada e desaparece ao receber a resposta');
+        sendMode='timeout';before=sends;
+        await send('Consulta de teste com demora');
+        assert.equal(sends,before+1);assert(await page.locator('#mksan-widget-input').isEnabled());
+        assert.equal(await page.locator('.mksan-widget-msg.loading').count(),0);
+        assert((await page.locator('#mksan-widget-messages').textContent()).includes('O atendimento demorou mais que o esperado'));
+        console.log('PASS limite no navegador cancela espera, remove Pensando e permite nova mensagem');
+        sendMode='ok';await send('Oi');
+        assert(await page.locator('#mksan-widget-send').isEnabled());
+        console.log('PASS uma nova mensagem funciona após o timeout');
         assert.equal(errors.length,0,errors.join('\n'));console.log('PASS JavaScript sem erros no navegador');
     } finally {await browser.close();server.close();}
 })().catch(e=>{console.error(e);server.close();process.exitCode=1;});

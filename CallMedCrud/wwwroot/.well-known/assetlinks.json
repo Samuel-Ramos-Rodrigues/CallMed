@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.onrender.callmed.twa",
+      "sha256_cert_fingerprints": [
+        "E4:52:22:AE:E6:75:68:DE:91:F2:F2:52:2A:D9:C2:2B:BB:E6:16:72:7C:A0:F0:3A:F1:96:F1:A8:77:5F:44:DA"
+      ]
+    }
+  }
+]

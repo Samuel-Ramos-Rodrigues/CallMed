@@ -1,3 +1,22 @@
+## 2026-11-04 — Correção da redefinição de senha
+
+- Corrigida a validação indevida de CPF/e-mail do outro formulário (chave sem prefixo `Usuario`).
+- Validação do link antes do formulário e mensagens de erro visíveis.
+- Recuperação válida remove bloqueio temporário, verifica a senha recarregada do banco e apresenta confirmação explícita.
+- Contas desativadas e bloqueios administrativos continuam protegidos.
+- Chaves do Data Protection persistidas no PostgreSQL pelo provedor oficial; patch aditivo V29.
+- Testes com Identity real, reinício do provedor, falha de gravação e fluxo HTTP completo até o login.
+- Após atualizar, solicite um novo link de recuperação. Guia: [CORRECAO-REDEFINICAO-SENHA.md](CORRECAO-REDEFINICAO-SENHA.md).
+
+## 2026-11-04 — Redução da espera no agente do site
+
+- Saudações isoladas respondem localmente; pedidos e confirmações seguem o agente completo.
+- Filtro de avaliação sem consulta para mensagens comuns do widget; polling sem resolução duplicada do paciente.
+- Par de mensagens gravado uma vez na Central, com leitura do histórico V12 preservada.
+- Orçamento total de 40 segundos no chat e limite no navegador; removida a repetição automática do POST após erro.
+- Registros de duração para preparação, Gemini e tempo total. Mantidos avaliações, canais e ajustes do TWA.
+- Guia: [DESEMPENHO-ASSISTENTE.md](DESEMPENHO-ASSISTENTE.md).
+
 ## 2026-11-04 — Avaliações ao encerrar o atendimento
 
 - Pesquisa opcional de 1 a 5 com comentário no WhatsApp, SMS, e-mail e agente do site.

@@ -1,16 +1,18 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MKSANCrud.Models;
 using MKSANCrud.Models.Atendimento;
 
 namespace MKSANCrud.Data;
 
-public class MKSANContext : IdentityDbContext<Usuario>
+public class MKSANContext : IdentityDbContext<Usuario>, IDataProtectionKeyContext
 {
     public MKSANContext(DbContextOptions<MKSANContext> options) : base(options)
     {
     }
 
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
     public DbSet<ExameHistorico> ExamesHistorico => Set<ExameHistorico>();
     public DbSet<Paciente> Pacientes => Set<Paciente>();
     public DbSet<Funcionario> Funcionarios => Set<Funcionario>();

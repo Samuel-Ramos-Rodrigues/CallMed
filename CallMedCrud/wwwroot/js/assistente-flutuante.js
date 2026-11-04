@@ -603,6 +603,12 @@
             false
         );
 
+        const requestController = new AbortController();
+        const requestTimeout = window.setTimeout(() => requestController.abort(), 55000);
+        const slowNotice = window.setTimeout(() => {
+            const bubble = loading.querySelector('div');
+            if (bubble) bubble.textContent = 'A resposta está demorando mais que o normal. Aguarde…';
+        }, 8000);
         try {
             const token = form
                 .querySelector('input[name="__RequestVerificationToken"]')
@@ -614,34 +620,16 @@
                 historico: historyBeforeSend
             });
 
-            const doFetch = () => fetch('/Agente/Enviar', {
+            const response = await fetch('/Agente/Enviar', {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
                     'RequestVerificationToken': token
                 },
+                signal: requestController.signal,
                 body: requestBody
             });
-
-            let response;
-
-            try {
-                response = await doFetch();
-
-                if ([502, 503, 504].includes(response.status)) {
-                    await new Promise(resolve =>
-                        setTimeout(resolve, 650)
-                    );
-
-                    response = await doFetch();
-                }
-            } catch {
-                await new Promise(resolve =>
-                    setTimeout(resolve, 500)
-                );
-
-                response = await doFetch();
-            }
 
             const data = await response
                 .json()
@@ -692,15 +680,19 @@
                 addMessage(resposta, 'bot');
                 if (feedbackCard) { messages.appendChild(feedbackCard); scrollToBottom(); }
             }
-        } catch {
+        } catch (error) {
             loading.remove();
             setIaIndisponivel();
 
             addMessage(
-                'Não foi possível conectar ao assistente agora.',
+                error.name === 'AbortError'
+                    ? 'O atendimento demorou mais que o esperado. Você pode tentar novamente ou pedir um atendente.'
+                    : 'Não foi possível conectar ao assistente agora.',
                 'bot'
             );
         } finally {
+            window.clearTimeout(requestTimeout);
+            window.clearTimeout(slowNotice);
             sendButton.disabled = false;
             input.disabled = false;
 

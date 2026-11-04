@@ -87,6 +87,18 @@ public sealed class AgenteClinicaService : IAgenteClinicaService
             if (MutacaoPendenteExpirou(sessao) || EhRecusaExplicita(textoUsuario))
                 LimparMutacaoPendente(sessao);
 
+            if (NormalizarTexto(textoUsuario) is "oi" or "ola" or "oie" or "oii" or "bom dia" or "boa tarde" or "boa noite")
+            {
+                var nome = usuario.PacienteNome?.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                var saudacao = string.IsNullOrWhiteSpace(nome) ? "Olá!" : $"Olá, {nome}!";
+                var resposta = $"{saudacao} Como posso ajudar você na CallMed?";
+                sessao.Historico.Add(ConteudoTexto("user", textoUsuario));
+                sessao.Historico.Add(ConteudoTexto("model", resposta));
+                ApararHistorico(sessao.Historico);
+                LimparSessoesAntigas();
+                return new AgenteResposta { Resposta = resposta, SessionId = sid };
+            }
+
             if (EhPedidoReconsulta(textoUsuario) &&
                 sessao.UltimaBuscaAgendamentoArgs is not null)
             {

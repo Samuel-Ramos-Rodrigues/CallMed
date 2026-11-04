@@ -1,4 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +15,8 @@ using MKSANCrud.Services.Email;
 
 namespace MKSANCrud.Areas.Identity.Pages.Account;
 
+[AllowAnonymous]
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class ForgotPasswordModel : PageModel
 {
     private readonly UserManager<Usuario> _userManager;
@@ -38,6 +43,7 @@ public class ForgotPasswordModel : PageModel
     public ResetModel Reset { get; set; } = new();
 
     public bool MostrarRedefinicao { get; set; }
+    public bool LinkInvalido { get; private set; }
     public bool SolicitacaoEnviada { get; set; }
     public string EmailContaMascarado { get; private set; } = string.Empty;
 
@@ -58,7 +64,7 @@ public class ForgotPasswordModel : PageModel
 
         // Identificador da conta associado ao token. Evita depender apenas do e-mail
         // da query string em links novos; links antigos continuam usando o e-mail.
-        public string UsuarioId { get; set; } = string.Empty;
+        public string? UsuarioId { get; set; }
 
         [Required(ErrorMessage = "Informe a nova senha.")]
         [MinLength(8, ErrorMessage = "A senha deve possuir pelo menos 8 caracteres.")]
@@ -73,30 +79,19 @@ public class ForgotPasswordModel : PageModel
 
     public async Task OnGetAsync(string? email = null, string? code = null, string? uid = null)
     {
-        if (string.IsNullOrWhiteSpace(code))
-            return;
-
+        if (string.IsNullOrWhiteSpace(code) && string.IsNullOrWhiteSpace(uid) && string.IsNullOrWhiteSpace(email)) return;
         Reset.Email = email?.Trim() ?? string.Empty;
-        Reset.Codigo = code.Trim();
+        Reset.Codigo = code?.Trim() ?? string.Empty;
         Reset.UsuarioId = uid?.Trim() ?? string.Empty;
-
-        // O token identifica a operação, o UID vincula a conta sem exigir que
-        // o paciente digite novamente o CPF durante a redefinição.
-        if (!string.IsNullOrWhiteSpace(Reset.UsuarioId))
+        var usuario = await ObterUsuarioDoLinkAsync();
+        if (usuario is null || !TentarDecodificarCodigo(Reset.Codigo, out var token) ||
+            !await _userManager.VerifyUserTokenAsync(usuario, _userManager.Options.Tokens.PasswordResetTokenProvider,
+                UserManager<Usuario>.ResetPasswordTokenPurpose, token))
         {
-            var usuarioVinculado = await _userManager.FindByIdAsync(Reset.UsuarioId);
-            if (usuarioVinculado is not null)
-            {
-                if (string.IsNullOrWhiteSpace(Reset.Email))
-                    Reset.Email = usuarioVinculado.Email ?? string.Empty;
-                EmailContaMascarado = MascararEmail(usuarioVinculado.Email ?? Reset.Email);
-            }
+            MarcarLinkInvalido();
+            return;
         }
-        else
-        {
-            EmailContaMascarado = MascararEmail(Reset.Email);
-        }
-
+        EmailContaMascarado = MascararEmail(usuario.Email);
         MostrarRedefinicao = true;
     }
 
@@ -169,7 +164,8 @@ public class ForgotPasswordModel : PageModel
     public async Task<IActionResult> OnPostRedefinirAsync()
     {
         MostrarRedefinicao = true;
-        EmailContaMascarado = MascararEmail(Reset?.Email);
+        Reset ??= new();
+        EmailContaMascarado = MascararEmail(Reset.Email);
 
         // O formulário de redefinição não envia os dados de Input (CPF/e-mail).
         // Removemos também a chave-pai, que pode manter um erro Required antigo no ModelState.
@@ -182,51 +178,90 @@ public class ForgotPasswordModel : PageModel
         }
         ModelState.Remove("Input");
         ModelState.Remove("Input.Usuario");
+        // Quando o formulário não contém o prefixo Input, o model binder pode
+        // validar o objeto inicializado com a chave simples Usuario.
+        ModelState.Remove(nameof(InputModel.Usuario));
 
         if (!ModelState.IsValid)
             return Page();
 
         if (!TentarDecodificarCodigo(Reset.Codigo, out var token))
         {
-            ModelState.AddModelError(string.Empty, "Este link de recuperação é inválido ou expirou. Solicite outro link.");
+            MarcarLinkInvalido();
             return Page();
         }
 
-        Usuario? usuario = null;
-        if (!string.IsNullOrWhiteSpace(Reset.UsuarioId))
-        {
-            usuario = await _userManager.FindByIdAsync(Reset.UsuarioId.Trim());
-            // O e-mail também fica preso ao link para detectar links manipulados ou
-            // links antigos abertos depois de uma mudança de e-mail.
-            if (usuario is not null && !string.IsNullOrWhiteSpace(Reset.Email))
-            {
-                var emailEsperado = _userManager.NormalizeEmail(Reset.Email.Trim());
-                if (!string.Equals(usuario.NormalizedEmail, emailEsperado, StringComparison.Ordinal))
-                    usuario = null;
-            }
-        }
-        else if (!string.IsNullOrWhiteSpace(Reset.Email))
-        {
-            // Compatibilidade com links já enviados antes da inclusão do UID.
-            usuario = await _userManager.FindByEmailAsync(Reset.Email.Trim());
-        }
-
+        var usuario = await ObterUsuarioDoLinkAsync();
         if (usuario is null)
         {
-            ModelState.AddModelError(string.Empty, "Este link de recuperação é inválido ou expirou. Solicite outro link.");
+            MarcarLinkInvalido();
             return Page();
         }
 
+        var ct = HttpContext.RequestAborted;
+        await using var transaction = _context.Database.IsRelational()
+            ? await _context.Database.BeginTransactionAsync(ct) : null;
         var resultado = await _userManager.ResetPasswordAsync(usuario, token, Reset.NovaSenha);
         if (!resultado.Succeeded)
         {
             foreach (var erro in resultado.Errors)
                 ModelState.AddModelError(string.Empty, TraduzirErroIdentity(erro.Code, erro.Description));
+            if (resultado.Errors.Any(e => e.Code == "InvalidToken")) LinkInvalido = true;
+            _logger.LogWarning("Redefinição recusada pelo Identity. Codigos={Codigos}.", string.Join(",", resultado.Errors.Select(e => e.Code)));
             return Page();
         }
 
-        TempData["SenhaRedefinida"] = "Senha redefinida com sucesso. Entre com sua nova senha.";
-        return RedirectToPage("./Login");
+        // O reset altera a senha, mas não remove o bloqueio por tentativas.
+        // Bloqueios administrativos (usados na desativação, ano 9999) permanecem.
+        var bloqueio = await _userManager.GetLockoutEndDateAsync(usuario);
+        if (_userManager.SupportsUserLockout && bloqueio?.Year != 9999)
+        {
+            var desbloqueio = await _userManager.SetLockoutEndDateAsync(usuario, null);
+            var tentativas = desbloqueio.Succeeded
+                ? await _userManager.ResetAccessFailedCountAsync(usuario) : desbloqueio;
+            if (!tentativas.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível concluir a recuperação. Tente novamente.");
+                return Page();
+            }
+        }
+
+        // Confirma o hash recarregado do armazenamento, não apenas a entidade em memória.
+        await _context.Entry(usuario).ReloadAsync(ct);
+        if (!await _userManager.CheckPasswordAsync(usuario, Reset.NovaSenha))
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível confirmar a nova senha. Solicite outro link e tente novamente.");
+            _logger.LogError("Redefinição não confirmou a senha persistida. UsuarioId={UsuarioId}.", usuario.Id);
+            return Page();
+        }
+        if (transaction is not null) await transaction.CommitAsync(ct);
+        if (User.Identity?.IsAuthenticated == true && User.FindFirstValue(ClaimTypes.NameIdentifier) == usuario.Id)
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+        _logger.LogInformation("Senha redefinida e persistência confirmada. UsuarioId={UsuarioId}.", usuario.Id);
+        TempData["SenhaRedefinida"] = "Sua senha foi alterada com sucesso. Use a nova senha para entrar na CallMed.";
+        return RedirectToPage("./ResetPasswordConfirmation");
+    }
+
+    private void MarcarLinkInvalido()
+    {
+        LinkInvalido = true;
+        MostrarRedefinicao = false;
+        ModelState.AddModelError(string.Empty, "Este link de recuperação é inválido, já foi utilizado ou expirou. Solicite outro link.");
+    }
+
+    private async Task<Usuario?> ObterUsuarioDoLinkAsync()
+    {
+        Usuario? usuario;
+        if (!string.IsNullOrWhiteSpace(Reset.UsuarioId))
+            usuario = await _userManager.FindByIdAsync(Reset.UsuarioId.Trim());
+        else if (!string.IsNullOrWhiteSpace(Reset.Email))
+            usuario = await _userManager.FindByEmailAsync(Reset.Email.Trim());
+        else return null;
+        if (usuario is null) return null;
+        if (!string.IsNullOrWhiteSpace(Reset.Email) && !string.Equals(usuario.NormalizedEmail,
+            _userManager.NormalizeEmail(Reset.Email.Trim()), StringComparison.Ordinal)) return null;
+        if (string.IsNullOrWhiteSpace(Reset.Email)) Reset.Email = usuario.Email ?? string.Empty;
+        return usuario;
     }
 
     private async Task<Usuario?> ResolverUsuarioAsync(string identificador)

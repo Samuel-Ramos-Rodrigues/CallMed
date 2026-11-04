@@ -2,6 +2,7 @@ using System.Threading.RateLimiting;
 using System.Net;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using MKSANCrud.Data;
@@ -32,6 +33,10 @@ public static class ServiceCollectionExtensions
 
         services.AddDbContext<MKSANContext>(options =>
             options.UseNpgsql(connectionString));
+
+        // O Render pode substituir o contêiner. As chaves usadas pelos links e cookies
+        // precisam sobreviver ao processo e ser compartilhadas entre instâncias.
+        services.AddDataProtection().SetApplicationName("CallMed").PersistKeysToDbContext<MKSANContext>();
 
         services
             .AddDefaultIdentity<Usuario>(options =>
@@ -193,6 +198,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<DatabaseSchemaV26Initializer>();
         services.AddScoped<DatabaseSchemaV27Initializer>();
         services.AddScoped<DatabaseSchemaV28Initializer>();
+        services.AddScoped<DatabaseSchemaV29Initializer>();
         return services;
     }
 
