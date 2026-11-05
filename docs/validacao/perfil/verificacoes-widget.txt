@@ -1,0 +1,11 @@
+PASS minimizar não encerra atendimento nem abre pesquisa
+PASS encerramento exibe uma avaliação com cinco notas e bloqueia clique concorrente
+PASS falha preserva nota e comentário; nova tentativa salva uma vez com antiforgery
+PASS minimizar/reabrir preserva formulário pendente
+PASS recarregar recupera avaliação pendente; Agora não dispensa sem nota
+PASS despedida explícita mostra avaliação após a resposta; nova pergunta continua disponível
+PASS erro 504 libera o chat e não repete automaticamente o POST
+PASS espera prolongada é sinalizada e desaparece ao receber a resposta
+PASS limite no navegador cancela espera, remove Pensando e permite nova mensagem
+PASS uma nova mensagem funciona após o timeout
+PASS JavaScript sem erros no navegador

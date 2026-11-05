@@ -1,4 +1,5 @@
 using MKSANCrud.Options;
+using MKSANCrud.Services.Atendimento;
 using MKSANCrud.DTOs.Agente;
 using System.Collections.Concurrent;
 using System.Globalization;
@@ -210,7 +211,21 @@ public sealed class AgenteClinicaService : IAgenteClinicaService
                 {
                     JsonObject resultado;
 
-                    if (EhFerramentaMutacao(call.Nome))
+                    if (call.Nome == "encerrar_atendimento")
+                    {
+                        if (calls.Count == 1 && EncerramentoAtendimento.PodeSugerir(textoUsuario, sessao.MutacaoPendenteNome is not null))
+                        {
+                            sessao.Historico.Add(new JsonObject { ["role"] = "user", ["parts"] = new JsonArray(
+                                new JsonObject { ["functionResponse"] = new JsonObject { ["name"] = "encerrar_atendimento", ["response"] = new JsonObject { ["sucesso"] = true } } }) });
+                            sessao.Historico.Add(ConteudoTexto("model", EncerramentoAtendimento.Despedida));
+                            ApararHistorico(sessao.Historico);
+                            LimparSessoesAntigas();
+                            return new AgenteResposta { SessionId = sid, Resposta = EncerramentoAtendimento.Despedida, EncerrarAtendimento = true };
+                        }
+                        resultado = new JsonObject { ["sucesso"] = false,
+                            ["mensagem"] = "O atendimento deve continuar. Há pergunta/solicitação, agradecimento sem despedida ou confirmação pendente. Não peça avaliação; responda ao usuário ou conclua a confirmação." };
+                    }
+                    else if (EhFerramentaMutacao(call.Nome))
                     {
                         var chaveAtual = ChaveMutacao(call.Nome, call.Args, usuario);
                         var confirmouAgora = EhConfirmacaoExplicita(textoUsuario);

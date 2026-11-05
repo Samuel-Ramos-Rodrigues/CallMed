@@ -4640,3 +4640,66 @@ body { line-height: 1.58; }
 .cm-feedback-responses p { white-space:pre-wrap; overflow-wrap:anywhere; font-size:.9rem; margin:12px 0 0; }
 .cm-feedback-pagination { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:14px; padding:16px; }
 @media(max-width:600px) { .cm-feedback-page .v18-report-kpis { grid-template-columns:1fr; } .cm-feedback-responses article { padding:14px; } }
+
+/* Minha Conta: três seções, com o mesmo tema dos demais módulos. */
+.cm-account-page { max-width:1120px; margin-inline:auto; display:grid; gap:20px; }
+.cm-account-hero { display:flex; align-items:center; gap:20px; padding:24px; border:1px solid var(--cm-border); border-radius:20px; background:var(--cm-surface); }
+.cm-account-avatar { flex:0 0 76px; width:76px; height:76px; border-radius:24px; overflow:hidden; display:grid; place-items:center; background:var(--cm-primary-soft); color:var(--cm-primary); font-size:1.65rem; font-weight:800; border:1px solid var(--cm-border-strong); }
+.cm-account-avatar img { width:100%; height:100%; object-fit:cover; }
+.cm-account-heading { min-width:0; }
+.cm-account-heading h1 { font-size:clamp(1.35rem,3vw,1.9rem); margin:4px 0 8px; overflow-wrap:anywhere; }
+.cm-account-heading p { margin:0; color:var(--cm-muted); font-size:.85rem; line-height:1.7; }
+.cm-account-role { display:inline-block; padding:2px 9px; border:1px solid var(--cm-border-strong); border-radius:20px; margin-right:6px; color:var(--cm-primary); font-size:.74rem; font-weight:700; }
+.cm-account-tabs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; padding:6px; border:1px solid var(--cm-border); background:var(--cm-surface); border-radius:14px; }
+.cm-account-tabs a { text-align:center; padding:11px 6px; border-radius:9px; font-size:.87rem; font-weight:700; color:var(--cm-muted); }
+.cm-account-tabs a[aria-selected="true"] { background:var(--cm-primary-soft); color:var(--cm-primary); }
+.cm-account-tabs a:focus-visible { outline:3px solid var(--cm-primary); outline-offset:2px; }
+.cm-account-panel { display:grid; gap:18px; min-width:0; }
+.cm-account-panel[hidden],.cm-account-page [hidden] { display:none!important; }
+.cm-account-card { min-width:0; padding:24px; border:1px solid var(--cm-border); border-radius:16px; background:var(--cm-surface); }
+.cm-account-card h2 { font-size:1.04rem; margin:0 0 7px; }
+.cm-account-card p,.cm-account-card > small { color:var(--cm-muted); font-size:.83rem; line-height:1.6; margin:0 0 18px; }
+.cm-account-card > header { margin-bottom:20px; }
+.cm-account-card header p { margin-bottom:0; }
+.cm-account-card .form-grid { gap:18px; }
+.cm-account-card input:not([type=checkbox]):not([type=hidden]),.cm-account-card select { max-width:100%; box-sizing:border-box; }
+.cm-account-readonly { min-height:42px; padding:11px 12px; border:1px solid var(--cm-border); border-radius:9px; background:var(--cm-bg); font-size:.87rem; overflow-wrap:anywhere; }
+.cm-account-actions { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:14px; margin-top:22px; padding-top:18px; border-top:1px solid var(--cm-border); }
+.cm-account-actions > small { color:var(--cm-muted); font-size:.76rem; }
+.cm-account-insurance,.cm-account-options { min-width:0; border:0; padding:20px 0 0; margin:18px 0 0; border-top:1px solid var(--cm-border); }
+.cm-account-insurance legend,.cm-account-options legend { font-size:.94rem; font-weight:750; padding:0 0 12px; }
+.cm-account-check { display:flex; gap:10px; align-items:flex-start; padding:10px 0; font-size:.86rem; cursor:pointer; }
+.cm-account-check input { flex:0 0 18px; width:18px; height:18px; accent-color:var(--cm-primary); margin:1px 0 0; }
+.cm-account-check span { display:grid; gap:4px; }
+.cm-account-check small { color:var(--cm-muted); font-size:.76rem; line-height:1.5; font-weight:400; }
+.cm-account-theme { max-width:360px; }
+.cm-account-card-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; }
+.cm-account-session-list,.cm-account-events { list-style:none; padding:0; margin:0; }
+.cm-account-session-list li { display:flex; gap:12px; align-items:center; justify-content:space-between; padding:14px 0; border-top:1px solid var(--cm-border); }
+.cm-account-session-list li > div { display:grid; gap:5px; min-width:0; }
+.cm-account-session-list strong { font-size:.85rem; }
+.cm-account-session-list small,.cm-account-status,.cm-account-events time { color:var(--cm-muted); font-size:.73rem; }
+.cm-account-status { border:1px solid var(--cm-border); border-radius:16px; padding:4px 9px; white-space:nowrap; }
+.cm-account-status.current { color:var(--cm-primary); background:var(--cm-primary-soft); }
+.cm-account-events li { display:flex; flex-wrap:wrap; gap:6px 16px; justify-content:space-between; border-top:1px solid var(--cm-border); padding:13px 0; font-size:.83rem; overflow-wrap:anywhere; }
+.cm-account-photo-actions { display:flex; flex-wrap:wrap; gap:12px; }
+.cm-account-photo-actions form { display:flex; flex-wrap:wrap; gap:9px; align-items:center; min-width:0; }
+.cm-account-photo-actions input[type=file] { width:min(100%,320px); font-size:.76rem; }
+.cm-account-file-label { font-size:.8rem; font-weight:650; }
+.cm-account-photo-actions small { flex-basis:100%; color:var(--cm-muted); font-size:.76rem; }
+.cm-account-remove summary { cursor:pointer; font-size:.87rem; font-weight:700; }
+.cm-account-remove[open] summary { margin-bottom:14px; }
+.cm-account-remove form { max-width:440px; }
+.cm-account-errors.validation-summary-valid { display:none; }
+@media(max-width:600px) {
+ .cm-account-page { gap:14px; } .cm-account-hero { padding:18px; gap:13px; } .cm-account-avatar { flex-basis:60px; width:60px; height:60px; border-radius:18px; }
+ .cm-account-card { padding:18px; } .cm-account-tabs a { font-size:.78rem; padding:11px 2px; } .cm-account-card .form-grid { grid-template-columns:1fr; }
+ .cm-account-actions { align-items:stretch; } .cm-account-actions .btn { width:100%; } .cm-account-session-list li { flex-wrap:wrap; }
+ .cm-account-photo-actions,.cm-account-photo-actions form { width:100%; } .cm-account-photo-actions input[type=file] { width:100%; }
+}
+
+.cm-account-photo-card { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px 24px; }
+.cm-account-photo-card > div:first-child { flex:1 1 280px; }
+.cm-account-photo-card p { margin-bottom:0; }
+.cm-account-photo-card .cm-account-photo-actions { flex:1 1 460px; }
+@media(max-width:600px) { .cm-account-photo-card > div:first-child,.cm-account-photo-card .cm-account-photo-actions { flex-basis:100%; } }

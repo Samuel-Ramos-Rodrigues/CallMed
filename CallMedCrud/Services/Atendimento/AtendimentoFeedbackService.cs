@@ -13,7 +13,7 @@ public sealed class AtendimentoFeedbackService(
     MKSANContext context, AtendimentoConversaService conversas,
     AtendimentoEnvioService envio, TimeProvider clock)
 {
-    public const string Convite = "Atendimento encerrado. Como foi sua experiência com a CallMed? Responda de 1 (muito ruim) a 5 (muito boa). Se quiser, inclua um comentário: NOTA 5 - fui bem atendido. A avaliação é opcional; para continuar o atendimento, envie sua pergunta normalmente.";
+    public const string Convite = "Foi um prazer ajudar! Como você avalia seu atendimento na CallMed, de 1 (muito ruim) a 5 (muito bom)? A avaliação é opcional. Se quiser, inclua um comentário: NOTA 5 - fui bem atendido. Quando precisar, estarei por aqui. Para continuar, envie sua pergunta normalmente.";
     public const string Obrigado = "Obrigado pela avaliação! Seu feedback ajuda a melhorar o atendimento da CallMed.";
     public static bool CanalDigital(CanalAtendimento canal) => canal is CanalAtendimento.Web or CanalAtendimento.WhatsApp or CanalAtendimento.Sms or CanalAtendimento.Email;
     private DateTime Agora => clock.GetUtcNow().UtcDateTime;
@@ -30,6 +30,16 @@ public sealed class AtendimentoFeedbackService(
 
     public Task<ConversaAtendimento?> ObterWebAsync(string usuarioId, CancellationToken ct) =>
         context.ConversasAtendimento.FirstOrDefaultAsync(c => c.Canal == CanalAtendimento.Web && c.IdentificadorExterno == usuarioId, ct);
+
+    public async Task<AvaliacaoAtendimento?> EncerrarPorMensagemAsync(ConversaAtendimento conversa, string texto, CancellationToken ct = default)
+    {
+        await using var transaction = context.Database.IsRelational() && context.Database.CurrentTransaction is null
+            ? await context.Database.BeginTransactionAsync(ct) : null;
+        if (conversa.Ativa) await conversas.RegistrarEntradaAsync(conversa, texto, ct: ct);
+        var a = await EncerrarAsync(conversa, ct);
+        if (transaction is not null) await transaction.CommitAsync(ct);
+        return a;
+    }
 
     public async Task<AvaliacaoAtendimento?> EncerrarAsync(ConversaAtendimento conversa, CancellationToken ct = default)
     {
@@ -168,7 +178,7 @@ public sealed class AtendimentoFeedbackService(
                 if (a.ConviteProcessadoEm is null)
                 {
                     await envio.EnviarAvisoAsync(conversa, conversa.Canal == CanalAtendimento.Sms
-                        ? "CallMed: atendimento encerrado. Avaliacao opcional: 1 (ruim) a 5 (otimo). Responda NOTA 5 - comentario. Para continuar, envie sua pergunta."
+                        ? "Foi um prazer ajudar! Avalie a CallMed de 1 (ruim) a 5 (otimo). Opcional: NOTA 5 - comentario. Quando precisar, estarei por aqui."
                         : Convite, $"feedback:convite:{a.Id}", ct);
                     a.ConviteProcessadoEm = Agora;
                 }

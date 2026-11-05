@@ -47,6 +47,7 @@
                 }
                 else if (User.IsInRole("Medico"))
                 {
+                    <a class="@(Ativo("MinhaConta") ? "active" : "")" asp-controller="MinhaConta" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg><span>Minha conta</span></a>
                     <a class="@(Ativo("MedicoPainel") ? "active" : "")" asp-controller="MedicoPainel" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span>Minha agenda</span></a>
                 }
             </nav>
@@ -81,7 +82,7 @@
                     <button type="button" class="profile-trigger" data-popover-trigger="profile" aria-expanded="false" aria-label="Abrir menu da conta"><span class="user-avatar">@inicial</span><span class="profile-copy">@papel<small>Minha conta</small></span></button>
                     <div class="v18-popover" data-popover="profile" hidden>
                         <strong>@papel</strong><small class="account-email">@usuarioNome</small>
-                        @if (paciente) { <a asp-controller="MinhaConta" asp-action="Index">Dados e preferências</a> }
+                        <a asp-controller="MinhaConta" asp-action="Index">Meu perfil e preferências</a>
                         <button type="button" data-pwa-install>Instalar aplicativo</button>
                         <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Content("~" + loginUrl)" method="post" data-mksan-logout><button type="submit">Sair da conta</button></form>
                     </div>

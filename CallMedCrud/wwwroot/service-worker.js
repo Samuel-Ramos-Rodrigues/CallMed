@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v67-chat-rapido';
+const CACHE_NAME = 'callmed-static-v68-conta-feedback';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -20,6 +20,7 @@ const STATIC_ASSETS = [
     '/js/identity-register.js',
     '/js/confirmacoes.js',
     '/js/assistente-flutuante.js',
+    '/js/minha-conta.js',
     '/js/atendimento.js',
     '/icons/callmed-ui.svg',
     '/images/logo-callmed-horizontal.png',

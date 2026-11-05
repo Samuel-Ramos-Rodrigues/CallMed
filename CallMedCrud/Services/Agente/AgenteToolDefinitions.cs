@@ -5,7 +5,7 @@ namespace MKSANCrud.Services.Agente;
 public static class AgenteToolDefinitions
 {
     public static bool PermitidaNoEmail(string nome) => nome is
-        "listar_medicos" or "consultar_horarios_data" or "consultar_proximas_datas" or "buscar_opcoes_agendamento" or "informacoes_clinica";
+        "listar_medicos" or "consultar_horarios_data" or "consultar_proximas_datas" or "buscar_opcoes_agendamento" or "informacoes_clinica" or "encerrar_atendimento";
 
     public static JsonArray CriarParaEmail() => new(Criar()
         .Where(x => x?["name"]?.GetValue<string>() is string nome && PermitidaNoEmail(nome))
@@ -15,6 +15,8 @@ public static class AgenteToolDefinitions
     {
         return new JsonArray
         {
+            Funcao("encerrar_atendimento",
+                "Solicita encerramento somente quando a última fala do usuário indicar despedida ou que não precisa de mais ajuda. Nunca use por concluir uma resposta, por um obrigado isolado, durante uma pergunta nova ou com confirmação/dados de operação pendentes. O sistema oferece a avaliação diretamente, uma vez, no canal atual; não peça autorização nem invente links/formulários.", Objeto()),
             Funcao("listar_medicos",
                 "Lista médicos ativos reais com ID, nome, especialidade e CRM. Fonte oficial para existência de profissionais. Se a intenção também incluir vaga/agendamento, use esta função apenas como etapa e continue para a ferramenta de disponibilidade sem perguntar algo que já esteja claro.",
                 Objeto()),

@@ -420,9 +420,9 @@ internal static class AtendimentoRetomadaChecks
             check(f.Canal.Calls == 0 && f.Conversa.ResponsavelUsuarioId == "atendente-durante-ia",
                 "Tomada humana durante a geração impede o envio automático em andamento");
         }
-        check(AgenteToolDefinitions.CriarParaEmail().Count == 5 &&
+        check(AgenteToolDefinitions.CriarParaEmail().Count == 6 &&
             AgenteToolDefinitions.CriarParaEmail().All(x => AgenteToolDefinitions.PermitidaNoEmail(x!["name"]!.GetValue<string>())),
-            "Modelo do e-mail recebe somente as cinco ferramentas públicas autorizadas");
+            "Modelo do e-mail recebe somente as seis ferramentas autorizadas, incluindo encerramento");
         await using (var f = await Fixture.Create(CanalAtendimento.Email, "Pergunta antiga", true))
         {
             f.Conversa.IaEstado = "equipe"; f.Entrada.CriadoEm = DateTime.UtcNow.AddDays(-2);
@@ -503,7 +503,7 @@ internal static class AtendimentoRetomadaChecks
         {
             Calls++;
             var root = System.Text.Json.Nodes.JsonNode.Parse(await request.Content!.ReadAsStringAsync(ct))!;
-            Publicas &= root["tools"]![0]!["functionDeclarations"]!.AsArray().Count == 5;
+            Publicas &= root["tools"]![0]!["functionDeclarations"]!.AsArray().Count == 6;
             System.Text.Json.Nodes.JsonObject part;
             if (Calls == 1)
                 part = new() { ["functionCall"] = new System.Text.Json.Nodes.JsonObject { ["name"] = "buscar_opcoes_agendamento",

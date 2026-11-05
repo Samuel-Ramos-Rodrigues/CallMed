@@ -18,6 +18,7 @@ static void Check(bool condition, string message)
     if (!condition) throw new Exception(message);
     Console.WriteLine("PASS " + message);
 }
+if (args.Contains("--conta")) { await ContaPerfilChecks.RunAsync(Check); await EncerramentoIaChecks.RunAsync(Check); return; }
 var webhookSemHeader = new DefaultHttpContext();
 webhookSemHeader.Request.QueryString = new QueryString("?secret=segredo-teste");
 Check(AtendimentoWebhookSecretValidator.Validar(webhookSemHeader.Request, "segredo-teste"), "Webhook aceita segredo em query string quando não há cabeçalhos");
@@ -131,6 +132,8 @@ await HttpSmsChecks.RunAsync(Check);
 await FeedbackChecks.RunAsync(Check);
 await AgenteLatenciaChecks.RunAsync(Check);
 await PasswordResetChecks.RunAsync(Check);
+await ContaPerfilChecks.RunAsync(Check);
+await EncerramentoIaChecks.RunAsync(Check);
 Console.WriteLine("Verificações concluídas. Nenhuma mensagem real foi enviada.");
 sealed class FakeHandler : HttpMessageHandler
 {

@@ -77,7 +77,7 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
                     continue;
                 }
 
-                var destino = EscolherCanal(c.Paciente, envio);
+                var destino = await MKSANCrud.Services.Usuarios.ContaAvisos.EscolherAsync(db, c.Paciente, envio, ct);
                 if (destino is null)
                 {
                     if (!string.IsNullOrWhiteSpace(c.Paciente.Telefone))
@@ -149,23 +149,6 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
         return true;
     }
 
-    private static (CanalAtendimento Canal, string Identificador)? EscolherCanal(Paciente paciente, AtendimentoEnvioService envio)
-    {
-        var preferido = paciente.CanalPreferido?.Trim();
-        if (string.Equals(preferido, "SMS", StringComparison.OrdinalIgnoreCase) &&
-            !string.IsNullOrWhiteSpace(paciente.Telefone) && envio.CanalConfigurado(CanalAtendimento.Sms))
-            return (CanalAtendimento.Sms, paciente.Telefone);
-        if (string.Equals(preferido, "Email", StringComparison.OrdinalIgnoreCase) &&
-            !string.IsNullOrWhiteSpace(paciente.Email) && envio.CanalConfigurado(CanalAtendimento.Email))
-            return (CanalAtendimento.Email, paciente.Email);
-        if (string.Equals(preferido, "WhatsApp", StringComparison.OrdinalIgnoreCase) &&
-            !string.IsNullOrWhiteSpace(paciente.Telefone) && envio.CanalConfigurado(CanalAtendimento.WhatsApp))
-            return (CanalAtendimento.WhatsApp, paciente.Telefone);
 
-        if (!string.IsNullOrWhiteSpace(paciente.Telefone) && envio.CanalConfigurado(CanalAtendimento.WhatsApp)) return (CanalAtendimento.WhatsApp, paciente.Telefone);
-        if (!string.IsNullOrWhiteSpace(paciente.Telefone) && envio.CanalConfigurado(CanalAtendimento.Sms)) return (CanalAtendimento.Sms, paciente.Telefone);
-        if (!string.IsNullOrWhiteSpace(paciente.Email) && envio.CanalConfigurado(CanalAtendimento.Email)) return (CanalAtendimento.Email, paciente.Email);
-        return null;
-    }
 
 }

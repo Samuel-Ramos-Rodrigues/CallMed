@@ -2,77 +2,41 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MKSANCrud.Data;
-using MKSANCrud.Models;
 using MKSANCrud.Services.Usuarios;
 
 namespace MKSANCrud.Middleware;
 
-/// <summary>
-/// Bloqueia imediatamente cookies de contas cujo cadastro clínico/administrativo
-/// foi desativado. Lockout sozinho protege novos logins, mas não invalida uma
-/// sessão que já estava aberta.
-/// </summary>
-public sealed class ActiveAccountMiddleware
+public sealed class ActiveAccountMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public ActiveAccountMiddleware(RequestDelegate next) => _next = next;
-
-    public async Task InvokeAsync(
-        HttpContext context,
-        MKSANContext db,
-        SignInManager<Usuario> signInManager)
+    public async Task InvokeAsync(HttpContext context, MKSANContext db, SignInManager<Usuario> signInManager)
     {
-        if (context.User.Identity?.IsAuthenticated != true)
+        if (context.User.Identity?.IsAuthenticated != true) { await next(context); return; }
+        var id = context.User.FindFirstValue(ClaimTypes.NameIdentifier); var email = context.User.Identity?.Name;
+        var portal = PortaisAcesso.DoUsuario(context.User); var papel = portal.Papel;
+        var sessao = ContaService.SessaoAtual(context.User);
+        var claimSessao = context.User.FindFirstValue(ContaService.SessaoClaim);
+        var stamp = context.User.FindFirstValue(signInManager.Options.ClaimsIdentity.SecurityStampClaimType);
+        // A situação clínica, o stamp e o acesso são conferidos numa única consulta.
+        // Isso permite revogação imediata sem acrescentar roundtrips ao chat/polling.
+        var estado = await db.Users.AsNoTracking().Where(u => u.Id == id).Select(u => new
         {
-            await _next(context);
-            return;
-        }
-
-        var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var email = context.User.Identity?.Name;
-        var ativo = true;
-
-        if (context.User.IsInRole("Paciente"))
+            u.SecurityStamp,
+            Ativo = papel == "Paciente" ? db.Pacientes.Any(p => p.Ativo && (p.UsuarioId == id || (p.UsuarioId == null && email != null && p.Email != null && p.Email.ToLower() == email.ToLower()))) :
+                papel == "Medico" ? db.Medicos.Any(m => m.Ativo && (m.UsuarioId == id || (m.UsuarioId == null && email != null && m.Email != null && m.Email.ToLower() == email.ToLower()))) :
+                papel == "Admin" ? (db.Funcionarios.Where(f => f.UsuarioId == id || (f.UsuarioId == null && email != null && f.Email.ToLower() == email.ToLower())).Select(f => (bool?)f.Ativo).FirstOrDefault() ?? true) :
+                db.Funcionarios.Any(f => f.Ativo && (f.UsuarioId == id || (f.UsuarioId == null && email != null && f.Email.ToLower() == email.ToLower()))),
+            SessaoValida = !sessao.HasValue || db.ContaSessoes.Any(s => s.Id == sessao && s.UsuarioId == id && s.RevogadaEm == null)
+        }).FirstOrDefaultAsync(context.RequestAborted);
+        var inativo = estado?.Ativo != true;
+        var invalido = estado is null || (!string.IsNullOrEmpty(stamp) && stamp != estado.SecurityStamp) ||
+            (claimSessao is not null && !sessao.HasValue) || estado?.SessaoValida != true;
+        if (inativo || invalido)
         {
-            ativo = await db.Pacientes.AsNoTracking().AnyAsync(p =>
-                p.Ativo &&
-                ((!string.IsNullOrWhiteSpace(userId) && p.UsuarioId == userId) ||
-                 (p.UsuarioId == null && email != null && p.Email != null && p.Email.ToLower() == email.ToLower())));
-        }
-        else if (context.User.IsInRole("Admin"))
-        {
-            // Admin pode existir apenas no Identity. Se houver cadastro administrativo
-            // espelhado, respeita a situação ativa/inativa desse cadastro.
-            var funcionarioAdmin = await db.Funcionarios.AsNoTracking().FirstOrDefaultAsync(f =>
-                (!string.IsNullOrWhiteSpace(userId) && f.UsuarioId == userId) ||
-                (f.UsuarioId == null && email != null && f.Email.ToLower() == email.ToLower()));
-
-            ativo = funcionarioAdmin?.Ativo ?? true;
-        }
-        else if (context.User.IsInRole("Funcionario"))
-        {
-            ativo = await db.Funcionarios.AsNoTracking().AnyAsync(f =>
-                f.Ativo &&
-                ((!string.IsNullOrWhiteSpace(userId) && f.UsuarioId == userId) ||
-                 (f.UsuarioId == null && email != null && f.Email.ToLower() == email.ToLower())));
-        }
-        else if (context.User.IsInRole("Medico"))
-        {
-            ativo = await db.Medicos.AsNoTracking().AnyAsync(m =>
-                m.Ativo &&
-                ((!string.IsNullOrWhiteSpace(userId) && m.UsuarioId == userId) ||
-                 (m.UsuarioId == null && email != null && m.Email != null && m.Email.ToLower() == email.ToLower())));
-        }
-
-        if (!ativo)
-        {
-            var portal = PortaisAcesso.DoUsuario(context.User);
             await signInManager.SignOutAsync();
-            context.Response.Redirect(context.Request.PathBase + portal.UrlLogin + "?contaInativa=true");
+            context.Response.Headers.CacheControl = "no-store";
+            context.Response.Redirect(context.Request.PathBase + portal.UrlLogin + (inativo ? "?contaInativa=true" : "?sessaoEncerrada=true"));
             return;
         }
-
-        await _next(context);
+        await next(context);
     }
 }

@@ -421,6 +421,9 @@ public sealed class AtendimentoController : Controller
             case ResultadoRetomadaAtendimento.FalhaNoEnvio:
                 TempData["Erro"] = "A IA preparou a resposta, mas o canal não confirmou o envio. Confira a mensagem e o estado do canal antes de tentar reenviar.";
                 break;
+            case ResultadoRetomadaAtendimento.AtendimentoEncerrado:
+                TempData["Sucesso"] = "Atendimento encerrado. A avaliação será oferecida pelo próprio canal.";
+                break;
             case ResultadoRetomadaAtendimento.RequerEquipe:
                 TempData["Aviso"] = "A mensagem exige atendimento humano por envolver identificação, dados individuais, assunto clínico ou pedido de um atendente. O histórico foi preservado; nenhuma resposta foi enviada automaticamente.";
                 break;

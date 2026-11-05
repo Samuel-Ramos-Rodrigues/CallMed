@@ -1,0 +1,440 @@
+PASS Webhook aceita segredo em query string quando não há cabeçalhos
+PASS Webhook aceita segredo correto no cabeçalho CallMed
+PASS Webhook mantém compatibilidade com cabeçalho legado
+PASS Webhook rejeita segredo incorreto
+PASS Webhook nega acesso quando segredo não está configurado
+PASS CallMed incorreto não pode ser substituído pelo legado ou pela query corretos
+PASS Cabeçalho CallMed correto tem prioridade sobre legado e query incorretos
+PASS CallMed vazio permite usar cabeçalho legado antes da query
+PASS Cabeçalhos em branco permitem o fallback para a query
+PASS Query incorreta não autentica o webhook
+PASS Webhook rejeita requisição sem segredo em nenhuma fonte
+PASS Webhook rejeita configuração nula
+PASS Query com valores duplicados não é aceita como segredo único
+PASS Webhook compara corretamente segredo UTF-8 recebido pela query
+PASS Validador mantém a verificação de HttpRequest nulo
+PASS Cadastro administrativo aceita e-mail ausente
+PASS E-mail preenchido inválido é rejeitado
+PASS Antecedência usa configuração da clínica
+PASS Consulta por convênio inclui documentação
+PASS Orientação por especialidade é incluída
+PASS Consulta particular não exige carteirinha
+PASS Gmail API não fica ativo sem instante UTC inicial, evitando importar e-mails antigos
+PASS Gmail API aceita caixa, OAuth e instante UTC inicial válidos
+PASS Brevo SMTP reporta configurado quando host, porta, usuário, senha e remetente estão preenchidos
+PASS Brevo SMTP não aparece configurado sem senha SMTP
+PASS Brevo SMTP não aparece configurado sem remetente autorizado definido
+PASS Evolution open reconhecido
+PASS Diagnóstico consulta a instância sem enviar mensagens
+PASS Evolution desconectada não aparece como conectada
+PASS Chave inválida não aparece como conexão ativa
+PASS Resposta inválida é tratada
+PASS Meus exames sem ID mostra somente registros ativos do paciente logado
+PASS Paciente não pode consultar exames de outra pessoa alterando o ID
+PASS Link existente com o próprio ID continua funcionando
+PASS IDs explícitos inválidos não são tratados como atalho pessoal
+PASS Outra conta recebe apenas o próprio histórico
+PASS Paciente sem exames recebe a página vazia, não acesso negado
+PASS Conta sem paciente vinculado não recebe histórico alheio
+PASS Funcionario mantém a consulta ao histórico do paciente selecionado
+PASS Funcionario sem paciente selecionado vai à lista de pacientes, sem erro 403
+PASS Funcionario visualiza somente exames ativos aguardando triagem
+PASS Admin mantém a consulta ao histórico do paciente selecionado
+PASS Admin sem paciente selecionado vai à lista de pacientes, sem erro 403
+PASS Admin visualiza somente exames ativos aguardando triagem
+PASS Acesso médico continua exigindo consulta vinculada não cancelada
+PASS Médico sem paciente selecionado retorna ao painel, sem liberar dados de terceiros
+PASS Papel Admin é autorizado expressamente na triagem de exames
+PASS Política de autorização do paciente: Index permitido
+PASS Política de autorização do paciente: Create bloqueado
+PASS Política de autorização do paciente: Desativar bloqueado
+PASS Política de autorização do paciente: Pendentes bloqueado
+PASS Política de autorização do paciente: Aprovar bloqueado
+PASS Política de autorização do paciente: Rejeitar bloqueado
+PASS Agendamento direto confirma a consulta imediatamente sem triagem
+PASS Convênio cadastrado e válido é aproveitado no agendamento direto sem matriz
+PASS Sem regra para convênio e especialidade, a consulta confirma mas a cobertura fica pendente de validação
+PASS Regra coberta grava a indicação da matriz sem afirmar validação em tempo real da operadora
+PASS Consulta pode ser reservada imediatamente, mas a autorização prévia fica pendente e rastreável
+PASS Regra de verificação manual não bloqueia a vaga, mas cria pendência de validação
+PASS Regra explícita de não cobertura bloqueia somente a forma de pagamento por convênio
+PASS Paciente pode manter o agendamento como particular quando a matriz informa não cobertura
+PASS Convênio vencido não é aceito como pagamento no agendamento direto
+PASS As três confirmações aparecem mesmo com consultas sem solicitação
+PASS Realizadas vinculadas a pedidos encerrados e realizadas diretas permanecem visíveis
+PASS Consulta remarcada não aparece como confirmada pelo estado antigo do pedido
+PASS Consulta vinculada aparece uma única vez no painel
+PASS As etapas anteriores ao agendamento são preservadas
+PASS Canceladas, ausências e pendências de datas anteriores ficam no histórico
+PASS Todo registro pertence a uma única área visível
+PASS O sino e o painel usam as mesmas consultas pendentes e o mesmo limite de data
+PASS Consulta antiga sem origem não recebe um canal inventado
+PASS Dois pedidos com a mesma consulta não duplicam a consulta
+PASS Histórico com mais de 400 consultas não oculta a confirmação pendente
+PASS As abas separam pedidos sem agendamento das consultas, sem perder registros
+PASS O filtro Realizadas não mistura consultas confirmadas ou pendentes
+PASS A paginação mantém o total completo e limita páginas fora do intervalo
+PASS O contador real do sino independe do número de itens da prévia
+PASS E-mail existente não vincula paciente automaticamente quando resolverIdentidade=false
+PASS Conversa existente permanece sem vínculo no banco de dados
+PASS E-mail novo também não vincula paciente automaticamente
+PASS Identificação automática continua funcionando quando explicitamente habilitada
+PASS Vínculo explícito de paciente permanece permitido com identificação automática desativada
+PASS Vínculo existente e já confirmado é preservado
+PASS Perguntas comuns não sofrem bloqueio por listas fixas
+PASS Identificadores pessoais não são enviados para classificação
+PASS Classificação semântica permite gerar rascunho
+PASS Classificação semântica respeita encaminhamento
+PASS Falha de interpretação não provoca envio nem rascunho indevido
+PASS Classificação desconhecida ou com formato incorreto é falha técnica, não decisão humana simulada
+PASS Devolver para IA persiste modo IA e renova sessão
+PASS E-mail recebido enquanto estava com humano é recuperável sem reimportar Gmail
+PASS Rascunho já existente bloqueia nova tentativa sobre a mesma entrada
+PASS Nova mensagem após rascunho anterior permite nova análise da IA
+PASS A mensagem atual é separada de uma citação Gmail com cabeçalho quebrado
+PASS Citações em inglês também não contaminam a nova mensagem
+PASS Uma frase comum iniciada por Em não é removida como cabeçalho
+PASS Texto novo após uma linha citada continua disponível para análise
+PASS Telefone não provoca bloqueio por CPF; CPF continua protegido
+PASS Um único POST DevolverParaIa gera o rascunho de e-mail sem enviar ao paciente
+PASS Retomada usa a mensagem atual uma única vez e não autentica o remetente por e-mail
+PASS O classificador recebe apenas o texto atual, sem CPF citado no histórico antigo
+PASS Devolver novamente não duplica o rascunho nem reinsere a mensagem recebida
+PASS Telefone é omitido antes da IA, sem bloquear o rascunho administrativo
+PASS E-mail novo no modo IA cria rascunho automaticamente e a releitura Gmail não duplica
+PASS Rascunho de e-mail não pode usar ferramentas privadas ou alterar cadastros e agenda
+PASS Um único POST DevolverParaIa responde à pendência no WhatsApp
+PASS A retomada WhatsApp recupera o vínculo existente e evita duplicar a entrada no contexto
+PASS Uma mensagem WhatsApp já respondida não é respondida novamente
+PASS A próxima mensagem WhatsApp segue automaticamente na IA
+PASS Duas retomadas simultâneas não geram dois rascunhos
+PASS A retomada não contorna a proteção de identificadores pessoais
+PASS Falha de transporte é registrada e não é anunciada como resposta enviada
+PASS Resposta de mesmo texto a uma nova entrada não é confundida com aviso antigo já enviado
+PASS Aviso automático de transferência para equipe não impede a IA de retomar a pergunta no WhatsApp
+PASS Pedido explícito de atendimento humano continua sendo respeitado na retomada WhatsApp
+PASS Resposta humana posterior impede que a IA repita o atendimento antigo
+PASS Conversa antiga mostra IA pausada e permite gerar rascunho
+PASS Gerar rascunho em conversa antiga conclui com aprovação pendente e não envia e-mail
+PASS Gerar rascunho preserva modo humano e responsável atual
+PASS Novo clique não duplica um rascunho aguardando aprovação
+PASS Rascunho descartado deixa a mensagem disponível para nova tentativa
+PASS Regeneração cria uma nova sugestão e preserva o rascunho descartado no histórico
+PASS Entrada automática persiste o estado analisando antes da classificação
+PASS Durante a chamada ao agente o estado real é gerando rascunho
+PASS Conclusão automática substitui o andamento por rascunho pronto
+PASS Falha do agente fica visível e permite nova tentativa sem enviar e-mail
+PASS Pedido que exige equipe é distinguido de falha técnica da IA
+PASS Classificador indisponível aparece como falha, sem simular análise concluída
+PASS Processamento abandonado após reinício não deixa animação infinita
+PASS Conversa encerrada não permite gerar rascunho
+PASS Cancelamento da chamada encerra o estado de trabalho persistido
+PASS Entrada nova durante a geração não é marcada como respondida pelo rascunho da pergunta antiga
+PASS Ação assíncrona devolve estado da IA em JSON com autorização e antiforgery preservados
+PASS Triagem recebe o Sim pfvr junto da pergunta real anterior sobre disponibilidade
+PASS Mensagem atual é separada do contexto e aparece uma única vez no pedido de classificação
+PASS Decisão pública continua no agente com o mesmo contexto e prepara rascunho sem enviar
+PASS Contexto da triagem exclui CPF antigo, rascunho não enviado, falha, sistema e outra conversa
+PASS Histórico é sanitizado antes de ser enviado ao classificador
+PASS Classificador e agente compartilham o histórico seguro da mesma conversa
+PASS Confirmação privada mantém contexto e respeita encaminhamento sem executar operação
+PASS Pendência recente da política antiga é reanalisada e respondida sem clique nem aprovação
+PASS Resposta automática oferece portal, não autentica remetente e não cria consulta
+PASS Novo ciclo não repete o e-mail automático já enviado
+PASS Entrada Gmail nova é respondida uma vez sem depender de Aprovar e enviar
+PASS Próxima resposta do paciente mantém continuidade automática com o histórico enviado
+PASS Assumir atendimento pausa o envio automático e a retomada respeita o responsável
+PASS Operação privada recebe orientação automática para o portal, sem chamada de ferramenta privada
+PASS Entrada de e-mail por webhook segue a mesma triagem, contexto público e envio automático do Gmail
+PASS Alias de conversa continua rejeitando remetente diferente do contato original
+PASS Identificador sensível recebe orientação fixa sem exposição ao Gemini ou eco na resposta
+PASS Pedido explícito de atendente gera confirmação de recebimento e preserva fila humana
+PASS Retomada não desfaz o encaminhamento humano da política atual
+PASS Falha técnica de análise preserva a automação sem enviar resposta fictícia
+PASS Falha técnica respeita espera antes da nova tentativa
+PASS Análise com falha persistente para após três tentativas por mensagem
+PASS Entrada nova persistida antes de uma interrupção retoma sozinha e renova o limite de tentativas
+PASS Falha ao gerar rascunho manual não vira envio automático em segundo plano
+PASS Gerar rascunho manual continua exigindo revisão mesmo com automação habilitada
+PASS Envio sem confirmação bloqueia repetição automática e manual para evitar duplicidade
+PASS Tomada humana durante a geração impede o envio automático em andamento
+PASS Modelo do e-mail recebe somente as seis ferramentas autorizadas, incluindo encerramento
+PASS Retomada padrão não dispara respostas para mensagens com mais de 24 horas
+PASS Mensagens antigas não ocupam o limite do lote nem bloqueiam uma pendência recente
+PASS Link de conclusão no e-mail HTML preserva médico, data e horário e escapa os parâmetros
+PASS Portal rejeita protocolo inseguro e credenciais embutidas na URL
+PASS Fluxo com agente e agenda reais consulta vaga do Dr. David e envia link preenchido, usando Gemini simulado
+PASS Oferta de vaga por e-mail mantém o horário livre até o paciente concluir no portal
+PASS Login unificado direciona paciente pela função cadastrada
+PASS Login unificado direciona medico pela função cadastrada
+PASS Login unificado direciona atendente pela função cadastrada
+PASS Login unificado direciona administrador pela função cadastrada
+PASS Login unificado aceita CPF de paciente sem escolher uma área
+PASS Login unificado rejeita identificadores sem conta correspondente
+PASS Conta Paciente no portal Paciente: permitida
+PASS Conta Paciente no portal Médico: bloqueada
+PASS Conta Paciente no portal Atendente: bloqueada
+PASS Conta Paciente no portal Administrador: bloqueada
+PASS Conta Medico no portal Paciente: bloqueada
+PASS Conta Medico no portal Médico: permitida
+PASS Conta Medico no portal Atendente: bloqueada
+PASS Conta Medico no portal Administrador: bloqueada
+PASS Conta Funcionario no portal Paciente: bloqueada
+PASS Conta Funcionario no portal Médico: bloqueada
+PASS Conta Funcionario no portal Atendente: permitida
+PASS Conta Funcionario no portal Administrador: bloqueada
+PASS Conta Admin no portal Paciente: bloqueada
+PASS Conta Admin no portal Médico: bloqueada
+PASS Conta Admin no portal Atendente: bloqueada
+PASS Conta Admin no portal Administrador: permitida
+PASS Todos os perfis compartilham o mesmo endereço de entrada
+PASS CPF formatado continua permitindo o acesso do paciente vinculado
+PASS Portal profissional não usa CPF de paciente para autenticar
+PASS E-mail aceita espaços externos e diferença entre maiúsculas e minúsculas
+PASS Médico inativo não recebe uma conta candidata ao login
+PASS Atendente inativo não recebe uma conta candidata ao login
+PASS E-mail não permite assumir cadastro médico já vinculado a outra conta
+PASS Resolução da sessão também recusa o cadastro de outro médico
+PASS Cadastro médico legado ativo sem vínculo permanece acessível pela própria conta
+PASS Primeiro acesso vincula o cadastro legado à conta correta
+PASS Administrador com cadastro inativo também é bloqueado
+PASS Permissão de Paciente para AcessosController: somente administrador gerencia contas
+PASS Permissão de Medico para AcessosController: somente administrador gerencia contas
+PASS Permissão de Funcionario para AcessosController: somente administrador gerencia contas
+PASS Permissão de Admin para AcessosController: somente administrador gerencia contas
+PASS Visitante sem login não gerencia contas: AcessosController
+PASS Permissão de Paciente para MedicoAcessoController: somente administrador gerencia contas
+PASS Permissão de Medico para MedicoAcessoController: somente administrador gerencia contas
+PASS Permissão de Funcionario para MedicoAcessoController: somente administrador gerencia contas
+PASS Permissão de Admin para MedicoAcessoController: somente administrador gerencia contas
+PASS Visitante sem login não gerencia contas: MedicoAcessoController
+PASS Permissão de Paciente para FuncionarioController: somente administrador gerencia contas
+PASS Permissão de Medico para FuncionarioController: somente administrador gerencia contas
+PASS Permissão de Funcionario para FuncionarioController: somente administrador gerencia contas
+PASS Permissão de Admin para FuncionarioController: somente administrador gerencia contas
+PASS Visitante sem login não gerencia contas: FuncionarioController
+PASS 429 respeita Retry-After em segundos e não usa fallback de payload
+PASS Pausa após 429 é compartilhada entre clientes e destinatários
+PASS Envio pode prosseguir depois da espera indicada pelo servidor
+PASS 429 respeita Retry-After em formato de data HTTP
+PASS 429 sem cabeçalho usa espera progressiva configurável
+PASS 401 não entra em repetição automática nem troca de payload
+PASS Fallback legado continua disponível para rejeição de payload
+PASS Envio parcial não repete automaticamente trechos já confirmados
+PASS Resultado de transporte incerto pede conferência em vez de repetir a mensagem
+PASS Envios concorrentes respeitam intervalo mínimo
+PASS Aviso automático e botão manual respeitam a pausa sem criar duplicatas
+PASS Reenvio atualiza a mesma mensagem e avisos concluídos não são enviados outra vez
+PASS Aviso 429 da versão anterior é reutilizado sem apagar o histórico
+PASS Servidor bloqueia reenvio de resultado parcial mesmo com POST direto
+PASS Duas requisições de reenvio não disparam simultaneamente a mesma mensagem
+PASS Modelo exige chave única de aviso e controle de concorrência persistente
+PASS Versão persistente rejeita tentativa baseada em estado antigo da mensagem
+PASS Modelo PostgreSQL gera as colunas e o índice de controle de envio
+PASS Lista de espera com 429 conserva um único aviso e não marca notificação como enviada
+PASS Lista de espera retoma o mesmo aviso após a pausa e registra sucesso uma única vez
+PASS Diagnóstico Evolution consulta por GET e informa o status HTTP sem enviar mensagens
+PASS URL e instância removem espaços externos, preservando maiúsculas, espaços internos e prefixo do proxy
+PASS Diagnóstico expõe apenas URLs efetivas e instância, sem chave API
+PASS Consulta e envio usam a mesma instância normalizada e preservam autenticação e payload v2
+PASS 404 de instância é identificado em consulta e envio, sem tentar outra rota ou payload
+PASS Erro Evolution não repassa corpo do provedor nem dados privados
+PASS Diagnóstico reconhece também a mensagem de instância no envelope error
+PASS 404 de rota é distinguido de instância ausente
+PASS 404 HTML com Cannot GET identifica rota não reconhecida
+PASS 404 de página HTML orienta verificar API e proxy
+PASS 404 genérico não atribui causa com base no caminho da requisição
+PASS 401 é tratado como falha de autenticação e acesso
+PASS HTTP 200 com página do painel não comprova conexão e mantém o status da resposta
+PASS BaseUrl inválida é rejeitada antes da requisição (/manager/)
+PASS BaseUrl inválida é rejeitada antes da requisição (/message/sendText/callmed)
+PASS BaseUrl inválida é rejeitada antes da requisição (/instance/connectionState/callmed)
+PASS BaseUrl inválida é rejeitada antes da requisição (/)
+PASS BaseUrl inválida é rejeitada antes da requisição (/)
+PASS BaseUrl inválida é rejeitada antes da requisição (/)
+PASS BaseUrl inválida é rejeitada antes da requisição (/)
+PASS httpSMS não envia sem habilitação
+PASS DI registra o processamento persistido do httpSMS
+PASS DI registra somente httpSMS com API Key e From
+PASS DI registra o processamento persistido do httpSMS
+PASS httpSMS usa x-api-key, From/To/Content e mantém aceitação como fila
+PASS httpSMS rejeita telefone inválido e texto vazio antes do HTTP
+PASS Configuração sem API Key/From não reaproveita credenciais do SMSGate
+PASS httpSMS rejeita URL com parâmetros e credenciais embutidas
+PASS httpSMS não anuncia sucesso com chave recusada
+PASS Limite do httpSMS preserva horário para nova tentativa
+PASS Aceitação sem ID não vira sucesso nem libera duplicação cega
+PASS Envelope de erro não vira sucesso apenas por retornar HTTP 200
+PASS Falha de rede sem confirmação bloqueia reenvio cego
+PASS JWT HS256 do httpSMS é aceito
+PASS JWT assinado com outra chave é rejeitado
+PASS JWT expirado é rejeitado
+PASS JWT ainda não válido é rejeitado
+PASS JWT com algoritmo diferente de HS256 é rejeitado
+PASS JWT ausente ou malformado é rejeitado
+PASS Webhook httpSMS não chama IA com autenticação ausente
+PASS Segredo na URL e headers antigos não substituem JWT
+PASS Webhook httpSMS desativado retorna 404
+PASS Webhook rejeita JSON inválido ou raiz sem objeto
+PASS Webhook rejeita evento diferente entre corpo e cabeçalho
+PASS Evento de outro chip não abre conversa
+PASS Heartbeat não inicia atendimento nem chama IA
+PASS Webhook responde após persistir, sem aguardar IA, e não duplica o mesmo SMS
+PASS Central informa que a IA retomará o SMS automaticamente
+PASS Fila persistida do httpSMS sobrevive à recriação do contexto e gera uma resposta
+PASS Novo ciclo da fila não repete SMS já respondido
+PASS API aceitar não é exibido como SMS enviado ou entregue
+PASS Callback sent confirma envio pelo aplicativo
+PASS Entrega confirmada não regride com falha atrasada nem dispara IA
+PASS Callback que antecede a persistência do ID pede nova tentativa ao provedor
+PASS SMS enviado fora do CallMed é ignorado sem provocar falha no webhook
+PASS Expiração provisória não cancela as tentativas do próprio httpSMS
+PASS Falha do aplicativo aparece no histórico sem expor payload privado
+PASS Recebimento preserva mensagem sem responder durante atendimento humano
+PASS Pedido de atendente pausa IA e envia confirmação pela mesma conversa
+PASS SMS de agendamento continua criando solicitação no fluxo existente
+PASS Painel identifica httpSMS sem expor API Key ou Signing Key
+PASS Troca de provedor não reprocessa histórico do SMSGate
+PASS Tomada humana durante geração impede envio posterior da IA
+PASS Feedback reconhece encerramento explícito com acentos e pontuação
+PASS Feedback não encerra agradecimento intermediário, opções de agenda ou cancelamentos
+PASS Web: encerrar duas vezes abre só uma avaliação
+PASS Web: convite usa o canal original uma única vez; site usa cartão
+PASS Web: nota e comentário ficam separados do histórico e não reabrem a conversa
+PASS Web: reentrega da resposta não duplica nota nem agradecimento
+PASS Web: pesquisa não contamina o contexto da IA
+PASS Web: opções numéricas do novo atendimento ficam disponíveis, webhook antigo continua deduplicado
+PASS Web: novo atendimento recebe nova avaliação
+PASS WhatsApp: encerrar duas vezes abre só uma avaliação
+PASS WhatsApp: convite usa o canal original uma única vez; site usa cartão
+PASS WhatsApp: nota e comentário ficam separados do histórico e não reabrem a conversa
+PASS WhatsApp: reentrega da resposta não duplica nota nem agradecimento
+PASS WhatsApp: pesquisa não contamina o contexto da IA
+PASS WhatsApp: opções numéricas do novo atendimento ficam disponíveis, webhook antigo continua deduplicado
+PASS WhatsApp: novo atendimento recebe nova avaliação
+PASS Sms: encerrar duas vezes abre só uma avaliação
+PASS Sms: convite usa o canal original uma única vez; site usa cartão
+PASS Sms: nota e comentário ficam separados do histórico e não reabrem a conversa
+PASS Sms: reentrega da resposta não duplica nota nem agradecimento
+PASS Sms: pesquisa não contamina o contexto da IA
+PASS Sms: opções numéricas do novo atendimento ficam disponíveis, webhook antigo continua deduplicado
+PASS Sms: novo atendimento recebe nova avaliação
+PASS Email: encerrar duas vezes abre só uma avaliação
+PASS Email: convite usa o canal original uma única vez; site usa cartão
+PASS Email: nota e comentário ficam separados do histórico e não reabrem a conversa
+PASS Email: reentrega da resposta não duplica nota nem agradecimento
+PASS Email: pesquisa não contamina o contexto da IA
+PASS Email: opções numéricas do novo atendimento ficam disponíveis, webhook antigo continua deduplicado
+PASS Email: novo atendimento recebe nova avaliação
+PASS Backend rejeita nota fora da escala e comentário acima do limite
+PASS Remetente diferente não avalia a conversa de outra pessoa
+PASS Nota inválida recebe orientação apenas uma vez, sem chamar a IA
+PASS Primeira resposta válida é preservada e comentário é armazenado como texto
+PASS Webhook httpSMS persiste fechamento e nota sem esperar HTTP de saída nem IA
+PASS Fila SMS não reprocessa feedback como atendimento
+PASS Ambas as entradas de e-mail capturam encerramento/feedback antes de gerar resposta ou reabrir conversa
+PASS WhatsApp encerra por despedida explícita sem nova chamada ao modelo
+PASS Dispensar avaliação é opcional e não dispara convite atrasado
+PASS Avaliação expira após sete dias
+PASS Falha do convite fica visível na Central e não gera repetição automática infinita
+PASS Despedida repetida após encerramento também é deduplicada sem afetar o próximo ciclo
+PASS Reentrega de encerramento antigo não fecha uma conversa reaberta
+PASS Dois ciclos antes do processamento enviam somente o convite mais recente
+PASS Site: botão encerra e disponibiliza avaliação persistida
+PASS Site: polling restaura avaliação pendente após recarregar a página
+PASS Site: outro usuário não pode avaliar por ID de avaliação alheia
+PASS Site: valida escala e torna envio repetido idempotente
+PASS Site: cadastro inativo não encerra nem avalia
+PASS Avaliar/encerrar exigem antiforgery e relatório é restrito à equipe
+PASS Relatório calcula média e satisfação somente sobre respostas recebidas
+PASS Saudação 'Oi' responde sem Gemini e preserva a sessão
+PASS Saudação 'Olá!' responde sem Gemini e preserva a sessão
+PASS Saudação 'Bom dia' responde sem Gemini e preserva a sessão
+PASS Saudação 'Boa tarde' responde sem Gemini e preserva a sessão
+PASS Saudação 'Boa noite' responde sem Gemini e preserva a sessão
+PASS Saudação com pedido segue o agente completo e não é tratada como cumprimento isolado
+PASS Cancelar uma geração libera a trava da sessão para a próxima mensagem
+PASS Chat autenticado também usa a saudação rápida, com autorização e registro no banco
+PASS Chat novo preserva o histórico na Central sem duplicá-lo no histórico V12
+PASS Persistência do par de mensagens cai de quatro gravações para uma, sem apagar o legado
+PASS Gravação em lote mantém ordem, autoria e estado das mensagens do site
+PASS Orçamento total interrompe Gemini lento e devolve HTTP 504 sem repetir a mensagem
+PASS Chat volta a responder depois de um timeout sem travar o atendimento
+PASS Resposta rápida e polling continuam bloqueados para paciente inativo
+PASS Mensagem comum do site não acessa o banco para procurar feedback
+PASS Reproduz troca de senha sem remoção do bloqueio temporário de login
+PASS Chaves de recuperação ficam persistidas no mesmo banco da aplicação
+PASS Link continua válido depois de recriar o provedor da aplicação
+PASS Sucesso segue para confirmação explícita depois de gravar a nova senha
+PASS Nova senha funciona após recarregar o banco e a senha anterior é recusada
+PASS Recuperação válida remove bloqueio temporário e permite autenticação com a nova senha
+PASS Login por CPF resolve a mesma conta cuja senha foi redefinida
+PASS Link já usado deixa de oferecer o formulário de nova senha
+PASS Repetir o POST com token consumido não altera a senha novamente
+PASS UID/e-mail adulterados são recusados antes de exibir a conta
+PASS Token de uma conta não altera a senha de outra conta
+PASS Código Base64URL inválido mostra a opção de solicitar novo link
+PASS Senha fora das regras permanece no formulário sem alterar o hash
+PASS Confirmação diferente da nova senha é recusada sem gravação
+PASS Token expirado é identificado antes de pedir uma nova senha
+PASS Medico: recuperação aceita link legado por e-mail e grava a senha na mesma conta
+PASS Funcionario: recuperação aceita link legado por e-mail e grava a senha na mesma conta
+PASS Admin: recuperação aceita link legado por e-mail e grava a senha na mesma conta
+PASS Recuperação não remove bloqueio administrativo nem reativa cadastro desativado
+PASS Falha simulada de persistência não exibe sucesso nem retorna para o login
+PASS HTTP: confirmação não apresenta sucesso sem uma redefinição concluída
+PASS HTTP: solicitar recuperação gera link pelo formulário real e serviço de e-mail simulado
+PASS HTTP: link do e-mail abre o formulário real com a conta e o código corretos
+PASS HTTP: redefinição sem antiforgery é recusada
+PASS HTTP: POST válido grava a senha e redireciona para a confirmação
+PASS HTTP: confirmação mostra sucesso e botão explícito para entrar
+PASS HTTP: login real aceita a nova senha e emite o cookie de autenticação
+PASS HTTP: senha antiga é rejeitada após o fluxo completo
+PASS Foto aceita PNG e recusa SVG/conteúdo ativo, independentemente do nome do arquivo
+PASS Foto recusa tamanho excedido e imagem truncada
+PASS Foto limita dimensões e atividade não armazena User-Agent bruto
+PASS Minha Conta exige autenticação
+PASS Perfil real renderiza três abas e identifica o acesso atual
+PASS Alterações do perfil sem antiforgery são recusadas
+PASS Salvar dados próprios retorna confirmação após persistir
+PASS Binding protege CPF, CRM, papel e cadastro de outro usuário
+PASS Salvar apenas dados não substitui aparência existente do navegador no próximo login
+PASS Alterar e-mail exige senha atual mesmo com cookie válido
+PASS E-mail de outra conta não pode ser usado
+PASS Preferências gravadas emitem aparência para aplicar no navegador
+PASS Preferências e canais são persistidos no usuário correto
+PASS Preferências inválidas mantêm a aba correta sem gravar tema arbitrário
+PASS Foto real é salva e servida apenas para o titular autenticado
+PASS Parâmetro de usuário não permite acessar foto alheia
+PASS Tipo de upload falsificado é recusado e foto anterior preservada
+PASS Paciente não pode encerrar sessão de outro usuário
+PASS Senha atual incorreta fica na aba Segurança sem expor senhas no HTML
+PASS Troca de senha mantém o acesso atual autenticado
+PASS Outro dispositivo perde acesso imediatamente após troca de senha
+PASS Nova senha foi gravada e senha anterior é recusada
+PASS Preferências salvas são aplicadas ao entrar em outro navegador
+PASS Encerrar outros acessos preserva o dispositivo atual e revoga o outro
+PASS Renovação do Identity preserva a identificação do acesso atual
+PASS Alterar e-mail com senha atual sincroniza Identity e perfil e mantém login
+PASS E-mail de login e cadastro clínico permanecem sincronizados
+PASS Funcionario: perfil próprio sem campos exclusivos do paciente
+PASS Admin: perfil próprio sem campos exclusivos do paciente
+PASS Médico vê CRM e especialidade protegidos
+PASS Remover foto apaga o conteúdo do próprio perfil
+PASS Remoção de acesso exige confirmação explícita
+PASS Conta clínica inativa também perde acesso ao novo perfil
+PASS Encerramento reconhece intenção de despedida além de comando literal
+PASS Agradecimento, pergunta nova e confirmação pendente não autorizam fechamento
+PASS Ferramenta real da IA sinaliza encerramento sem rodada extra ao modelo
+PASS Backend rejeita fechamento indevido do modelo em agradecimento isolado
+PASS WhatsApp: despedida inferida cria avaliação e convite direto uma única vez
+PASS Sms: despedida inferida cria avaliação e convite direto uma única vez
+PASS Nova pergunta durante a geração impede convite de despedida obsoleto
+PASS Tomada humana durante a resposta impede encerramento automático
+PASS Sem canais autorizados, avisos automáticos não usam fallback bloqueado
+PASS Lembretes escolhem canal permitido e configurado
+PASS Contas antigas sem preferências preservam os avisos atuais
+PASS Site recebe cartão para avaliar diretamente ao encerrar por intenção
+PASS Despedida natural do site é preservada uma única vez no histórico
+PASS Site preserva tomada humana durante despedida e não cria outra avaliação
+Verificações concluídas. Nenhuma mensagem real foi enviada.

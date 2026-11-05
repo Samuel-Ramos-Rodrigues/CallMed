@@ -79,21 +79,20 @@ public sealed class AtendimentoOrquestradorService
         try
         {
             await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "gerando", ct);
+            var sessaoInicial = conversa.SessionId;
             var resposta = await _agente.EnviarAsync(NormalizarTextoEntrada(ultima.Texto, conversa.Canal), conversa.SessionId, CriarContextoUsuario(conversa), historico, ct);
+            if (await EncerrarSugeridoAsync(conversa, resposta, ultima.Texto, ultima.Id, sessaoInicial, ct)) return ResultadoRetomadaAtendimento.AtendimentoEncerrado;
             if (string.IsNullOrWhiteSpace(resposta.Resposta))
             {
                 await _conversas.SolicitarAtendimentoHumanoAsync(conversa, ct);
                 await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "falha", ct);
                 return ResultadoRetomadaAtendimento.FalhaNaGeracao;
             }
-            if (conversa.Canal == CanalAtendimento.Sms)
-            {
-                await _conversas.RecarregarAsync(conversa, ct);
-                if (!conversa.Ativa || conversa.Modo != ModoAtendimento.IA || conversa.ResponsavelUsuarioId is not null)
-                    return ResultadoRetomadaAtendimento.RequerEquipe;
-                var pendente = await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct);
-                if (pendente?.Id != ultima.Id) return ResultadoRetomadaAtendimento.SemMensagemPendente;
-            }
+            await _conversas.RecarregarAsync(conversa, ct);
+            if (!conversa.Ativa || conversa.SessionId != sessaoInicial || conversa.Modo != ModoAtendimento.IA || conversa.ResponsavelUsuarioId is not null)
+                return ResultadoRetomadaAtendimento.RequerEquipe;
+            var pendente = await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct);
+            if (pendente?.Id != ultima.Id) return ResultadoRetomadaAtendimento.SemMensagemPendente;
             var saida = await _envio.EnviarRespostaIaAsync(conversa, resposta.Resposta, ultima.Id, ct);
             await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "concluida", ct);
             return saida.Status is StatusMensagemAtendimento.Enviada or StatusMensagemAtendimento.Entregue ? ResultadoRetomadaAtendimento.RespostaEnviada
@@ -108,6 +107,17 @@ public sealed class AtendimentoOrquestradorService
             await _conversas.AtualizarEstadoIaAsync(conversa, ultima.Id, "falha", ct);
             return ResultadoRetomadaAtendimento.FalhaNaGeracao;
         }
+    }
+
+    private async Task<bool> EncerrarSugeridoAsync(ConversaAtendimento conversa, AgenteResposta resposta, string entrada, long entradaId, string sessaoInicial, CancellationToken ct)
+    {
+        if (_feedback is null || !resposta.EncerrarAtendimento || !EncerramentoAtendimento.PodeSugerir(entrada)) return false;
+        await _conversas.RecarregarAsync(conversa, ct);
+        if (!conversa.Ativa || conversa.Modo != ModoAtendimento.IA || conversa.ResponsavelUsuarioId is not null || conversa.SessionId != sessaoInicial) return false;
+        var ultima = await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct);
+        if (ultima?.Id != entradaId) return false;
+        await _feedback.EncerrarAsync(conversa, ct);
+        return true;
     }
 
     private readonly IAgenteClinicaService _agente;
@@ -269,6 +279,7 @@ public sealed class AtendimentoOrquestradorService
                 historico,
                 ct);
 
+            if (!rascunhoManual && _emailOptions.EnviarRespostasAutomaticamente && await EncerrarSugeridoAsync(conversa, resposta, textoEntrada, entradaId, sessaoInicial, ct)) return ResultadoRetomadaAtendimento.AtendimentoEncerrado;
             if (string.IsNullOrWhiteSpace(resposta.Resposta)) throw new InvalidOperationException("Resposta da IA vazia.");
 
             await _conversas.RecarregarAsync(conversa, ct);
@@ -435,6 +446,7 @@ public sealed class AtendimentoOrquestradorService
 
         try
         {
+            var sessaoInicial = conversa.SessionId;
             var resposta = await _agente.EnviarAsync(
                 textoEntrada,
                 conversa.SessionId,
@@ -442,6 +454,10 @@ public sealed class AtendimentoOrquestradorService
                 historico,
                 ct);
 
+            if (await EncerrarSugeridoAsync(conversa, resposta, textoEntrada, nova.Id, sessaoInicial, ct)) return;
+            await _conversas.RecarregarAsync(conversa, ct);
+            if (!conversa.Ativa || conversa.Modo != ModoAtendimento.IA || conversa.ResponsavelUsuarioId is not null || conversa.SessionId != sessaoInicial) return;
+            if ((await _conversas.ObterUltimaEntradaPendenteAsync(conversa.Id, ct))?.Id != nova.Id) return;
             await _envio.EnviarRespostaIaAsync(conversa, resposta.Resposta, nova.Id, ct);
             await _conversas.AtualizarEstadoIaAsync(conversa, nova.Id, "concluida", ct);
         }

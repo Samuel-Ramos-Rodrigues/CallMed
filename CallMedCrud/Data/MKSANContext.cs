@@ -13,6 +13,10 @@ public class MKSANContext : IdentityDbContext<Usuario>, IDataProtectionKeyContex
     }
 
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
+    public DbSet<ContaPerfil> ContaPerfis => Set<ContaPerfil>();
+    public DbSet<ContaFoto> ContaFotos => Set<ContaFoto>();
+    public DbSet<ContaSessao> ContaSessoes => Set<ContaSessao>();
+    public DbSet<ContaEvento> ContaEventos => Set<ContaEvento>();
     public DbSet<ExameHistorico> ExamesHistorico => Set<ExameHistorico>();
     public DbSet<Paciente> Pacientes => Set<Paciente>();
     public DbSet<Funcionario> Funcionarios => Set<Funcionario>();

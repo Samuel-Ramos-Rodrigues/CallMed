@@ -5,9 +5,10 @@
     ],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.onrender.callmed.twa",
+      "package_name": "com.callmed.app",
       "sha256_cert_fingerprints": [
-        "E4:52:22:AE:E6:75:68:DE:91:F2:F2:52:2A:D9:C2:2B:BB:E6:16:72:7C:A0:F0:3A:F1:96:F1:A8:77:5F:44:DA"
+        "C7:92:6C:AD:9E:28:40:76:FF:EC:67:AA:68:5F:EE:D2:7F:18:8D:93:73:48:1A:FA:E9:00:1C:0F:AB:58:FF:EA",
+        "DE:D7:D2:5E:3F:33:F8:E3:C2:7B:88:42:FC:D0:F0:0E:C7:65:58:C2:5B:D3:B6:0D:53:4A:0F:00:A2:D3:03:E3"
       ]
     }
   }

@@ -118,7 +118,7 @@ public class AgenteController : Controller
         {
             var encerrada = await _feedback.ObterWebAsync(usuarioId, cancellationToken);
             var pendente = encerrada is null ? null : await _feedback.ObterPendenteAsync(encerrada, cancellationToken);
-            return Json(new { resposta = "Atendimento encerrado. Obrigado por conversar com a CallMed!", encerrada = true,
+            return Json(new { resposta = EncerramentoAtendimento.Despedida, encerrada = true,
                 avaliacao = pendente is null ? null : new { id = pendente.Id, conversaId = encerrada!.Id },
                 sessionId = encerrada?.SessionId, modo = "IA", conversaId = encerrada?.Id });
         }
@@ -224,12 +224,33 @@ public class AgenteController : Controller
             _logger.LogInformation("Chat pronto para o agente. PreparacaoMs={PreparacaoMs} TraceId={TraceId}.", preparo.ElapsedMilliseconds, HttpContext.TraceIdentifier);
             // A sessão persistida da Central é a autoridade. Isso impede
             // que uma confirmação antiga sobreviva a uma troca IA ↔ humano.
+            var sessaoAnalisada = conversaAtendimento.SessionId;
             var resposta = await _agente.EnviarAsync(
                 mensagem,
                 conversaAtendimento.SessionId,
                 usuario,
                 historico,
                 cancellationToken);
+
+            if (_feedback is not null && resposta.EncerrarAtendimento && EncerramentoAtendimento.PodeSugerir(mensagem))
+            {
+                await _atendimento.RecarregarAsync(conversaAtendimento, cancellationToken);
+                if (conversaAtendimento.Ativa && conversaAtendimento.SessionId == sessaoAnalisada && conversaAtendimento.Modo == ModoAtendimento.IA && conversaAtendimento.ResponsavelUsuarioId is null)
+                {
+                    await _feedback.EncerrarPorMensagemAsync(conversaAtendimento, mensagem, cancellationToken);
+                    var pendente = await _feedback.ObterPendenteAsync(conversaAtendimento, cancellationToken);
+                    return Json(new { resposta = EncerramentoAtendimento.Despedida, encerrada = true,
+                        avaliacao = pendente is null ? null : new { id = pendente.Id, conversaId = conversaAtendimento.Id },
+                        sessionId = conversaAtendimento.SessionId, modo = "IA", conversaId = conversaAtendimento.Id });
+                }
+                if (conversaAtendimento.Modo == ModoAtendimento.Humano)
+                {
+                    var entrada = await _atendimento.RegistrarEntradaAsync(conversaAtendimento, mensagem, ct: cancellationToken);
+                    return Json(new { resposta = string.Empty, modo = "Humano", conversaId = conversaAtendimento.Id,
+                        sessionId = conversaAtendimento.SessionId, mensagemId = entrada?.Id ?? 0 });
+                }
+                return Conflict(new { mensagem = "O atendimento mudou enquanto a resposta era preparada. Atualize a conversa para continuar." });
+            }
 
             try
             {

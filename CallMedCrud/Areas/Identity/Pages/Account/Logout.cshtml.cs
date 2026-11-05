@@ -9,10 +9,14 @@ namespace MKSANCrud.Areas.Identity.Pages.Account;
 public class LogoutModel : PageModel
 {
     private readonly SignInManager<Usuario> _signInManager;
+    private readonly ContaService? _conta;
+    private readonly ILogger<LogoutModel>? _logger;
 
-    public LogoutModel(SignInManager<Usuario> signInManager)
+    public LogoutModel(SignInManager<Usuario> signInManager, ContaService? conta = null, ILogger<LogoutModel>? logger = null)
     {
         _signInManager = signInManager;
+        _conta = conta;
+        _logger = logger;
     }
 
     public IActionResult OnGet()
@@ -24,6 +28,11 @@ public class LogoutModel : PageModel
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
         var portal = PortaisAcesso.DoUsuario(User);
+        if (_conta is not null)
+        {
+            try { await _conta.RegistrarSaidaAsync(User, HttpContext.RequestAborted); }
+            catch (Exception ex) { _logger?.LogWarning(ex, "Não foi possível registrar os metadados da saída."); }
+        }
         await _signInManager.SignOutAsync();
 
         Response.Headers.CacheControl = "no-store, no-cache, must-revalidate";

@@ -4,6 +4,8 @@
 
 <h1 align="center">CallMed</h1>
 
+> **Minha Conta e despedida com avaliação:** perfil por função com foto, dados, senha, dispositivos e preferências; convite direto ao encerrar, controlado pelo sistema. [Atualização V30, funcionamento e testes](docs/PERFIL-E-ENCERRAMENTO.md).
+
 > **Redefinição de senha corrigida:** confirmação após verificar a senha gravada, desbloqueio temporário e links válidos entre reinícios. [Atualização e teste do fluxo](docs/CORRECAO-REDEFINICAO-SENHA.md).
 
 > **Chat com menos espera:** saudações sem chamada ao modelo, menos gravações do histórico e espera limitada sem reenviar o POST automaticamente. [Correção e diagnóstico](docs/DESEMPENHO-ASSISTENTE.md).

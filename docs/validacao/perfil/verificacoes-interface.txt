@@ -1,0 +1,18 @@
+PASS Perfil mostra só uma seção por vez
+PASS Campos condicionais ficam recolhidos
+PASS Alteração de e-mail revela confirmação da senha
+PASS Convênio abre seus dados apenas quando selecionado
+PASS Abas permitem navegação por teclado
+PASS Tema escolhido é aplicado imediatamente
+PASS Acessibilidade usa os controles reais do site
+PASS Erro do servidor abre Segurança e mantém a validação visível
+PASS Perfil médico mostra os campos de sua função
+PASS Administrador acessa seu próprio perfil
+PASS Upload inválido é sinalizado antes do envio
+PASS Celular sem rolagem horizontal: dados, tema light
+PASS Celular sem rolagem horizontal: seguranca, tema light
+PASS Celular sem rolagem horizontal: preferencias, tema light
+PASS Celular sem rolagem horizontal: dados, tema dark
+PASS Celular sem rolagem horizontal: seguranca, tema dark
+PASS Celular sem rolagem horizontal: preferencias, tema dark
+PASS Tela sem erros de JavaScript

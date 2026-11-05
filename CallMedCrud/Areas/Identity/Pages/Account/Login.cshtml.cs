@@ -12,11 +12,15 @@ public class LoginModel : PageModel
 {
     private readonly SignInManager<Usuario> _signInManager;
     private readonly PortalAcessoService _acessos;
+    private readonly ContaService? _conta;
+    private readonly ILogger<LoginModel>? _logger;
 
-    public LoginModel(SignInManager<Usuario> signInManager, PortalAcessoService acessos)
+    public LoginModel(SignInManager<Usuario> signInManager, PortalAcessoService acessos, ContaService? conta = null, ILogger<LoginModel>? logger = null)
     {
         _signInManager = signInManager;
         _acessos = acessos;
+        _conta = conta;
+        _logger = logger;
     }
 
     [BindProperty]
@@ -43,7 +47,7 @@ public class LoginModel : PageModel
         public bool RememberMe { get; set; }
     }
 
-    public async Task<IActionResult> OnGetAsync(string? returnUrl = null, bool contaInativa = false)
+    public async Task<IActionResult> OnGetAsync(string? returnUrl = null, bool contaInativa = false, bool sessaoEncerrada = false)
     {
         // URL canônica única. Rotas antigas/convencionais redirecionam para cá;
         // o perfil passado no caminho nunca seleciona uma modalidade de login.
@@ -57,6 +61,8 @@ public class LoginModel : PageModel
         if (User.Identity?.IsAuthenticated == true)
             return RedirecionarParaPainelAtual();
 
+        if (sessaoEncerrada)
+            ModelState.AddModelError(string.Empty, "Este acesso foi encerrado. Entre novamente para continuar.");
         if (contaInativa)
             ModelState.AddModelError(string.Empty,
                 "Seu acesso foi desativado. Entre em contato com o administrador da clínica.");
@@ -78,6 +84,11 @@ public class LoginModel : PageModel
             acesso.Usuario, Input.Password, Input.RememberMe, lockoutOnFailure: true);
         if (result.Succeeded)
         {
+            if (_conta is not null)
+            {
+                try { await _conta.RegistrarLoginAsync(acesso.Usuario, HttpContext, Input.RememberMe, HttpContext.RequestAborted); }
+                catch (Exception ex) { _logger?.LogWarning(ex, "Login autenticado; não foi possível registrar metadados do acesso."); }
+            }
             if (!acesso.Portal.EhPaciente)
                 return RedirectToAction("Index", acesso.Portal.ControllerPainel, new { area = "" });
             return LocalRedirect(ReturnUrl);

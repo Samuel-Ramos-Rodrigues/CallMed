@@ -147,7 +147,7 @@ public sealed class ListaEsperaService
                 continue;
             }
 
-            var destino = EscolherCanal(item.Paciente);
+            var destino = await MKSANCrud.Services.Usuarios.ContaAvisos.EscolherAsync(_context, item.Paciente, _envio, ct);
             if (destino is null)
             {
                 if (!string.IsNullOrWhiteSpace(item.Paciente.Telefone) &&
@@ -227,28 +227,6 @@ public sealed class ListaEsperaService
         item.NotificadoEm = DateTime.UtcNow;
         item.UltimaDisponibilidadeId = vaga.Id;
         item.AtualizadoEm = DateTime.UtcNow;
-    }
-
-    private (CanalAtendimento Canal, string Identificador)? EscolherCanal(Paciente paciente)
-    {
-        var preferido = paciente.CanalPreferido?.Trim();
-        if (string.Equals(preferido, "SMS", StringComparison.OrdinalIgnoreCase) &&
-            !string.IsNullOrWhiteSpace(paciente.Telefone) && _envio.CanalConfigurado(CanalAtendimento.Sms))
-            return (CanalAtendimento.Sms, paciente.Telefone);
-        if (string.Equals(preferido, "Email", StringComparison.OrdinalIgnoreCase) &&
-            !string.IsNullOrWhiteSpace(paciente.Email) && _envio.CanalConfigurado(CanalAtendimento.Email))
-            return (CanalAtendimento.Email, paciente.Email);
-        if (string.Equals(preferido, "WhatsApp", StringComparison.OrdinalIgnoreCase) &&
-            !string.IsNullOrWhiteSpace(paciente.Telefone) && _envio.CanalConfigurado(CanalAtendimento.WhatsApp))
-            return (CanalAtendimento.WhatsApp, paciente.Telefone);
-
-        if (!string.IsNullOrWhiteSpace(paciente.Telefone) && _envio.CanalConfigurado(CanalAtendimento.WhatsApp))
-            return (CanalAtendimento.WhatsApp, paciente.Telefone);
-        if (!string.IsNullOrWhiteSpace(paciente.Telefone) && _envio.CanalConfigurado(CanalAtendimento.Sms))
-            return (CanalAtendimento.Sms, paciente.Telefone);
-        if (!string.IsNullOrWhiteSpace(paciente.Email) && _envio.CanalConfigurado(CanalAtendimento.Email))
-            return (CanalAtendimento.Email, paciente.Email);
-        return null;
     }
 
     private async Task<Disponibilidade?> BuscarVagaAsync(ListaEspera item, CancellationToken ct)

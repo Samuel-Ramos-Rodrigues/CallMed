@@ -57,6 +57,15 @@ public static class ServiceCollectionExtensions
             .AddEntityFrameworkStores<MKSANContext>()
             .AddPasswordValidator<SpecialCharacterPasswordValidator>();
 
+        services.Configure<SecurityStampValidatorOptions>(options => options.OnRefreshingPrincipal = context =>
+        {
+            // A renovação periódica do Identity deve preservar o identificador do acesso.
+            var sessao = context.CurrentPrincipal?.FindFirst(ContaService.SessaoClaim);
+            if (sessao is not null && context.NewPrincipal?.Identity is System.Security.Claims.ClaimsIdentity identity)
+                identity.AddClaim(sessao);
+            return Task.CompletedTask;
+        });
+
         services.ConfigureApplicationCookie(options =>
         {
             options.Cookie.HttpOnly = true;
@@ -102,6 +111,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AgendamentoService>();
         services.AddScoped<OrientacoesConsultaService>();
         services.AddScoped<UsuarioVinculoService>();
+        services.AddScoped<ContaService>();
         services.AddScoped<PortalAcessoService>();
 
         services.AddHostedService<AgendaRenovacaoBackgroundService>();
@@ -199,6 +209,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<DatabaseSchemaV27Initializer>();
         services.AddScoped<DatabaseSchemaV28Initializer>();
         services.AddScoped<DatabaseSchemaV29Initializer>();
+        services.AddScoped<DatabaseSchemaV30Initializer>();
         return services;
     }
 

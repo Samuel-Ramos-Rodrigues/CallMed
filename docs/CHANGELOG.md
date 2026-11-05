@@ -1,3 +1,14 @@
+## 2026-11-05 — Perfil e encerramento com avaliação direta
+
+- Minha Conta para todos os papéis, em três abas: Meus dados, Segurança e Preferências.
+- Foto privada, edição dos próprios contatos, confirmação de senha ao mudar e-mail e sincronização do cadastro clínico com Identity.
+- Troca de senha, histórico de acessos/alterações e revogação de sessões; renovação do cookie preserva o identificador de acesso.
+- Preferências de tema/acessibilidade e canais permitidos para lembretes/lista de espera; padrão anterior preservado para contas antigas.
+- Ferramenta da IA para sugerir encerramento, com validação no backend e avaliação direta, sem etapa de aceite do formulário.
+- Novas perguntas e tomada humana durante a geração impedem encerramento obsoleto; rascunho manual de e-mail não envia convite por inferência.
+- Patch aditivo V30, sem novas credenciais, e cache PWA atualizado. Correções de senha, chat e TWA preservadas.
+- Guia: [PERFIL-E-ENCERRAMENTO.md](PERFIL-E-ENCERRAMENTO.md).
+
 ## 2026-11-04 — Correção da redefinição de senha
 
 - Corrigida a validação indevida de CPF/e-mail do outro formulário (chave sem prefixo `Usuario`).
