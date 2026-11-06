@@ -4,6 +4,8 @@
 
 <h1 align="center">CallMed</h1>
 
+> **Android nativo:** app de pacientes em Kotlin + Jetpack Compose, com login, consultas, agendamento, perfil e chat com avaliação. Abra `CallMedAndroid` no Android Studio. [Compilação e instalação](CallMedAndroid/README-ANDROID.md) · [API e publicação](docs/ANDROID-NATIVO.md).
+
 > **APK pelo próprio site:** página `/aplicativo` com download assinado para Android, acessível pela página inicial e pelos rodapés. [Publicação no Render e atualização do APK](docs/APLICATIVO-DOWNLOAD-DIRETO.md).
 
 > **Minha Conta e despedida com avaliação:** perfil por função com foto, dados, senha, dispositivos e preferências; convite direto ao encerrar, controlado pelo sistema. [Atualização V30, funcionamento e testes](docs/PERFIL-E-ENCERRAMENTO.md).
@@ -45,7 +47,7 @@
   <img src="https://img.shields.io/badge/ASP.NET_Core-MVC-512BD4?style=flat-square&logo=dotnet&logoColor=white" alt="ASP.NET Core MVC">
   <img src="https://img.shields.io/badge/PostgreSQL-Neon-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL / Neon">
   <img src="https://img.shields.io/badge/PWA-Ready-5A0FC8?style=flat-square&logo=pwa&logoColor=white" alt="PWA">
-  <img src="https://img.shields.io/badge/Android-TWA-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android TWA">
+  <img src="https://img.shields.io/badge/Android-Nativo-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android nativo">
   <img src="https://img.shields.io/badge/Deploy-Render-46E3B7?style=flat-square" alt="Render">
 </p>
 
@@ -178,7 +180,8 @@ CallMed/
 │   ├── Views/                   # Razor Views
 │   └── wwwroot/                 # CSS, JS, PWA, imagens e ícones
 │
-├── CallMedTWA/                  # Aplicativo Android via TWA
+├── CallMedAndroid/              # Aplicativo nativo: Kotlin + Jetpack Compose
+├── CallMedTWA/                  # Projeto Android anterior, preservado
 ├── PlayStore/                   # Materiais de publicação
 ├── docs/                        # Documentação técnica
 ├── .github/workflows/           # Automação de build
@@ -200,7 +203,7 @@ Para detalhes, consulte **[docs/ARQUITETURA.md](./docs/ARQUITETURA.md)**.
 | Autenticação | ASP.NET Core Identity + Roles |
 | Front-end | Razor, HTML, CSS e JavaScript |
 | PWA | Web App Manifest + Service Worker |
-| Android | Trusted Web Activity (TWA) |
+| Android | Kotlin + Jetpack Compose |
 | IA | Google Gemini |
 | WhatsApp | Evolution API |
 | E-mail | SMTP + webhook inbound opcional |
@@ -286,18 +289,21 @@ Principais recursos:
 
 ---
 
-## Android / TWA
+## Android nativo
 
-O repositório também inclui um wrapper Android baseado em **Trusted Web Activity**.
+O cliente de pacientes usa **Kotlin e Jetpack Compose**, com as telas próprias do Android e a API do mesmo servidor CallMed. Inclui login, consultas, agendamento, perfil e atendimento com avaliação.
 
 ```text
 applicationId: com.callmed.app
 minSdk: 26
 targetSdk: 36
-versionName: 21.6.5
+versionCode: 2300
+versionName: 23.0.0
 ```
 
-Arquivos e instruções estão em **[CallMedTWA/README-TWA.md](./CallMedTWA/README-TWA.md)**.
+Abra a pasta **CallMedAndroid** no Android Studio. [Compilação e instalação](CallMedAndroid/README-ANDROID.md) · [API e publicação do servidor](docs/ANDROID-NATIVO.md).
+
+O APK assinado é distribuído em `/aplicativo`. A pasta `CallMedTWA` guarda o projeto anterior e não participa da compilação do nativo.
 
 ---
 
@@ -472,7 +478,7 @@ O projeto inclui, entre outras medidas:
 | [Play Store](./docs/deploy/PLAY-STORE-PUBLICACAO.md) | Processo de publicação Android |
 | [Validação](./docs/validacao/VALIDACAO.md) | Checklist técnico da release |
 | [Histórico consolidado](./docs/CHANGELOG.md) | Histórico das versões anteriores, reunido em um documento |
-| [Android / TWA](./CallMedTWA/README-TWA.md) | Geração e configuração do app Android |
+| [Android nativo](./CallMedAndroid/README-ANDROID.md) | Compilação, assinatura e instalação do app de pacientes |
 
 ---
 

@@ -1,68 +1,49 @@
-# APK disponível no próprio site
+# APK nativo disponível no próprio site
 
-Entrega de 05/11/2026, sobre a última versão com perfil, avaliações e TWA integrado.
-
-## O que foi incluído
-
-- APK de produção recebido do usuário: CallMed 22.2.0, código 2220, Android 8.0 (API 26) ou superior.
-- Página pública `/aplicativo`, com versão, tamanho, botão de download e instruções de instalação.
-- Download público em `/aplicativo/baixar`, sem exigir login.
-- Botão “Baixar para Android” na página inicial pública e link “Aplicativo Android” nos rodapés público, autenticado e de login.
-- Instalação do PWA pela tela inicial preservada como opção separada.
-
-O TWA continua sendo a estrutura do aplicativo Android. A distribuição agora pode ser feita pelo próprio site, com o APK assinado, sem publicar na Play Store.
+O download agora entrega o aplicativo nativo de pacientes **CallMed 23.0.0**, criado em Kotlin e Jetpack Compose. O módulo está em [`CallMedAndroid`](../CallMedAndroid/README-ANDROID.md). O projeto TWA anterior foi preservado em sua pasta.
 
 ## Publicar no Render
 
-1. Atualize o repositório com o conteúdo completo deste projeto e publique novamente o serviço existente.
-2. Inclua `CallMedCrud/App_Data/Aplicativo/CallMed.apk` e `release.json`. O `.gitignore` já libera especificamente esse APK público; as chaves privadas continuam ignoradas.
-3. O `.csproj` copia o APK e os metadados na saída de publicação. O Dockerfile existente leva os dois arquivos ao contêiner.
-4. Após a publicação, acesse `https://callmed.onrender.com/aplicativo` e faça o download pelo botão.
-5. Abra o arquivo no Android e confirme a instalação. O sistema pode solicitar permissão para instalar pelo navegador utilizado.
+1. Atualize o repositório com este projeto completo e publique o serviço existente. Esta entrega inclui as rotas `/api/mobile/v1` usadas pelo nativo.
+2. Inclua `CallMedCrud/App_Data/Aplicativo/CallMed.apk` e `release.json`. O `.gitignore` libera especificamente esse APK público; as chaves privadas continuam ignoradas.
+3. O `.csproj` copia os dois arquivos para a saída de publicação. O Dockerfile os leva ao contêiner. As pastas de código Android e as chaves de assinatura ficam fora do contexto Docker.
+4. Após publicar, abra `https://callmed.onrender.com/aplicativo` e confira a versão **23.0.0**.
+5. Baixe o APK, abra-o no celular e confirme a instalação. Se necessário, autorize a instalação pelo navegador usado no download.
 
-Esta mudança não exige migração do banco, nova variável ou alteração dos provedores de canais. Os patches e as configurações anteriores continuam como estavam.
+Publique o servidor antes de entrar no novo app. Não foi criada variável de ambiente nem migração adicional para essa integração. As migrações já existentes, incluindo chaves Data Protection, perfis e sessões, continuam necessárias.
 
-O arquivo fica junto do código publicado, sem depender de upload para o disco temporário do Render. Cada nova publicação deve continuar incluindo os dois arquivos do diretório `App_Data/Aplicativo`.
+O arquivo fica junto do código publicado, sem depender de upload para o disco temporário do Render. Cada publicação deve incluir os dois arquivos do diretório `App_Data/Aplicativo`.
 
-## Arquivo e assinatura conferidos
+## Pacote conferido
 
-- Pacote: `com.callmed.app`
-- Versão: `22.2.0`
-- Código da versão: `2220`
-- Tamanho: `3814239` bytes
-- Build de produção, com `debuggable=false`.
-- Assinatura APK v2 validada pelo verificador Android `apksig` 8.13.2.
-- Certificado coincide com a chave de produção e com o `assetlinks.json` do projeto.
-- SHA-256 do arquivo APK:
+| Campo | Valor |
+|---|---|
+| Pacote | `com.callmed.app` |
+| Versão | `23.0.0` |
+| Código | `2300` |
+| Android mínimo | 8.0 / API 26 |
+| Tamanho | 1.635.934 bytes |
+| Activity inicial | `com.callmed.app.MainActivity` |
+| Assinatura | APK v2 verificada; mesma chave de produção anterior |
+| Debug | Desabilitado no release |
+| SHA-256 | `c7d294a6c48e0b18c65de6433d2ad21552fd8adb5814e6fe7c63189dafe98f00` |
 
-```text
-814ab383ac93eb1e9746ea01593f850305c3166901f2cca257df53e2e00f28fb
-```
+O SHA-256 do APK identifica o conteúdo do arquivo; a impressão digital do certificado identifica a assinatura. O código 2300 é superior ao APK TWA 2220 e a mesma chave permite atualizar a instalação direta anterior. Instalações de debug ou assinadas por outra chave exigem conferir a compatibilidade de assinatura.
 
-O SHA-256 do arquivo é diferente da impressão digital do certificado. O primeiro identifica o conteúdo deste APK; o segundo associa o aplicativo assinado ao domínio do site.
+## Download
 
-## Comportamento do download
+A página pública `/aplicativo` mostra versão, tamanho, compatibilidade e instruções. O botão da página inicial e os links nos rodapés apontam para ela. A rota `/aplicativo/baixar` serve somente o APK fixo, com MIME Android, nome `CallMed.apk`, proteção contra cache antigo e suporte a retomada HTTP Range.
 
-A rota serve somente o APK fixo, com MIME `application/vnd.android.package-archive`, nome `CallMed.apk` e suporte a HTTP Range para retomada. Não aceita parâmetros para escolher outros arquivos. O APK não é armazenado no cache do service worker.
+A pasta `App_Data` não é exposta pelo middleware estático. Parâmetros não permitem selecionar outros arquivos. Se o pacote ou os metadados estiverem ausentes/inválidos, a página mostra indisponibilidade e o download retorna 404.
 
-A pasta `App_Data` não é publicada como uma área de arquivos estáticos. O controlador disponibiliza apenas o APK. As chaves e o arquivo de credenciais do TWA não são servidos pelo site.
+A instalação PWA do site continua disponível. As telas do novo APK são nativas; criação de conta e recuperação de senha abrem seus fluxos existentes no navegador.
 
-Se o APK ou os metadados estiverem ausentes/inválidos, a página apresenta um aviso e o download retorna 404. Ela não oferece um botão que aponte para um pacote ausente.
+## Atualizar o app
 
-## Próximas versões
+Aumente o `versionCode` no módulo `CallMedAndroid`, mantenha a chave e gere `assembleRelease`. Substitua `CallMed.apk` e atualize `release.json` com a versão, código, tamanho, SHA-256 e Android mínimo reais. Atualize também as expectativas de versão/hash dos testes de download. Publique os dois arquivos juntos.
 
-Mantenha a mesma chave de assinatura e aumente o `versionCode` no módulo Android. Gere outro APK com `assembleRelease`, substitua `CallMed.apk` e atualize `release.json` com a versão, o código, o tamanho em bytes, o SHA-256 e o Android mínimo correspondentes. Depois, publique novamente o site.
+O aplicativo não instala atualizações automaticamente. Mudanças no cliente Kotlin exigem novo APK; mudanças compatíveis nas APIs são publicadas no servidor.
 
-O download não atualiza o aplicativo automaticamente: o usuário baixa e instala a nova versão. As alterações das páginas e serviços web continuam chegando pelo site normalmente.
+## Verificação
 
-## Testes
-
-```bash
-dotnet run --project tests/CallMed.Checks
-# Somente download, página e respostas HTTP:
-CALLMED_APK_FIXTURES=/tmp/callmed-apk dotnet run --project tests/CallMed.Checks -- --apk
-# Interface com HTML renderizado pelo teste HTTP e CSS/JS reais:
-CALLMED_APK_FIXTURES=/tmp/callmed-apk NODE_PATH=<node_modules> CHROME_PATH=<chromium> node tests/aplicativo-browser.cjs
-```
-
-Validação realizada: compilação e publicação Release, 452 verificações do servidor, 12 verificações da interface no Chromium e conferência de que o APK publicado mantém exatamente o hash do recebido. Nenhuma mensagem real foi enviada. A instalação em aparelho e a publicação no Render ficam para a homologação após atualizar o serviço.
+A compilação e publicação Release do servidor incluem o mesmo APK. Os 13 testes HTTP de download e as 12 verificações da interface no Chromium passaram com este arquivo. A compilação Android release, o lint e os 16 testes JVM também passaram. Veja [a validação completa](validacao/ANDROID-NATIVO.md).

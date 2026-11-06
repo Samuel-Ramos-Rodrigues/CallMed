@@ -17,3 +17,5 @@ docs
 *.txt
 .env.example
 CallMed.sln
+
+CallMedAndroid

@@ -41,7 +41,7 @@ internal static class AplicativoDownloadChecks
             var response=await client.GetAsync("/aplicativo");
             if(response.StatusCode!=HttpStatusCode.OK)throw new Exception("Página do aplicativo retornou "+response.StatusCode,error);
             var html=await response.Content.ReadAsStringAsync();
-            check(html.Contains("22.2.0")&&html.Contains("Android 8.0")&&html.Contains("/aplicativo/baixar"),"Download Android: página pública informa versão, compatibilidade e botão real");
+            check(html.Contains("23.0.0")&&html.Contains("Android 8.0")&&html.Contains("/aplicativo/baixar"),"Download Android: página pública informa versão, compatibilidade e botão real");
             var fixtures=Environment.GetEnvironmentVariable("CALLMED_APK_FIXTURES");
             if(fixtures is not null){Directory.CreateDirectory(fixtures);await File.WriteAllTextAsync(Path.Combine(fixtures,"aplicativo.html"),html);}
             var home=await client.GetStringAsync("/");
@@ -49,7 +49,7 @@ internal static class AplicativoDownloadChecks
             if(fixtures is not null)await File.WriteAllTextAsync(Path.Combine(fixtures,"home.html"),home);
             response=await client.GetAsync("/aplicativo/baixar");var body=await response.Content.ReadAsByteArrayAsync();
             check(response.StatusCode==HttpStatusCode.OK&&body.SequenceEqual(expected),"Download anônimo devolve exatamente o APK incluído no projeto");
-            check(Convert.ToHexString(SHA256.HashData(body)).Equals("814ab383ac93eb1e9746ea01593f850305c3166901f2cca257df53e2e00f28fb",StringComparison.OrdinalIgnoreCase),"APK entregue mantém SHA-256 do arquivo recebido e verificado");
+            check(Convert.ToHexString(SHA256.HashData(body)).Equals("c7d294a6c48e0b18c65de6433d2ad21552fd8adb5814e6fe7c63189dafe98f00",StringComparison.OrdinalIgnoreCase),"APK entregue mantém SHA-256 do release nativo assinado e verificado");
             check(response.Content.Headers.ContentType?.MediaType=="application/vnd.android.package-archive"&&response.Content.Headers.ContentDisposition?.DispositionType=="attachment"&&response.Content.Headers.ContentDisposition?.FileNameStar=="CallMed.apk","Resposta usa MIME Android e nome de arquivo para download");
             check(response.Headers.CacheControl?.NoStore==true&&response.Headers.GetValues("X-Content-Type-Options").Single()=="nosniff","Download evita cache antigo e interpretação indevida do arquivo");
             using var range=new HttpRequestMessage(HttpMethod.Get,"/aplicativo/baixar");range.Headers.Range=new RangeHeaderValue(0,99);

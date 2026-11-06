@@ -19,6 +19,7 @@ static void Check(bool condition, string message)
     Console.WriteLine("PASS " + message);
 }
 if (args.Contains("--conta")) { await ContaPerfilChecks.RunAsync(Check); await EncerramentoIaChecks.RunAsync(Check); return; }
+if (args.Contains("--mobile")) { await MobileApiChecks.RunAsync(Check); return; }
 if (args.Contains("--apk")) { await AplicativoDownloadChecks.RunAsync(Check); return; }
 var webhookSemHeader = new DefaultHttpContext();
 webhookSemHeader.Request.QueryString = new QueryString("?secret=segredo-teste");
@@ -136,6 +137,7 @@ await PasswordResetChecks.RunAsync(Check);
 await ContaPerfilChecks.RunAsync(Check);
 await EncerramentoIaChecks.RunAsync(Check);
 await AplicativoDownloadChecks.RunAsync(Check);
+await MobileApiChecks.RunAsync(Check);
 Console.WriteLine("Verificações concluídas. Nenhuma mensagem real foi enviada.");
 sealed class FakeHandler : HttpMessageHandler
 {
@@ -149,3 +151,4 @@ sealed class FakeHandler : HttpMessageHandler
         return Task.FromResult(new HttpResponseMessage(Status) { Content = new StringContent(Body, Encoding.UTF8, "application/json") });
     }
 }
+

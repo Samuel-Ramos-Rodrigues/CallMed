@@ -394,3 +394,12 @@ qr-evolution.html
 
 # APK público distribuído pelo próprio site CallMed
 !CallMedCrud/App_Data/Aplicativo/CallMed.apk
+
+# Aplicativo Android nativo
+CallMedAndroid/.gradle/
+CallMedAndroid/.idea/
+CallMedAndroid/local.properties
+CallMedAndroid/**/build/
+CallMedAndroid/*.jks
+CallMedAndroid/*.keystore
+CallMedAndroid/keystore.properties

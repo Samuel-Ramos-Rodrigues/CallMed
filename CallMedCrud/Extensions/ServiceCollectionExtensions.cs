@@ -17,6 +17,7 @@ using MKSANCrud.Services.Clinica;
 using MKSANCrud.Services.Database;
 using MKSANCrud.Services.Email;
 using MKSANCrud.Services.Usuarios;
+using MKSANCrud.Services.Mobile;
 
 namespace MKSANCrud.Extensions;
 
@@ -56,6 +57,8 @@ public static class ServiceCollectionExtensions
             .AddErrorDescriber<PortugueseIdentityErrorDescriber>()
             .AddEntityFrameworkStores<MKSANContext>()
             .AddPasswordValidator<SpecialCharacterPasswordValidator>();
+
+        services.AddCallMedMobile();
 
         services.Configure<SecurityStampValidatorOptions>(options => options.OnRefreshingPrincipal = context =>
         {

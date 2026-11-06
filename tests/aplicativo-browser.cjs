@@ -1,4 +1,4 @@
-// HTML real do teste HTTP com CSS/JS reais. O download de interface usa o APK recebido.
+// HTML real do teste HTTP com CSS/JS reais. O download de interface usa o APK nativo incluído.
 // CALLMED_APK_FIXTURES=<fixtures> NODE_PATH=<node_modules> CHROME_PATH=<chromium> node tests/aplicativo-browser.cjs
 const {chromium}=require('playwright');
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
@@ -23,9 +23,9 @@ const server=http.createServer((req,res)=>{
  try{
   await page.goto(origin+'/');const link=page.locator('.public-install a');await link.click();
   check(new URL(page.url()).pathname==='/aplicativo'&&await page.getByRole('heading',{name:'Aplicativo CallMed',exact:true}).isVisible(),'Página inicial abre a página pública do aplicativo');
-  check((await page.locator('.cm-android-details').innerText()).includes('22.2.0')&&await page.getByRole('heading',{name:'Como instalar'}).isVisible(),'Página informa a versão do APK e orienta instalação');
+  check((await page.locator('.cm-android-details').innerText()).includes('23.0.0')&&await page.getByRole('heading',{name:'Como instalar'}).isVisible(),'Página informa a versão do APK e orienta instalação');
   const downloadPromise=page.waitForEvent('download');await page.locator('.cm-android-download').click();const download=await downloadPromise;
-  check(download.suggestedFilename()==='CallMed.apk'&&crypto.createHash('sha256').update(fs.readFileSync(await download.path())).digest('hex')==='814ab383ac93eb1e9746ea01593f850305c3166901f2cca257df53e2e00f28fb','Botão inicia download do APK correto em vez de abrir instalação do PWA');
+  check(download.suggestedFilename()==='CallMed.apk'&&crypto.createHash('sha256').update(fs.readFileSync(await download.path())).digest('hex')==='c7d294a6c48e0b18c65de6433d2ad21552fd8adb5814e6fe7c63189dafe98f00','Botão inicia download do APK correto em vez de abrir instalação do PWA');
   await page.locator('.cm-android-checksum summary').click();check(await page.locator('.cm-android-checksum code').isVisible(),'Integridade pode ser consultada sem ocupar o fluxo principal');
   for(const width of [320,390,1280]){
    await page.setViewportSize({width,height:900});

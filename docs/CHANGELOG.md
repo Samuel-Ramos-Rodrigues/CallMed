@@ -1,3 +1,10 @@
+# Android nativo 23.0.0
+
+- Novo módulo `CallMedAndroid` em Kotlin + Jetpack Compose: login de paciente, consultas, agendamento, perfil, chat e avaliação.
+- API `/api/mobile/v1` com sessões bearer revogáveis e regras clínicas existentes.
+- APK assinado atualizado no download do site; instruções em `docs/ANDROID-NATIVO.md`.
+- Projeto TWA anterior preservado.
+
 ## 2026-11-05 — Download direto do aplicativo Android
 
 - APK de produção 22.2.0 recebido, com pacote e assinatura conferidos.
