@@ -1,0 +1,30 @@
+@model MKSANCrud.ViewModels.AplicativoAndroidViewModel
+@{
+    Layout = User.Identity?.IsAuthenticated == true ? "_Layout" : "_PublicLayout";
+    ViewData["Title"] = "Aplicativo para Android";
+}
+<section class="cm-android-page" data-android-page>
+    <header class="cm-android-heading"><span class="eyebrow">CALLMED PARA ANDROID</span><h1>Seu cuidado,<br />sempre à mão.</h1><p>Acesse suas consultas, acompanhe seu atendimento e fale com a CallMed pelo aplicativo.</p></header>
+    <div class="cm-android-grid">
+        <section class="cm-android-card cm-android-package" aria-labelledby="android-download-title">
+            <img class="cm-android-logo" src="~/images/logo-callmed-mark.png" alt="" />
+            <h2 id="android-download-title">Aplicativo CallMed</h2><p>Baixe diretamente pelo nosso site.</p>
+            @if (Model.Disponivel)
+            {
+                <dl class="cm-android-details"><div><dt>Versão</dt><dd>@Model.Versao</dd></div><div><dt>Tamanho</dt><dd>@Model.TamanhoFormatado</dd></div><div><dt>Compatibilidade</dt><dd>Android @Model.AndroidMinimo ou superior</dd></div></dl>
+                <a class="btn cm-android-download" asp-controller="Aplicativo" asp-action="Baixar" asp-route-v="@Model.Sha256[..12]" download="CallMed.apk"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#download"></use></svg>Baixar para Android</a>
+                <small class="cm-android-note">O aplicativo precisa de internet para acessar os serviços da clínica.</small>
+                <details class="cm-android-checksum"><summary>Conferir integridade do arquivo</summary><p>SHA-256</p><code>@Model.Sha256</code></details>
+            }
+            else
+            {
+                <p class="cm-android-unavailable" role="status">Estamos preparando o aplicativo. O download estará disponível em breve.</p><a class="btn secondary" asp-controller="Home" asp-action="Index">Continuar pelo site</a>
+            }
+        </section>
+        <section class="cm-android-card cm-android-instructions" aria-labelledby="android-install-title">
+            <span class="eyebrow">É SIMPLES COMEÇAR</span><h2 id="android-install-title">Como instalar</h2>
+            <ol><li><strong>Baixe o aplicativo</strong><p>Toque em “Baixar para Android” e aguarde o download.</p></li><li><strong>Abra o arquivo baixado</strong><p>Abra o arquivo CallMed.apk pela lista de downloads do navegador.</p></li><li><strong>Confirme a instalação</strong><p>Se o Android solicitar, autorize a instalação pelo navegador usado no download. Depois, toque em Instalar.</p></li></ol>
+            <p class="cm-android-alternative">Usa outro dispositivo? <a asp-controller="Home" asp-action="Index">Continue acessando o CallMed pelo navegador.</a></p>
+        </section>
+    </div>
+</section>

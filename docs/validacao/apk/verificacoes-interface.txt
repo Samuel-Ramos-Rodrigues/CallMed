@@ -1,0 +1,12 @@
+PASS Página inicial abre a página pública do aplicativo
+PASS Página informa a versão do APK e orienta instalação
+PASS Botão inicia download do APK correto em vez de abrir instalação do PWA
+PASS Integridade pode ser consultada sem ocupar o fluxo principal
+PASS Sem rolagem horizontal em 320px, tema light
+PASS Sem rolagem horizontal em 320px, tema dark
+PASS Sem rolagem horizontal em 390px, tema light
+PASS Sem rolagem horizontal em 390px, tema dark
+PASS Sem rolagem horizontal em 1280px, tema light
+PASS Sem rolagem horizontal em 1280px, tema dark
+PASS Pacote indisponível apresenta orientação sem oferecer link quebrado
+PASS Interface de download sem erros de JavaScript

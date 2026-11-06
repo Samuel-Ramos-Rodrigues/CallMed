@@ -1,3 +1,13 @@
+## 2026-11-05 — Download direto do aplicativo Android
+
+- APK de produção 22.2.0 recebido, com pacote e assinatura conferidos.
+- Página pública `/aplicativo` e download `/aplicativo/baixar`, com MIME Android, nome de arquivo e retomada por HTTP Range.
+- Botão de download na página inicial e links nos rodapés; PWA preservado.
+- APK e metadados incluídos na publicação do ASP.NET/Render, com exceção específica no `.gitignore` para o arquivo público.
+- Cache do PWA atualizado e rota de download excluída do cache.
+- Mantidos perfil, avaliações, recuperação de senha, canais e associação TWA.
+- Guia: [APLICATIVO-DOWNLOAD-DIRETO.md](APLICATIVO-DOWNLOAD-DIRETO.md).
+
 ## 2026-11-05 — Perfil e encerramento com avaliação direta
 
 - Minha Conta para todos os papéis, em três abas: Meus dados, Segurança e Preferências.

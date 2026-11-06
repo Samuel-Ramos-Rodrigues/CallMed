@@ -29,4 +29,8 @@
     <Compile Remove="Areas/Data/**/*.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="App_Data/Aplicativo/CallMed.apk" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Update="App_Data/Aplicativo/release.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

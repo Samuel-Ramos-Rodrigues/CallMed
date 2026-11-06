@@ -205,7 +205,7 @@
         @if (TempData["Sucesso"] != null) { <div class="alert success" role="status">@TempData["Sucesso"]</div> }
         @RenderBody()
     </main>
-    <footer class="app-footer"><span>CallMed · cuidado em conexão</span><nav aria-label="Informações legais"><a href="/privacidade">Privacidade</a><a href="/termos-de-uso">Termos de Serviço</a></nav></footer>
+    <footer class="app-footer"><span>CallMed · cuidado em conexão</span><nav aria-label="Informações legais"><a asp-controller="Aplicativo" asp-action="Index">Aplicativo Android</a><a href="/privacidade">Privacidade</a><a href="/termos-de-uso">Termos de Serviço</a></nav></footer>
     <nav class="callmed-mobile-nav" aria-label="Navegação no celular">
         @if (User.IsInRole("Funcionario") || User.IsInRole("Admin"))
         {

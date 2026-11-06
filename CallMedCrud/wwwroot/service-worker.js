@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v68-conta-feedback';
+const CACHE_NAME = 'callmed-static-v69-apk-site';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -35,7 +35,7 @@ const STATIC_ASSETS = [
 ];
 
 const DYNAMIC_PREFIXES = [
-    '/acesso', '/Acessos',
+    '/acesso', '/Acessos', '/aplicativo',
     '/Identity/', '/Agente', '/api/', '/Consulta', '/Paciente', '/Funcionario',
     '/FuncionarioPainel', '/Medico', '/MedicoAcesso', '/MedicoPainel', '/Especialidade',
     '/Disponibilidade', '/Disponibilidades', '/MinhaConta', '/Atendimento', '/Agenda',

@@ -4,6 +4,8 @@
 
 <h1 align="center">CallMed</h1>
 
+> **APK pelo próprio site:** página `/aplicativo` com download assinado para Android, acessível pela página inicial e pelos rodapés. [Publicação no Render e atualização do APK](docs/APLICATIVO-DOWNLOAD-DIRETO.md).
+
 > **Minha Conta e despedida com avaliação:** perfil por função com foto, dados, senha, dispositivos e preferências; convite direto ao encerrar, controlado pelo sistema. [Atualização V30, funcionamento e testes](docs/PERFIL-E-ENCERRAMENTO.md).
 
 > **Redefinição de senha corrigida:** confirmação após verificar a senha gravada, desbloqueio temporário e links válidos entre reinícios. [Atualização e teste do fluxo](docs/CORRECAO-REDEFINICAO-SENHA.md).

@@ -4703,3 +4703,27 @@ body { line-height: 1.58; }
 .cm-account-photo-card p { margin-bottom:0; }
 .cm-account-photo-card .cm-account-photo-actions { flex:1 1 460px; }
 @media(max-width:600px) { .cm-account-photo-card > div:first-child,.cm-account-photo-card .cm-account-photo-actions { flex-basis:100%; } }
+
+/* Download direto do aplicativo Android. */
+.cm-android-page { max-width:1100px; margin:0 auto; padding:48px 24px 64px; color:var(--cm-ink); }
+.cm-android-heading { max-width:650px; margin-bottom:30px; }
+.cm-android-heading h1 { font-size:clamp(2rem,5vw,3.2rem); line-height:1.1; margin:12px 0 18px; letter-spacing:-.04em; }
+.cm-android-heading > p { color:var(--cm-muted); line-height:1.7; font-size:1rem; }
+.cm-android-grid { display:grid; grid-template-columns:1fr 1fr; align-items:start; gap:22px; }
+.cm-android-card { min-width:0; padding:30px; border:1px solid var(--cm-border); border-radius:20px; background:var(--cm-surface); box-shadow:var(--cm-shadow-sm); }
+.cm-android-card h2 { font-size:1.3rem; margin:8px 0 12px; }
+.cm-android-card p { color:var(--cm-muted); line-height:1.6; }
+.cm-android-logo { width:70px; height:70px; object-fit:contain; margin-bottom:8px; }
+.cm-android-details { margin:24px 0; display:grid; gap:12px; }
+.cm-android-details > div { display:flex; justify-content:space-between; gap:14px; border-bottom:1px solid var(--cm-border); padding-bottom:12px; font-size:.85rem; }
+.cm-android-details dt { color:var(--cm-muted); }.cm-android-details dd { margin:0; text-align:right; font-weight:700; }
+.cm-android-download { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; }.cm-android-download svg { width:19px; height:19px; }
+.cm-android-note { display:block; color:var(--cm-muted); font-size:.76rem; line-height:1.6; margin-top:14px; }
+.cm-android-checksum { margin-top:24px; color:var(--cm-muted); font-size:.76rem; }.cm-android-checksum summary { cursor:pointer; }.cm-android-checksum p { margin:12px 0 6px; }.cm-android-checksum code { display:block; overflow-wrap:anywhere; line-height:1.7; }
+.cm-android-instructions ol { counter-reset:android-step; list-style:none; padding:0; margin:24px 0; display:grid; gap:22px; }
+.cm-android-instructions li { position:relative; padding-left:42px; }.cm-android-instructions li::before { counter-increment:android-step; content:counter(android-step); position:absolute; top:0; left:0; display:grid; place-items:center; width:28px; height:28px; border-radius:9px; color:var(--cm-primary); background:var(--cm-primary-soft); font-weight:800; font-size:.8rem; }
+.cm-android-instructions li strong { font-size:.92rem; }.cm-android-instructions li p { margin:8px 0 0; font-size:.85rem; }
+.cm-android-alternative { border-top:1px solid var(--cm-border); padding-top:20px; font-size:.8rem; }.cm-android-alternative a { color:var(--cm-primary); text-decoration:underline; }
+.cm-public-install-actions { display:flex; flex-direction:column; align-items:center; gap:14px; }
+.cm-install-web { cursor:pointer; padding:4px; border:0; background:transparent; color:inherit; text-decoration:underline; font:inherit; font-size:.8rem; }
+@media(max-width:700px) { .cm-android-page { padding:30px 16px 42px; }.cm-android-grid { grid-template-columns:1fr; }.cm-android-card { padding:23px; }.cm-public-install-actions { align-items:stretch; width:100%; } }

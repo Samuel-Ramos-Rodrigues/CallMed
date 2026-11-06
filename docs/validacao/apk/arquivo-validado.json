@@ -1,0 +1,18 @@
+{
+  "apk": {
+    "package": "com.callmed.app",
+    "version_name": "22.2.0",
+    "version_code": 2220,
+    "min_sdk": 26,
+    "target_sdk": 36,
+    "debuggable": false,
+    "sha256": "814ab383ac93eb1e9746ea01593f850305c3166901f2cca257df53e2e00f28fb",
+    "size_bytes": 3814239
+  },
+  "assinatura": {
+    "verified": true,
+    "verified_v2": true,
+    "verified_v3": false,
+    "certificate_sha256": "C7:92:6C:AD:9E:28:40:76:FF:EC:67:AA:68:5F:EE:D2:7F:18:8D:93:73:48:1A:FA:E9:00:1C:0F:AB:58:FF:EA"
+  }
+}

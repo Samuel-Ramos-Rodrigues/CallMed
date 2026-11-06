@@ -391,3 +391,6 @@ CallMedTWA/*.keystore
 .env.evolution
 qr-evolution.html
 **/test-results/
+
+# APK público distribuído pelo próprio site CallMed
+!CallMedCrud/App_Data/Aplicativo/CallMed.apk
