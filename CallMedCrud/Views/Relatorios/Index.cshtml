@@ -19,6 +19,7 @@
         <article><small>Tempo médio de confirmação</small><strong>@(Model.TempoMedioConfirmacaoMinutos <= 0 ? "—" : $"{Model.TempoMedioConfirmacaoMinutos:0} min")</strong><span>pedido até confirmação</span></article>
         <article><small>Absenteísmo</small><strong>@Model.TaxaAbsenteismo.ToString("0.0")%</strong><span>@Model.Ausentes ausência(s)</span></article>
         <article><small>Vagas recuperadas</small><strong>@Model.VagasRecuperadasListaEspera</strong><span>pela lista de espera</span></article>
+        <article><small>Check-in digital</small><strong>@Model.TaxaCheckIn.ToString("0.0")%</strong><span>@Model.CheckInsRealizados chegada(s) registrada(s)</span></article>
     </div>
 
     @if (Model.SolicitacoesPorCanal.Any())

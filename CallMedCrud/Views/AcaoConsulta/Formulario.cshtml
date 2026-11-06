@@ -1,0 +1,64 @@
+@model MKSANCrud.ViewModels.AcaoConsultaViewModel
+@{
+    Layout = "_PublicLayout";
+    ViewData["Title"] = "Pré-cadastro";
+    var f = Model.Formulario;
+    var podeEnviar = Model.Consulta is not null && MKSANCrud.Models.ConsultaStatus.PodeRemarcar(Model.Consulta.Status);
+}
+<section class="public-section">
+    <h1>Pré-cadastro da consulta</h1>
+    @if (Model.Consulta is not null)
+    {
+        <p>@Model.Consulta.Data.ToString("dd/MM/yyyy") às @Model.Consulta.Horario · @(Model.Consulta.Medico?.Nome)</p>
+    }
+    @if (TempData["Sucesso"] is string sucesso)
+    {
+        <p class="alert ok">@sucesso</p>
+    }
+    @if (TempData["Erro"] is string erro)
+    {
+        <p class="alert">@erro</p>
+    }
+
+    @if (!podeEnviar)
+    {
+        <p>Esta consulta não aceita mais pré-cadastro.</p>
+    }
+    else
+    {
+        <form method="post" action="/consulta/formulario/@Model.Token">
+            @Html.AntiForgeryToken()
+            <label>Qual é o motivo principal da consulta?
+                <textarea name="QueixaPrincipal" maxlength="500">@f?.QueixaPrincipal</textarea>
+            </label>
+            <label>Alergias (medicamentos, alimentos ou outros)
+                <textarea name="Alergias" maxlength="500">@f?.Alergias</textarea>
+            </label>
+            <label>Medicamentos em uso
+                <textarea name="MedicamentosEmUso" maxlength="500">@f?.MedicamentosEmUso</textarea>
+            </label>
+            <label>Histórico relevante (doenças, cirurgias, internações)
+                <textarea name="HistoricoRelevante" maxlength="1000">@f?.HistoricoRelevante</textarea>
+            </label>
+            <label>Forma de pagamento
+                <select name="FormaPagamento">
+                    <option value="Particular" selected="@(f?.FormaPagamento != "Convênio")">Particular</option>
+                    <option value="Convênio" selected="@(f?.FormaPagamento == "Convênio")">Convênio</option>
+                </select>
+            </label>
+            <label>Nome do convênio
+                <input name="ConvenioNome" maxlength="120" value="@f?.ConvenioNome" />
+            </label>
+            <label>Número da carteirinha
+                <input name="ConvenioCarteirinha" maxlength="60" value="@f?.ConvenioCarteirinha" />
+            </label>
+            <p>Essas informações ficam disponíveis apenas para você e para a equipe da clínica.</p>
+            <button class="btn" type="submit">Enviar pré-cadastro</button>
+        </form>
+    }
+
+    @if (Model.UrlPortal is not null)
+    {
+        <p><a href="@Model.UrlPortal">Entrar no CallMed</a></p>
+    }
+</section>

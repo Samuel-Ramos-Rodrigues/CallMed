@@ -28,6 +28,7 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
             var conversas = scope.ServiceProvider.GetRequiredService<AtendimentoConversaService>();
             var envio = scope.ServiceProvider.GetRequiredService<AtendimentoEnvioService>();
             var orientacoes = scope.ServiceProvider.GetRequiredService<OrientacoesConsultaService>();
+            var links = scope.ServiceProvider.GetRequiredService<AcaoConsultaLinkService>();
             var agora = clock.Agora;
             var limite = agora.AddHours(26).Date.AddDays(1);
             var consultas = await db.Consultas.Include(c => c.Paciente).Include(c => c.Medico)
@@ -100,6 +101,19 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
                     : tipo24
                         ? " Responda CONFIRMAR para confirmar presença, REMARCAR para escolher outro horário ou CANCELAR para liberar a vaga."
                         : " Se estiver tudo certo, responda CONFIRMAR. Se precisar, responda REMARCAR ou CANCELAR.";
+                if (destino.Value.Canal != CanalAtendimento.Email)
+                {
+                    var linkConfirmar = links.GerarUrl(c.Id, "confirmar");
+                    var linkCancelar = links.GerarUrl(c.Id, "cancelar");
+                    if (linkConfirmar is not null && linkCancelar is not null)
+                        texto += $"\n\nConfirmar com um toque: {linkConfirmar}\nCancelar pelo link: {linkCancelar}";
+                }
+                if (tipo24 && destino.Value.Canal != CanalAtendimento.Email)
+                {
+                    var linkFormulario = links.GerarUrl(c.Id, "preencher");
+                    if (linkFormulario is not null)
+                        texto += $"\n\nAntes da consulta, preencha seu pré-cadastro (2 minutos): {linkFormulario}";
+                }
                 texto += "\n\n" + orientacoes.Texto(c);
                 var chave = $"lembrete:{c.Id}:{(tipo24 ? "24h" : "2h")}:{c.MedicoId}:{c.Data:yyyyMMdd}:{c.Horario}";
                 var msg = await envio.EnviarAvisoAsync(conversa, texto, chave, ct);

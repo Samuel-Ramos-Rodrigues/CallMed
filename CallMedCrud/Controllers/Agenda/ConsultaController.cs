@@ -106,6 +106,13 @@ public class ConsultaController : Controller
             return Forbid();
 
         ViewBag.HojeClinica = _clock.Hoje;
+        ViewBag.AgoraClinica = _clock.Agora;
+        ViewBag.PreCadastro = await _context.PreConsultasFormularios.AsNoTracking()
+            .FirstOrDefaultAsync(f => f.ConsultaId == item.Id);
+        ViewBag.Salas = await _context.Salas.AsNoTracking()
+            .Where(s => s.Ativa)
+            .OrderBy(s => s.Nome)
+            .ToListAsync();
         return View(item);
     }
 
@@ -418,6 +425,145 @@ public class ConsultaController : Controller
         if (resultado.Sucesso) { await _auditoria.RegistrarAsync("Ausência", "Consulta", id, "Paciente marcado como ausente.", ct: HttpContext.RequestAborted); await _solicitacoes.AtualizarPorConsultaAsync(id, StatusSolicitacaoAtendimento.Encerrada, HttpContext.RequestAborted); }
         TempData[resultado.Sucesso ? "Sucesso" : "Erro"] = resultado.Mensagem;
         return RedirectToAction(nameof(Index));
+    }
+
+[HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Funcionario,Admin")]
+    public async Task<IActionResult> DefinirModalidade(int id, string modalidade)
+    {
+        var item = await _context.Consultas.FirstOrDefaultAsync(c => c.Id == id, HttpContext.RequestAborted);
+        if (item is null)
+            return NotFound();
+
+        if (!ConsultaStatus.PodeRemarcar(item.Status))
+        {
+            TempData["Erro"] = "A modalidade só pode ser alterada em consultas pendentes, confirmadas ou remarcadas.";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        item.Modalidade = ModalidadeConsulta.Normalizar(modalidade);
+        if (item.Modalidade == ModalidadeConsulta.Presencial)
+            item.TelemedicinaConsentimentoEm = null;
+
+        await _context.SaveChangesAsync(HttpContext.RequestAborted);
+        await _auditoria.RegistrarAsync("Modalidade", "Consulta", id, $"Modalidade definida como {item.Modalidade}.", ct: HttpContext.RequestAborted);
+        TempData["Sucesso"] = "Modalidade atualizada.";
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ConsentirTelemedicina(int id)
+    {
+        var item = await _context.Consultas.FirstOrDefaultAsync(c => c.Id == id, HttpContext.RequestAborted);
+        if (item is null)
+            return NotFound();
+
+        if (!await PodeAcessar(item))
+            return Forbid();
+
+        if (item.Modalidade != ModalidadeConsulta.Online)
+        {
+            TempData["Erro"] = "Esta consulta não é online.";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        if (!item.TelemedicinaConsentimentoEm.HasValue)
+        {
+            item.TelemedicinaConsentimentoEm = DateTime.UtcNow;
+            await _context.SaveChangesAsync(HttpContext.RequestAborted);
+            await _auditoria.RegistrarAsync("Consentimento", "Consulta", id, "Consentimento para telemedicina registrado.", ct: HttpContext.RequestAborted);
+        }
+
+        TempData["Sucesso"] = "Consentimento registrado.";
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Funcionario,Admin")]
+    public async Task<IActionResult> DefinirSala(int id, int? salaId)
+    {
+        var item = await _context.Consultas.FirstOrDefaultAsync(c => c.Id == id, HttpContext.RequestAborted);
+        if (item is null)
+            return NotFound();
+
+        if (salaId.HasValue)
+        {
+            var sala = await _context.Salas.AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id == salaId.Value && s.Ativa, HttpContext.RequestAborted);
+            if (sala is null)
+            {
+                TempData["Erro"] = "Sala indisponível.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            var ocupada = await _context.Consultas.AnyAsync(c =>
+                c.Id != id &&
+                c.SalaId == salaId.Value &&
+                c.Data.Date == item.Data.Date &&
+                c.Horario == item.Horario &&
+                c.Status != ConsultaStatus.Cancelada,
+                HttpContext.RequestAborted);
+            if (ocupada)
+            {
+                TempData["Erro"] = "Essa sala já está ocupada neste horário.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+        }
+
+        item.SalaId = salaId;
+        await _context.SaveChangesAsync(HttpContext.RequestAborted);
+        await _auditoria.RegistrarAsync("Sala", "Consulta", id, salaId.HasValue ? $"Sala #{salaId} definida." : "Sala removida.", ct: HttpContext.RequestAborted);
+        TempData["Sucesso"] = "Sala atualizada.";
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Funcionario,Admin")]
+    public async Task<IActionResult> CriarSala(int id, string nome)
+    {
+        var limpo = (nome ?? string.Empty).Trim();
+        if (limpo.Length is < 2 or > 80)
+        {
+            TempData["Erro"] = "Informe um nome de sala com 2 a 80 caracteres.";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        var existe = await _context.Salas.AnyAsync(s => s.Nome == limpo, HttpContext.RequestAborted);
+        if (!existe)
+        {
+            _context.Salas.Add(new Sala { Nome = limpo, Ativa = true });
+            await _context.SaveChangesAsync(HttpContext.RequestAborted);
+            await _auditoria.RegistrarAsync("Criar sala", "Sala", null, $"Sala '{limpo}' criada.", ct: HttpContext.RequestAborted);
+        }
+
+        TempData["Sucesso"] = "Sala criada.";
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CheckIn(int id)
+    {
+        var item = await _context.Consultas
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (item is null)
+            return NotFound();
+
+        if (!await PodeAcessar(item))
+            return Forbid();
+
+        var jaRegistrado = item.CheckInEm.HasValue;
+        var resultado = await _agendamento.RegistrarCheckInAsync(id, HttpContext.RequestAborted);
+        if (resultado.Sucesso && !jaRegistrado)
+            await _auditoria.RegistrarAsync("Check-in", "Consulta", id, "Chegada registrada pelo check-in digital.", ct: HttpContext.RequestAborted);
+        TempData[resultado.Sucesso ? "Sucesso" : "Erro"] = resultado.Mensagem;
+        return RedirectToAction(nameof(Details), new { id });
     }
 
     [HttpPost]

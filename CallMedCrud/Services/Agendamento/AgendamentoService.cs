@@ -567,6 +567,35 @@ public sealed class AgendamentoService
         return new(true, "Ausência registrada para fins de acompanhamento do absenteísmo.", consulta);
     }
 
+    public async Task<ResultadoOperacaoConsulta> RegistrarCheckInAsync(
+        int consultaId,
+        CancellationToken ct = default)
+    {
+        var consulta = await _context.Consultas.FirstOrDefaultAsync(c => c.Id == consultaId, ct);
+        if (consulta is null)
+            return Falha("Consulta não encontrada.");
+
+        if (consulta.CheckInEm.HasValue)
+            return new(true, "O check-in desta consulta já foi registrado.", consulta);
+
+        if (!ConsultaStatus.PodeFazerCheckIn(consulta.Status))
+            return Falha("O check-in só está disponível para consultas confirmadas ou remarcadas.");
+
+        if (consulta.Data.Date < _clock.Hoje)
+            return Falha("Esta consulta já passou e não aceita check-in.");
+
+        if (!TimeSpan.TryParse(consulta.Horario, out var horario))
+            return Falha("Horário da consulta inválido.");
+
+        var quando = consulta.Data.Date.Add(horario);
+        if (quando - _clock.Agora > TimeSpan.FromHours(2))
+            return Falha("O check-in abre 2 horas antes do horário da consulta.");
+
+        consulta.CheckInEm = DateTime.UtcNow;
+        await _context.SaveChangesAsync(ct);
+        return new(true, "Check-in registrado. A recepção e o médico já podem acompanhar sua chegada.", consulta);
+    }
+
     public Task<bool> ExisteConsultaAtivaNoSlotAsync(
         int medicoId,
         DateTime data,

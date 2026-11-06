@@ -56,6 +56,11 @@ public class Consulta
     public DateTime? CanceladaEm { get; set; }
     public DateTime? RealizadaEm { get; set; }
     public DateTime? AusenteEm { get; set; }
+    public DateTime? CheckInEm { get; set; }
+    [StringLength(20)]
+    public string Modalidade { get; set; } = ModalidadeConsulta.Presencial;
+    public int? SalaId { get; set; }
+    public DateTime? TelemedicinaConsentimentoEm { get; set; }
     public DateTime? Lembrete24hEnviadoEm { get; set; }
     public DateTime? Lembrete2hEnviadoEm { get; set; }
 }

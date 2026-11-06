@@ -96,6 +96,21 @@ public class ListaEsperaController : Controller
     }
 
     [HttpPost][ValidateAntiForgeryToken]
+    [Authorize(Roles = "Funcionario,Admin")]
+    public async Task<IActionResult> DefinirPrioridade(int id, int prioridade, CancellationToken ct)
+    {
+        var item = await _context.ListasEspera.FirstOrDefaultAsync(x => x.Id == id && x.Ativa, ct);
+        if (item is null) return NotFound();
+
+        item.Prioridade = Math.Clamp(prioridade, 0, 99);
+        item.AtualizadoEm = DateTime.UtcNow;
+        await _context.SaveChangesAsync(ct);
+        await _auditoria.RegistrarAsync("Prioridade", "Lista de espera", item.Id, $"Prioridade definida como {item.Prioridade}.", ct: ct);
+        TempData["Sucesso"] = "Prioridade atualizada.";
+        return RedirectToAction(nameof(Index));
+    }
+
+        [HttpPost][ValidateAntiForgeryToken]
     [Authorize(Roles = "Paciente")]
     public async Task<IActionResult> AceitarVaga(int id, string? returnUrl, CancellationToken ct)
     {

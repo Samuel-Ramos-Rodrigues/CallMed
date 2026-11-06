@@ -62,6 +62,7 @@
                             </td>
                             <td>@(item.NotificadoEm.HasValue ? Clock.ConverterUtc(item.NotificadoEm.Value).ToString("dd/MM HH:mm") : "—")</td>
                             <td>
+                                @if (User.IsInRole("Funcionario") || User.IsInRole("Admin")) {<form asp-action="DefinirPrioridade" method="post" class="cm21-inline-form"><input type="hidden" name="id" value="@item.Id" /><label>Prioridade <input type="number" name="prioridade" min="0" max="99" value="@item.Prioridade" style="width:4.5rem" /></label><button class="btn small secondary" type="submit">Salvar</button></form>}
                                 @if (item.Ativa && oferta is not null && User.IsInRole("Paciente"))
                                 {
                                     <form asp-action="AceitarVaga" method="post" class="cm21-inline-form">

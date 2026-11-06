@@ -1,4 +1,5 @@
 @model Consulta
+@inject MKSANCrud.Services.Clinica.TelemedicinaService Telemedicina
 @{
     ViewData["Title"] = "Detalhes da consulta";
     var ehEquipe = User.IsInRole("Funcionario") || User.IsInRole("Admin");
@@ -8,6 +9,7 @@
     var podeConfirmar = ConsultaStatus.PodeConfirmar(Model.Status);
     var podeRealizar = ConsultaStatus.PodeRealizar(Model.Status);
     var podeAusente = ConsultaStatus.PodeMarcarAusente(Model.Status) && Model.Data.Date <= hojeClinica;
+    var podeCheckIn = ConsultaStatus.PodeFazerCheckIn(Model.Status) && !Model.CheckInEm.HasValue;
 }
 <section class="cm25-screen cm25-page v16-page comprovante-consulta" data-cm25-view="Consulta/Details.cshtml">
     <div class="cm25-page-hero v16-page-head compact-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg></div><div><span class="cm25-kicker v16-eyebrow">CONSULTA #@Model.Id</span><h1>Detalhes da consulta</h1><p>@Model.Data.ToString("dddd, dd/MM/yyyy") às @Model.Horario.</p></div><span class="status-pill status-@Model.Status.ToLowerInvariant()">@Model.Status</span></div>
@@ -51,9 +53,96 @@
         </section>
     }
     <partial name="_OrientacoesConsulta" model="Model" />
-    <div class="cm25-sticky-actions v16-sticky-actions">
+    @if (ehEquipe)
+    {
+        <section class="cm-card-soft" aria-label="Organização da consulta">
+            <h2>Organização</h2>
+            <form asp-action="DefinirModalidade" asp-route-id="@Model.Id" method="post">
+                <label>Modalidade
+                    <select name="modalidade">
+                        <option value="Presencial" selected="@(Model.Modalidade != ModalidadeConsulta.Online)">Presencial</option>
+                        <option value="Online" selected="@(Model.Modalidade == ModalidadeConsulta.Online)">Online (telemedicina)</option>
+                    </select>
+                </label>
+                <button class="btn secondary" type="submit">Salvar modalidade</button>
+            </form>
+            <form asp-action="DefinirSala" asp-route-id="@Model.Id" method="post">
+                <label>Sala
+                    <select name="salaId">
+                        <option value="">Sem sala</option>
+                        @foreach (var sala in (IEnumerable<Sala>)ViewBag.Salas)
+                        {
+                            <option value="@sala.Id" selected="@(Model.SalaId == sala.Id)">@sala.Nome</option>
+                        }
+                    </select>
+                </label>
+                <button class="btn secondary" type="submit">Definir sala</button>
+            </form>
+            <form asp-action="CriarSala" asp-route-id="@Model.Id" method="post">
+                <label>Nova sala <input name="nome" maxlength="80" required /></label>
+                <button class="btn secondary" type="submit">Criar sala</button>
+            </form>
+        </section>
+    }
+
+    @if (Model.Modalidade == ModalidadeConsulta.Online)
+    {
+        <section class="cm-card-soft" aria-label="Atendimento online">
+            <h2>Atendimento online</h2>
+            @if (!Model.TelemedicinaConsentimentoEm.HasValue)
+            {
+                @if (!ehEquipe)
+                {
+                    <form asp-action="ConsentirTelemedicina" asp-route-id="@Model.Id" method="post">
+                        <p>Autorizo o atendimento por telemedicina, ciente de que ele é registrado no meu prontuário.</p>
+                        <button class="btn" type="submit">Dar consentimento</button>
+                    </form>
+                }
+                else
+                {
+                    <p>Aguardando o consentimento do paciente.</p>
+                }
+            }
+            else
+            {
+                var linkSala = Telemedicina.UrlSala(Model);
+                if (linkSala is null)
+                {
+                    <p>A sala virtual ainda não está configurada. Defina Telemedicina:Segredo e Telemedicina:BaseUrl.</p>
+                }
+                else if (Telemedicina.JanelaAberta(Model, (DateTime)ViewBag.AgoraClinica))
+                {
+                    <a class="btn" href="@linkSala" target="_blank" rel="noopener">Entrar na sala virtual</a>
+                }
+                else
+                {
+                    <p>A sala abre 15 minutos antes do horário da consulta.</p>
+                }
+            }
+        </section>
+    }
+
+    @if (ViewBag.PreCadastro is PreConsultaFormulario pre)
+    {
+        <section class="cm-card-soft" aria-label="Pré-cadastro">
+            <h2>Pré-cadastro</h2>
+            <p>Preenchido em @ClinicaClock.ConverterUtc(pre.PreenchidoEm).ToString("dd/MM HH:mm")</p>
+            <dl>
+                <dt>Queixa principal</dt><dd>@pre.QueixaPrincipal</dd>
+                <dt>Alergias</dt><dd>@pre.Alergias</dd>
+                <dt>Medicamentos em uso</dt><dd>@pre.MedicamentosEmUso</dd>
+                <dt>Histórico relevante</dt><dd>@pre.HistoricoRelevante</dd>
+                <dt>Convênio</dt><dd>@pre.ConvenioNome @pre.ConvenioCarteirinha</dd>
+                <dt>Forma de pagamento</dt><dd>@pre.FormaPagamento</dd>
+            </dl>
+        </section>
+    }
+
+    <div class="cm25-sticky-actions v16-sticky-actions">    <div class="cm25-sticky-actions v16-sticky-actions">
         <button class="btn secondary" type="button" onclick="window.print()">Imprimir comprovante</button>
         @if(podeConfirmar){<form asp-action="Confirmar" asp-route-id="@Model.Id" method="post"><button class="btn" type="submit">Confirmar presença</button></form>}
+        @if(podeCheckIn){<form asp-action="CheckIn" asp-route-id="@Model.Id" method="post"><button class="btn" type="submit">Fazer check-in</button></form>}
+        @if(Model.CheckInEm.HasValue){<span class="status-pill status-confirmada">Check-in registrado</span>}
         @if(ehEquipe && podeRealizar){<form asp-action="Realizar" asp-route-id="@Model.Id" method="post"><button class="btn" type="submit">Marcar realizada</button></form>}
         @if(ehEquipe && podeAusente){<form asp-action="Ausente" asp-route-id="@Model.Id" method="post" data-cm-confirm="Confirmar ausência deste paciente?" data-cm-confirm-title="Marcar ausência" data-cm-confirm-accept="Marcar ausência" data-cm-confirm-tone="warning"><button class="btn secondary" type="submit">Marcar ausência</button></form>}
         @if(podeRemarcar){<a class="btn secondary" asp-action="Remarcar" asp-route-id="@Model.Id">Remarcar</a>}

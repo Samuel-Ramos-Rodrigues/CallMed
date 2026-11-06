@@ -31,6 +31,8 @@ public class MKSANContext : IdentityDbContext<Usuario>, IDataProtectionKeyContex
     public DbSet<AvaliacaoAtendimento> AvaliacoesAtendimento => Set<AvaliacaoAtendimento>();
     public DbSet<MensagemAtendimento> MensagensAtendimento => Set<MensagemAtendimento>();
     public DbSet<ListaEspera> ListasEspera => Set<ListaEspera>();
+    public DbSet<Sala> Salas => Set<Sala>();
+    public DbSet<PreConsultaFormulario> PreConsultasFormularios => Set<PreConsultaFormulario>();
     public DbSet<AgendaExcecao> AgendaExcecoes => Set<AgendaExcecao>();
     public DbSet<SolicitacaoAtendimento> SolicitacoesAtendimento => Set<SolicitacaoAtendimento>();
     public DbSet<ConvenioEspecialidade> ConveniosEspecialidades => Set<ConvenioEspecialidade>();

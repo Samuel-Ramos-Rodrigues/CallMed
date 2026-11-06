@@ -53,6 +53,10 @@ public class RelatoriosController : Controller
         var vagasRecuperadas = await _context.AuditoriaEventos.AsNoTracking().CountAsync(x =>
             x.Acao == "Aceitar vaga" && x.CriadoEm >= inicioUtc && x.CriadoEm < fimUtc);
 
+        var elegiveisCheckIn = consultas
+            .Where(c => c.Status is ConsultaStatus.Confirmada or ConsultaStatus.Remarcada or ConsultaStatus.Realizada or ConsultaStatus.Ausente)
+            .ToList();
+
         var ranking = consultas
             .Where(c => c.Status != ConsultaStatus.Cancelada && c.Medico is not null)
             .GroupBy(c => c.Medico!.Especialidade)
@@ -80,6 +84,8 @@ public class RelatoriosController : Controller
             TaxaConfirmacaoSolicitacoes = solicitacoes.Count == 0 ? 0 : solicitacoes.Count(x => x.Status == StatusSolicitacaoAtendimento.Confirmada) * 100.0 / solicitacoes.Count,
             TempoMedioConfirmacaoMinutos = temposConfirmacao.Count == 0 ? 0 : temposConfirmacao.Average(),
             VagasRecuperadasListaEspera = vagasRecuperadas,
+            CheckInsRealizados = elegiveisCheckIn.Count(c => c.CheckInEm.HasValue),
+            TaxaCheckIn = elegiveisCheckIn.Count == 0 ? 0 : elegiveisCheckIn.Count(c => c.CheckInEm.HasValue) * 100.0 / elegiveisCheckIn.Count,
             SolicitacoesPorCanal = canais,
             Especialidades = ranking
         };

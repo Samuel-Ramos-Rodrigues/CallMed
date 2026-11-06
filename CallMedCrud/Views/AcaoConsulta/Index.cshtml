@@ -1,0 +1,68 @@
+@model MKSANCrud.ViewModels.AcaoConsultaViewModel
+@{
+    Layout = "_PublicLayout";
+    ViewData["Title"] = "Sua consulta";
+}
+<section class="public-section acao-consulta">
+    @if (TempData["Sucesso"] is string sucesso)
+    {
+        <p class="alert ok">@sucesso</p>
+    }
+    @if (TempData["Erro"] is string erro)
+    {
+        <p class="alert">@erro</p>
+    }
+
+    @if (Model.Acao == "aceitar")
+    {
+        if (Model.Vaga is null)
+        {
+            <h1>Esta vaga não está mais disponível</h1>
+            <p>A CallMed continua procurando outra opção para você.</p>
+        }
+        else
+        {
+            <h1>Vaga disponível</h1>
+            <p>@Model.Vaga.Medico?.Nome · @Model.Vaga.Data!.Value.ToString("dd/MM/yyyy") às @Model.Vaga.Horario</p>
+            <form method="post" action="/consulta/acao/@Model.Token/executar">
+                @Html.AntiForgeryToken()
+                <button class="btn" type="submit">Aceitar esta vaga</button>
+            </form>
+        }
+    }
+    else if (Model.Consulta is not null)
+    {
+        var c = Model.Consulta;
+        var podeAgir = Model.Acao == "confirmar" ? ConsultaStatus.PodeConfirmar(c.Status) : ConsultaStatus.PodeCancelar(c.Status);
+        <h1>Consulta com @(c.Medico?.Nome ?? "seu médico")</h1>
+        <p>@c.Data.ToString("dd/MM/yyyy") às @c.Horario</p>
+        @if (c.Status == ConsultaStatus.Cancelada)
+        {
+            <p class="alert">Esta consulta foi cancelada e o horário foi liberado.</p>
+        }
+        else if (Model.Acao == "confirmar" && c.Status == ConsultaStatus.Confirmada)
+        {
+            <p class="alert ok">Presença confirmada. Até a consulta!</p>
+        }
+        else if (podeAgir)
+        {
+            <form method="post" action="/consulta/acao/@Model.Token/executar">
+                @Html.AntiForgeryToken()
+                <button class="btn" type="submit">@(Model.Acao == "confirmar" ? "Confirmar presença" : "Cancelar consulta")</button>
+            </form>
+        }
+        else
+        {
+            <p>Esta consulta não pode mais ser alterada por este link.</p>
+        }
+    }
+    else
+    {
+        <h1>Este link não está mais disponível</h1>
+    }
+
+    @if (Model.UrlPortal is not null)
+    {
+        <p><a href="@Model.UrlPortal">Para remarcar, entre no CallMed.</a></p>
+    }
+</section>

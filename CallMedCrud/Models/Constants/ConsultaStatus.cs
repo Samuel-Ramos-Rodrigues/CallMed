@@ -37,6 +37,10 @@ public static class ConsultaStatus
         string.Equals(status, Confirmada, StringComparison.OrdinalIgnoreCase) ||
         string.Equals(status, Remarcada, StringComparison.OrdinalIgnoreCase);
 
+    public static bool PodeFazerCheckIn(string? status) =>
+        string.Equals(status, Confirmada, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(status, Remarcada, StringComparison.OrdinalIgnoreCase);
+
     public static bool PodeMarcarAusente(string? status) =>
         string.Equals(status, Confirmada, StringComparison.OrdinalIgnoreCase) ||
         string.Equals(status, Remarcada, StringComparison.OrdinalIgnoreCase) ||

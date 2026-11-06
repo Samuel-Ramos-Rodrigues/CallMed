@@ -25,6 +25,7 @@ public class ListaEspera
     public string? Observacao { get; set; }
 
     public bool Ativa { get; set; } = true;
+    public int Prioridade { get; set; }
     public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
     public DateTime AtualizadoEm { get; set; } = DateTime.UtcNow;
     public DateTime? NotificadoEm { get; set; }

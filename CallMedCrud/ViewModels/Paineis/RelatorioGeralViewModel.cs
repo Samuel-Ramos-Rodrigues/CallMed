@@ -19,6 +19,8 @@ public class RelatorioGeralViewModel
     public double TaxaConfirmacaoSolicitacoes { get; set; }
     public double TempoMedioConfirmacaoMinutos { get; set; }
     public int VagasRecuperadasListaEspera { get; set; }
+    public int CheckInsRealizados { get; set; }
+    public double TaxaCheckIn { get; set; }
     public List<RankingItemViewModel> SolicitacoesPorCanal { get; set; } = new();
     public List<RankingItemViewModel> Especialidades { get; set; } = new();
 }

@@ -15,6 +15,7 @@ public sealed class ListaEsperaService
     private readonly EspecialidadeService _especialidades;
     private readonly ConvenioElegibilidadeService _elegibilidade;
     private readonly SolicitacaoAtendimentoService _solicitacoes;
+    private readonly AcaoConsultaLinkService _links;
 
     public ListaEsperaService(
         MKSANContext context,
@@ -23,8 +24,10 @@ public sealed class ListaEsperaService
         AtendimentoEnvioService envio,
         EspecialidadeService especialidades,
         ConvenioElegibilidadeService elegibilidade,
-        SolicitacaoAtendimentoService solicitacoes)
+        SolicitacaoAtendimentoService solicitacoes,
+        AcaoConsultaLinkService links)
     {
+        _links = links;
         _context = context;
         _clock = clock;
         _conversas = conversas;
@@ -121,7 +124,8 @@ public sealed class ListaEsperaService
             .Include(x => x.Medico)
             .Include(x => x.Especialidade)
             .Where(x => x.Ativa && (x.NotificadoEm == null || x.NotificadoEm < DateTime.UtcNow.AddHours(-12)))
-            .OrderBy(x => x.CriadoEm)
+            .OrderByDescending(x => x.Prioridade)
+            .ThenBy(x => x.CriadoEm)
             .Take(100)
             .ToListAsync(ct);
         var enviados = 0;
@@ -173,6 +177,12 @@ public sealed class ListaEsperaService
                 (destino.Value.Canal == CanalAtendimento.Email
                     ? "Acesse sua conta no CallMed para aceitar a vaga ou entre em contato com a recepção. Responder a este e-mail não reserva o horário. Se solicitar ajuda por e-mail, aguarde a confirmação da equipe. A vaga continua sujeita à disponibilidade."
                     : "Entre no app para aceitar a vaga ou responda por aqui se precisar de ajuda. A vaga continua sujeita à disponibilidade.");
+            if (destino.Value.Canal != CanalAtendimento.Email)
+            {
+                var linkAceite = _links.GerarUrl(item.Id, "aceitar", vaga.Id);
+                if (linkAceite is not null)
+                    texto += $"\n\nAceitar com um toque: {linkAceite}";
+            }
 
             var msg = await _envio.EnviarAvisoAsync(conversa, texto, $"lista-espera:{item.Id}:vaga:{vaga.Id}", ct);
             if (msg.Status is StatusMensagemAtendimento.Enviada or StatusMensagemAtendimento.Entregue)
