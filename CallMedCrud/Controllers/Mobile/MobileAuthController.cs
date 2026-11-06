@@ -34,7 +34,7 @@ public sealed class MobileAuthController(UserManager<Usuario> users, SignInManag
         var sessao = new ContaSessao { UsuarioId = user.Id, Dispositivo = "Aplicativo CallMed · Android" };
         db.ContaSessoes.Add(sessao); db.ContaEventos.Add(new() { UsuarioId = user.Id, Descricao = "Login pelo aplicativo Android" });
         await db.SaveChangesAsync(ct);
-        AdicionarClaims(principal, sessao.Id);
+        MobileAuth.AdicionarSessao(principal, sessao.Id);
         return SignIn(principal, MobileAuth.Scheme);
     }
     [HttpPost("refresh"), AllowAnonymous, EnableRateLimiting("mobile-auth")]
@@ -44,7 +44,7 @@ public sealed class MobileAuthController(UserManager<Usuario> users, SignInManag
         if (ticket?.Properties.ExpiresUtc is not { } expires || expires <= clock.GetUtcNow() || await sessions.ValidarAsync(ticket.Principal, ct) is null) return Falha();
         var user = await users.GetUserAsync(ticket.Principal); if (user is null) return Falha();
         var principal = await signIn.CreateUserPrincipalAsync(user);
-        AdicionarClaims(principal, ContaService.SessaoAtual(ticket.Principal)!.Value);
+        MobileAuth.AdicionarSessao(principal, ContaService.SessaoAtual(ticket.Principal)!.Value);
         return SignIn(principal, MobileAuth.Scheme);
     }
     [HttpPost("logout"), Authorize(Policy = MobileAuth.Policy)]
@@ -56,12 +56,6 @@ public sealed class MobileAuthController(UserManager<Usuario> users, SignInManag
         return Ok(new { mensagem = "Acesso encerrado." });
     }
     private UnauthorizedObjectResult Falha() => Unauthorized(new { mensagem = "CPF/e-mail ou senha inválidos, ou acesso indisponível. Confira sua conta de paciente." });
-    private static void AdicionarClaims(ClaimsPrincipal principal, Guid sessao)
-    {
-        var identity = (ClaimsIdentity)principal.Identity!;
-        identity.AddClaim(new(ContaService.SessaoClaim, sessao.ToString()));
-        identity.AddClaim(new(MobileAuth.ScopeClaim, "paciente"));
-    }
     public sealed class LoginInput
     {
         [Required, StringLength(256)] public string Usuario { get; set; } = "";

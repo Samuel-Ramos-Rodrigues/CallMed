@@ -18,6 +18,12 @@ public static class MobileAuth
     public const string Policy = "CallMedPacienteMobile";
     public const string ScopeClaim = "callmed:mobile";
     public const string PacienteItem = "CallMedMobilePacienteId";
+    public static void AdicionarSessao(ClaimsPrincipal principal, Guid sessao)
+    {
+        var identity = (ClaimsIdentity)principal.Identity!;
+        identity.AddClaim(new(ContaService.SessaoClaim, sessao.ToString()));
+        identity.AddClaim(new(ScopeClaim, "paciente"));
+    }
     public static IServiceCollection AddCallMedMobile(this IServiceCollection services)
     {
         // Mantém o cookie do site como padrão. Estes tokens só autenticam a API móvel.

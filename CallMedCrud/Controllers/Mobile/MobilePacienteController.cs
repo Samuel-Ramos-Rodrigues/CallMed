@@ -12,6 +12,7 @@ using MKSANCrud.Services.Clinica;
 using MKSANCrud.Services.Mobile;
 using MKSANCrud.Services.Usuarios;
 using MKSANCrud.ViewModels;
+using MKSANCrud.Models.Atendimento;
 
 namespace MKSANCrud.Controllers.Mobile;
 
@@ -19,7 +20,7 @@ namespace MKSANCrud.Controllers.Mobile;
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 [RequestSizeLimit(24576)]
 public sealed class MobilePacienteController(MKSANContext db, AgendamentoService agenda, IClinicaClock clock, ConvenioService convenio,
-    ContaService conta, UserManager<Usuario> users) : ControllerBase
+    ContaService conta, UserManager<Usuario> users, SignInManager<Usuario> signIn, SolicitacaoAtendimentoService solicitacoes, AuditoriaService auditoria, ConvenioElegibilidadeService elegibilidade) : ControllerBase
 {
     private int PacienteId => (int)HttpContext.Items[MobileAuth.PacienteItem]!;
     [HttpGet("config"), AllowAnonymous]
@@ -31,10 +32,11 @@ public sealed class MobilePacienteController(MKSANContext db, AgendamentoService
         var p = await db.Pacientes.AsNoTracking().SingleAsync(p => p.Id == PacienteId, ct);
         var prefs = await db.ContaPerfis.AsNoTracking().FirstOrDefaultAsync(x => x.UsuarioId == p.UsuarioId, ct);
         var foto = await db.ContaFotos.AnyAsync(f => f.UsuarioId == p.UsuarioId, ct);
-        return Ok(new { p.Nome, p.Email, p.Telefone, p.Cpf, dataNascimento = p.DataNascimento?.ToString("yyyy-MM-dd"),
+        return Ok(new { contaId = p.UsuarioId, p.Nome, p.Email, p.Telefone, p.Cpf, dataNascimento = p.DataNascimento?.ToString("yyyy-MM-dd"),
             p.TemConvenio, p.NomeConvenio, p.NumeroConvenio, validadeConvenio = p.ValidadeConvenio?.ToString("yyyy-MM-dd"), convenioValido = convenio.EhValido(p),
             canalPreferido = p.CanalPreferido ?? "WhatsApp", tema = prefs?.Tema ?? "dark", avisosWhatsApp = prefs?.AvisosWhatsApp ?? true,
-            avisosEmail = prefs?.AvisosEmail ?? true, avisosSms = prefs?.AvisosSms ?? true, possuiFoto = foto });
+            avisosEmail = prefs?.AvisosEmail ?? true, avisosSms = prefs?.AvisosSms ?? true, possuiFoto = foto,
+            textoMaior = prefs?.TextoMaior ?? false, altoContraste = prefs?.AltoContraste ?? false, reduzirAnimacoes = prefs?.ReduzirAnimacoes ?? false, modoSimplificado = prefs?.ModoSimplificado ?? false });
     }
     [HttpPut("perfil")]
     public async Task<IActionResult> SalvarPerfil(PerfilInput input, CancellationToken ct)
@@ -51,23 +53,39 @@ public sealed class MobilePacienteController(MKSANContext db, AgendamentoService
         return await Perfil(ct);
     }
     [HttpPut("perfil/preferencias")]
-    public async Task<IActionResult> Preferencias(ContaPreferenciasInput input, CancellationToken ct)
+    public async Task<IActionResult> Preferencias(PreferenciasInput input, CancellationToken ct)
     {
-        var p = await db.Pacientes.SingleAsync(p => p.Id == PacienteId, ct); var prefs = await conta.PerfilAsync(p.UsuarioId!, ct);
-        prefs.PreferenciasDefinidas = true; prefs.Tema = input.Tema; prefs.AvisosWhatsApp = input.AvisosWhatsApp;
-        prefs.AvisosEmail = input.AvisosEmail; prefs.AvisosSms = input.AvisosSms;
-        // Os controles de acessibilidade já salvos pelo site são preservados.
-        p.CanalPreferido = input.CanalPreferido;
-        conta.Evento(p.UsuarioId!, "Preferências atualizadas pelo aplicativo Android"); await db.SaveChangesAsync(ct); return await Perfil(ct);
+        var p = await db.Pacientes.SingleAsync(p => p.Id == PacienteId, ct);
+        var prefs = await conta.PerfilAsync(p.UsuarioId!, ct);
+        prefs.PreferenciasDefinidas = true;
+        if (input.Tema is not null) prefs.Tema = input.Tema;
+        if (input.AvisosWhatsApp.HasValue) prefs.AvisosWhatsApp = input.AvisosWhatsApp.Value;
+        if (input.AvisosEmail.HasValue) prefs.AvisosEmail = input.AvisosEmail.Value;
+        if (input.AvisosSms.HasValue) prefs.AvisosSms = input.AvisosSms.Value;
+        if (input.TextoMaior.HasValue) prefs.TextoMaior = input.TextoMaior.Value;
+        if (input.AltoContraste.HasValue) prefs.AltoContraste = input.AltoContraste.Value;
+        if (input.ReduzirAnimacoes.HasValue) prefs.ReduzirAnimacoes = input.ReduzirAnimacoes.Value;
+        if (input.ModoSimplificado.HasValue) prefs.ModoSimplificado = input.ModoSimplificado.Value;
+        if (input.CanalPreferido is not null) p.CanalPreferido = input.CanalPreferido;
+        conta.Evento(p.UsuarioId!, "Preferências atualizadas pelo aplicativo Android");
+        await db.SaveChangesAsync(ct);
+        return await Perfil(ct);
     }
-    [HttpPost("perfil/senha")]
+    [HttpPost("perfil/senha"), EnableRateLimiting("mobile-auth")]
     public async Task<IActionResult> Senha(ContaSenhaInput input, CancellationToken ct)
     {
         var user = (await users.GetUserAsync(User))!;
+        await using var tx = db.Database.IsRelational() ? await db.Database.BeginTransactionAsync(ct) : null;
         var result = await users.ChangePasswordAsync(user, input.SenhaAtual, input.NovaSenha);
         if (!result.Succeeded) return BadRequest(new { mensagem = string.Join(" ", result.Errors.Select(e => e.Code == "PasswordMismatch" ? "A senha atual está incorreta." : e.Description)) });
-        await conta.RevogarOutrasAsync(user.Id, null, ct); conta.Evento(user.Id, "Senha alterada pelo Android; acessos encerrados"); await db.SaveChangesAsync(ct);
-        return Ok(new { mensagem = "Senha alterada. Entre novamente com a nova senha.", entrarNovamente = true });
+        var session = ContaService.SessaoAtual(User)!.Value;
+        await conta.RevogarOutrasAsync(user.Id, session, ct);
+        conta.Evento(user.Id, "Senha alterada pelo Android; outros acessos encerrados");
+        await db.SaveChangesAsync(ct);
+        if (tx is not null) await tx.CommitAsync(ct);
+        var principal = await signIn.CreateUserPrincipalAsync(user);
+        MobileAuth.AdicionarSessao(principal, session);
+        return SignIn(principal, MobileAuth.Scheme);
     }
     [HttpGet("perfil/foto")]
     public async Task<IActionResult> Foto(CancellationToken ct)
@@ -94,7 +112,7 @@ public sealed class MobilePacienteController(MKSANContext db, AgendamentoService
         if (!await db.Medicos.AnyAsync(m => m.Id == id && m.Ativo, ct)) return NotFound();
         if (consultaId.HasValue && !await db.Consultas.AnyAsync(c => c.Id == consultaId && c.PacienteId == PacienteId && c.MedicoId == id, ct)) return NotFound();
         var datas = await agenda.DatasDisponiveisAsync(id, consultaId, ct);
-        return Ok(datas.Where(d => d <= clock.Hoje.AddDays(90)).Take(90).Select(d => d.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+        return Ok(datas.Select(d => d.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
     }
     [HttpGet("medicos/{id:int}/horarios")]
     public async Task<IActionResult> Horarios(int id, DateOnly data, int? consultaId, CancellationToken ct)
@@ -116,8 +134,13 @@ public sealed class MobilePacienteController(MKSANContext db, AgendamentoService
         if (input.Pagamento is not ("Particular" or "Convenio")) return BadRequest(new { mensagem = "Escolha a forma de atendimento." });
         var data = input.Data.ToDateTime(TimeOnly.MinValue);
         var existente = await db.Consultas.AsNoTracking().Include(c => c.Medico).FirstOrDefaultAsync(c => c.PacienteId == PacienteId && c.MedicoId == input.MedicoId && c.Data.Date == data.Date && c.Horario == input.Horario.Trim() && c.Status != ConsultaStatus.Cancelada, ct);
-        if (existente is not null) return Ok(new { mensagem = "Esse agendamento já está registrado.", consulta = ConsultaDto(existente) });
+        if (existente is not null)
+        {
+            await RegistrarAgendamentoAsync(existente, ct);
+            return Ok(new { mensagem = "Esse agendamento já está registrado.", consulta = ConsultaDto(existente) });
+        }
         var resultado = await agenda.AgendarAsync(PacienteId, input.MedicoId, data, input.Horario, null, input.Pagamento, permitirEscolhaPagamento: true, ct: ct);
+        if (resultado.Sucesso && resultado.Consulta is not null) await RegistrarAgendamentoAsync(resultado.Consulta, ct);
         return await Resultado(resultado, ct);
     }
     [HttpPost("consultas/{id:int}/cancelar")]
@@ -125,33 +148,76 @@ public sealed class MobilePacienteController(MKSANContext db, AgendamentoService
     {
         var c = await MinhaConsulta(id, ct); if (c is null) return NotFound();
         if (!input.Confirmar) return BadRequest(new { mensagem = "Confirme o cancelamento." });
-        if (c.Status != ConsultaStatus.Cancelada && !Futura(c)) return BadRequest(new { mensagem = "Essa consulta não pode mais ser cancelada pelo aplicativo." });
-        return await Resultado(await agenda.CancelarAsync(id, ct), ct);
+        var resultado = await agenda.CancelarAsync(id, ct);
+        if (resultado.Sucesso)
+        {
+            await solicitacoes.AtualizarPorConsultaAsync(id, StatusSolicitacaoAtendimento.Cancelada, ct);
+            if (c.Status != ConsultaStatus.Cancelada) await auditoria.RegistrarAsync("Cancelar", "Consulta", id, "Consulta cancelada pelo aplicativo Android.", ct: ct);
+        }
+        return await Resultado(resultado, ct);
     }
     [HttpPost("consultas/{id:int}/confirmar")]
     public async Task<IActionResult> Confirmar(int id, ConfirmacaoInput input, CancellationToken ct)
     {
         var c = await MinhaConsulta(id, ct); if (c is null) return NotFound();
-        if (!input.Confirmar || !Futura(c)) return BadRequest(new { mensagem = "Confira os dados antes de confirmar." });
-        return await Resultado(await agenda.ConfirmarAsync(id, ct), ct);
+        if (!input.Confirmar) return BadRequest(new { mensagem = "Confira os dados antes de confirmar." });
+        var resultado = await agenda.ConfirmarAsync(id, ct);
+        if (resultado.Sucesso && c.Status != ConsultaStatus.Confirmada) await auditoria.RegistrarAsync("Confirmar", "Consulta", id, "Consulta confirmada pelo aplicativo Android.", ct: ct);
+        return await Resultado(resultado, ct);
     }
     [HttpPost("consultas/{id:int}/remarcar")]
     public async Task<IActionResult> Remarcar(int id, RemarcarInput input, CancellationToken ct)
     {
         var c = await MinhaConsulta(id, ct); if (c is null) return NotFound();
-        if (!input.Confirmar || !Futura(c)) return BadRequest(new { mensagem = "Confirme a remarcação de uma consulta futura." });
-        return await Resultado(await agenda.RemarcarAsync(id, input.Data.ToDateTime(TimeOnly.MinValue), input.Horario, ct), ct);
+        if (!input.Confirmar) return BadRequest(new { mensagem = "Confirme a remarcação." });
+        var resultado = await agenda.RemarcarAsync(id, input.Data.ToDateTime(TimeOnly.MinValue), input.Horario, ct);
+        if (resultado.Sucesso) await auditoria.RegistrarAsync("Remarcar", "Consulta", id, "Consulta remarcada pelo aplicativo Android; médico mantido.", ct: ct);
+        return await Resultado(resultado, ct);
+    }
+    [HttpGet("agenda/primeira-vaga")]
+    public async Task<IActionResult> PrimeiraVaga([Required, StringLength(160)] string especialidade, CancellationToken ct)
+    {
+        var opcoes = await agenda.BuscarOpcoesAsync(null, especialidade, null, quantidadeDias: 90, limite: 1, ct: ct);
+        var o = opcoes.FirstOrDefault();
+        return o is null ? NotFound(new { mensagem = "Nenhuma vaga encontrada nos próximos 90 dias para essa especialidade." }) : Ok(new { o.MedicoId, o.Medico, o.Especialidade, data = o.Data.ToString("yyyy-MM-dd"), o.Horario });
+    }
+    [HttpGet("medicos/{id:int}/elegibilidade")]
+    public async Task<IActionResult> Elegibilidade(int id, CancellationToken ct)
+    {
+        var medico = await db.Medicos.AsNoTracking().SingleOrDefaultAsync(m => m.Id == id && m.Ativo, ct);
+        if (medico is null) return NotFound();
+        var paciente = await db.Pacientes.AsNoTracking().SingleAsync(p => p.Id == PacienteId, ct);
+        return Ok(await elegibilidade.AvaliarAsync(paciente, medico.EspecialidadeId, ct));
+    }
+    private async Task RegistrarAgendamentoAsync(Consulta c, CancellationToken ct)
+    {
+        if (!await db.SolicitacoesAtendimento.AnyAsync(s => s.ConsultaId == c.Id, ct))
+            await solicitacoes.RegistrarAgendamentoDiretoAsync(CanalAtendimento.Web, PacienteId, c.MedicoId, c.Id, "Agendamento realizado pelo aplicativo Android.", ct);
+        if (!await db.AuditoriaEventos.AnyAsync(a => a.Entidade == "Consulta" && a.EntidadeId == c.Id.ToString() && a.Acao == "Agendar", ct))
+            await auditoria.RegistrarAsync("Agendar", "Consulta", c.Id, "Consulta criada pelo aplicativo Android.", novo: new { c.MedicoId, c.Data, c.Horario, c.Status }, ct: ct);
     }
     private Task<Consulta?> MinhaConsulta(int id, CancellationToken ct) => db.Consultas.AsNoTracking().SingleOrDefaultAsync(c => c.Id == id && c.PacienteId == PacienteId, ct);
     private bool Futura(Consulta c) => c.Data.Date > clock.Hoje || (c.Data.Date == clock.Hoje && TimeOnly.TryParse(c.Horario, out var hora) && hora > TimeOnly.FromDateTime(clock.Agora));
     private object ConsultaDto(Consulta c) => new { c.Id, c.MedicoId, medico = c.Medico?.Nome ?? "Médico", especialidade = c.Medico?.Especialidade ?? "", data = c.Data.ToString("yyyy-MM-dd"), c.Horario, c.Status, c.TipoPagamento, c.ConvenioUsado,
         statusConvenio = c.StatusElegibilidadeConvenio, observacaoConvenio = c.ObservacaoElegibilidadeConvenio,
-        podeCancelar = Futura(c) && ConsultaStatus.PodeCancelar(c.Status), podeConfirmar = Futura(c) && ConsultaStatus.PodeConfirmar(c.Status), podeRemarcar = Futura(c) && ConsultaStatus.PodeRemarcar(c.Status) };
+        futura = Futura(c), podeCancelar = ConsultaStatus.PodeCancelar(c.Status), podeConfirmar = ConsultaStatus.PodeConfirmar(c.Status), podeRemarcar = ConsultaStatus.PodeRemarcar(c.Status) };
     private async Task<IActionResult> Resultado(ResultadoOperacaoConsulta resultado, CancellationToken ct)
     {
         if (!resultado.Sucesso) return Conflict(new { mensagem = resultado.Mensagem });
         var c = await db.Consultas.AsNoTracking().Include(c => c.Medico).SingleAsync(c => c.Id == resultado.Consulta!.Id && c.PacienteId == PacienteId, ct);
         return Ok(new { mensagem = resultado.Mensagem, consulta = ConsultaDto(c) });
+    }
+    public sealed class PreferenciasInput
+    {
+        [MinLength(1), RegularExpression("^(light|dark|system)$")] public string? Tema { get; set; }
+        [MinLength(1), RegularExpression("^(WhatsApp|Email|SMS|Telefone)$")] public string? CanalPreferido { get; set; }
+        public bool? AvisosWhatsApp { get; set; }
+        public bool? AvisosEmail { get; set; }
+        public bool? AvisosSms { get; set; }
+        public bool? TextoMaior { get; set; }
+        public bool? AltoContraste { get; set; }
+        public bool? ReduzirAnimacoes { get; set; }
+        public bool? ModoSimplificado { get; set; }
     }
     public sealed class PerfilInput
     {

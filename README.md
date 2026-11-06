@@ -4,7 +4,7 @@
 
 <h1 align="center">CallMed</h1>
 
-> **Android nativo:** app de pacientes em Kotlin + Jetpack Compose, com login, consultas, agendamento, perfil e chat com avaliação. Abra `CallMedAndroid` no Android Studio. [Compilação e instalação](CallMedAndroid/README-ANDROID.md) · [API e publicação](docs/ANDROID-NATIVO.md).
+> **Android nativo 23.1.0:** quatro áreas, agendamento em cinco etapas, ajustes de leitura em todas as telas, perfil e dispositivos, exames aprovados e chat com avaliação opcional. Publique o backend desta entrega antes de instalar a atualização. Abra `CallMedAndroid` no Android Studio. [Compilação e instalação](CallMedAndroid/README-ANDROID.md) · [API e publicação](docs/ANDROID-NATIVO.md).
 
 > **APK pelo próprio site:** página `/aplicativo` com download assinado para Android, acessível pela página inicial e pelos rodapés. [Publicação no Render e atualização do APK](docs/APLICATIVO-DOWNLOAD-DIRETO.md).
 
@@ -291,14 +291,14 @@ Principais recursos:
 
 ## Android nativo
 
-O cliente de pacientes usa **Kotlin e Jetpack Compose**, com as telas próprias do Android e a API do mesmo servidor CallMed. Inclui login, consultas, agendamento, perfil e atendimento com avaliação.
+O cliente de pacientes usa **Kotlin e Jetpack Compose**, com as telas próprias do Android e a API do mesmo servidor CallMed. Início, Consultas, Chat e Conta compartilham os dados e as regras do site. O agendamento segue especialidade, médico, data, horário e revisão. Os ajustes de leitura ficam disponíveis em todas as telas, preservam os formulários e respeitam a fonte do Android. Inclui exames aprovados, alteração de e-mail/senha, dispositivos e avaliação opcional após o atendimento.
 
 ```text
 applicationId: com.callmed.app
 minSdk: 26
 targetSdk: 36
-versionCode: 2300
-versionName: 23.0.0
+versionCode: 2310
+versionName: 23.1.0
 ```
 
 Abra a pasta **CallMedAndroid** no Android Studio. [Compilação e instalação](CallMedAndroid/README-ANDROID.md) · [API e publicação do servidor](docs/ANDROID-NATIVO.md).

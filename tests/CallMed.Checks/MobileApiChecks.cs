@@ -42,7 +42,7 @@ internal static class MobileApiChecks
         builder.Services.AddIdentity<Usuario,IdentityRole>(o=>{o.User.RequireUniqueEmail=true;o.Password.RequiredLength=8;}).AddEntityFrameworkStores<MKSANContext>().AddDefaultTokenProviders();
         builder.Services.AddHttpContextAccessor();builder.Services.AddSingleton(TimeProvider.System);builder.Services.AddCallMedMobile();
         builder.Services.AddScoped<PortalAcessoService>();builder.Services.AddScoped<UsuarioVinculoService>();builder.Services.AddScoped<ContaService>();
-        builder.Services.AddSingleton<IClinicaClock,ClinicaClock>();builder.Services.AddScoped<ConvenioService>();builder.Services.AddScoped<ConvenioElegibilidadeService>();builder.Services.AddScoped<EspecialidadeService>();builder.Services.AddScoped<AgendamentoService>();
+        builder.Services.AddSingleton<IClinicaClock,ClinicaClock>();builder.Services.AddScoped<ConvenioService>();builder.Services.AddScoped<ConvenioElegibilidadeService>();builder.Services.AddScoped<EspecialidadeService>();builder.Services.AddScoped<AgendamentoService>();builder.Services.AddScoped<AuditoriaService>();builder.Services.AddScoped<SolicitacaoAtendimentoService>();
         builder.Services.AddScoped<AtendimentoIdentidadeService>();builder.Services.AddScoped<AtendimentoConversaService>();builder.Services.AddScoped<AtendimentoEnvioService>();builder.Services.AddScoped<AtendimentoFeedbackService>();builder.Services.AddScoped<AgenteHistoricoService>();
         builder.Services.Configure<GmailInboxOptions>(_=>{});builder.Services.AddSingleton<IAgenteClinicaService,FakeAgent>();
         builder.Services.AddRateLimiter(o=>o.AddFixedWindowLimiter("agente",x=>{x.PermitLimit=100;x.Window=TimeSpan.FromMinutes(1);}));
@@ -72,6 +72,13 @@ internal static class MobileApiChecks
                 db.Medicos.Add(new(){Id=2,Nome="Inativo",Email="inativo-medico@test.invalid",Crm="CRM-INATIVO",EspecialidadeId=1,Especialidade="Clínica geral",Ativo=false});
                 foreach(var h in new[]{"09:00","10:00","11:00"})db.Disponibilidades.Add(new(){MedicoId=1,Data=day,Horario=h,Ativo=true});
                 db.Consultas.Add(new(){Id=100,PacienteId=2,MedicoId=1,Data=day.AddDays(1),Horario="09:00"});
+                db.Disponibilidades.Add(new(){MedicoId=1,Data=day.AddDays(100),Horario="13:00",Ativo=true});
+                db.ExamesHistorico.AddRange(
+                    new ExameHistorico{Id=1,PacienteId=1,Nome="Aprovado próprio",Ativo=true,StatusTriagem=ExameTriagemStatus.Aprovado,DataRealizacao=day.AddDays(-15),LocalRealizacao="Clínica"},
+                    new ExameHistorico{Id=2,PacienteId=1,Nome="Pendente",Ativo=true,StatusTriagem=ExameTriagemStatus.Pendente},
+                    new ExameHistorico{Id=3,PacienteId=1,Nome="Rejeitado",Ativo=true,StatusTriagem=ExameTriagemStatus.Rejeitado},
+                    new ExameHistorico{Id=4,PacienteId=1,Nome="Inativo",Ativo=false,StatusTriagem=ExameTriagemStatus.Aprovado},
+                    new ExameHistorico{Id=5,PacienteId=2,Nome="Aprovado alheio",Ativo=true,StatusTriagem=ExameTriagemStatus.Aprovado});
                 await db.SaveChangesAsync();
             }
             var address=app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses.Single();
@@ -95,22 +102,77 @@ internal static class MobileApiChecks
             check((await a.PutAsJsonAsync("/api/mobile/v1/perfil",new{nome="Futuro",dataNascimento="2999-01-01"})).StatusCode==HttpStatusCode.BadRequest,"Perfil recusa nascimento futuro");
             check((await a.PutAsJsonAsync("/api/mobile/v1/perfil/preferencias",new{tema="arbitrario"})).StatusCode==HttpStatusCode.BadRequest,"Preferências recusam tema inválido");
             var pref=await Json(await a.PutAsJsonAsync("/api/mobile/v1/perfil/preferencias",new{tema="light",avisosWhatsApp=false,avisosEmail=true,avisosSms=false,canalPreferido="Email"}));check(pref.GetProperty("tema").GetString()=="light"&&!pref.GetProperty("avisosSms").GetBoolean(),"Preferências móveis persistem na conta compartilhada");
+            var leitura=await Json(await a.PutAsJsonAsync("/api/mobile/v1/perfil/preferencias",new{textoMaior=true,altoContraste=true,modoSimplificado=true,reduzirAnimacoes=true}));
+            check(leitura.GetProperty("textoMaior").GetBoolean()&&leitura.GetProperty("altoContraste").GetBoolean()&&leitura.GetProperty("modoSimplificado").GetBoolean()&&leitura.GetProperty("reduzirAnimacoes").GetBoolean(),"Leitura acessível é persistida nos mesmos campos do site");
+            check(leitura.GetProperty("avisosEmail").GetBoolean()&&!leitura.GetProperty("avisosSms").GetBoolean()&&leitura.GetProperty("tema").GetString()=="light","Salvar leitura não altera tema ou avisos omitidos no pedido");
+            leitura=await Json(await a.PutAsJsonAsync("/api/mobile/v1/perfil/preferencias",new{avisosSms=true}));
+            check(leitura.GetProperty("altoContraste").GetBoolean()&&leitura.GetProperty("textoMaior").GetBoolean(),"Aplicativo antigo e avisos preservam preferências de acessibilidade");
+            check((await a.PutAsJsonAsync("/api/mobile/v1/perfil/preferencias",new{tema=""})).StatusCode==HttpStatusCode.BadRequest,"Tema vazio é recusado sem sobrescrever a preferência válida");
+            var exams=await Json(await a.GetAsync("/api/mobile/v1/exames?pacienteId=2"));
+            check(exams.GetArrayLength()==1&&exams[0].GetProperty("id").GetInt32()==1,"Exames móveis mostram apenas próprios, ativos e aprovados");
+            check((await Json(await b.GetAsync("/api/mobile/v1/exames")))[0].GetProperty("id").GetInt32()==5,"Outro paciente recebe somente o próprio histórico de exames");
+            check((await a.GetAsync("/api/mobile/v1/exames/5")).StatusCode==HttpStatusCode.NotFound,"ID no caminho não expõe exame de outro paciente");
             using(var photo=new MultipartFormDataContent()){photo.Add(new ByteArrayContent(ContaPerfilChecks.Png),"foto","foto.png");check((await a.PostAsync("/api/mobile/v1/perfil/foto",photo)).IsSuccessStatusCode,"Upload nativo aceita foto válida");}
             check((await a.GetByteArrayAsync("/api/mobile/v1/perfil/foto")).SequenceEqual(ContaPerfilChecks.Png)&&(await b.GetAsync("/api/mobile/v1/perfil/foto?usuarioId="+ids["a"])).StatusCode==HttpStatusCode.NotFound,"Foto móvel é restrita à própria conta");
             var doctors=await Json(await a.GetAsync("/api/mobile/v1/medicos"));check(doctors.GetArrayLength()==1,"Catálogo nativo omite médico inativo");
             check((await a.GetAsync("/api/mobile/v1/medicos/1/datas?consultaId=100")).StatusCode==HttpStatusCode.NotFound,"Disponibilidade não permite ignorar consulta alheia");
             check((await Json(await a.GetAsync("/api/mobile/v1/medicos/1/datas"))).EnumerateArray().Any(x=>x.GetString()==date),"Datas móveis vêm da agenda real");
+            var allDates=await Json(await a.GetAsync("/api/mobile/v1/medicos/1/datas"));
+            check(allDates.EnumerateArray().Any(x=>x.GetString()==day.AddDays(100).ToString("yyyy-MM-dd")),"Calendário móvel usa as datas do site sem corte próprio de 90 dias");
+            var first=await Json(await a.GetAsync("/api/mobile/v1/agenda/primeira-vaga?especialidade=Cl%C3%ADnica%20geral"));
+            check(first.GetProperty("medicoId").GetInt32()==1&&first.GetProperty("data").GetString()==date,"Primeira vaga reaproveita a busca de especialidade do site");
+            check((await a.GetAsync("/api/mobile/v1/agenda/primeira-vaga?especialidade=Inexistente")).StatusCode==HttpStatusCode.NotFound,"Especialidade sem vaga não gera horário fictício");
+            var eligibility=await Json(await a.GetAsync("/api/mobile/v1/medicos/1/elegibilidade"));
+            check(!eligibility.GetProperty("possuiConvenioValido").GetBoolean(),"Revisão do pagamento consulta a elegibilidade administrativa do titular");
             object Booking(bool confirm=true,string hour="09:00",string payment="Particular")=>new{medicoId=1,data=date,horario=hour,pagamento=payment,confirmar=confirm,pacienteId=2};
             check((await a.PostAsJsonAsync("/api/mobile/v1/consultas",Booking(false))).StatusCode==HttpStatusCode.BadRequest,"Agendamento exige confirmação explícita");
             check(!(await a.PostAsJsonAsync("/api/mobile/v1/consultas",Booking(true,"09:00","Convenio"))).IsSuccessStatusCode,"Agendamento não aceita convênio inexistente");
             var booked=await Json(await a.PostAsJsonAsync("/api/mobile/v1/consultas",Booking()));var id=booked.GetProperty("consulta").GetProperty("id").GetInt32();
             var again=await Json(await a.PostAsJsonAsync("/api/mobile/v1/consultas",Booking()));check(again.GetProperty("consulta").GetProperty("id").GetInt32()==id,"Repetição do mesmo agendamento não duplica consulta");
+            using(var scope=app.Services.CreateScope()){
+                var db=scope.ServiceProvider.GetRequiredService<MKSANContext>();
+                check(await db.SolicitacoesAtendimento.CountAsync(x=>x.ConsultaId==id&&x.PacienteId==1&&x.Status==StatusSolicitacaoAtendimento.Confirmada)==1,"Agendamento nativo vincula uma solicitação confirmada como o site");
+                check(await db.AuditoriaEventos.CountAsync(x=>x.Entidade=="Consulta"&&x.EntidadeId==id.ToString()&&x.Acao=="Agendar"&&x.UsuarioId==ids["a"])==1,"Repetição não duplica auditoria de agendamento nem perde autoria");
+            }
             check(!(await b.PostAsJsonAsync("/api/mobile/v1/consultas",Booking())).IsSuccessStatusCode,"Outro paciente não ocupa horário já reservado");
             foreach(var action in new[]{"cancelar","confirmar","remarcar"})check((await b.PostAsJsonAsync($"/api/mobile/v1/consultas/{id}/{action}",new{confirmar=true,data=date,horario="10:00"})).StatusCode==HttpStatusCode.NotFound,"Paciente não pode "+action+" consulta alheia");
             check((await a.PostAsJsonAsync($"/api/mobile/v1/consultas/{id}/confirmar",new{confirmar=true})).IsSuccessStatusCode,"Confirmação nativa usa serviço clínico");
             check((await a.PostAsJsonAsync($"/api/mobile/v1/consultas/{id}/remarcar",new{confirmar=true,data=date,horario="10:00"})).IsSuccessStatusCode,"Remarcação nativa usa disponibilidade real");
             check((await a.PostAsJsonAsync($"/api/mobile/v1/consultas/{id}/cancelar",new{confirmar=true})).IsSuccessStatusCode,"Cancelamento nativo libera consulta própria");
             var consultations=await Json(await a.GetAsync("/api/mobile/v1/consultas"));check(consultations.GetArrayLength()==1&&consultations[0].GetProperty("status").GetString()=="Cancelada","Lista móvel não expõe consulta do outro paciente");
+            using(var scope=app.Services.CreateScope()){
+                var db=scope.ServiceProvider.GetRequiredService<MKSANContext>();
+                check((await db.SolicitacoesAtendimento.SingleAsync(x=>x.ConsultaId==id)).Status==StatusSolicitacaoAtendimento.Cancelada,"Cancelamento nativo sincroniza a solicitação existente");
+                check(await db.AuditoriaEventos.AnyAsync(x=>x.Entidade=="Consulta"&&x.EntidadeId==id.ToString()&&x.Acao=="Remarcar"),"Remarcação nativa mantém o registro de auditoria");
+                db.Consultas.Add(new(){Id=300,PacienteId=1,MedicoId=1,Data=day.AddDays(-11),Horario="08:00",Status=ConsultaStatus.Pendente});await db.SaveChangesAsync();
+            }
+            var past=(await Json(await a.GetAsync("/api/mobile/v1/consultas"))).EnumerateArray().Single(x=>x.GetProperty("id").GetInt32()==300);
+            check(!past.GetProperty("futura").GetBoolean()&&past.GetProperty("podeRemarcar").GetBoolean(),"Histórico distingue data passada da permissão de remarcação do site");
+            check((await a.PostAsJsonAsync("/api/mobile/v1/consultas/300/remarcar",new{confirmar=true,data=date,horario="11:00"})).IsSuccessStatusCode,"Remarcação de pendência passada segue a mesma regra do serviço web");
+            using var b2=Client();var b2Tokens=await Login(b2,"b@mobile.test");
+            var sessions=await Json(await b.GetAsync("/api/mobile/v1/perfil/sessoes"));var ownSession=sessions.EnumerateArray().Single(x=>x.GetProperty("atual").GetBoolean()).GetProperty("id").GetString();var otherSession=sessions.EnumerateArray().First(x=>!x.GetProperty("atual").GetBoolean()).GetProperty("id").GetString();
+            check(sessions.GetArrayLength()==2,"Sessões nativas mostram os acessos ativos do titular");
+            check((await a.PostAsJsonAsync($"/api/mobile/v1/perfil/sessoes/{otherSession}/encerrar",new{confirmar=true})).StatusCode==HttpStatusCode.NotFound,"Gerenciamento não permite revogar acesso alheio");
+            check((await b.PostAsJsonAsync($"/api/mobile/v1/perfil/sessoes/{ownSession}/encerrar",new{confirmar=true})).StatusCode==HttpStatusCode.BadRequest,"Encerramento individual protege o acesso atual");
+            check((await b.PostAsJsonAsync("/api/mobile/v1/perfil/sessoes/encerrar-outras",new{confirmar=false})).StatusCode==HttpStatusCode.BadRequest&&(await b2.GetAsync("/api/mobile/v1/perfil")).IsSuccessStatusCode,"Encerrar outros acessos exige confirmação explícita");
+            check((await b.PostAsJsonAsync("/api/mobile/v1/perfil/sessoes/encerrar-outras",new{confirmar=true})).IsSuccessStatusCode&&(await b2.GetAsync("/api/mobile/v1/perfil")).StatusCode==HttpStatusCode.Forbidden&&(await b.GetAsync("/api/mobile/v1/perfil")).IsSuccessStatusCode,"Revogação mantém o dispositivo atual e invalida os demais");
+            using var b3=Client();var b3Tokens=await Login(b3,"b@mobile.test");
+            check((await b.PutAsJsonAsync("/api/mobile/v1/perfil/email",new{novoEmail="novo-b@mobile.test",senhaAtual="errada"})).StatusCode==HttpStatusCode.BadRequest,"Troca de e-mail exige senha atual");
+            check((await b.PutAsJsonAsync("/api/mobile/v1/perfil/email",new{novoEmail="a@mobile.test",senhaAtual=Password})).StatusCode==HttpStatusCode.Conflict,"Troca de e-mail recusa conta já cadastrada");
+            check((await b.PutAsJsonAsync("/api/mobile/v1/perfil/email",new{novoEmail="invalido",senhaAtual=Password})).StatusCode==HttpStatusCode.BadRequest,"Troca de e-mail valida formato antes de gravar");
+            var emailResponse=await b.PutAsJsonAsync("/api/mobile/v1/perfil/email",new{novoEmail="novo-b@mobile.test",senhaAtual=Password});var emailTokens=await Json(emailResponse);
+            check(!emailResponse.Headers.Contains("Set-Cookie")&&emailTokens.GetProperty("tokenType").GetString()=="Bearer","Troca de e-mail renova a identidade móvel sem cookie web");
+            check((await b.GetAsync("/api/mobile/v1/perfil")).StatusCode==HttpStatusCode.Forbidden,"Stamp antigo deixa de autorizar após alterar e-mail");
+            b.DefaultRequestHeaders.Authorization=new AuthenticationHeaderValue("Bearer",emailTokens.GetProperty("accessToken").GetString());
+            check((await Json(await b.GetAsync("/api/mobile/v1/perfil"))).GetProperty("email").GetString()=="novo-b@mobile.test","Novo token mantém acesso ao perfil após alterar e-mail");
+            check((await b3.GetAsync("/api/mobile/v1/perfil")).StatusCode==HttpStatusCode.Forbidden,"Alterar e-mail encerra os outros dispositivos");
+            var currentSession=(await Json(await b.GetAsync("/api/mobile/v1/perfil/sessoes"))).EnumerateArray().Single(x=>x.GetProperty("atual").GetBoolean()).GetProperty("id").GetString();
+            check(currentSession==ownSession,"Renovação da identidade mantém a sessão atual em vez de criar outro dispositivo");
+            using(var scope=app.Services.CreateScope()){
+                var db=scope.ServiceProvider.GetRequiredService<MKSANContext>();var u=await db.Users.SingleAsync(x=>x.Id==ids["b"]);var patientB=await db.Pacientes.SingleAsync(x=>x.Id==2);
+                check(u.Email=="novo-b@mobile.test"&&u.UserName==u.Email&&patientB.Email==u.Email,"Identity, login e cadastro clínico mantêm o mesmo e-mail");
+            }
+            await Login(b2,"111.444.777-35");
             check((await a.PostAsJsonAsync("/api/mobile/v1/atendimento/mensagens",new{mensagem="Quero uma informação de teste"})).IsSuccessStatusCode,"Chat nativo usa fluxo existente com IA simulada");
             var hist=await Json(await a.GetAsync("/api/mobile/v1/atendimento/historico"));var histB=await Json(await b.GetAsync("/api/mobile/v1/atendimento/historico"));check(hist.GetProperty("mensagens").GetArrayLength()>=2&&histB.GetProperty("mensagens").GetArrayLength()==0,"Histórico do chat permanece isolado por paciente");
             var fake=(FakeAgent)app.Services.GetRequiredService<IAgenteClinicaService>();var calls=fake.Calls;
@@ -132,7 +194,10 @@ internal static class MobileApiChecks
             check((await a.GetAsync("/api/mobile/v1/perfil")).StatusCode==HttpStatusCode.Forbidden&&(await device2.GetAsync("/api/mobile/v1/perfil")).IsSuccessStatusCode,"Logout revoga apenas o dispositivo escolhido");
             check((await a.PostAsJsonAsync("/api/mobile/v1/auth/refresh",new{refreshToken=tokens.GetProperty("refreshToken").GetString()})).StatusCode==HttpStatusCode.Unauthorized,"Sessão revogada não pode renovar token");
             check((await device2.PostAsJsonAsync("/api/mobile/v1/perfil/senha",new{senhaAtual="errada",novaSenha="Nova#2026Senha",confirmarSenha="Nova#2026Senha"})).StatusCode==HttpStatusCode.BadRequest,"Troca de senha exige senha atual");
-            check((await device2.PostAsJsonAsync("/api/mobile/v1/perfil/senha",new{senhaAtual=Password,novaSenha="Nova#2026Senha",confirmarSenha="Nova#2026Senha"})).IsSuccessStatusCode,"Nova senha é persistida pelo Identity");
+            var passwordResponse=await device2.PostAsJsonAsync("/api/mobile/v1/perfil/senha",new{senhaAtual=Password,novaSenha="Nova#2026Senha",confirmarSenha="Nova#2026Senha"});
+            check(passwordResponse.IsSuccessStatusCode,"Nova senha é persistida pelo Identity");
+            var passwordTokens=await Json(passwordResponse);using var freshPassword=Client();freshPassword.DefaultRequestHeaders.Authorization=new("Bearer",passwordTokens.GetProperty("accessToken").GetString());
+            check((await freshPassword.GetAsync("/api/mobile/v1/perfil")).IsSuccessStatusCode,"Troca de senha mantém o acesso atual com tokens renovados");
             check((await device2.GetAsync("/api/mobile/v1/perfil")).StatusCode==HttpStatusCode.Forbidden,"Troca de senha invalida o acesso móvel anterior");
             await Login(a,"a@mobile.test","Nova#2026Senha");
             using(var scope=app.Services.CreateScope()){var db=scope.ServiceProvider.GetRequiredService<MKSANContext>();var p=await db.Pacientes.SingleAsync(p=>p.Id==1);p.Ativo=false;await db.SaveChangesAsync();}

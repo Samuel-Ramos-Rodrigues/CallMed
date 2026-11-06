@@ -81,6 +81,25 @@ class CallMedApiTest {
         try{api.json("GET","perfil");fail()}catch(e:ApiError){assertEquals(401,e.status)}
         assertEquals("new-access",store.read()!!.accessToken)
     }
+    @Test fun identityRenewalRejectsLateResponseFromPreviousStamp() {
+        val store=MemoryStore(Session("old-account","old-refresh",999999));lateinit var api:CallMedApi
+        api=CallMedApi(store,ApiTransport { request ->
+            if(request.url.endsWith("perfil/email"))response(200,tokens)
+            else { api.renewIdentity("perfil/email",JSONObject().put("novoEmail","novo@example.test"));response(403,"{}") }
+        },"https://callmed.test",{1000L})
+        try{api.json("GET","perfil");fail()}catch(e:ApiError){assertEquals(401,e.status)}
+        assertEquals("new-access",store.read()!!.accessToken)
+    }
+    @Test fun bookingCannotAdvanceWithoutExplicitSelection() {
+        try{BookingState().next();fail()}catch(_:IllegalArgumentException){}
+        assertEquals(2,BookingState(specialty="Clínica geral").next().stage)
+        assertNull(BookingState(stage=3,movingId=12).previous())
+        assertEquals(3,BookingState(stage=4,movingId=12).previous()!!.stage)
+    }
+    @Test fun pastPendingConsultationIsStillHistoryEvenWhenActionIsAllowed() {
+        val c=Appointment.from(JSONObject("""{"id":1,"medicoId":2,"futura":false,"podeRemarcar":true}"""))
+        assertFalse(c.futura);assertTrue(c.podeRemarcar)
+    }
     @Test fun datesUseStrictCalendarValidation() {
         assertEquals("2024-02-29",isoDate("29/02/2024"));assertNull(isoDate(""));assertEquals("04/11/2026",dateLabel("2026-11-04"))
         for(date in listOf("29/02/2026","31/04/2026","00/01/2026"))try{isoDate(date);fail("Data inválida: $date")}catch(_:IllegalArgumentException){}

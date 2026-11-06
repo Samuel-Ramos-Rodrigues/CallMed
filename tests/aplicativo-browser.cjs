@@ -23,9 +23,9 @@ const server=http.createServer((req,res)=>{
  try{
   await page.goto(origin+'/');const link=page.locator('.public-install a');await link.click();
   check(new URL(page.url()).pathname==='/aplicativo'&&await page.getByRole('heading',{name:'Aplicativo CallMed',exact:true}).isVisible(),'Página inicial abre a página pública do aplicativo');
-  check((await page.locator('.cm-android-details').innerText()).includes('23.0.0')&&await page.getByRole('heading',{name:'Como instalar'}).isVisible(),'Página informa a versão do APK e orienta instalação');
+  check((await page.locator('.cm-android-details').innerText()).includes('23.1.0')&&await page.getByRole('heading',{name:'Como instalar'}).isVisible(),'Página informa a versão do APK e orienta instalação');
   const downloadPromise=page.waitForEvent('download');await page.locator('.cm-android-download').click();const download=await downloadPromise;
-  check(download.suggestedFilename()==='CallMed.apk'&&crypto.createHash('sha256').update(fs.readFileSync(await download.path())).digest('hex')==='c7d294a6c48e0b18c65de6433d2ad21552fd8adb5814e6fe7c63189dafe98f00','Botão inicia download do APK correto em vez de abrir instalação do PWA');
+  check(download.suggestedFilename()==='CallMed.apk'&&crypto.createHash('sha256').update(fs.readFileSync(await download.path())).digest('hex')==='fc4d711ff8e2ff182dec5c5b9f98334195df1b9c409ff541958990c194c4379b','Botão inicia download do APK correto em vez de abrir instalação do PWA');
   await page.locator('.cm-android-checksum summary').click();check(await page.locator('.cm-android-checksum code').isVisible(),'Integridade pode ser consultada sem ocupar o fluxo principal');
   for(const width of [320,390,1280]){
    await page.setViewportSize({width,height:900});

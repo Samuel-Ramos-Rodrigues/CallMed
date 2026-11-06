@@ -1,4 +1,15 @@
-# Android nativo 23.0.0
+# 2026-11-06 — Android nativo 23.1.0
+
+- Quatro áreas: Início, Consultas, Chat e Conta; interface com temas claro/escuro e botão Leitura global.
+- Agendamento por especialidade, médico, data, horário e revisão; primeira vaga, elegibilidade e remarcação preservando médico/forma de atendimento.
+- Reservas e cancelamentos do app sincronizam a solicitação de atendimento e a auditoria, usando os serviços existentes.
+- Texto normal/grande/extra, alto contraste, mais espaço e redução de animações; escala do sistema respeitada e campos preservados ao ajustar a leitura.
+- Perfil, alteração confirmada de e-mail/senha com renovação dos tokens atuais, revogação dos outros acessos e gerenciamento de dispositivos.
+- Registros de exames aprovados do próprio paciente; convite opcional antes do formulário de avaliação no chat.
+- Preferências parciais compatíveis com o cliente anterior; nenhuma migração ou variável de ambiente nova.
+- APK assinado 23.1.0/2310 atualizado no site, com a mesma chave anterior. Testes e limites em [validacao/ANDROID-NATIVO.md](validacao/ANDROID-NATIVO.md).
+
+## Android nativo 23.0.0
 
 - Novo módulo `CallMedAndroid` em Kotlin + Jetpack Compose: login de paciente, consultas, agendamento, perfil, chat e avaliação.
 - API `/api/mobile/v1` com sessões bearer revogáveis e regras clínicas existentes.

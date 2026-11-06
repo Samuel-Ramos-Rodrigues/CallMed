@@ -63,6 +63,16 @@ class CallMedApi(private val store: TokenStore, private val transport: ApiTransp
         try { json("POST", "auth/logout", JSONObject()) }
         finally { synchronized(sessionLock) { if (sessionGeneration == generation) { sessionGeneration++; store.clear() } } }
     }
+    fun renewIdentity(path: String, body: JSONObject) {
+        // Reserve a new generation before the server invalidates the old security stamp.
+        val generation = synchronized(sessionLock) { sessionGeneration++; sessionGeneration }
+        val response = send(if (path.endsWith("email")) "PUT" else "POST", path, body)
+        synchronized(sessionLock) {
+            if (sessionGeneration != generation) changed()
+            saveTokens(JSONObject(response.toString(Charsets.UTF_8)))
+            sessionGeneration++
+        }
+    }
     fun json(method: String, path: String, body: JSONObject? = null): JSONObject = JSONObject(send(method, path, body).toString(Charsets.UTF_8))
     fun array(path: String): JSONArray = JSONArray(send("GET", path).toString(Charsets.UTF_8))
     fun profile() = Patient.from(json("GET", "perfil"))
@@ -123,7 +133,7 @@ class CallMedApi(private val store: TokenStore, private val transport: ApiTransp
         store.save(Session(access, refresh, now() + seconds * 1000))
     }
     private fun errorMessage(response: ApiResponse): String {
-        if (response.status == 404) return "Este serviço não está disponível no momento. Tente novamente mais tarde ou entre em contato com a clínica."
+        if (response.status == 404) return runCatching { JSONObject(response.body.toString(Charsets.UTF_8)).text("mensagem") }.getOrDefault("").ifBlank { "Este serviço não está disponível no momento. Tente novamente mais tarde ou entre em contato com a clínica." }
         if (response.status == 429) return "Muitas tentativas em pouco tempo. Aguarde um pouco e tente novamente."
         return runCatching {
             val j = JSONObject(response.body.toString(Charsets.UTF_8))

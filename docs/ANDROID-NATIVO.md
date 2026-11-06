@@ -1,6 +1,6 @@
 # Android nativo — integração com CallMed
 
-O novo cliente está em [`CallMedAndroid`](../CallMedAndroid/README-ANDROID.md). Publique primeiro o backend desta entrega; depois instale o APK nativo. O pacote do site passa a ser a versão **23.0.0 / 2300** do app de pacientes.
+O cliente está em [`CallMedAndroid`](../CallMedAndroid/README-ANDROID.md). Publique primeiro o backend desta entrega; depois instale o APK nativo **23.1.0 / 2310** por cima da versão anterior. O APK atualizado já está incluído no download do site. Não é preciso gerar outro binário para esta entrega.
 
 ## API móvel
 
@@ -13,21 +13,40 @@ Prefixo `/api/mobile/v1`. Login e refresh retornam os campos padrão `tokenType`
 | `POST /auth/refresh` | Renovação com sessão, papel, conta e security stamp conferidos |
 | `POST /auth/logout` | Revogação da sessão atual |
 | `GET /perfil` · `PUT /perfil` | Dados do titular; CPF/e-mail/papel não são alterados pelo binding |
-| `PUT /perfil/preferencias` | Tema e avisos existentes; preserva acessibilidade configurada no site |
-| `POST /perfil/senha` | Identity ChangePassword, revogação de acessos e novo login |
+| `PUT /perfil/preferencias` | Atualização parcial de tema, avisos e acessibilidade; campos omitidos são preservados |
+| `PUT /perfil/email` | Senha atual, novo e-mail único e confirmação; sincroniza Identity/cadastro clínico e retorna novos tokens |
+| `POST /perfil/senha` | Identity ChangePassword; retorna tokens novos para a sessão atual e revoga outros acessos |
+| `GET /perfil/sessoes` | Acessos ativos do titular, com indicação da sessão atual |
+| `POST /perfil/sessoes/{id}/encerrar` | Encerra outro acesso do titular, com confirmação explícita |
+| `POST /perfil/sessoes/encerrar-outras` | Encerra os demais acessos e mantém a sessão atual, com confirmação |
 | `GET /perfil/foto` · `POST /perfil/foto` | Foto do titular, com os validadores existentes |
 | `GET /medicos` | Médicos ativos e especialidades |
-| `GET /medicos/{id}/datas` | Datas disponíveis, no horizonte de 90 dias |
+| `GET /medicos/{id}/datas` | Datas realmente disponíveis, com o mesmo horizonte cadastrado no site |
+| `GET /medicos/{id}/elegibilidade` | Elegibilidade do próprio paciente, conforme matriz da clínica |
 | `GET /medicos/{id}/horarios?data=AAAA-MM-DD` | Vagas; `consultaId` opcional apenas para remarcação própria |
+| `GET /agenda/primeira-vaga?especialidade=...` | Procura primeira vaga da especialidade em até 90 dias, como o site |
 | `GET /consultas` · `POST /consultas` | Lista própria e agendamento com confirmação explícita |
 | `POST /consultas/{id}/confirmar` | Confirmação de consulta própria |
 | `POST /consultas/{id}/remarcar` | Nova data/hora para consulta própria |
 | `POST /consultas/{id}/cancelar` | Cancelamento de consulta própria |
+| `GET /exames` | Até 200 registros ativos/aprovados do próprio paciente, do mais recente ao mais antigo |
 | `GET /atendimento/historico` | Conversa Web canônica da conta, últimas 60 mensagens |
 | `POST /atendimento/mensagens` | Mesmo fluxo do agente, confirmação de ações e pausa humana |
 | `POST /atendimento/encerrar` · `POST /atendimento/avaliar` | Mesmo encerramento e avaliação do site |
 
 A API reutiliza `AgendamentoService` e o fluxo existente do agente. A seleção de paciente nunca vem do corpo da requisição. Data Protection, sessões, perfis e registros de atividade usam as tabelas já existentes. Não há nova chave JWT nem alteração nas credenciais de WhatsApp, SMS e e-mail.
+
+Agendar cria ou reutiliza a solicitação confirmada vinculada à consulta; cancelar também atualiza a solicitação. As ações registram auditoria e uma repetição da mesma reserva não duplica a solicitação. As permissões são as mesmas dos serviços do site. O campo `futura` separa a classificação do histórico das permissões de ação por situação.
+
+## Leitura e continuidade de sessão
+
+`GET /perfil` retorna `contaId` e os campos `textoMaior`, `altoContraste`, `reduzirAnimacoes` e `modoSimplificado`. O app grava apenas preferências visuais no armazenamento privado, por conta. Elas podem ser alteradas sem internet e sincronizadas depois. Os níveis normal/grande/extra são locais; a preferência booleana de texto maior é compartilhada com o site. A escala efetiva nunca reduz a fonte escolhida no Android.
+
+O painel Leitura mantém a tela de origem composta, sem interação e fora da árvore de acessibilidade enquanto o painel está aberto. Assim os rascunhos permanecem em memória, sem gravar senhas em disco. Títulos, papéis, estados e descrições auxiliam a navegação com leitor de tela; a ordem real de foco ainda deve ser homologada com TalkBack no aparelho.
+
+Os campos do `PUT /perfil/preferencias` são opcionais: clientes anteriores podem enviar só suas opções sem apagar acessibilidade. Tema e canal, quando presentes, precisam ser válidos. E-mail e senha devolvem o mesmo formato de tokens do login, sem cookie; o app substitui o par antigo e mantém o identificador da sessão atual. As outras sessões são revogadas. A geração local de sessão impede respostas atrasadas de apagar os tokens recém-renovados.
+
+Os exames usam os campos existentes no site: nome, data e local. Não há arquivos PDF ou laudos armazenados por esse cadastro. O formulário de avaliação do chat só aparece no app depois do aceite do convite; a API de atendimento existente continua atendendo os demais canais.
 
 ## Verificação local
 

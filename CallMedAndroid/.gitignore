@@ -1,0 +1,14 @@
+# Local credentials, caches and build artifacts
+keystore.properties
+*.jks
+*.keystore
+*.p12
+*.pfx
+local.properties
+.gradle/
+.kotlin/
+.idea/
+.local/
+**/build/
+release/*.apk
+release/*.aab
