@@ -156,6 +156,42 @@ class NativeUiTest {
         ui.onNodeWithTag("chat-draft").performTextInput("Quero continuar o atendimento")
         assertEquals("Quero continuar o atendimento", state.chatDraft)
     }
+    @Test fun compactChatComposerKeepsMessageAndAccessibleSendTogether() {
+        val events = mutableListOf<AppAction>()
+        var state by mutableStateOf(sample(Screen.CHAT).copy(chat = ChatState(messages = listOf(
+            ChatMessage(1, "Olá! Como posso ajudar?", "assistente")))))
+        ui.setContent { CallMedTheme(state.reading) { CallMedApp(state) {
+            events += it
+            if (it is AppAction.ChatDraft) state = state.copy(chatDraft = it.text)
+        } } }
+        assertTrue(ui.onNodeWithTag("chat-composer").fetchSemanticsNode().boundsInRoot.height <= 96f * ui.activity.resources.displayMetrics.density)
+        ui.onNodeWithTag("chat-send").assertHeightIsAtLeast(48.dp).assertIsNotEnabled()
+        ui.onNodeWithContentDescription("Enviar mensagem").assertExists()
+        ui.onNodeWithTag("chat-draft").performTextInput("oi")
+        ui.onNodeWithTag("chat-send").assertIsEnabled().performClick()
+        assertEquals(1, events.count { it == AppAction.Send })
+        shot("chat-compact-native")
+    }
+    @Test fun sendingNewQuestionHidesPreviousClosureAndReopensChatWithLargeFont() {
+        val ended = "Atendimento encerrado. Envie uma mensagem quando precisar novamente."
+        var state by mutableStateOf(sample(Screen.CHAT).copy(chat = ChatState(
+            messages = listOf(ChatMessage(1, "Até mais!", "assistente")), encerrada = true)))
+        ui.setContent { CompositionLocalProvider(LocalDensity provides Density(1f, 2f)) {
+            CallMedTheme(state.reading) { CallMedApp(state) {} }
+        } }
+        ui.onNodeWithText(ended).assertExists()
+        ui.runOnIdle { state = state.copy(busy = true, sendingChat = true) }
+        ui.onNodeWithText(ended).assertDoesNotExist()
+        ui.onNodeWithText("Preparando a resposta…").assertExists()
+        ui.runOnIdle { state = state.copy(busy = false, sendingChat = false, chat = ChatState(messages = listOf(
+            ChatMessage(1, "Até mais!", "assistente"), ChatMessage(2, "oi", "paciente"),
+            ChatMessage(3, "Olá! Como posso ajudar?", "assistente")))) }
+        ui.onNodeWithText(ended).assertDoesNotExist()
+        ui.onNodeWithText("Encerrar").assertExists()
+        ui.onNodeWithText("Olá! Como posso ajudar?").assertExists()
+        ui.onNodeWithTag("chat-send").assertHeightIsAtLeast(48.dp).assertIsDisplayed()
+        shot("chat-reopened-font-200-native")
+    }
     @Test fun themeHasLegibleTextPairsInEveryAppearance() {
         fun ratio(a: Color, b: Color): Float { val x = a.luminance(); val y = b.luminance(); return (maxOf(x, y) + .05f) / (minOf(x, y) + .05f) }
         for (dark in listOf(true, false)) for (contrast in listOf(true, false)) {

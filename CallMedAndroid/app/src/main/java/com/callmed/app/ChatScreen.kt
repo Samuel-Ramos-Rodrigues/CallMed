@@ -14,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -26,7 +27,7 @@ import androidx.compose.ui.unit.dp
 @Composable internal fun ChatScreen(s: UiState, action: (AppAction) -> Unit) {
     val list = rememberLazyListState()
     val reduce = s.reading.reduceMotion
-    LaunchedEffect(s.chat.messages.lastOrNull()?.id, s.chat.avaliacaoId, s.feedbackAccepted) {
+    LaunchedEffect(s.chat.messages.lastOrNull()?.id, s.chat.avaliacaoId, s.feedbackAccepted, s.sendingChat) {
         if (list.layoutInfo.totalItemsCount > 0) {
             val last = list.layoutInfo.totalItemsCount - 1
             if (reduce) list.scrollToItem(last) else list.animateScrollToItem(last)
@@ -40,15 +41,21 @@ import androidx.compose.ui.unit.dp
         LazyColumn(Modifier.weight(1f).fillMaxWidth().testTag("chat-history"), state = list, contentPadding = PaddingValues(horizontal = 18.dp, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(if (s.reading.spacious) 22.dp else 14.dp)) {
             if (s.chat.messages.isEmpty()) item { Panel { SectionTitle("Como podemos ajudar?"); Muted("Envie sua dúvida sobre consultas, horários ou atendimento. Você também pode pedir para falar com a equipe.") } }
             items(s.chat.messages, key = { it.id }) { message -> ChatBubble(message, message.id == s.chat.messages.lastOrNull()?.id) }
-            if (s.busy) item { Row(Modifier.padding(10.dp).semantics { liveRegion = LiveRegionMode.Polite }, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) { CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp); Text("Atualizando atendimento…", style = MaterialTheme.typography.bodySmall) } }
-            if (s.chat.avaliacaoId != null) item { Feedback(s, action) }
-            else if (s.chat.encerrada) item { Notice("Atendimento encerrado. Envie uma mensagem quando precisar novamente.") }
+            if (s.busy) item { Row(Modifier.padding(10.dp).semantics { liveRegion = LiveRegionMode.Polite }, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) { CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp); Text(if (s.sendingChat) "Preparando a resposta…" else "Atualizando atendimento…", style = MaterialTheme.typography.bodySmall) } }
+            if (!s.sendingChat) {
+                if (s.chat.avaliacaoId != null) item { Feedback(s, action) }
+                else if (s.chat.encerrada) item { Notice("Atendimento encerrado. Envie uma mensagem quando precisar novamente.") }
+            }
         }
         Surface(color = MaterialTheme.colorScheme.surface) {
-            Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                OutlinedTextField(s.chatDraft, { action(AppAction.ChatDraft(it)) }, Modifier.fillMaxWidth().testTag("chat-draft"), label = { Text("Sua mensagem") }, placeholder = { Text("Digite sua dúvida…") }, maxLines = 4, enabled = !s.busy,
+            Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp).testTag("chat-composer"), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(s.chatDraft, { action(AppAction.ChatDraft(it)) }, Modifier.weight(1f).testTag("chat-draft").semantics { contentDescription = "Sua mensagem" }, placeholder = { Text("Digite sua mensagem…", style = MaterialTheme.typography.bodySmall) }, maxLines = 4, enabled = !s.busy,
+                    shape = RoundedCornerShape(18.dp),
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences))
-                Primary(if (s.busy) "Aguarde…" else "Enviar mensagem", !s.busy && s.chatDraft.isNotBlank(), Icons.AutoMirrored.Outlined.Send) { action(AppAction.Send) }
+                FilledIconButton(onClick = { action(AppAction.Send) }, Modifier.size(56.dp).testTag("chat-send"), enabled = !s.busy && s.chatDraft.isNotBlank(),
+                    colors = IconButtonDefaults.filledIconButtonColors(disabledContainerColor = Color.Transparent)) {
+                    Icon(Icons.AutoMirrored.Outlined.Send, "Enviar mensagem")
+                }
             }
         }
     }

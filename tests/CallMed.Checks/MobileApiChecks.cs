@@ -179,8 +179,18 @@ internal static class MobileApiChecks
             using(var scope=app.Services.CreateScope()){var db=scope.ServiceProvider.GetRequiredService<MKSANContext>();var c=await db.ConversasAtendimento.SingleAsync(c=>c.Canal==CanalAtendimento.Web&&c.IdentificadorExterno==ids["a"]);c.Modo=ModoAtendimento.Humano;await db.SaveChangesAsync();}
             check((await a.PostAsJsonAsync("/api/mobile/v1/atendimento/mensagens",new{mensagem="Aguardando a equipe"})).IsSuccessStatusCode&&fake.Calls==calls,"Atendimento humano pausa respostas automáticas no app");
             var ended=await Json(await a.PostAsJsonAsync("/api/mobile/v1/atendimento/encerrar",new{}));var rating=ended.GetProperty("avaliacao").GetProperty("id").GetString();
+            var closedHistory=await Json(await a.GetAsync("/api/mobile/v1/atendimento/historico"));
+            check(closedHistory.GetProperty("encerrada").GetBoolean()&&closedHistory.GetProperty("avaliacao").GetProperty("id").GetString()==rating,"Histórico mostra encerramento e avaliação pendente sem reabrir a conversa");
             check((await b.PostAsJsonAsync("/api/mobile/v1/atendimento/avaliar",new{id=rating,nota=5,comentario="Alheio"})).StatusCode==HttpStatusCode.NotFound,"Feedback alheio não pode ser respondido");
             check((await a.PostAsJsonAsync("/api/mobile/v1/atendimento/avaliar",new{id=rating,nota=5,comentario="Atendimento teste"})).IsSuccessStatusCode,"Feedback nativo é registrado ao encerrar");
+            check((await a.PostAsJsonAsync("/api/mobile/v1/atendimento/mensagens",new{mensagem="oi"})).IsSuccessStatusCode,"Nova saudação é aceita após avaliar um atendimento encerrado");
+            var reopened=await Json(await a.GetAsync("/api/mobile/v1/atendimento/historico"));
+            check(!reopened.GetProperty("encerrada").GetBoolean()&&reopened.GetProperty("avaliacao").ValueKind==JsonValueKind.Null&&reopened.GetProperty("mensagens").EnumerateArray().Any(m=>m.GetProperty("texto").GetString()=="oi"),"Nova mensagem reabre o atendimento, preserva o histórico e remove o encerramento antigo");
+            var nextEnded=await Json(await a.PostAsJsonAsync("/api/mobile/v1/atendimento/encerrar",new{}));var pendingRating=nextEnded.GetProperty("avaliacao").GetProperty("id").GetString();
+            check(pendingRating!=rating,"Um novo atendimento encerrado tem sua própria avaliação");
+            check((await a.PostAsJsonAsync("/api/mobile/v1/atendimento/mensagens",new{mensagem="Quero continuar, ainda tenho uma dúvida"})).IsSuccessStatusCode,"Avaliação pendente não bloqueia uma nova pergunta");
+            var resumed=await Json(await a.GetAsync("/api/mobile/v1/atendimento/historico"));
+            check(!resumed.GetProperty("encerrada").GetBoolean()&&resumed.GetProperty("avaliacao").ValueKind==JsonValueKind.Null,"Ao retomar sem avaliar, o histórico não oferece a avaliação do atendimento anterior");
             string expired;
             using(var scope=app.Services.CreateScope()){
                 var options=scope.ServiceProvider.GetRequiredService<IOptionsMonitor<BearerTokenOptions>>().Get(MobileAuth.Scheme);

@@ -1,6 +1,6 @@
 # Android nativo — integração com CallMed
 
-O cliente está em [`CallMedAndroid`](../CallMedAndroid/README-ANDROID.md). Publique primeiro o backend desta entrega; depois instale o APK nativo **23.1.0 / 2310** por cima da versão anterior. O APK atualizado já está incluído no download do site. Não é preciso gerar outro binário para esta entrega.
+O cliente está em [`CallMedAndroid`](../CallMedAndroid/README-ANDROID.md). O APK nativo **23.1.1 / 2311** já está compilado e incluído no download do site. Instale-o por cima da versão anterior. A correção de histórico do chat é no cliente e funciona com o backend 23.1.0 já publicado; se ainda usar backend anterior, publique o projeto completo para disponibilizar as funções novas de conta, exames e agenda.
 
 ## API móvel
 
@@ -47,6 +47,12 @@ O painel Leitura mantém a tela de origem composta, sem interação e fora da á
 Os campos do `PUT /perfil/preferencias` são opcionais: clientes anteriores podem enviar só suas opções sem apagar acessibilidade. Tema e canal, quando presentes, precisam ser válidos. E-mail e senha devolvem o mesmo formato de tokens do login, sem cookie; o app substitui o par antigo e mantém o identificador da sessão atual. As outras sessões são revogadas. A geração local de sessão impede respostas atrasadas de apagar os tokens recém-renovados.
 
 Os exames usam os campos existentes no site: nome, data e local. Não há arquivos PDF ou laudos armazenados por esse cadastro. O formulário de avaliação do chat só aparece no app depois do aceite do convite; a API de atendimento existente continua atendendo os demais canais.
+
+## Histórico e retomada do chat
+
+Uma nova pergunta reabre a conversa no servidor, inclusive quando a avaliação anterior ainda está pendente. A API não exige avaliar antes de continuar. No app, cada ação invalida as leituras de histórico iniciadas antes dela. Só há um polling em andamento; uma resposta antiga não pode recolocar o estado encerrado nem apagar mensagens novas. O resultado do POST aplica seu estado antes da atualização do histórico. Falhas de rede não repetem automaticamente o envio.
+
+O aviso antigo de encerramento e seu convite de avaliação não aparecem durante o preparo da resposta à nova mensagem. O campo de texto e o botão de envio ficam lado a lado, com descrição acessível e alvo de toque de 56dp.
 
 ## Verificação local
 

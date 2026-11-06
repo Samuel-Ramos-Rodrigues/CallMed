@@ -1,20 +1,20 @@
-# Validação — Android nativo 23.1.0
+# Validação — Android nativo 23.1.1
 
 ## Resultado automatizado
 
 | Verificação | Resultado |
 |---|---|
-| Backend e suíte completa existente + móvel | 538 verificações passaram |
-| API móvel HTTP real, isolada para o teste | 86 verificações passaram, incluídas nas 538 |
+| Backend e suíte completa existente + móvel | 544 verificações passaram |
+| API móvel HTTP real, isolada para o teste | 92 verificações passaram, incluídas nas 544 |
 | HTTP do download após substituir o APK | 13 verificações passaram |
 | Página de download no Chromium, larguras 320/390/1280, temas claro/escuro | 12 verificações passaram |
 | `assembleRelease` Android | Sucesso |
-| `testDebugUnitTest` Android | 28 testes: 19 do cliente e 9 das telas nativas; zero falhas/erros/ignorados |
+| `testDebugUnitTest` Android | 32 testes: 19 do cliente, 2 de concorrência no ViewModel e 11 das telas nativas; zero falhas/erros/ignorados |
 | Telas Compose em Robolectric | Interações, árvore semântica e renderização em 320dp; fonte do sistema em 100% e 200% |
 | `lintRelease` Android | Sucesso, zero erros; 19 avisos não bloqueantes |
 | `dotnet publish -c Release` | Sucesso; APK e metadados presentes |
 | Verificação criptográfica `apksig` | Assinatura v2 válida, certificado esperado |
-| Manifesto binário | Pacote, versão 2310/23.1.0, API mínima 26, target 36, MainActivity e release sem debug conferidos |
+| Manifesto binário | Pacote, versão 2311/23.1.1, API mínima 26, target 36, MainActivity e release sem debug conferidos |
 | Fontes Kotlin entregues | Idênticos aos usados na compilação verificada |
 
 A suíte completa do servidor e as verificações da interface de download foram executadas após a inclusão do novo APK, com o hash real atualizado nos testes. A publicação Release contém o mesmo APK e metadados. Os testes usam banco em memória, IA e transportes simulados; não enviam mensagens nem alteram dados reais da clínica. As telas nativas foram renderizadas e inspecionadas; as imagens são evidência interna, não dados de pacientes.
@@ -29,11 +29,14 @@ A suíte completa do servidor e as verificações da interface de download foram
 - Agendamento vincula solicitação confirmada e auditoria sem duplicar a reserva. Cancelamento sincroniza a solicitação; remarcação registra auditoria.
 - Histórico separa consulta futura de permissão por status; remarcação mantém as regras do site.
 - Histórico isolado, transferência humana e feedback ao encerrar.
+- Reabertura por nova saudação após avaliar; nova pergunta com avaliação pendente; histórico remove encerramento e pesquisa anteriores sem bloquear o envio.
 - Sessões do titular, proteção da sessão atual e encerramento confirmado de outros acessos.
 - E-mail: senha atual, formato, duplicidade, sincronização de Identity/username/paciente, tokens novos sem cookie e CPF de login preservado.
 - Refresh válido, adulterado e expirado; e-mail/senha mantêm a sessão atual com tokens novos e invalidam os tokens antigos/outros acessos; desativação corta acesso.
 - No cliente: HTTPS, credenciais no corpo do POST, refresh, saída offline, ausência de reenvio de mutações após falha de rede e proteção contra respostas atrasadas após mudança de sessão ou credencial.
 - UI nativa: quatro abas, alvos de toque, cinco etapas, revisão antes do agendamento, rascunho preservado ao ajustar leitura, fonte do sistema nunca reduzida, papéis/estados de seleção, confirmação de cancelamento, remarcação e aceite antes da nota de feedback.
+- Chat compacto: campo e envio lado a lado, botão descrito para leitor de tela, desabilitado apenas quando vazio/ocupado, aviso de encerramento oculto durante nova pergunta e removido ao retomar, inclusive com fonte de 200%.
+- Concorrência no ViewModel real: segura uma resposta antiga do polling, envia uma pergunta e aplica o histórico novo; ao liberar a resposta atrasada, ela não altera o estado ativo nem apaga mensagens. Outro teste garante uma única leitura de polling em andamento. Ambos reproduziram a falha antes da correção e passaram com a proteção aplicada.
 - Paletas claro/escuro/alto contraste: pares de texto testados com razão mínima 4,5:1.
 - Download byte a byte, SHA-256, MIME, attachment, range, arquivo ausente, metadados inválidos e impossibilidade de escolher outro arquivo por parâmetro.
 
@@ -45,13 +48,13 @@ SHA-256 do certificado:
 C7:92:6C:AD:9E:28:40:76:FF:EC:67:AA:68:5F:EE:D2:7F:18:8D:93:73:48:1A:FA:E9:00:1C:0F:AB:58:FF:EA
 ```
 
-SHA-256 do APK, 1.441.610 bytes:
+SHA-256 do APK, 1.441.606 bytes:
 
 ```text
-fc4d711ff8e2ff182dec5c5b9f98334195df1b9c409ff541958990c194c4379b
+2379f97ac95c467f54cb49dac6fd9feb06c0020f9be7199a7e24ed9156d18f30
 ```
 
-O mapa R8 desta compilação está em `CallMedAndroid/release/mapping-23.1.0.txt.gz`. A assinatura é a mesma da entrega anterior, permitindo atualização da instalação direta.
+O mapa R8 desta compilação está em `CallMedAndroid/release/mapping-23.1.1.txt.gz`. A assinatura é a mesma da entrega anterior, permitindo atualização da instalação direta.
 
 ## Reproduzir as verificações
 

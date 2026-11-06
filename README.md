@@ -4,7 +4,7 @@
 
 <h1 align="center">CallMed</h1>
 
-> **Android nativo 23.1.0:** quatro áreas, agendamento em cinco etapas, ajustes de leitura em todas as telas, perfil e dispositivos, exames aprovados e chat com avaliação opcional. Publique o backend desta entrega antes de instalar a atualização. Abra `CallMedAndroid` no Android Studio. [Compilação e instalação](CallMedAndroid/README-ANDROID.md) · [API e publicação](docs/ANDROID-NATIVO.md).
+> **Android nativo 23.1.1:** corrigida a restauração do aviso de atendimento encerrado por histórico atrasado; caixa de mensagem compacta. Mantidas quatro áreas, agendamento em cinco etapas, leitura, conta e exames. A correção do chat funciona com o backend 23.1.0 já publicado. Abra `CallMedAndroid` no Android Studio. [Compilação e instalação](CallMedAndroid/README-ANDROID.md) · [API e publicação](docs/ANDROID-NATIVO.md).
 
 > **APK pelo próprio site:** página `/aplicativo` com download assinado para Android, acessível pela página inicial e pelos rodapés. [Publicação no Render e atualização do APK](docs/APLICATIVO-DOWNLOAD-DIRETO.md).
 
@@ -297,8 +297,8 @@ O cliente de pacientes usa **Kotlin e Jetpack Compose**, com as telas próprias 
 applicationId: com.callmed.app
 minSdk: 26
 targetSdk: 36
-versionCode: 2310
-versionName: 23.1.0
+versionCode: 2311
+versionName: 23.1.1
 ```
 
 Abra a pasta **CallMedAndroid** no Android Studio. [Compilação e instalação](CallMedAndroid/README-ANDROID.md) · [API e publicação do servidor](docs/ANDROID-NATIVO.md).

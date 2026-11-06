@@ -1,13 +1,13 @@
 # APK nativo disponível no próprio site
 
-O download entrega o aplicativo nativo de pacientes **CallMed 23.1.0**, criado em Kotlin e Jetpack Compose, com os novos fluxos e ajustes de leitura. O módulo está em [`CallMedAndroid`](../CallMedAndroid/README-ANDROID.md). O projeto TWA anterior foi preservado em sua pasta.
+O download entrega o aplicativo nativo de pacientes **CallMed 23.1.1**, criado em Kotlin e Jetpack Compose, com os novos fluxos e ajustes de leitura. O módulo está em [`CallMedAndroid`](../CallMedAndroid/README-ANDROID.md). O projeto TWA anterior foi preservado em sua pasta.
 
 ## Publicar no Render
 
 1. Atualize o repositório com este projeto completo e publique o serviço existente. Esta entrega inclui as rotas `/api/mobile/v1` usadas pelo nativo.
 2. Inclua `CallMedCrud/App_Data/Aplicativo/CallMed.apk` e `release.json`. O `.gitignore` libera especificamente esse APK público; as chaves privadas continuam ignoradas.
 3. O `.csproj` copia os dois arquivos para a saída de publicação. O Dockerfile os leva ao contêiner. As pastas de código Android e as chaves de assinatura ficam fora do contexto Docker.
-4. Após publicar, abra `https://callmed.onrender.com/aplicativo` e confira a versão **23.1.0**.
+4. Após publicar, abra `https://callmed.onrender.com/aplicativo` e confira a versão **23.1.1**.
 5. Baixe o APK, abra-o no celular e confirme a instalação. Se necessário, autorize a instalação pelo navegador usado no download.
 
 Publique o servidor antes de entrar no novo app. Não foi criada variável de ambiente nem migração adicional para essa integração. As migrações já existentes, incluindo chaves Data Protection, perfis e sessões, continuam necessárias.
@@ -19,16 +19,16 @@ O arquivo fica junto do código publicado, sem depender de upload para o disco t
 | Campo | Valor |
 |---|---|
 | Pacote | `com.callmed.app` |
-| Versão | `23.1.0` |
-| Código | `2310` |
+| Versão | `23.1.1` |
+| Código | `2311` |
 | Android mínimo | 8.0 / API 26 |
-| Tamanho | 1.441.610 bytes |
+| Tamanho | 1.441.606 bytes |
 | Activity inicial | `com.callmed.app.MainActivity` |
 | Assinatura | APK v2 verificada; mesma chave de produção anterior |
 | Debug | Desabilitado no release |
-| SHA-256 | `fc4d711ff8e2ff182dec5c5b9f98334195df1b9c409ff541958990c194c4379b` |
+| SHA-256 | `2379f97ac95c467f54cb49dac6fd9feb06c0020f9be7199a7e24ed9156d18f30` |
 
-O SHA-256 do APK identifica o conteúdo do arquivo; a impressão digital do certificado identifica a assinatura. O código 2310 é superior ao nativo 2300 e ao TWA 2220. A mesma chave permite atualizar a instalação direta anterior sem desinstalar. Instalações de debug ou assinadas por outra chave exigem conferir a compatibilidade de assinatura.
+O SHA-256 do APK identifica o conteúdo do arquivo; a impressão digital do certificado identifica a assinatura. O código 2311 é superior ao nativo 2300 e ao TWA 2220. A mesma chave permite atualizar a instalação direta anterior sem desinstalar. Instalações de debug ou assinadas por outra chave exigem conferir a compatibilidade de assinatura.
 
 ## Download
 
@@ -46,4 +46,4 @@ O aplicativo não instala atualizações automaticamente. Mudanças no cliente K
 
 ## Verificação
 
-A compilação e publicação Release do servidor incluem o mesmo APK. Os 13 testes HTTP de download e as 12 verificações da interface no Chromium passaram com este arquivo. A compilação Android release, o lint e os 28 testes JVM/Compose também passaram. Veja [a validação completa](validacao/ANDROID-NATIVO.md).
+A compilação e publicação Release do servidor incluem o mesmo APK. Os 13 testes HTTP de download e as 12 verificações da interface no Chromium passaram com este arquivo. A compilação Android release, o lint e os 32 testes JVM/Compose também passaram. Veja [a validação completa](validacao/ANDROID-NATIVO.md).

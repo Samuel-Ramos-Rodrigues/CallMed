@@ -1,4 +1,13 @@
-# 2026-11-06 — Android nativo 23.1.0
+# 2026-11-06 — Android nativo 23.1.1
+
+- Corrigida a atualização atrasada do histórico: uma leitura iniciada antes do envio, encerramento ou avaliação não pode sobrescrever o resultado da ação.
+- Polling com uma única leitura em andamento, evitando respostas fora de ordem em conexões lentas.
+- Nova mensagem usa imediatamente o estado confirmado pelo POST; o aviso de encerramento anterior fica oculto enquanto a resposta está sendo preparada.
+- Caixa de mensagem compacta, com envio ao lado, alvo de toque de 56dp e descrição para leitor de tela. Mantidos texto ampliado e entrada com múltiplas linhas.
+- Testes reproduzem a falha antes da correção e cobrem reabertura com avaliação respondida ou pendente.
+- APK 23.1.1/2311 com a mesma assinatura. Nenhuma alteração de regra de negócio ou endpoint do servidor.
+
+## 2026-11-06 — Android nativo 23.1.0
 
 - Quatro áreas: Início, Consultas, Chat e Conta; interface com temas claro/escuro e botão Leitura global.
 - Agendamento por especialidade, médico, data, horário e revisão; primeira vaga, elegibilidade e remarcação preservando médico/forma de atendimento.

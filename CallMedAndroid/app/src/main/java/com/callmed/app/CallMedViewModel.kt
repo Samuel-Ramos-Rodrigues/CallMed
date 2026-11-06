@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,11 +17,13 @@ import java.io.ByteArrayOutputStream
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicBoolean
 
-class CallMedViewModel(application: Application) : AndroidViewModel(application) {
+class CallMedViewModel @JvmOverloads constructor(application: Application,
+    private val api: CallMedApi = CallMedApi(SecureTokenStore(application)),
+    private val readingStore: ReadingStore = ReadingStore(application)) : AndroidViewModel(application) {
     private val sessionGeneration = AtomicLong()
+    private val chatGeneration = AtomicLong()
+    private val chatPolling = AtomicBoolean()
     private val readingBeforeLogin = AtomicBoolean()
-    private val api = CallMedApi(SecureTokenStore(application))
-    private val readingStore = ReadingStore(application)
     private val mutable = MutableStateFlow(UiState(reading = readingStore.global()))
     val state = mutable.asStateFlow()
 
@@ -35,6 +38,8 @@ class CallMedViewModel(application: Application) : AndroidViewModel(application)
     }
     private fun action(work: suspend () -> Unit) {
         if (state.value.busy) return
+        // Uma leitura iniciada antes desta ação não pode sobrescrever seu resultado.
+        chatGeneration.incrementAndGet()
         mutable.update { it.copy(busy = true) }
         viewModelScope.launch {
             try { withContext(Dispatchers.IO) { work() } }
@@ -272,36 +277,43 @@ class CallMedViewModel(application: Application) : AndroidViewModel(application)
         api.uploadPhoto(bytes, mime); applyProfile(api.profile()); val photo = api.photo()
         mutable.update { it.copy(photo = photo, info = "Foto atualizada.") }
     }
-    private fun history(history: ChatState) {
-        mutable.update { current -> current.copy(chat = history,
+    private fun history(history: ChatState, expectedGeneration: Long? = null) {
+        mutable.update { current ->
+            if (expectedGeneration != null && (expectedGeneration != chatGeneration.get() || current.busy || !current.authenticated || current.screen != Screen.CHAT)) current
+            else current.copy(chat = history,
             feedbackAccepted = if (history.avaliacaoId == current.chat.avaliacaoId) current.feedbackAccepted else false,
             feedbackNote = if (history.avaliacaoId == current.chat.avaliacaoId) current.feedbackNote else null,
             feedbackComment = if (history.avaliacaoId == current.chat.avaliacaoId) current.feedbackComment else "") }
     }
-    fun pollChat() {
-        if (state.value.busy || !state.value.authenticated || state.value.screen != Screen.CHAT) return
-        val generation = sessionGeneration.get()
-        viewModelScope.launch {
+    fun pollChat(): Job? {
+        if (state.value.busy || !state.value.authenticated || state.value.screen != Screen.CHAT) return null
+        if (!chatPolling.compareAndSet(false, true)) return null
+        val generation = sessionGeneration.get(); val chatVersion = chatGeneration.get()
+        return viewModelScope.launch {
             try {
                 val result = withContext(Dispatchers.IO) { api.history() }
-                if (generation == sessionGeneration.get() && state.value.authenticated && !state.value.busy && state.value.screen == Screen.CHAT) history(result)
-            } catch (e: ApiError) { if (generation == sessionGeneration.get() && e.status in listOf(401, 403)) fail(e) }
+                if (generation == sessionGeneration.get()) history(result, chatVersion)
+            } catch (e: ApiError) { if (generation == sessionGeneration.get() && chatVersion == chatGeneration.get() && e.status in listOf(401, 403)) fail(e) }
             catch (e: Exception) { if (e is CancellationException) throw e }
+            finally { chatPolling.set(false) }
         }
     }
     private fun refreshChat() = action { history(api.history()) }
     private fun send() {
         val text = state.value.chatDraft.trim(); if (text.isBlank()) return
         action {
-            mutable.update { it.copy(chatDraft = "") }
+            mutable.update { it.copy(chatDraft = "", sendingChat = true) }
             var accepted = false
             try {
-                api.json("POST", "atendimento/mensagens", JSONObject().put("mensagem", text)); accepted = true
+                val response = api.json("POST", "atendimento/mensagens", JSONObject().put("mensagem", text)); accepted = true
+                if (response.has("modo") || response.has("encerrada")) history(state.value.chat.copy(
+                    modo = response.text("modo", "IA"), encerrada = response.optBoolean("encerrada"),
+                    avaliacaoId = response.optJSONObject("avaliacao")?.text("id")?.takeIf(String::isNotBlank)))
                 history(api.history())
             } catch (e: Exception) {
                 if (!accepted) mutable.update { it.copy(chatDraft = text) }
                 throw e
-            }
+            } finally { mutable.update { it.copy(sendingChat = false) } }
         }
     }
     private fun endChat() = action { api.json("POST", "atendimento/encerrar", JSONObject()); history(api.history()) }

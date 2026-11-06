@@ -100,7 +100,7 @@ data class UiState(val restoring: Boolean = true, val authenticated: Boolean = f
     val profile: Patient? = null, val appointments: List<Appointment> = emptyList(), val doctors: List<Doctor> = emptyList(),
     val tab: Tab = Tab.HOME, val screen: Screen = Screen.HOME, val readingReturn: Screen = Screen.HOME,
     val booking: BookingState = BookingState(), val reading: ReadingPreferences = ReadingPreferences(), val profileDraft: ProfileDraft? = null,
-    val chat: ChatState = ChatState(), val chatDraft: String = "", val feedbackAccepted: Boolean = false, val feedbackNote: Int? = null,
+    val chat: ChatState = ChatState(), val chatDraft: String = "", val sendingChat: Boolean = false, val feedbackAccepted: Boolean = false, val feedbackNote: Int? = null,
     val feedbackComment: String = "", val sessions: List<AccountSession> = emptyList(), val exams: List<ExamRecord> = emptyList(),
     val exam: ExamRecord? = null, val error: String? = null, val info: String? = null, val photo: ByteArray? = null,
     val bookedId: Int? = null)
