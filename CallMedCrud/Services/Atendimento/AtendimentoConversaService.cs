@@ -245,7 +245,7 @@ public sealed class AtendimentoConversaService
             return null;
         }
 
-        await ApararAsync(conversa.Id, ct);
+        if (conversa.Canal != CanalAtendimento.Web) await ApararAsync(conversa.Id, ct);
 
         return mensagem;
     }
@@ -261,10 +261,12 @@ public sealed class AtendimentoConversaService
             new MensagemAtendimento { ConversaAtendimentoId = conversa.Id, Direcao = DirecaoMensagemAtendimento.Saida,
                 Autor = AutorMensagemAtendimento.Assistente, Status = StatusMensagemAtendimento.Enviada,
                 Texto = Limitar(resposta, 5000) ?? string.Empty, CriadoEm = agora.AddTicks(1), EnviadoEm = agora });
+        conversa.Ativa = true;
         conversa.AtualizadoEm = agora;
         conversa.UltimaInteracaoEm = agora;
         await _context.SaveChangesAsync(ct);
-        await ApararAsync(conversa.Id, ct);
+        // O chat Web/app possui histórico de atendimentos consultável pelo titular.
+        // Limitar a leitura não deve apagar as conversas arquivadas.
     }
 
     private void AnexarPacienteExistente(Paciente? paciente)
@@ -336,7 +338,7 @@ public sealed class AtendimentoConversaService
             _context.Entry(mensagem).State = EntityState.Detached;
             return await _context.MensagensAtendimento.AsNoTracking().SingleAsync(m => m.ChaveEnvio == chaveEnvio, ct);
         }
-        await ApararAsync(conversa.Id, ct);
+        if (conversa.Canal != CanalAtendimento.Web) await ApararAsync(conversa.Id, ct);
 
         return mensagem;
     }

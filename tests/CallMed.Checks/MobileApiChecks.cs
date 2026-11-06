@@ -181,16 +181,53 @@ internal static class MobileApiChecks
             var ended=await Json(await a.PostAsJsonAsync("/api/mobile/v1/atendimento/encerrar",new{}));var rating=ended.GetProperty("avaliacao").GetProperty("id").GetString();
             var closedHistory=await Json(await a.GetAsync("/api/mobile/v1/atendimento/historico"));
             check(closedHistory.GetProperty("encerrada").GetBoolean()&&closedHistory.GetProperty("avaliacao").GetProperty("id").GetString()==rating,"Histórico mostra encerramento e avaliação pendente sem reabrir a conversa");
+            check(closedHistory.GetProperty("historicoVersao").GetInt32()==2&&closedHistory.GetProperty("mensagens").GetArrayLength()==0&&closedHistory.GetProperty("haAnteriores").GetBoolean(),"Atendimento encerrado sai da conversa atual e fica disponível em Anteriores");
+            var archive=await Json(await a.GetAsync("/api/mobile/v1/atendimento/anteriores"));
+            check(archive.GetProperty("itens").GetArrayLength()==1&&archive.GetProperty("itens")[0].GetProperty("id").GetString()==rating,"Histórico lista os atendimentos encerrados do titular");
+            var detail=await Json(await a.GetAsync($"/api/mobile/v1/atendimento/anteriores/{rating}"));
+            check(detail.GetProperty("mensagens").GetArrayLength()>=2&&detail.GetProperty("mensagens").EnumerateArray().Any(m=>m.GetProperty("texto").GetString()=="Quero uma informação de teste"),"Conversa arquivada mantém as mensagens anteriores consultáveis");
+            check((await b.GetAsync($"/api/mobile/v1/atendimento/anteriores/{rating}")).StatusCode==HttpStatusCode.NotFound,"Detalhe de atendimento anterior não pode ser lido por outra conta");
+            check((await b.GetAsync($"/api/mobile/v1/atendimento/anteriores?antesDe={rating}")).StatusCode==HttpStatusCode.NotFound,"Cursor de paginação de outra conta é rejeitado");
             check((await b.PostAsJsonAsync("/api/mobile/v1/atendimento/avaliar",new{id=rating,nota=5,comentario="Alheio"})).StatusCode==HttpStatusCode.NotFound,"Feedback alheio não pode ser respondido");
             check((await a.PostAsJsonAsync("/api/mobile/v1/atendimento/avaliar",new{id=rating,nota=5,comentario="Atendimento teste"})).IsSuccessStatusCode,"Feedback nativo é registrado ao encerrar");
             check((await a.PostAsJsonAsync("/api/mobile/v1/atendimento/mensagens",new{mensagem="oi"})).IsSuccessStatusCode,"Nova saudação é aceita após avaliar um atendimento encerrado");
             var reopened=await Json(await a.GetAsync("/api/mobile/v1/atendimento/historico"));
             check(!reopened.GetProperty("encerrada").GetBoolean()&&reopened.GetProperty("avaliacao").ValueKind==JsonValueKind.Null&&reopened.GetProperty("mensagens").EnumerateArray().Any(m=>m.GetProperty("texto").GetString()=="oi"),"Nova mensagem reabre o atendimento, preserva o histórico e remove o encerramento antigo");
+            check(reopened.GetProperty("mensagens").GetArrayLength()==2&&!reopened.GetProperty("mensagens").EnumerateArray().Any(m=>m.GetProperty("texto").GetString()=="Quero uma informação de teste"),"Novo atendimento mostra somente suas mensagens, sem misturar a conversa encerrada");
+            using(var scope=app.Services.CreateScope()){var db=scope.ServiceProvider.GetRequiredService<MKSANContext>();var c=await db.ConversasAtendimento.SingleAsync(c=>c.Canal==CanalAtendimento.Web&&c.IdentificadorExterno==ids["a"]);c.Ativa=false;await db.SaveChangesAsync();}
+            var repaired=await Json(await a.GetAsync("/api/mobile/v1/atendimento/historico"));
+            check(!repaired.GetProperty("encerrada").GetBoolean()&&repaired.GetProperty("avaliacao").ValueKind==JsonValueKind.Null&&repaired.GetProperty("mensagens").GetArrayLength()==2,"Entrada posterior ao último encerramento não recebe aviso antigo mesmo com flag legada desatualizada");
+            using(var scope=app.Services.CreateScope()){var db=scope.ServiceProvider.GetRequiredService<MKSANContext>();var c=await db.ConversasAtendimento.SingleAsync(c=>c.Canal==CanalAtendimento.Web&&c.IdentificadorExterno==ids["a"]);c.Ativa=true;await db.SaveChangesAsync();}
             var nextEnded=await Json(await a.PostAsJsonAsync("/api/mobile/v1/atendimento/encerrar",new{}));var pendingRating=nextEnded.GetProperty("avaliacao").GetProperty("id").GetString();
             check(pendingRating!=rating,"Um novo atendimento encerrado tem sua própria avaliação");
             check((await a.PostAsJsonAsync("/api/mobile/v1/atendimento/mensagens",new{mensagem="Quero continuar, ainda tenho uma dúvida"})).IsSuccessStatusCode,"Avaliação pendente não bloqueia uma nova pergunta");
             var resumed=await Json(await a.GetAsync("/api/mobile/v1/atendimento/historico"));
             check(!resumed.GetProperty("encerrada").GetBoolean()&&resumed.GetProperty("avaliacao").ValueKind==JsonValueKind.Null,"Ao retomar sem avaliar, o histórico não oferece a avaliação do atendimento anterior");
+            var previousDetail=await Json(await a.GetAsync($"/api/mobile/v1/atendimento/anteriores/{rating}"));
+            check(!previousDetail.GetProperty("mensagens").EnumerateArray().Any(m=>m.GetProperty("texto").GetString()=="oi"),"Arquivo do primeiro atendimento não incorpora mensagens de atendimentos posteriores");
+            check((await a.PostAsJsonAsync("/api/mobile/v1/atendimento/iniciar",new{confirmarEncerramento=false})).StatusCode==HttpStatusCode.BadRequest,"Começar outro atendimento exige confirmar o encerramento do atual");
+            var freshChat=await Json(await a.PostAsJsonAsync("/api/mobile/v1/atendimento/iniciar",new{confirmarEncerramento=true}));
+            check(!freshChat.GetProperty("encerrada").GetBoolean()&&freshChat.GetProperty("mensagens").GetArrayLength()==0&&freshChat.GetProperty("avaliacao").ValueKind==JsonValueKind.Null,"Iniciar novo atendimento arquiva o atual e abre conversa vazia");
+            var allArchives=await Json(await a.GetAsync("/api/mobile/v1/atendimento/anteriores"));var archiveCount=allArchives.GetProperty("itens").GetArrayLength();
+            await Json(await a.PostAsJsonAsync("/api/mobile/v1/atendimento/iniciar",new{confirmarEncerramento=false}));
+            var repeatedStart=await Json(await a.GetAsync("/api/mobile/v1/atendimento/anteriores"));
+            check(repeatedStart.GetProperty("itens").GetArrayLength()==archiveCount,"Abrir novamente uma conversa vazia não cria arquivo ou pesquisa duplicada");
+            fake.Before=async()=>{using var scope=app.Services.CreateScope();var svc=scope.ServiceProvider.GetRequiredService<AtendimentoConversaService>();var db=scope.ServiceProvider.GetRequiredService<MKSANContext>();var c=await db.ConversasAtendimento.SingleAsync(c=>c.Canal==CanalAtendimento.Web&&c.IdentificadorExterno==ids["a"]);await svc.EncerrarAsync(c);};
+            var lateReply=await a.PostAsJsonAsync("/api/mobile/v1/atendimento/mensagens",new{mensagem="Pergunta em geração durante encerramento"});fake.Before=null;
+            using(var scope=app.Services.CreateScope()){var db=scope.ServiceProvider.GetRequiredService<MKSANContext>();check(lateReply.StatusCode==HttpStatusCode.Conflict&&!await db.MensagensAtendimento.AnyAsync(m=>m.Texto=="Pergunta em geração durante encerramento"),"Resposta comum da IA concluída após encerramento não reabre nem mistura o atendimento finalizado");}
+            using(var scope=app.Services.CreateScope()){
+                var db=scope.ServiceProvider.GetRequiredService<MKSANContext>();var c=await db.ConversasAtendimento.SingleAsync(c=>c.Canal==CanalAtendimento.Web&&c.IdentificadorExterno==ids["b"]);
+                for(var i=0;i<260;i++)db.MensagensAtendimento.Add(new(){ConversaAtendimentoId=c.Id,Direcao=i%2==0?DirecaoMensagemAtendimento.Entrada:DirecaoMensagemAtendimento.Saida,Autor=i%2==0?AutorMensagemAtendimento.Paciente:AutorMensagemAtendimento.Assistente,Status=StatusMensagemAtendimento.Enviada,Texto="Histórico preservado "+i});
+                await db.SaveChangesAsync();c.Ativa=false;await db.SaveChangesAsync();
+            }
+            var legacy=await Json(await b.GetAsync("/api/mobile/v1/atendimento/historico"));
+            check(legacy.GetProperty("encerrada").GetBoolean()&&legacy.GetProperty("mensagens").GetArrayLength()==0&&legacy.GetProperty("avaliacao").ValueKind==JsonValueKind.Null,"Fechamento legado é arquivado sem solicitar avaliação retroativa");
+            var legacyArchives=await Json(await b.GetAsync("/api/mobile/v1/atendimento/anteriores"));var legacyId=legacyArchives.GetProperty("itens")[0].GetProperty("id").GetString();
+            var page1=await Json(await b.GetAsync($"/api/mobile/v1/atendimento/anteriores/{legacyId}"));var before=page1.GetProperty("mensagens")[0].GetProperty("id").GetInt64();
+            var page2=await Json(await b.GetAsync($"/api/mobile/v1/atendimento/anteriores/{legacyId}?antesDeMensagemId={before}"));
+            check(page1.GetProperty("haMaisMensagens").GetBoolean()&&page1.GetProperty("mensagens").GetArrayLength()==60&&page2.GetProperty("mensagens").EnumerateArray().All(m=>m.GetProperty("id").GetInt64()<before),"Mensagens de um arquivo longo são paginadas sem repetição");
+            await Json(await b.PostAsJsonAsync("/api/mobile/v1/atendimento/mensagens",new{mensagem="Uma nova conversa depois de um arquivo longo"}));
+            using(var scope=app.Services.CreateScope()){var db=scope.ServiceProvider.GetRequiredService<MKSANContext>();var c=await db.ConversasAtendimento.SingleAsync(c=>c.Canal==CanalAtendimento.Web&&c.IdentificadorExterno==ids["b"]);check(await db.MensagensAtendimento.CountAsync(m=>m.ConversaAtendimentoId==c.Id)==262,"Novas mensagens Web/app não apagam o histórico arquivado ao ultrapassar 250 mensagens");}
             string expired;
             using(var scope=app.Services.CreateScope()){
                 var options=scope.ServiceProvider.GetRequiredService<IOptionsMonitor<BearerTokenOptions>>().Get(MobileAuth.Scheme);
@@ -219,6 +256,7 @@ internal static class MobileApiChecks
     sealed class FakeAgent:IAgenteClinicaService
     {
         public int Calls;
-        public Task<AgenteResposta> EnviarAsync(string mensagem,string? sessionId,AgenteUsuarioContexto usuario,IReadOnlyList<MensagemHistoricoAgente>? historicoCliente=null,CancellationToken cancellationToken=default){ Calls++; return Task.FromResult(new AgenteResposta{Resposta="Resposta simulada para testes do aplicativo.",SessionId=sessionId??"teste"}); }
+        public Func<Task>? Before;
+        public async Task<AgenteResposta> EnviarAsync(string mensagem,string? sessionId,AgenteUsuarioContexto usuario,IReadOnlyList<MensagemHistoricoAgente>? historicoCliente=null,CancellationToken cancellationToken=default){ Calls++;if(Before is not null)await Before();return new AgenteResposta{Resposta="Resposta simulada para testes do aplicativo.",SessionId=sessionId??"teste"}; }
     }
 }

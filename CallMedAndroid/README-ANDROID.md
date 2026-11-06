@@ -1,4 +1,4 @@
-# CallMed Android nativo — 23.1.1
+# CallMed Android nativo — 23.2.0
 
 Aplicativo de pacientes em Kotlin e Jetpack Compose. As telas são componentes Android; não há WebView, Custom Tab de navegação nem dependência do TWA. O site ASP.NET Core continua sendo o servidor e usa o mesmo banco.
 
@@ -22,7 +22,7 @@ O servidor precisa desta atualização antes do primeiro login nativo. Nenhuma v
 - Exames: registros aprovados e ativos do próprio paciente, com nome, data e local. O sistema atual não armazena laudos PDF; o app não cria documentos fictícios.
 - Chat com o histórico do site e pausa da IA durante atendimento humano. Ao encerrar, oferece avaliação opcional; nota e comentário aparecem após o aceite.
 
-Na versão 23.1.1, leituras antigas do histórico são descartadas após uma ação: uma resposta atrasada não restaura “Atendimento encerrado” depois de uma nova mensagem. Só há um polling em andamento. O estado confirmado no envio é aplicado antes da leitura seguinte, e a caixa de mensagem usa campo e envio lado a lado. Esta correção funciona com o backend 23.1.0 já publicado.
+Na versão 23.2.0, a tela Chat mostra somente o atendimento atual. **Anteriores** abre as conversas finalizadas em modo de leitura; **Novo atendimento**, no menu de opções, começa vazio e pede confirmação se houver conversa ativa. Ao encerrar, as mensagens ficam arquivadas e a avaliação continua opcional. Leituras antigas não sobrescrevem ações recentes. Publique o backend desta entrega antes de instalar; o app verifica o novo formato do histórico para impedir a mistura com mensagens antigas. Veja `docs/CHAT-POR-ATENDIMENTO.md` na raiz.
 
 **Criar conta** e **Esqueci minha senha** abrem o navegador com os fluxos existentes do site. O app não sincroniza cookies com o navegador. Gestão da equipe, notificações push próprias, cadastro nativo e operações clínicas offline não estão incluídos. As preferências de SMS/e-mail/WhatsApp continuam controlando os avisos do servidor; não ativam push Android.
 
@@ -46,9 +46,9 @@ Saída: `app/build/outputs/apk/release/app-release.apk`.
 
 Para testes do cliente e das telas Compose: `./gradlew testDebugUnitTest`. Os testes de interface usam Robolectric, sem depender de um emulador conectado. Para análise Android: `./gradlew lintRelease`.
 
-O release usa R8 para reduzir código e recursos. O mapa de ofuscação deste APK está em `release/mapping-23.1.1.txt.gz`; descompacte-o para analisar um relatório de falha desta versão. Os mapas anteriores foram preservados para diagnóstico das versões anteriores.
+O release usa R8 para reduzir código e recursos. O mapa de ofuscação deste APK está em `release/mapping-23.2.0.txt.gz`; descompacte-o para analisar um relatório de falha desta versão. Os mapas anteriores foram preservados para diagnóstico das versões anteriores.
 
-O APK release usa `com.callmed.app`, código **2311**, versão **23.1.1**, Android 8.0 ou superior. A assinatura usa a mesma chave que já acompanhava o projeto; permite atualizar a instalação direta anterior sem desinstalar. Uma instalação distribuída pela Play Store com outra chave exige verificar o certificado correspondente.
+O APK release usa `com.callmed.app`, código **2320**, versão **23.2.0**, Android 8.0 ou superior. A assinatura usa a mesma chave que já acompanhava o projeto; permite atualizar a instalação direta anterior sem desinstalar. Uma instalação distribuída pela Play Store com outra chave exige verificar o certificado correspondente.
 
 `keystore.properties` aponta para a chave local. Variáveis opcionais para CI: `CALLMED_KEYSTORE_FILE`, `CALLMED_KEYSTORE_PASSWORD`, `CALLMED_KEY_ALIAS`, `CALLMED_KEY_PASSWORD`. Não coloque esses arquivos nem senhas em repositórios públicos. O Render não precisa da chave para servir o APK já assinado; o contexto Docker exclui ambas as pastas Android.
 
@@ -72,4 +72,4 @@ A pasta `CallMedTWA` foi preservada como projeto anterior. Ela não participa da
 
 ## Homologação no aparelho
 
-Build, 32 testes JVM/Compose e verificações do servidor passaram nesta entrega. Inclui regressão de histórico atrasado com o ViewModel real e caixa de mensagem compacta. As telas foram renderizadas em 320dp, com fonte normal e 200%. Ainda homologue em um celular físico: TalkBack e ordem de foco, teclado, seletor de foto, rotação, calendário, rede móvel e atualização por cima da instalação anterior. Veja `docs/validacao/ANDROID-NATIVO.md` na raiz do projeto.
+Build, 35 testes JVM/Compose e verificações do servidor passaram nesta entrega. Inclui regressão de histórico atrasado com o ViewModel real, arquivo somente leitura, novo atendimento confirmado e caixa de mensagem compacta. As telas foram renderizadas em 320dp, com fonte normal e 200%. Ainda homologue em um celular físico: TalkBack e ordem de foco, teclado, seletor de foto, rotação, calendário, rede móvel e atualização por cima da instalação anterior. Veja `docs/validacao/ANDROID-NATIVO.md` na raiz do projeto.

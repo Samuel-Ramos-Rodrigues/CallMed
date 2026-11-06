@@ -1,7 +1,7 @@
 {
-  "versao": "23.1.1",
-  "versionCode": 2311,
+  "versao": "23.2.0",
+  "versionCode": 2320,
   "androidMinimo": "8.0",
-  "tamanhoBytes": 1441606,
-  "sha256": "2379f97ac95c467f54cb49dac6fd9feb06c0020f9be7199a7e24ed9156d18f30"
+  "tamanhoBytes": 1457994,
+  "sha256": "ec71f93714b1862cb143a8c14da14a4a0c472f960f772ed109787006af149a1f"
 }

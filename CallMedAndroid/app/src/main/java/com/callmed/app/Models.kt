@@ -79,12 +79,19 @@ data class ExamRecord(val id: Int, val name: String, val date: String, val place
     companion object { fun from(j: JSONObject) = ExamRecord(j.getInt("id"), j.text("nome"), j.text("dataRealizacao").take(10), j.text("localRealizacao")) }
 }
 data class ChatMessage(val id: Long, val texto: String, val autor: String)
-data class ChatState(val messages: List<ChatMessage> = emptyList(), val modo: String = "IA", val encerrada: Boolean = false, val avaliacaoId: String? = null) {
+data class ChatState(val messages: List<ChatMessage> = emptyList(), val modo: String = "IA", val encerrada: Boolean = false, val avaliacaoId: String? = null,
+    val cycle: String = "inicial", val hasPrevious: Boolean = false, val hasMore: Boolean = false) {
     companion object { fun from(j: JSONObject) = ChatState((j.optJSONArray("mensagens") ?: JSONArray()).objects().map { ChatMessage(it.getLong("id"), it.text("texto"), it.text("autor")) },
-        j.text("modo", "IA"), j.optBoolean("encerrada"), j.optJSONObject("avaliacao")?.text("id")?.takeIf(String::isNotBlank)) }
+        j.text("modo", "IA"), j.optBoolean("encerrada"), j.optJSONObject("avaliacao")?.text("id")?.takeIf(String::isNotBlank),
+        j.text("cicloId", "inicial"), j.optBoolean("haAnteriores"), j.optBoolean("haMaisMensagens")) }
 }
+data class PreviousChat(val id: String, val endedAt: String, val subject: String) {
+    companion object { fun from(j: JSONObject) = PreviousChat(j.text("id"), j.text("finalizadoEm"), j.text("assunto", "Atendimento anterior")) }
+}
+data class ChatArchive(val items: List<PreviousChat> = emptyList(), val nextCursor: String? = null, val selected: PreviousChat? = null,
+    val messages: List<ChatMessage> = emptyList(), val hasMore: Boolean = false)
 enum class Tab(val label: String) { HOME("Início"), CONSULTAS("Consultas"), CHAT("Chat"), CONTA("Conta") }
-enum class Screen { HOME, CONSULTAS, BOOKING, CHAT, ACCOUNT, PROFILE, EDIT_PROFILE, EMAIL, SECURITY, PASSWORD, NOTIFICATIONS, READING, EXAMS, BOOKED }
+enum class Screen { HOME, CONSULTAS, BOOKING, CHAT, CHAT_ARCHIVE, CHAT_PREVIOUS, ACCOUNT, PROFILE, EDIT_PROFILE, EMAIL, SECURITY, PASSWORD, NOTIFICATIONS, READING, EXAMS, BOOKED }
 data class BookingState(val stage: Int = 1, val specialty: String = "", val doctor: Doctor? = null,
     val dates: List<String> = emptyList(), val date: String = "", val hours: List<String> = emptyList(), val hour: String = "",
     val movingId: Int? = null, val payment: String = "Particular", val eligibility: Eligibility? = null) {
@@ -100,12 +107,17 @@ data class UiState(val restoring: Boolean = true, val authenticated: Boolean = f
     val profile: Patient? = null, val appointments: List<Appointment> = emptyList(), val doctors: List<Doctor> = emptyList(),
     val tab: Tab = Tab.HOME, val screen: Screen = Screen.HOME, val readingReturn: Screen = Screen.HOME,
     val booking: BookingState = BookingState(), val reading: ReadingPreferences = ReadingPreferences(), val profileDraft: ProfileDraft? = null,
-    val chat: ChatState = ChatState(), val chatDraft: String = "", val sendingChat: Boolean = false, val feedbackAccepted: Boolean = false, val feedbackNote: Int? = null,
+    val chat: ChatState = ChatState(), val archive: ChatArchive = ChatArchive(), val chatDraft: String = "", val sendingChat: Boolean = false, val feedbackAccepted: Boolean = false, val feedbackNote: Int? = null,
     val feedbackComment: String = "", val sessions: List<AccountSession> = emptyList(), val exams: List<ExamRecord> = emptyList(),
     val exam: ExamRecord? = null, val error: String? = null, val info: String? = null, val photo: ByteArray? = null,
     val bookedId: Int? = null)
 
 sealed interface AppAction {
+    data object NewChat: AppAction
+    data class PreviousChats(val more: Boolean = false): AppAction
+    data class ReadPrevious(val chat: PreviousChat): AppAction
+    data object OlderPreviousMessages: AppAction
+    data object OlderChatMessages: AppAction
     data class Navigate(val tab: Tab): AppAction
     data class Open(val screen: Screen): AppAction
     data object Back: AppAction

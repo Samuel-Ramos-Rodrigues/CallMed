@@ -41,8 +41,8 @@ class ChatRefreshTest {
                 request.url.endsWith("/atendimento/mensagens") -> { closed = false; "{}" }
                 request.url.endsWith("/atendimento/historico") -> {
                     reads.incrementAndGet()
-                    val snapshot = if (closed) """{"encerrada":true,"mensagens":[{"id":1,"autor":"assistente","texto":"Até mais!"}]}"""
-                        else """{"encerrada":false,"mensagens":[{"id":1,"autor":"assistente","texto":"Até mais!"},{"id":2,"autor":"paciente","texto":"oi"},{"id":3,"autor":"assistente","texto":"Olá! Como posso ajudar?"}]}"""
+                    val snapshot = if (closed) """{"historicoVersao":2,"cicloId":"fechamento-teste","haAnteriores":true,"encerrada":true,"mensagens":[]}"""
+                        else """{"historicoVersao":2,"cicloId":"fechamento-teste","haAnteriores":true,"encerrada":false,"mensagens":[{"id":2,"autor":"paciente","texto":"oi"},{"id":3,"autor":"assistente","texto":"Olá! Como posso ajudar?"}]}"""
                     if (slow.getAndSet(false)) {
                         started.countDown()
                         check(release.await(8, TimeUnit.SECONDS))
@@ -65,7 +65,7 @@ class ChatRefreshTest {
         })[CallMedViewModel::class.java]
         await { vm.state.value.authenticated && !vm.state.value.busy }
         vm.handle(AppAction.Navigate(Tab.CHAT))
-        await { vm.state.value.screen == Screen.CHAT && !vm.state.value.busy && vm.state.value.chat.messages.isNotEmpty() }
+        await { vm.state.value.screen == Screen.CHAT && !vm.state.value.busy && vm.state.value.chat.hasPrevious }
         return vm to models
     }
     @Test fun oldPollCannotRestoreClosedStatusAfterNewMessage() {

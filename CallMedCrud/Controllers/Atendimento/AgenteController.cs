@@ -232,6 +232,20 @@ public class AgenteController : Controller
                 historico,
                 cancellationToken);
 
+            // Encerrar/iniciar outro atendimento ou transferir para a equipe
+            // durante a geração invalida também uma resposta comum da IA.
+            await _atendimento.RecarregarAsync(conversaAtendimento, cancellationToken);
+            if (!conversaAtendimento.Ativa || conversaAtendimento.SessionId != sessaoAnalisada || conversaAtendimento.Modo != ModoAtendimento.IA)
+            {
+                if (conversaAtendimento.Ativa && conversaAtendimento.Modo == ModoAtendimento.Humano)
+                {
+                    var entrada = await _atendimento.RegistrarEntradaAsync(conversaAtendimento, mensagem, ct: cancellationToken);
+                    return Json(new { resposta = string.Empty, modo = "Humano", conversaId = conversaAtendimento.Id,
+                        sessionId = conversaAtendimento.SessionId, mensagemId = entrada?.Id ?? 0 });
+                }
+                return Conflict(new { mensagem = "O atendimento mudou enquanto a resposta era preparada. Atualize a conversa para continuar." });
+            }
+
             if (_feedback is not null && resposta.EncerrarAtendimento && EncerramentoAtendimento.PodeSugerir(mensagem))
             {
                 await _atendimento.RecarregarAsync(conversaAtendimento, cancellationToken);

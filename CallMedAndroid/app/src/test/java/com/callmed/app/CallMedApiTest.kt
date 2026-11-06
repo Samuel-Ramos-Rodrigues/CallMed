@@ -6,6 +6,15 @@ import org.json.JSONObject
 import java.io.IOException
 
 class CallMedApiTest {
+    @Test fun chatRequiresSeparatedHistoryProtocol() {
+        val store = MemoryStore(Session("valid", "refresh", Long.MAX_VALUE))
+        val old = CallMedApi(store, ApiTransport { response(200, """{"encerrada":true,"mensagens":[]}""") }, "https://callmed.test")
+        try { old.history(); fail("Histórico legado não deve ser misturado à conversa atual") } catch(e: ApiError) { assertEquals(426, e.status) }
+        val current = CallMedApi(store, ApiTransport { response(200, """{"historicoVersao":2,"cicloId":"ciclo-2","haAnteriores":true,"encerrada":false,"mensagens":[{"id":2,"texto":"Nova pergunta","autor":"paciente"}]}""") }, "https://callmed.test")
+        val history = current.history()
+        assertEquals("ciclo-2", history.cycle); assertTrue(history.hasPrevious); assertFalse(history.encerrada)
+        assertEquals(2L, history.messages.single().id)
+    }
     class MemoryStore(var value: Session? = null): TokenStore {
         override fun read() = value
         override fun save(session: Session) { value = session }

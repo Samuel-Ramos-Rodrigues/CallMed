@@ -78,7 +78,11 @@ class CallMedApi(private val store: TokenStore, private val transport: ApiTransp
     fun profile() = Patient.from(json("GET", "perfil"))
     fun appointments() = array("consultas").objects().map(Appointment::from)
     fun doctors() = array("medicos").objects().map(Doctor::from)
-    fun history() = ChatState.from(json("GET", "atendimento/historico"))
+    fun history(before: Long? = null): ChatState {
+        val value = json("GET", "atendimento/historico" + (before?.let { "?antesDeMensagemId=$it" } ?: ""))
+        if (value.optInt("historicoVersao") < 2) throw ApiError(426, "O chat precisa de uma atualização pela clínica. Use o site para continuar enquanto isso.")
+        return ChatState.from(value)
+    }
     fun photo(): ByteArray? = try { send("GET", "perfil/foto") } catch (e: ApiError) { if (e.status == 404) null else throw e }
     fun uploadPhoto(bytes: ByteArray, mime: String) {
         require(bytes.size <= 2 * 1024 * 1024) { "Escolha uma foto de até 2 MB." }

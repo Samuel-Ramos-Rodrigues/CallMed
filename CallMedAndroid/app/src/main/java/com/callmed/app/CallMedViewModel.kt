@@ -70,6 +70,11 @@ class CallMedViewModel @JvmOverloads constructor(application: Application,
     }
     fun handle(event: AppAction) {
         when (event) {
+            AppAction.NewChat -> newChat()
+            is AppAction.PreviousChats -> previousChats(event.more)
+            is AppAction.ReadPrevious -> readPrevious(event.chat)
+            AppAction.OlderPreviousMessages -> olderPreviousMessages()
+            AppAction.OlderChatMessages -> olderChatMessages()
             is AppAction.Navigate -> navigate(event.tab)
             is AppAction.Open -> open(event.screen)
             AppAction.Back -> back()
@@ -126,6 +131,8 @@ class CallMedViewModel @JvmOverloads constructor(application: Application,
         if (state.value.screen == Screen.READING) { finishReading(); return }
         if (state.value.busy) return
         when(state.value.screen) {
+            Screen.CHAT_ARCHIVE -> navigate(Tab.CHAT)
+            Screen.CHAT_PREVIOUS -> mutable.update { it.copy(screen = Screen.CHAT_ARCHIVE) }
             Screen.BOOKING -> {
                 val previous = state.value.booking.previous()
                 if (previous == null || state.value.booking.stage == 1) navigate(Tab.CONSULTAS)
@@ -280,7 +287,9 @@ class CallMedViewModel @JvmOverloads constructor(application: Application,
     private fun history(history: ChatState, expectedGeneration: Long? = null) {
         mutable.update { current ->
             if (expectedGeneration != null && (expectedGeneration != chatGeneration.get() || current.busy || !current.authenticated || current.screen != Screen.CHAT)) current
-            else current.copy(chat = history,
+            else current.copy(chat = if (current.chat.cycle == history.cycle && !history.encerrada && current.chat.messages.isNotEmpty()) history.copy(
+                messages = (current.chat.messages + history.messages).distinctBy { it.id }.sortedBy { it.id },
+                hasMore = if ((history.messages.firstOrNull()?.id ?: Long.MAX_VALUE) > current.chat.messages.first().id) current.chat.hasMore else history.hasMore) else history,
             feedbackAccepted = if (history.avaliacaoId == current.chat.avaliacaoId) current.feedbackAccepted else false,
             feedbackNote = if (history.avaliacaoId == current.chat.avaliacaoId) current.feedbackNote else null,
             feedbackComment = if (history.avaliacaoId == current.chat.avaliacaoId) current.feedbackComment else "") }
@@ -299,6 +308,34 @@ class CallMedViewModel @JvmOverloads constructor(application: Application,
         }
     }
     private fun refreshChat() = action { history(api.history()) }
+    private fun newChat() = action {
+        val result = api.json("POST", "atendimento/iniciar", JSONObject().put("confirmarEncerramento", true))
+        history(ChatState.from(result))
+        mutable.update { it.copy(screen = Screen.CHAT, tab = Tab.CHAT, chatDraft = "", archive = ChatArchive()) }
+    }
+    private fun previousChats(more: Boolean) = action {
+        val cursor = if (more) state.value.archive.nextCursor else null
+        val result = api.json("GET", "atendimento/anteriores" + (cursor?.let { "?antesDe=$it" } ?: ""))
+        val items = result.optJSONArray("itens")?.objects()?.map(PreviousChat::from).orEmpty()
+        mutable.update { it.copy(screen = Screen.CHAT_ARCHIVE, archive = ChatArchive(
+            items = ((if (more) it.archive.items else emptyList()) + items).distinctBy { item -> item.id },
+            nextCursor = result.text("proximoCursor").takeIf(String::isNotBlank))) }
+    }
+    private fun readPrevious(chat: PreviousChat) = action {
+        val result = api.json("GET", "atendimento/anteriores/${chat.id}")
+        val data = ChatState.from(result)
+        mutable.update { it.copy(screen = Screen.CHAT_PREVIOUS, archive = it.archive.copy(selected = chat, messages = data.messages, hasMore = data.hasMore)) }
+    }
+    private fun olderPreviousMessages() = action {
+        val current = state.value.archive; val selected = current.selected ?: return@action
+        val before = current.messages.firstOrNull()?.id ?: return@action
+        val data = ChatState.from(api.json("GET", "atendimento/anteriores/${selected.id}?antesDeMensagemId=$before"))
+        mutable.update { it.copy(archive = it.archive.copy(messages = (data.messages + it.archive.messages).distinctBy { m -> m.id }.sortedBy { m -> m.id }, hasMore = data.hasMore)) }
+    }
+    private fun olderChatMessages() = action {
+        val before = state.value.chat.messages.firstOrNull()?.id ?: return@action
+        history(api.history(before))
+    }
     private fun send() {
         val text = state.value.chatDraft.trim(); if (text.isBlank()) return
         action {

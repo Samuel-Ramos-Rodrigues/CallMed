@@ -1,6 +1,6 @@
 # Android nativo — integração com CallMed
 
-O cliente está em [`CallMedAndroid`](../CallMedAndroid/README-ANDROID.md). O APK nativo **23.1.1 / 2311** já está compilado e incluído no download do site. Instale-o por cima da versão anterior. A correção de histórico do chat é no cliente e funciona com o backend 23.1.0 já publicado; se ainda usar backend anterior, publique o projeto completo para disponibilizar as funções novas de conta, exames e agenda.
+O cliente está em [`CallMedAndroid`](../CallMedAndroid/README-ANDROID.md). O APK nativo **23.2.0 / 2320** está compilado e incluído no download do site. **Publique primeiro o backend deste ZIP e depois instale o APK** sobre a versão anterior. O chat exige o novo formato de histórico; nenhuma migração ou variável nova foi criada.
 
 ## API móvel
 
@@ -30,7 +30,9 @@ Prefixo `/api/mobile/v1`. Login e refresh retornam os campos padrão `tokenType`
 | `POST /consultas/{id}/remarcar` | Nova data/hora para consulta própria |
 | `POST /consultas/{id}/cancelar` | Cancelamento de consulta própria |
 | `GET /exames` | Até 200 registros ativos/aprovados do próprio paciente, do mais recente ao mais antigo |
-| `GET /atendimento/historico` | Conversa Web canônica da conta, últimas 60 mensagens |
+| `GET /atendimento/historico` | Só o atendimento atual; até 60 mensagens por página, ciclo e indicação de arquivos anteriores |
+| `GET /atendimento/anteriores` · `GET /atendimento/anteriores/{id}` | Lista paginada de atendimentos finalizados e consulta das mensagens do titular |
+| `POST /atendimento/iniciar` | Arquiva a conversa ativa com confirmação e abre atendimento vazio |
 | `POST /atendimento/mensagens` | Mesmo fluxo do agente, confirmação de ações e pausa humana |
 | `POST /atendimento/encerrar` · `POST /atendimento/avaliar` | Mesmo encerramento e avaliação do site |
 
@@ -51,6 +53,8 @@ Os exames usam os campos existentes no site: nome, data e local. Não há arquiv
 ## Histórico e retomada do chat
 
 Uma nova pergunta reabre a conversa no servidor, inclusive quando a avaliação anterior ainda está pendente. A API não exige avaliar antes de continuar. No app, cada ação invalida as leituras de histórico iniciadas antes dela. Só há um polling em andamento; uma resposta antiga não pode recolocar o estado encerrado nem apagar mensagens novas. O resultado do POST aplica seu estado antes da atualização do histórico. Falhas de rede não repetem automaticamente o envio.
+
+O formato `historicoVersao=2` separa cada atendimento pelos encerramentos já persistidos. A conversa finalizada sai da tela atual e permanece em Anteriores, em modo de leitura. Mensagens Web/app novas não apagam arquivos ao superar o limite antigo de 250. Detalhes, compatibilidade e paginação em [CHAT-POR-ATENDIMENTO.md](CHAT-POR-ATENDIMENTO.md).
 
 O aviso antigo de encerramento e seu convite de avaliação não aparecem durante o preparo da resposta à nova mensagem. O campo de texto e o botão de envio ficam lado a lado, com descrição acessível e alvo de toque de 56dp.
 

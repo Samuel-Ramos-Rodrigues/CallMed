@@ -1,4 +1,14 @@
-# 2026-11-06 — Android nativo 23.1.1
+# 2026-11-06 — Android nativo 23.2.0
+
+- Conversa atual separada dos atendimentos finalizados, sem misturar mensagens antigas na tela.
+- Anteriores com lista e consulta em modo de leitura, paginação de atendimentos/mensagens e isolamento por conta.
+- Novo atendimento vazio, com confirmação antes de finalizar a conversa ativa; avaliação continua opcional.
+- Flag legada de encerramento reconciliada com as entradas posteriores ao último fechamento; fechamento legado arquivado sem pesquisa retroativa.
+- Histórico Web/app preservado além de 250 mensagens; respostas normais da IA também são revalidadas quando o atendimento muda durante a geração.
+- Bolhas ajustadas ao conteúdo e ações agrupadas no menu para preservar o espaço de leitura.
+- APK 23.2.0/2320; publicar o backend desta versão antes de instalar. Sem migração ou variável nova. Guia: [CHAT-POR-ATENDIMENTO.md](CHAT-POR-ATENDIMENTO.md).
+
+## 2026-11-06 — Android nativo 23.1.1
 
 - Corrigida a atualização atrasada do histórico: uma leitura iniciada antes do envio, encerramento ou avaliação não pode sobrescrever o resultado da ação.
 - Polling com uma única leitura em andamento, evitando respostas fora de ordem em conexões lentas.

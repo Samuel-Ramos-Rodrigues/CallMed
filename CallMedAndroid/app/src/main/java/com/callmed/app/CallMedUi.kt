@@ -45,15 +45,16 @@ internal fun CallMedApp(s: UiState, onAction: (AppAction) -> Unit) {
     confirmation?.let { event ->
         val cancel = event is AppAction.AppointmentChange && event.action == "cancelar"
         val exit = event == AppAction.Logout
-        val title = if (cancel) "Cancelar esta consulta?" else if (exit) "Sair da sua conta?" else "Encerrar outros acessos?"
+        val newChat = event == AppAction.NewChat
+        val title = if (cancel) "Cancelar esta consulta?" else if (exit) "Sair da sua conta?" else if (newChat) "Iniciar outro atendimento?" else "Encerrar outros acessos?"
         val detail = if (cancel) { val a = (event as AppAction.AppointmentChange).appointment; "${a.medico}\n${dateLabel(a.data)} às ${a.horario}\nO horário será liberado após confirmar." }
-            else if (exit) "Seu acesso neste aplicativo será encerrado." else "Os acessos selecionados precisarão entrar novamente. Este aplicativo continuará conectado."
+            else if (exit) "Seu acesso neste aplicativo será encerrado." else if (newChat) "O atendimento atual será finalizado e ficará em Atendimentos anteriores. A nova conversa começará vazia." else "Os acessos selecionados precisarão entrar novamente. Este aplicativo continuará conectado."
         AlertDialog(onDismissRequest = { confirmation = null }, title = { Text(title) }, text = { Text(detail) },
-            confirmButton = { TextButton(onClick = { confirmation = null; onAction(event) }, Modifier.heightIn(min = 48.dp)) { Text(if (cancel) "Sim, cancelar consulta" else if (exit) "Sair da conta" else "Sim, encerrar") } },
+            confirmButton = { TextButton(onClick = { confirmation = null; onAction(event) }, Modifier.heightIn(min = 48.dp)) { Text(if (cancel) "Sim, cancelar consulta" else if (exit) "Sair da conta" else if (newChat) "Iniciar novo" else "Sim, encerrar") } },
             dismissButton = { TextButton(onClick = { confirmation = null }, Modifier.heightIn(min = 48.dp)) { Text(if (cancel) "Manter minha consulta" else "Voltar") } })
     }
     fun dispatch(event: AppAction) {
-        if (event == AppAction.Logout || event is AppAction.CloseSession || (event is AppAction.AppointmentChange && event.action == "cancelar")) confirmation = event
+        if (event == AppAction.Logout || event is AppAction.CloseSession || (event == AppAction.NewChat && !s.chat.encerrada && s.chat.messages.isNotEmpty()) || (event is AppAction.AppointmentChange && event.action == "cancelar")) confirmation = event
         else onAction(event)
     }
     Scaffold(containerColor = MaterialTheme.colorScheme.background, contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -77,7 +78,8 @@ internal fun CallMedApp(s: UiState, onAction: (AppAction) -> Unit) {
                     Screen.CONSULTAS -> ConsultasScreen(contentState, ::dispatch)
                     Screen.BOOKING -> BookingScreen(contentState, onAction)
                     Screen.BOOKED -> BookingSuccess(contentState, onAction)
-                    Screen.CHAT -> ChatScreen(contentState, onAction)
+                    Screen.CHAT -> ChatScreen(contentState, ::dispatch)
+                    Screen.CHAT_ARCHIVE, Screen.CHAT_PREVIOUS -> PreviousChatsScreen(contentState, onAction)
                     Screen.ACCOUNT -> AccountScreen(contentState, ::dispatch)
                     Screen.PROFILE -> ProfileScreen(contentState, onAction)
                     Screen.EDIT_PROFILE -> ProfileEditScreen(contentState, onAction)
@@ -136,6 +138,7 @@ internal fun CallMedApp(s: UiState, onAction: (AppAction) -> Unit) {
 internal fun screenTitle(screen: Screen) = when(screen) {
     Screen.HOME -> "Início"; Screen.CONSULTAS -> "Minhas consultas"; Screen.BOOKING -> "Agendar consulta"; Screen.BOOKED -> "Consulta registrada"
     Screen.CHAT -> "Atendimento"; Screen.ACCOUNT -> "Minha conta"; Screen.PROFILE -> "Meus dados"; Screen.EDIT_PROFILE -> "Editar dados"
+    Screen.CHAT_ARCHIVE -> "Atendimentos anteriores"; Screen.CHAT_PREVIOUS -> "Conversa anterior"
     Screen.EMAIL -> "Alterar e-mail"; Screen.SECURITY -> "Segurança e acessos"; Screen.PASSWORD -> "Alterar senha"
     Screen.NOTIFICATIONS -> "Avisos da clínica"; Screen.READING -> "Acessibilidade"; Screen.EXAMS -> "Meus exames"
 }

@@ -35,7 +35,8 @@ class NativeUiTest {
     private val patient = Patient.from(JSONObject("""{"contaId":"ui-fixture","nome":"Paciente UI","email":"paciente@example.test","cpf":"52998224725","telefone":"5579999990000","tema":"dark"}"""))
     private val doc = Doctor(1, "Dra. Exemplo de Teste", "Clínica geral", "CRM-TESTE")
     private val appointment = Appointment(1, 1, doc.nome, doc.especialidade, "2026-11-11", "09:00", "Confirmada", "Particular", "", "NaoAplicavel", "", true, false, true)
-    private fun sample(screen: Screen = Screen.HOME) = UiState(restoring = false, authenticated = true, profile = patient, appointments = listOf(appointment), doctors = listOf(doc), screen = screen)
+    private fun sample(screen: Screen = Screen.HOME) = UiState(restoring = false, authenticated = true, profile = patient, appointments = listOf(appointment), doctors = listOf(doc), screen = screen,
+        tab = when(screen) { Screen.CHAT, Screen.CHAT_ARCHIVE, Screen.CHAT_PREVIOUS -> Tab.CHAT; Screen.CONSULTAS, Screen.BOOKING -> Tab.CONSULTAS; Screen.HOME -> Tab.HOME; else -> Tab.CONTA })
     private fun shot(name: String) {
         val dir = System.getenv("CALLMED_NATIVE_SCREENSHOTS") ?: return
         File(dir).mkdirs()
@@ -159,7 +160,7 @@ class NativeUiTest {
     @Test fun compactChatComposerKeepsMessageAndAccessibleSendTogether() {
         val events = mutableListOf<AppAction>()
         var state by mutableStateOf(sample(Screen.CHAT).copy(chat = ChatState(messages = listOf(
-            ChatMessage(1, "Olá! Como posso ajudar?", "assistente")))))
+            ChatMessage(1, "Olá! Como posso ajudar?", "assistente")), hasPrevious = true)))
         ui.setContent { CallMedTheme(state.reading) { CallMedApp(state) {
             events += it
             if (it is AppAction.ChatDraft) state = state.copy(chatDraft = it.text)
@@ -173,24 +174,49 @@ class NativeUiTest {
         shot("chat-compact-native")
     }
     @Test fun sendingNewQuestionHidesPreviousClosureAndReopensChatWithLargeFont() {
-        val ended = "Atendimento encerrado. Envie uma mensagem quando precisar novamente."
+        val ended = "Atendimento finalizado"
         var state by mutableStateOf(sample(Screen.CHAT).copy(chat = ChatState(
             messages = listOf(ChatMessage(1, "Até mais!", "assistente")), encerrada = true)))
         ui.setContent { CompositionLocalProvider(LocalDensity provides Density(1f, 2f)) {
             CallMedTheme(state.reading) { CallMedApp(state) {} }
         } }
         ui.onNodeWithText(ended).assertExists()
+        ui.onNodeWithText("Até mais!").assertDoesNotExist()
         ui.runOnIdle { state = state.copy(busy = true, sendingChat = true) }
         ui.onNodeWithText(ended).assertDoesNotExist()
         ui.onNodeWithText("Preparando a resposta…").assertExists()
         ui.runOnIdle { state = state.copy(busy = false, sendingChat = false, chat = ChatState(messages = listOf(
-            ChatMessage(1, "Até mais!", "assistente"), ChatMessage(2, "oi", "paciente"),
-            ChatMessage(3, "Olá! Como posso ajudar?", "assistente")))) }
+            ChatMessage(2, "oi", "paciente"),
+            ChatMessage(3, "Olá! Como posso ajudar?", "assistente")), hasPrevious = true)) }
         ui.onNodeWithText(ended).assertDoesNotExist()
-        ui.onNodeWithText("Encerrar").assertExists()
+        ui.onNodeWithContentDescription("Opções do atendimento").assertExists()
+        ui.onNodeWithContentDescription("Atendimentos anteriores").assertIsDisplayed()
         ui.onNodeWithText("Olá! Como posso ajudar?").assertExists()
         ui.onNodeWithTag("chat-send").assertHeightIsAtLeast(48.dp).assertIsDisplayed()
         shot("chat-reopened-font-200-native")
+    }
+    @Test fun previousConversationIsReadOnlyAndDoesNotShowComposer() {
+        val past = PreviousChat("historico-teste", "2026-11-06T04:00:00Z", "Consulta anterior")
+        val state = sample(Screen.CHAT_PREVIOUS).copy(archive = ChatArchive(selected = past,
+            messages = listOf(ChatMessage(1, "Mensagem anterior", "assistente"))))
+        ui.setContent { CallMedTheme(state.reading) { CallMedApp(state) {} } }
+        ui.onNodeWithText("Conversa anterior").assertExists()
+        ui.onNodeWithText("Mensagem anterior").assertExists()
+        ui.onNodeWithTag("chat-draft").assertDoesNotExist()
+        ui.onNodeWithTag("chat-send").assertDoesNotExist()
+    }
+    @Test fun startingNewChatNeedsConfirmationAndKeepsHistoryLink() {
+        val events = mutableListOf<AppAction>()
+        val state = sample(Screen.CHAT).copy(chat = ChatState(messages = listOf(ChatMessage(1, "Conversa atual", "assistente")), hasPrevious = true))
+        ui.setContent { CallMedTheme(state.reading) { CallMedApp(state, events::add) } }
+        ui.onNodeWithText("Anteriores").performClick()
+        assertTrue(events.any { it is AppAction.PreviousChats })
+        ui.onNodeWithContentDescription("Opções do atendimento").performClick()
+        ui.onNodeWithText("Novo atendimento").performClick()
+        assertFalse(events.contains(AppAction.NewChat))
+        ui.onNodeWithText("Iniciar outro atendimento?").assertExists()
+        ui.onNodeWithText("Iniciar novo").performClick()
+        assertTrue(events.contains(AppAction.NewChat))
     }
     @Test fun themeHasLegibleTextPairsInEveryAppearance() {
         fun ratio(a: Color, b: Color): Float { val x = a.luminance(); val y = b.luminance(); return (maxOf(x, y) + .05f) / (minOf(x, y) + .05f) }
