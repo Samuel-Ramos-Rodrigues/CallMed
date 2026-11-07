@@ -1,0 +1,56 @@
+@model MKSANCrud.ViewModels.AcaoConsultaViewModel
+@{
+    Layout = "_PublicLayout";
+    ViewData["Title"] = "Sala de espera";
+    var c = Model.Consulta!;
+    var online = c.Modalidade == MKSANCrud.Models.ModalidadeConsulta.Online && c.TelemedicinaConsentimentoEm.HasValue;
+    var encerrada = c.TelemedicinaFimEm.HasValue || c.Status == MKSANCrud.Models.ConsultaStatus.Cancelada;
+    var linkSala = ViewData["LinkSala"] as string;
+    var janela = ViewData["JanelaAberta"] is true;
+}
+<section class="public-section">
+    <h1>Sala de espera da consulta</h1>
+    <p>@c.Data.ToString("dd/MM/yyyy") às @c.Horario · @(c.Medico?.Nome)</p>
+
+    @if (TempData["Sucesso"] is string sucesso)
+    {
+        <p class="alert ok">@sucesso</p>
+    }
+    @if (TempData["Erro"] is string erro)
+    {
+        <p class="alert">@erro</p>
+    }
+
+    @if (!online)
+    {
+        <p>Esta consulta não é online ou ainda não tem consentimento registrado para telemedicina.</p>
+    }
+    else if (encerrada)
+    {
+        <p>Este atendimento já foi encerrado ou cancelado.</p>
+    }
+    else if (linkSala is not null)
+    {
+        <p>O profissional admitiu você. Entre na sala agora.</p>
+        <p><a class="btn" href="@linkSala" target="_blank" rel="noopener">Entrar na sala virtual</a></p>
+    }
+    else if (c.TelemedicinaSalaEsperaEm.HasValue)
+    {
+        <p>Você está na sala de espera. Aguarde o profissional admiti-lo e atualize esta página para ver se ele já entrou.</p>
+    }
+    else if (janela)
+    {
+        <form method="post" asp-action="EntrarSala" asp-route-token="@Model.Token">
+            <button class="btn" type="submit">Entrar na sala de espera</button>
+        </form>
+    }
+    else
+    {
+        <p>A sala abre 15 minutos antes do horário da consulta.</p>
+    }
+
+    @if (Model.UrlPortal is not null)
+    {
+        <p><a href="@Model.UrlPortal">Ir para o portal</a></p>
+    }
+</section>

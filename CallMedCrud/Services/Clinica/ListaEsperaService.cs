@@ -8,6 +8,9 @@ namespace MKSANCrud.Services.Clinica;
 
 public sealed class ListaEsperaService
 {
+    // Tempo que a vaga fica reservada para o paciente oferecido antes de passar ao próximo da fila.
+    public const int JanelaReservaHoras = 2;
+
     private readonly MKSANContext _context;
     private readonly IClinicaClock _clock;
     private readonly AtendimentoConversaService _conversas;
@@ -119,11 +122,18 @@ public sealed class ListaEsperaService
 
     public async Task<int> ProcessarNotificacoesAsync(CancellationToken ct = default)
     {
+        var corte = DateTime.UtcNow.AddHours(-JanelaReservaHoras);
+        // Vagas com reserva ainda válida não são oferecidas a outra pessoa.
+        var vagasReservadas = new HashSet<int>(await _context.ListasEspera.AsNoTracking()
+            .Where(x => x.Ativa && x.UltimaDisponibilidadeId != null && x.NotificadoEm >= corte)
+            .Select(x => x.UltimaDisponibilidadeId!.Value)
+            .ToListAsync(ct));
+
         var itens = await _context.ListasEspera
             .Include(x => x.Paciente)
             .Include(x => x.Medico)
             .Include(x => x.Especialidade)
-            .Where(x => x.Ativa && (x.NotificadoEm == null || x.NotificadoEm < DateTime.UtcNow.AddHours(-12)))
+            .Where(x => x.Ativa && (x.NotificadoEm == null || x.NotificadoEm < corte))
             .OrderByDescending(x => x.Prioridade)
             .ThenBy(x => x.CriadoEm)
             .Take(100)
@@ -136,7 +146,7 @@ public sealed class ListaEsperaService
                 continue;
 
             var vaga = await BuscarVagaAsync(item, ct);
-            if (vaga is null || item.UltimaDisponibilidadeId == vaga.Id)
+            if (vaga is null || item.UltimaDisponibilidadeId == vaga.Id || vagasReservadas.Contains(vaga.Id))
                 continue;
 
             // Pacientes que preferem telefone ou ficaram sem um canal digital configurado
@@ -146,6 +156,7 @@ public sealed class ListaEsperaService
                 if (await CriarTarefaTelefoneAsync(item, vaga, ct))
                 {
                     MarcarComoNotificado(item, vaga);
+                    vagasReservadas.Add(vaga.Id);
                     enviados++;
                 }
                 continue;
@@ -158,6 +169,7 @@ public sealed class ListaEsperaService
                     await CriarTarefaTelefoneAsync(item, vaga, ct))
                 {
                     MarcarComoNotificado(item, vaga);
+                    vagasReservadas.Add(vaga.Id);
                     enviados++;
                 }
                 continue;
@@ -173,7 +185,7 @@ public sealed class ListaEsperaService
             var texto =
                 $"Olá, {item.Paciente.Nome}! Abriu uma vaga na sua lista de espera: " +
                 $"{vaga.Medico?.Nome} — {_especialidades.CanonicalizarNome(vaga.Medico?.Especialidade ?? item.Especialidade?.Nome ?? string.Empty)}, " +
-                $"dia {vaga.Data!.Value:dd/MM/yyyy} às {vaga.Horario}. " +
+                $"dia {vaga.Data!.Value:dd/MM/yyyy} às {vaga.Horario}. Você tem {JanelaReservaHoras} horas para aceitar, e a vaga fica reservada para você nesse prazo. " +
                 (destino.Value.Canal == CanalAtendimento.Email
                     ? "Acesse sua conta no CallMed para aceitar a vaga ou entre em contato com a recepção. Responder a este e-mail não reserva o horário. Se solicitar ajuda por e-mail, aguarde a confirmação da equipe. A vaga continua sujeita à disponibilidade."
                     : "Entre no app para aceitar a vaga ou responda por aqui se precisar de ajuda. A vaga continua sujeita à disponibilidade.");
@@ -188,6 +200,7 @@ public sealed class ListaEsperaService
             if (msg.Status is StatusMensagemAtendimento.Enviada or StatusMensagemAtendimento.Entregue)
             {
                 MarcarComoNotificado(item, vaga);
+                vagasReservadas.Add(vaga.Id);
                 await _context.SaveChangesAsync(ct);
                 enviados++;
             }

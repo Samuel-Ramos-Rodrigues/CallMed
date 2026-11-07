@@ -61,6 +61,14 @@ public class Consulta
     public string Modalidade { get; set; } = ModalidadeConsulta.Presencial;
     public int? SalaId { get; set; }
     public DateTime? TelemedicinaConsentimentoEm { get; set; }
+
+    // Sala de espera (CFM 2.314/2022): o paciente entra na espera; a equipe o admite,
+    // inicia e encerra o atendimento. O registro clínico do atendimento fica cifrado (enc:v1:).
+    public DateTime? TelemedicinaSalaEsperaEm { get; set; }
+    public DateTime? TelemedicinaAdmitidoEm { get; set; }
+    public DateTime? TelemedicinaInicioEm { get; set; }
+    public DateTime? TelemedicinaFimEm { get; set; }
+    public string? TelemedicinaRegistro { get; set; }
     public DateTime? Lembrete24hEnviadoEm { get; set; }
     public DateTime? Lembrete2hEnviadoEm { get; set; }
 }

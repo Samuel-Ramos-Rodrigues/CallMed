@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Anonimização (LGPD)";
+}
+<section>
+    <h1>Anonimização de titular (LGPD)</h1>
+    <p>Remove do paciente o nome, o CPF, os contatos e os dados de convênio, desativa o acesso, desativa as listas de espera e apaga o conteúdo das mensagens. O histórico de consultas e o pré-cadastro são mantidos, porque fazem parte do prontuário. A ação não pode ser desfeita.</p>
+    <p>Atenção: o texto livre do pré-cadastro (queixa, histórico) pode conter dados identificadores. Esta ação não o altera.</p>
+
+    @if (TempData["Sucesso"] is string sucesso)
+    {
+        <p role="status">@sucesso</p>
+    }
+    @if (TempData["Erro"] is string erro)
+    {
+        <p role="alert">@erro</p>
+    }
+
+    <form asp-action="Anonimizar" method="post">
+        <label for="pacienteId">ID do paciente</label>
+        <input id="pacienteId" name="pacienteId" type="number" min="1" required />
+        <label for="confirmacao">Digite ANONIMIZAR para confirmar</label>
+        <input id="confirmacao" name="confirmacao" type="text" autocomplete="off" required />
+        <button class="btn" type="submit">Anonimizar titular</button>
+    </form>
+</section>

@@ -29,5 +29,8 @@ public class PreConsultaFormulario
     [StringLength(20)]
     public string FormaPagamento { get; set; } = "Particular";
 
+    // Consentimento específico para uso dos dados no atendimento (LGPD).
+    public DateTime? ConsentimentoEm { get; set; }
+
     public DateTime PreenchidoEm { get; set; } = DateTime.UtcNow;
 }

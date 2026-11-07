@@ -21,7 +21,10 @@ public sealed class AcaoConsultaController(
     AgendamentoService agendamento,
     SolicitacaoAtendimentoService solicitacoes,
     AuditoriaService auditoria,
-    IOptions<AtendimentoEmailOptions> emailOptions) : Controller
+    IOptions<AtendimentoEmailOptions> emailOptions,
+    CampoSensivelService campos,
+    IClinicaClock clock,
+    TelemedicinaService telemedicina) : Controller
 {
     [HttpGet("/consulta/acao/{token}")]
     public async Task<IActionResult> Index(string token, CancellationToken ct)
@@ -31,8 +34,14 @@ public sealed class AcaoConsultaController(
 
         var urlPortal = emailOptions.Value.UrlPortal("acesso");
 
+        if (link.Acao == "reagendar")
+            return RedirectToAction(nameof(Reagendar), new { token });
+
         if (link.Acao == "preencher")
             return RedirectToAction(nameof(Formulario), new { token });
+
+        if (link.Acao == "sala")
+            return RedirectToAction(nameof(Sala), new { token });
 
         if (link.Acao == "aceitar")
         {
@@ -103,6 +112,69 @@ public sealed class AcaoConsultaController(
         return RedirectToAction(nameof(Index), new { token });
     }
 
+    // Sala de espera (CFM 2.314/2022). O paciente entra na espera; só depois que a equipe o admite
+    // o link da sala virtual aparece. O token vale 36 horas e só dá acesso a esta consulta.
+    [HttpGet("/consulta/sala/{token}")]
+    public async Task<IActionResult> Sala(string token, CancellationToken ct)
+    {
+        if (!links.TryLer(token, out var link) || link.Acao != "sala")
+            return View("Invalido");
+
+        var consulta = await db.Consultas.AsNoTracking()
+            .Include(c => c.Medico)
+            .FirstOrDefaultAsync(c => c.Id == link.Id, ct);
+        if (consulta is null)
+            return View("Invalido");
+
+        ViewData["JanelaAberta"] = telemedicina.JanelaAberta(consulta, clock.Agora);
+        ViewData["LinkSala"] = consulta.TelemedicinaAdmitidoEm.HasValue && consulta.TelemedicinaFimEm is null
+            ? telemedicina.UrlSala(consulta)
+            : null;
+
+        return View(new AcaoConsultaViewModel
+        {
+            Token = token,
+            Acao = link.Acao,
+            Consulta = consulta,
+            UrlPortal = emailOptions.Value.UrlPortal("acesso")
+        });
+    }
+
+    [HttpPost("/consulta/sala/{token}/entrar")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EntrarSala(string token, CancellationToken ct)
+    {
+        if (!links.TryLer(token, out var link) || link.Acao != "sala")
+            return View("Invalido");
+
+        var consulta = await db.Consultas.FirstOrDefaultAsync(c => c.Id == link.Id, ct);
+        if (consulta is null)
+            return View("Invalido");
+
+        if (consulta.Modalidade != ModalidadeConsulta.Online || !consulta.TelemedicinaConsentimentoEm.HasValue)
+        {
+            TempData["Erro"] = "Esta consulta não tem atendimento online autorizado.";
+        }
+        else if (consulta.Status == ConsultaStatus.Cancelada || consulta.TelemedicinaFimEm.HasValue)
+        {
+            TempData["Erro"] = "Este atendimento não está mais disponível.";
+        }
+        else if (!telemedicina.JanelaAberta(consulta, clock.Agora))
+        {
+            TempData["Erro"] = "A sala abre 15 minutos antes do horário da consulta.";
+        }
+        else if (consulta.TelemedicinaSalaEsperaEm is null)
+        {
+            consulta.TelemedicinaSalaEsperaEm = DateTime.UtcNow;
+            await db.SaveChangesAsync(ct);
+            await auditoria.RegistrarAsync("SalaEspera", "Consulta", consulta.Id,
+                "Paciente entrou na sala de espera pelo link.", ct: ct);
+            TempData["Sucesso"] = "Você está na sala de espera. Aguarde o profissional admiti-lo.";
+        }
+
+        return RedirectToAction(nameof(Sala), new { token });
+    }
+
     [HttpGet("/consulta/formulario/{token}")]
     public async Task<IActionResult> Formulario(string token, CancellationToken ct)
     {
@@ -117,6 +189,8 @@ public sealed class AcaoConsultaController(
 
         var formulario = await db.PreConsultasFormularios.AsNoTracking()
             .FirstOrDefaultAsync(f => f.ConsultaId == consulta.Id, ct);
+
+        campos.Abrir(formulario);
 
         return View("Formulario", new AcaoConsultaViewModel
         {
@@ -151,6 +225,12 @@ public sealed class AcaoConsultaController(
             return RedirectToAction(nameof(Formulario), new { token });
         }
 
+        if (!input.Consentimento)
+        {
+            TempData["Erro"] = "Autorize o uso dos dados para enviar o pré-cadastro.";
+            return RedirectToAction(nameof(Formulario), new { token });
+        }
+
         var formulario = await db.PreConsultasFormularios.FirstOrDefaultAsync(f => f.ConsultaId == consulta.Id, ct);
         if (formulario is null)
         {
@@ -158,13 +238,15 @@ public sealed class AcaoConsultaController(
             db.PreConsultasFormularios.Add(formulario);
         }
 
-        formulario.QueixaPrincipal = Limpar(input.QueixaPrincipal);
-        formulario.Alergias = Limpar(input.Alergias);
-        formulario.MedicamentosEmUso = Limpar(input.MedicamentosEmUso);
-        formulario.HistoricoRelevante = Limpar(input.HistoricoRelevante);
-        formulario.ConvenioNome = Limpar(input.ConvenioNome);
-        formulario.ConvenioCarteirinha = Limpar(input.ConvenioCarteirinha);
+        // Campos de anamnese são gravados cifrados (CampoSensivelService).
+        formulario.QueixaPrincipal = campos.Proteger(Limpar(input.QueixaPrincipal));
+        formulario.Alergias = campos.Proteger(Limpar(input.Alergias));
+        formulario.MedicamentosEmUso = campos.Proteger(Limpar(input.MedicamentosEmUso));
+        formulario.HistoricoRelevante = campos.Proteger(Limpar(input.HistoricoRelevante));
+        formulario.ConvenioNome = campos.Proteger(Limpar(input.ConvenioNome));
+        formulario.ConvenioCarteirinha = campos.Proteger(Limpar(input.ConvenioCarteirinha));
         formulario.FormaPagamento = input.FormaPagamento == "Convênio" ? "Convênio" : "Particular";
+        formulario.ConsentimentoEm = DateTime.UtcNow;
         formulario.PreenchidoEm = DateTime.UtcNow;
         await db.SaveChangesAsync(ct);
 
@@ -173,67 +255,80 @@ public sealed class AcaoConsultaController(
         return RedirectToAction(nameof(Formulario), new { token });
     }
 
-    private async Task AceitarVagaAsync(AcaoConsultaLinkService.Link link, CancellationToken ct)
+    [HttpGet("/consulta/reagendar/{token}")]
+    public async Task<IActionResult> Reagendar(string token, CancellationToken ct)
     {
-        var item = await db.ListasEspera
-            .Include(x => x.Especialidade)
-            .FirstOrDefaultAsync(x => x.Id == link.Id && x.Ativa, ct);
-        if (item is null)
-        {
-            TempData["Erro"] = "Esta vaga já não está mais disponível na sua lista.";
-            return;
-        }
+        if (!links.TryLer(token, out var link) || link.Acao != "reagendar")
+            return View("Invalido");
 
-        if (item.UltimaDisponibilidadeId != link.Extra)
+        var consulta = await db.Consultas.AsNoTracking()
+            .Include(c => c.Medico)
+            .FirstOrDefaultAsync(c => c.Id == link.Id, ct);
+        if (consulta is null)
+            return View("Invalido");
+
+        var inicio = clock.Hoje;
+        var fim = inicio.AddDays(14);
+        var agora = clock.Agora;
+
+        var candidatas = await db.Disponibilidades.AsNoTracking()
+            .Where(d => d.Ativo && d.MedicoId == consulta.MedicoId && d.Data != null && d.Data >= inicio && d.Data <= fim)
+            .OrderBy(d => d.Data).ThenBy(d => d.Horario)
+            .Take(300)
+            .ToListAsync(ct);
+
+        var ocupados = (await db.Consultas.AsNoTracking()
+                .Where(c => c.MedicoId == consulta.MedicoId && c.Data >= inicio && c.Data <= fim && c.Status != ConsultaStatus.Cancelada)
+                .Select(c => new { c.Data, c.Horario })
+                .ToListAsync(ct))
+            .Select(x => (Dia: x.Data.Date, Horario: x.Horario))
+            .ToHashSet();
+
+        var livres = candidatas
+            .Where(d => d.Data is DateTime dia && TimeSpan.TryParse(d.Horario, out var hora) &&
+                        dia.Date.Add(hora) > agora && !ocupados.Contains((dia.Date, d.Horario)))
+            .Take(60)
+            .ToList();
+
+        return View("Reagendar", new AcaoConsultaViewModel
         {
-            TempData["Erro"] = "Esta vaga já não está mais disponível. A CallMed continua procurando outra opção.";
-            return;
-        }
+            Token = token,
+            Acao = "reagendar",
+            Consulta = consulta,
+            Vagas = livres,
+            UrlPortal = emailOptions.Value.UrlPortal("acesso")
+        });
+    }
+
+    [HttpPost("/consulta/reagendar/{token}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ReagendarPeloLink(string token, int vagaId, CancellationToken ct)
+    {
+        if (!links.TryLer(token, out var link) || link.Acao != "reagendar")
+            return View("Invalido");
 
         var vaga = await db.Disponibilidades.AsNoTracking()
-            .Include(x => x.Medico)
-            .FirstOrDefaultAsync(x => x.Id == link.Extra && x.Ativo && x.Data.HasValue, ct);
-        if (vaga is null || !vaga.Data.HasValue)
+            .FirstOrDefaultAsync(d => d.Id == vagaId && d.Ativo, ct);
+        if (vaga is null || vaga.Data is null)
         {
-            TempData["Erro"] = "Esta vaga já não está mais disponível. A CallMed continua procurando outra opção.";
-            return;
+            TempData["Erro"] = "Este horário não está mais disponível. Escolha outro.";
+            return RedirectToAction(nameof(Reagendar), new { token });
         }
 
-        var resultado = await agendamento.AgendarAsync(
-            item.PacienteId, vaga.MedicoId, vaga.Data.Value, vaga.Horario,
-            $"Agendamento aceito pelo link da lista de espera #{item.Id}.",
-            ct: ct);
+        var resultado = await agendamento.RemarcarAsync(link.Id, vaga.Data.Value, vaga.Horario, ct);
+        if (resultado.Sucesso)
+            await auditoria.RegistrarAsync("Remarcar", "Consulta", link.Id, "Consulta remarcada pelo link da mensagem.", ct: ct);
 
-        if (!resultado.Sucesso)
-        {
-            TempData["Erro"] = resultado.Mensagem + " A CallMed continua procurando outra vaga.";
-            item.UltimaDisponibilidadeId = null;
-            item.AtualizadoEm = DateTime.UtcNow;
-            await db.SaveChangesAsync(ct);
-            return;
-        }
+        TempData[resultado.Sucesso ? "Sucesso" : "Erro"] = resultado.Sucesso
+            ? "Consulta remarcada. Confira os novos dados abaixo."
+            : resultado.Mensagem;
+        return RedirectToAction(nameof(Reagendar), new { token });
+    }
 
-        item.Ativa = false;
-        item.AtualizadoEm = DateTime.UtcNow;
-        await db.SaveChangesAsync(ct);
-
-        if (resultado.Consulta is not null)
-        {
-            var solicitacao = await solicitacoes.CriarAsync(
-                CanalAtendimento.Web,
-                item.PacienteId,
-                vaga.Medico?.EspecialidadeId ?? item.EspecialidadeId,
-                vaga.MedicoId,
-                vaga.Data.Value,
-                item.Periodo,
-                $"Vaga aceita pelo link da lista de espera #{item.Id}.",
-                ct: ct);
-            await solicitacoes.VincularConsultaAsync(solicitacao.Id, resultado.Consulta.Id, ct);
-        }
-
-        await auditoria.RegistrarAsync("Aceitar vaga", "Lista de espera", item.Id,
-            $"Vaga aceita pelo link e convertida na consulta #{resultado.Consulta?.Id}.", ct: ct);
-        TempData["Sucesso"] = "Vaga aceita e consulta agendada.";
+    private async Task AceitarVagaAsync(AcaoConsultaLinkService.Link link, CancellationToken ct)
+    {
+        var resultado = await aceite.AceitarAsync(link.Id, link.Extra, null, "link", ct);
+        TempData[resultado.Sucesso ? "Sucesso" : "Erro"] = resultado.Mensagem;
     }
 
     private static string? Limpar(string? valor) =>
@@ -249,4 +344,5 @@ public sealed class PreConsultaInput
     [StringLength(120)] public string? ConvenioNome { get; set; }
     [StringLength(60)] public string? ConvenioCarteirinha { get; set; }
     public string FormaPagamento { get; set; } = "Particular";
+    public bool Consentimento { get; set; }
 }

@@ -1,0 +1,95 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "CallMed - API FHIR R4 (leitura)",
+    "version": "1.0.0",
+    "description": "Leitura de Patient e Appointment em HL7 FHIR R4 (JSON). CPF não é exposto. Autenticação por chave de integração ou por token OAuth2 (client credentials)."
+  },
+  "servers": [{ "url": "/api/fhir/r4" }],
+  "components": {
+    "securitySchemes": {
+      "ChaveIntegracao": { "type": "apiKey", "in": "header", "name": "X-CallMed-Integration-Key" },
+      "OAuth2Bearer": { "type": "http", "scheme": "bearer" }
+    },
+    "schemas": {
+      "OperationOutcome": {
+        "type": "object",
+        "properties": {
+          "resourceType": { "type": "string", "example": "OperationOutcome" },
+          "issue": { "type": "array", "items": { "type": "object" } }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/oauth/token": {
+      "post": {
+        "summary": "Obter token (client credentials)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": ["grant_type", "client_id", "client_secret"],
+                "properties": {
+                  "grant_type": { "type": "string", "enum": ["client_credentials"] },
+                  "client_id": { "type": "string" },
+                  "client_secret": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Token emitido (válido por 1 hora)." },
+          "400": { "description": "grant_type inválido." },
+          "401": { "description": "Credenciais inválidas." },
+          "503": { "description": "OAuth não configurado." }
+        }
+      }
+    },
+    "/metadata": {
+      "get": {
+        "summary": "CapabilityStatement",
+        "responses": { "200": { "description": "Capacidades da API." } }
+      }
+    },
+    "/Patient/{id}": {
+      "get": {
+        "summary": "Ler Patient",
+        "security": [{ "ChaveIntegracao": [] }, { "OAuth2Bearer": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "Recurso Patient." },
+          "401": { "description": "Não autorizado." },
+          "404": { "description": "Não encontrado." }
+        }
+      }
+    },
+    "/Appointment": {
+      "get": {
+        "summary": "Buscar Appointment de um paciente",
+        "security": [{ "ChaveIntegracao": [] }, { "OAuth2Bearer": [] }],
+        "parameters": [{ "name": "patient", "in": "query", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "Bundle searchset com até 100 Appointment." },
+          "400": { "description": "Parâmetro patient ausente." },
+          "401": { "description": "Não autorizado." }
+        }
+      }
+    },
+    "/Appointment/{id}": {
+      "get": {
+        "summary": "Ler Appointment",
+        "security": [{ "ChaveIntegracao": [] }, { "OAuth2Bearer": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "Recurso Appointment." },
+          "401": { "description": "Não autorizado." },
+          "404": { "description": "Não encontrado." }
+        }
+      }
+    }
+  }
+}

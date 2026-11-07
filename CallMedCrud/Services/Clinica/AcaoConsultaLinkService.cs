@@ -14,7 +14,7 @@ public sealed class AcaoConsultaLinkService(
 {
     public readonly record struct Link(int Id, string Acao, int Extra);
 
-    private static readonly string[] AcoesValidas = ["confirmar", "cancelar", "preencher", "aceitar"];
+    private static readonly string[] AcoesValidas = ["confirmar", "cancelar", "preencher", "aceitar", "reagendar", "sala"];
     private static readonly TimeSpan Validade = TimeSpan.FromHours(36);
     private readonly IDataProtector _protector = protection.CreateProtector("CallMed.AcaoConsulta.v1");
 

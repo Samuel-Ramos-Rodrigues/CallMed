@@ -106,8 +106,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<EspecialidadeService>();
         services.AddScoped<AgendaMedicoService>();
         services.AddScoped<ListaEsperaService>();
+        services.AddScoped<ListaEsperaAceiteService>();
         services.AddScoped<ConfirmacoesService>();
         services.AddSingleton<AcaoConsultaLinkService>();
+        services.AddSingleton<CampoSensivelService>();
         services.AddSingleton<TelemedicinaService>();
         services.AddScoped<ConvenioService>();
         services.AddScoped<ConvenioElegibilidadeService>();
@@ -217,6 +219,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<DatabaseSchemaV30Initializer>();
         services.AddScoped<DatabaseSchemaV31Initializer>();
         services.AddScoped<DatabaseSchemaV32Initializer>();
+        services.AddScoped<DatabaseSchemaV33Initializer>();
         return services;
     }
 

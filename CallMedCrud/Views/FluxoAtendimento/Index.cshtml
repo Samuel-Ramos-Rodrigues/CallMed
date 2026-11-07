@@ -1,0 +1,61 @@
+@{
+    ViewData["Title"] = "Fluxo do dia";
+}
+<section>
+    <h1>Fluxo do dia</h1>
+    <p id="atualizacao" role="status">Carregando...</p>
+    <div id="fluxo" aria-live="polite"></div>
+</section>
+<script>
+(function () {
+    var destino = document.getElementById('fluxo');
+    var status = document.getElementById('atualizacao');
+    var rotulos = { Pendente: 'Pendente', Confirmada: 'Confirmada', Remarcada: 'Remarcada', Realizada: 'Realizada', Ausente: 'Ausente' };
+
+    function item(c) {
+        var li = document.createElement('li');
+        var hora = document.createElement('strong');
+        hora.textContent = c.horario;
+        var nomes = document.createElement('span');
+        nomes.textContent = ' ' + c.paciente + ' · ' + c.medico;
+        var situacao = document.createElement('span');
+        var texto = rotulos[c.status] || c.status;
+        if (c.checkIn) texto += ' · check-in feito';
+        if (c.sala) texto += ' · ' + c.sala;
+        situacao.textContent = texto;
+        li.appendChild(hora);
+        li.appendChild(nomes);
+        li.appendChild(document.createElement('br'));
+        li.appendChild(situacao);
+        return li;
+    }
+
+    async function atualizar() {
+        try {
+            var resposta = await fetch('/FluxoAtendimento/Dados', {
+                cache: 'no-store',
+                credentials: 'same-origin',
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!resposta.ok) throw new Error('HTTP ' + resposta.status);
+            var dados = await resposta.json();
+            destino.replaceChildren();
+            if (dados.consultas.length === 0) {
+                var vazio = document.createElement('p');
+                vazio.textContent = 'Nenhuma consulta para hoje.';
+                destino.appendChild(vazio);
+            } else {
+                var lista = document.createElement('ol');
+                dados.consultas.forEach(function (c) { lista.appendChild(item(c)); });
+                destino.appendChild(lista);
+            }
+            status.textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR');
+        } catch (erro) {
+            status.textContent = 'Não foi possível atualizar agora. Tentando de novo em 20 segundos.';
+        }
+    }
+
+    atualizar();
+    setInterval(atualizar, 20000);
+})();
+</script>

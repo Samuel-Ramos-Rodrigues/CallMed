@@ -9,5 +9,6 @@ public sealed class AcaoConsultaViewModel
     public Consulta? Consulta { get; init; }
     public Disponibilidade? Vaga { get; init; }
     public PreConsultaFormulario? Formulario { get; init; }
+    public IReadOnlyList<Disponibilidade> Vagas { get; init; } = [];
     public string? UrlPortal { get; init; }
 }

@@ -88,7 +88,7 @@ public class ConsultaController : Controller
             .ToListAsync());
     }
 
-    public async Task<IActionResult> Details(int? id)
+    public async Task<IActionResult> Details(int? id, [FromServices] CampoSensivelService campos)
     {
         if (id is null)
             return NotFound();
@@ -107,8 +107,8 @@ public class ConsultaController : Controller
 
         ViewBag.HojeClinica = _clock.Hoje;
         ViewBag.AgoraClinica = _clock.Agora;
-        ViewBag.PreCadastro = await _context.PreConsultasFormularios.AsNoTracking()
-            .FirstOrDefaultAsync(f => f.ConsultaId == item.Id);
+        ViewBag.PreCadastro = campos.Abrir(await _context.PreConsultasFormularios.AsNoTracking()
+            .FirstOrDefaultAsync(f => f.ConsultaId == item.Id));
         ViewBag.Salas = await _context.Salas.AsNoTracking()
             .Where(s => s.Ativa)
             .OrderBy(s => s.Nome)
@@ -477,6 +477,36 @@ public class ConsultaController : Controller
         }
 
         TempData["Sucesso"] = "Consentimento registrado.";
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
+    // O paciente entra na sala de espera. Só a equipe admite (TelemedicinaEquipeController),
+    // e o link da sala só aparece depois da admissão.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EntrarSalaEspera(int id)
+    {
+        var item = await _context.Consultas.FirstOrDefaultAsync(c => c.Id == id, HttpContext.RequestAborted);
+        if (item is null)
+            return NotFound();
+
+        if (!await PodeAcessar(item))
+            return Forbid();
+
+        if (item.Modalidade != ModalidadeConsulta.Online || !item.TelemedicinaConsentimentoEm.HasValue)
+        {
+            TempData["Erro"] = "A sala de espera só existe em consultas online com consentimento.";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        if (item.TelemedicinaSalaEsperaEm is null)
+        {
+            item.TelemedicinaSalaEsperaEm = DateTime.UtcNow;
+            await _context.SaveChangesAsync(HttpContext.RequestAborted);
+            await _auditoria.RegistrarAsync("SalaEspera", "Consulta", id, "Paciente entrou na sala de espera.", ct: HttpContext.RequestAborted);
+        }
+
+        TempData["Sucesso"] = "Você está na sala de espera. O profissional vai admiti-lo.";
         return RedirectToAction(nameof(Details), new { id });
     }
 

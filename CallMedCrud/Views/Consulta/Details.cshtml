@@ -110,9 +110,31 @@
                 {
                     <p>A sala virtual ainda não está configurada. Defina Telemedicina:Segredo e Telemedicina:BaseUrl.</p>
                 }
-                else if (Telemedicina.JanelaAberta(Model, (DateTime)ViewBag.AgoraClinica))
+                else if (ehEquipe)
+                {
+                    @if (Telemedicina.JanelaAberta(Model, (DateTime)ViewBag.AgoraClinica))
+                    {
+                        <a class="btn" href="@linkSala" target="_blank" rel="noopener">Entrar na sala virtual</a>
+                    }
+                    <p><a asp-controller="TelemedicinaEquipe" asp-action="Index">Painel de telemedicina</a></p>
+                }
+                else if (Model.TelemedicinaFimEm.HasValue)
+                {
+                    <p>Este atendimento online já foi encerrado.</p>
+                }
+                else if (Model.TelemedicinaAdmitidoEm.HasValue)
                 {
                     <a class="btn" href="@linkSala" target="_blank" rel="noopener">Entrar na sala virtual</a>
+                }
+                else if (Model.TelemedicinaSalaEsperaEm.HasValue)
+                {
+                    <p>Você está na sala de espera. Aguarde o profissional admiti-lo.</p>
+                }
+                else if (Telemedicina.JanelaAberta(Model, (DateTime)ViewBag.AgoraClinica))
+                {
+                    <form asp-action="EntrarSalaEspera" asp-route-id="@Model.Id" method="post">
+                        <button class="btn" type="submit">Entrar na sala de espera</button>
+                    </form>
                 }
                 else
                 {

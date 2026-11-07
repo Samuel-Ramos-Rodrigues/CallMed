@@ -52,7 +52,11 @@
             <label>Número da carteirinha
                 <input name="ConvenioCarteirinha" maxlength="60" value="@f?.ConvenioCarteirinha" />
             </label>
-            <p>Essas informações ficam disponíveis apenas para você e para a equipe da clínica.</p>
+            <label class="consentimento">
+                <input type="checkbox" name="Consentimento" value="true" required />
+                Autorizo a clínica a usar estes dados somente para o meu atendimento, conforme a LGPD.
+            </label>
+            <p>Essas informações ficam disponíveis apenas para você e para a equipe da clínica. Elas são armazenadas cifradas.</p>
             <button class="btn" type="submit">Enviar pré-cadastro</button>
         </form>
     }

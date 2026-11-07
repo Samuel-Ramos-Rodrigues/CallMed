@@ -1,7 +1,10 @@
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
     Layout = "_PublicLayout";
-    var contato = Configuration["PlayStore:SupportEmail"]?.Trim();
+    // Lgpd:EncarregadoEmail é o canal do encarregado de dados (LGPD, art. 41); tem prioridade.
+    var contato = Configuration["Lgpd:EncarregadoEmail"]?.Trim();
+    if (string.IsNullOrWhiteSpace(contato))
+        contato = Configuration["PlayStore:SupportEmail"]?.Trim();
     if (string.IsNullOrWhiteSpace(contato))
         contato = Configuration["Clinica:Email"]?.Trim();
     var possuiContato = !string.IsNullOrWhiteSpace(contato);
@@ -39,6 +42,7 @@
 
         <h2>7. Retenção e direitos</h2>
         <p>Os registros são mantidos pelo período necessário às finalidades do serviço e às obrigações da clínica. O titular pode solicitar acesso, correção e, quando juridicamente aplicável, eliminação ou outras medidas previstas na LGPD. Alguns registros podem precisar ser preservados por obrigação legal ou para manter a integridade do histórico de atendimento.</p>
+        <p>Para baixar uma cópia dos seus dados (cadastro, consultas e pré-cadastro) em formato JSON, entre na sua conta e use <a asp-controller="MeusDados" asp-action="Exportar">exportar meus dados</a>. Cada exportação fica registrada.</p>
 
         <h2>8. Assistente de IA e saúde</h2>
         <div class="privacy-note">O Assistente CallMed é um recurso de apoio para navegação, atendimento e agendamento. Ele não substitui avaliação de profissional de saúde, não deve ser usado para diagnóstico e não é um canal de emergência. Em situação urgente, procure o serviço de emergência adequado.</div>

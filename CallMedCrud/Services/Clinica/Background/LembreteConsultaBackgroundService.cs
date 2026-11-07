@@ -46,33 +46,7 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
 
                 if (string.Equals(c.Paciente.CanalPreferido, "Telefone", StringComparison.OrdinalIgnoreCase))
                 {
-                    var existeTarefa = await db.SolicitacoesAtendimento.AnyAsync(x =>
-                        x.ConsultaId == c.Id &&
-                        x.Canal == CanalAtendimento.Telefone &&
-                        x.Status != StatusSolicitacaoAtendimento.Cancelada &&
-                        x.Status != StatusSolicitacaoAtendimento.Encerrada, ct);
-
-                    if (!existeTarefa)
-                    {
-                        db.SolicitacoesAtendimento.Add(new SolicitacaoAtendimento
-                        {
-                            PacienteId = c.PacienteId,
-                            EspecialidadeId = c.Medico?.EspecialidadeId,
-                            MedicoId = c.MedicoId,
-                            ConsultaId = c.Id,
-                            Canal = CanalAtendimento.Telefone,
-                            Status = StatusSolicitacaoAtendimento.Nova,
-                            NomeContato = c.Paciente.Nome,
-                            TelefoneContato = c.Paciente.Telefone,
-                            ConvenioInformado = c.Paciente.NomeConvenio,
-                            Observacao = tipo24
-                                ? $"Ligar para confirmar a consulta de {c.Data:dd/MM} às {c.Horario}."
-                                : $"Ligar sobre a consulta de {c.Data:dd/MM} às {c.Horario}.",
-                            CriadoEm = DateTime.UtcNow,
-                            AtualizadoEm = DateTime.UtcNow
-                        });
-                    }
-
+                    await CriarTarefaTelefoneAsync(db, c, tipo24, ct);
                     if (tipo24) c.Lembrete24hEnviadoEm = DateTime.UtcNow; else c.Lembrete2hEnviadoEm = DateTime.UtcNow;
                     await db.SaveChangesAsync(ct);
                     continue;
@@ -105,8 +79,16 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
                 {
                     var linkConfirmar = links.GerarUrl(c.Id, "confirmar");
                     var linkCancelar = links.GerarUrl(c.Id, "cancelar");
+                    var linkReagendar = links.GerarUrl(c.Id, "reagendar");
                     if (linkConfirmar is not null && linkCancelar is not null)
-                        texto += $"\n\nConfirmar com um toque: {linkConfirmar}\nCancelar pelo link: {linkCancelar}";
+                        texto += $"\n\nConfirmar com um toque: {linkConfirmar}\nCancelar pelo link: {linkCancelar}" +
+                                 (linkReagendar is null ? "" : $"\nRemarcar pelo link: {linkReagendar}");
+                }
+                if (c.Modalidade == ModalidadeConsulta.Online && c.TelemedicinaConsentimentoEm.HasValue)
+                {
+                    var linkSala = links.GerarUrl(c.Id, "sala");
+                    if (linkSala is not null)
+                        texto += $"\n\nEntrar na sala de espera (abre 15 min antes): {linkSala}";
                 }
                 if (tipo24 && destino.Value.Canal != CanalAtendimento.Email)
                 {

@@ -1,0 +1,54 @@
+@model MKSANCrud.ViewModels.AcaoConsultaViewModel
+@{
+    Layout = "_PublicLayout";
+    ViewData["Title"] = "Remarcar consulta";
+}
+<section class="public-section">
+    <h1>Remarcar consulta</h1>
+    @if (TempData["Sucesso"] is string sucesso)
+    {
+        <p class="alert ok">@sucesso</p>
+    }
+    @if (TempData["Erro"] is string erro)
+    {
+        <p class="alert">@erro</p>
+    }
+
+    @if (Model.Consulta is null)
+    {
+        <p>Este link não está mais disponível.</p>
+    }
+    else if (!MKSANCrud.Models.ConsultaStatus.PodeRemarcar(Model.Consulta.Status))
+    {
+        <p>Esta consulta não pode mais ser remarcada por este link.</p>
+    }
+    else
+    {
+        <p>Consulta atual: @Model.Consulta.Data.ToString("dd/MM/yyyy") às @Model.Consulta.Horario · @(Model.Consulta.Medico?.Nome)</p>
+        <p>Escolha um novo horário com o mesmo profissional (próximos 14 dias):</p>
+        @if (Model.Vagas.Count == 0)
+        {
+            <p>Não há horários livres nos próximos dias. Entre em contato com a clínica.</p>
+        }
+        else
+        {
+            <ul class="lista-vagas">
+                @foreach (var vaga in Model.Vagas)
+                {
+                    <li>
+                        <form method="post" action="/consulta/reagendar/@Model.Token">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="vagaId" value="@vaga.Id" />
+                            <button class="btn" type="submit">@vaga.Data!.Value.ToString("dd/MM/yyyy") às @vaga.Horario</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        }
+    }
+
+    @if (Model.UrlPortal is not null)
+    {
+        <p><a href="@Model.UrlPortal">Entrar no CallMed</a></p>
+    }
+</section>

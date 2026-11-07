@@ -20,11 +20,13 @@ public class ListaEsperaController : Controller
     private readonly AgendamentoService _agendamento;
     private readonly AuditoriaService _auditoria;
     private readonly SolicitacaoAtendimentoService _solicitacoes;
+    private readonly ListaEsperaAceiteService _aceite;
 
     public ListaEsperaController(
         MKSANContext context,
         UsuarioVinculoService vinculos,
         ListaEsperaService service,
+        ListaEsperaAceiteService aceite,
         AgendamentoService agendamento,
         AuditoriaService auditoria,
         SolicitacaoAtendimentoService solicitacoes)
@@ -35,6 +37,7 @@ public class ListaEsperaController : Controller
         _agendamento = agendamento;
         _auditoria = auditoria;
         _solicitacoes = solicitacoes;
+        _aceite = aceite;
     }
 
     public async Task<IActionResult> Index(CancellationToken ct)
@@ -117,62 +120,20 @@ public class ListaEsperaController : Controller
         var paciente = await _vinculos.ObterPacienteAsync(User, ct);
         if (paciente is null) return Forbid();
 
-        var item = await _context.ListasEspera
-            .Include(x => x.Especialidade)
+        var item = await _context.ListasEspera.AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id && x.Ativa && x.PacienteId == paciente.Id, ct);
         if (item is null) return NotFound();
+
         if (!item.UltimaDisponibilidadeId.HasValue)
         {
             TempData["Erro"] = "Essa lista ainda não possui uma vaga disponível.";
             return RedirectToAction(nameof(Index));
         }
 
-        var vaga = await _context.Disponibilidades.AsNoTracking()
-            .Include(x => x.Medico)
-            .FirstOrDefaultAsync(x => x.Id == item.UltimaDisponibilidadeId.Value && x.Ativo && x.Data.HasValue, ct);
-        if (vaga is null || !vaga.Data.HasValue)
-        {
-            TempData["Erro"] = "A vaga não está mais disponível. A CallMed continuará procurando outra opção.";
-            item.UltimaDisponibilidadeId = null; item.AtualizadoEm = DateTime.UtcNow;
-            await _context.SaveChangesAsync(ct);
-            return RedirectToAction(nameof(Index));
-        }
+        var resultado = await _aceite.AceitarAsync(id, item.UltimaDisponibilidadeId.Value, paciente.Id, "portal", ct);
+        TempData[resultado.Sucesso ? "Sucesso" : "Erro"] = resultado.Mensagem;
 
-        var resultado = await _agendamento.AgendarAsync(
-            paciente.Id, vaga.MedicoId, vaga.Data.Value, vaga.Horario,
-            $"Agendamento aceito pela lista de espera #{item.Id}.",
-            ct: ct);
-
-        if (!resultado.Sucesso)
-        {
-            TempData["Erro"] = resultado.Mensagem + " A CallMed continuará procurando outra vaga.";
-            item.UltimaDisponibilidadeId = null; item.AtualizadoEm = DateTime.UtcNow;
-            await _context.SaveChangesAsync(ct);
-        }
-        else
-        {
-            item.Ativa = false; item.AtualizadoEm = DateTime.UtcNow;
-            await _context.SaveChangesAsync(ct);
-
-            if (resultado.Consulta is not null)
-            {
-                var solicitacao = await _solicitacoes.CriarAsync(
-                    CanalAtendimento.Web,
-                    paciente.Id,
-                    vaga.Medico?.EspecialidadeId ?? item.EspecialidadeId,
-                    vaga.MedicoId,
-                    vaga.Data.Value,
-                    item.Periodo,
-                    $"Vaga aceita pela lista de espera #{item.Id}.",
-                    ct: ct);
-                await _solicitacoes.VincularConsultaAsync(solicitacao.Id, resultado.Consulta.Id, ct);
-            }
-
-            await _auditoria.RegistrarAsync("Aceitar vaga", "Lista de espera", item.Id, $"Vaga aceita e convertida na consulta #{resultado.Consulta?.Id}.", ct: ct);
-            TempData["Sucesso"] = "Vaga aceita e consulta agendada com sucesso.";
-        }
-
-        if(!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl)) return LocalRedirect(returnUrl);
+        if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl)) return LocalRedirect(returnUrl);
         return RedirectToAction(nameof(Index));
     }
 

@@ -32,6 +32,8 @@
                     <a class="@(Ativo("Medico") || Ativo("MedicoAcesso") ? "active" : "")" asp-controller="Medico" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#doctor"></use></svg><span>Médicos</span></a>
                     <a class="@(Ativo("HistoricoExames") ? "active" : "")" asp-controller="HistoricoExames" asp-action="Pendentes"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#file-medical"></use></svg><span>Exames</span></a>
                     <a class="@(Ativo("Relatorios") ? "active" : "")" asp-controller="Relatorios" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#chart"></use></svg><span>Relatórios</span></a>
+                    <a class="@(Ativo("FluxoAtendimento") ? "active" : "")" asp-controller="FluxoAtendimento" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar-check"></use></svg><span>Fluxo do dia</span></a>
+                    <a class="@(Ativo("TelemedicinaEquipe") ? "active" : "")" asp-controller="TelemedicinaEquipe" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#flag"></use></svg><span>Telemedicina</span></a>
                     @if (User.IsInRole("Admin"))
                     {
                         <a class="@(Ativo("Configuracoes") ? "active" : "")" asp-controller="Configuracoes" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#settings"></use></svg><span>Configurações</span></a>
