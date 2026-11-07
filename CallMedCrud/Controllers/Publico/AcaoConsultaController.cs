@@ -24,7 +24,8 @@ public sealed class AcaoConsultaController(
     IOptions<AtendimentoEmailOptions> emailOptions,
     CampoSensivelService campos,
     IClinicaClock clock,
-    TelemedicinaService telemedicina) : Controller
+    TelemedicinaService telemedicina,
+    ListaEsperaAceiteService aceite) : Controller
 {
     [HttpGet("/consulta/acao/{token}")]
     public async Task<IActionResult> Index(string token, CancellationToken ct)
