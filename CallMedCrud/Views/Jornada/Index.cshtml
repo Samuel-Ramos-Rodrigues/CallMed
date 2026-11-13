@@ -1,0 +1,50 @@
+@inject MKSANCrud.Services.Clinica.IClinicaClock Clock
+@{
+    ViewData["Title"] = User.IsInRole("Paciente") ? "Minhas consultas" : User.IsProfissionalSaude() ? "Meus atendimentos" : "Recepção do dia";
+    bool equipe = User.IsInRole("Admin") || User.IsInRole("Funcionario");
+}
+<section class="jornada cm-workspace" id="j-painel">
+    <header class="cm-journey-page-heading">
+        <div><span class="eyebrow">JORNADA DO ATENDIMENTO</span><h1>@ViewData["Title"]</h1><p>Da preparação à consulta, acompanhe tudo por aqui.</p></div>
+        @if (equipe)
+        {
+            <a class="btn secondary" asp-controller="Salas" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#hospital"></use></svg>Gerenciar salas</a>
+        }
+        else
+        {
+            <a class="btn" asp-controller="Consulta" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg>Agendar consulta</a>
+        }
+    </header>
+    @Html.AntiForgeryToken()
+    <div class="cm-journey-toolbar">
+        <div class="cm-journey-live"><span aria-hidden="true"></span><p id="j-status" role="status" aria-live="polite">Carregando sua agenda…</p></div>
+        <div class="cm-journey-tools">
+            @if (equipe)
+            {
+                <label for="j-dia">Dia do atendimento</label><input id="j-dia" type="date" value="@Clock.Hoje.ToString("yyyy-MM-dd")" />
+            }
+            <button class="btn secondary small" id="j-atualizar" type="button">Atualizar</button>
+        </div>
+    </div>
+    <section class="cm-journey-section" aria-labelledby="j-consultas-heading">
+        <header><div><h2 id="j-consultas-heading">Consultas e etapas</h2><p>Horários, orientações e acesso ao atendimento.</p></div><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg></header>
+        <div id="j-consultas" class="j-grid"></div>
+    </section>
+    <section class="cm-journey-section cm-journey-offers" id="ofertas" aria-labelledby="j-ofertas-heading">
+        <header><div><h2 id="j-ofertas-heading">@(equipe ? "Reservas de encaixe" : "Ofertas de encaixe")</h2><p>@(equipe ? "Acompanhe os horários oferecidos à fila de espera." : "Quando surgir uma vaga compatível, ela aparece aqui.")</p></div><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#clock"></use></svg></header>
+        <div id="j-ofertas" class="j-grid"></div>
+    </section>
+    @if (equipe)
+    {
+        <section class="cm-journey-management" aria-label="Gestão do atendimento">
+            <a asp-controller="Salas" asp-action="Index" asp-route-aba="online"><span class="cm-journey-link-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#hospital"></use></svg></span><span><strong>Teleconsultas</strong><small>Salas online, presença e andamento</small></span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></a>
+            <a asp-controller="Operacao" asp-action="Index"><span class="cm-journey-link-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#chart"></use></svg></span><span><strong>Resultados do piloto</strong><small>Indicadores e medições da clínica</small></span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></a>
+        </section>
+        <section class="cm-journey-section cm-journey-indicators"><details><summary><span>Indicadores do atendimento<small>Dados registrados pela clínica</small></span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#chart"></use></svg></summary><div id="j-indicadores" class="cm-journey-metrics"></div><footer><p>A comparação antes/depois utiliza as medições registradas pela clínica.</p><div><a asp-controller="Piloto" asp-action="Medicao">Registrar medição</a><a asp-controller="Piloto" asp-action="Index">Comparar resultados</a></div></footer></details></section>
+        @if (User.IsInRole("Admin"))
+        {
+            <nav class="cm-journey-admin" aria-label="Configurações administrativas"><a asp-controller="Psicologia" asp-action="Pep">Integração com prontuário</a><a asp-controller="Privacidade" asp-action="Gestao">Pedidos de privacidade</a></nav>
+        }
+    }
+</section>
+@section Scripts { <script src="~/js/jornada.js" asp-append-version="true" defer></script> }

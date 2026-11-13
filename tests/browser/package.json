@@ -1,0 +1,12 @@
+{
+  "name": "callmed-psicologia-browser-checks",
+  "private": true,
+  "scripts": {
+    "test": "node check-psicologia.cjs",
+    "test:salas": "node check-salas.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "axe-core": "4.10.3"
+  }
+}

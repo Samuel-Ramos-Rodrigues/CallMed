@@ -1,0 +1,52 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>CallMed · revisão local</title>
+<h1>Revisão local da interface</h1><p>Somente a fixture de testes. Dados fictícios e provedores de mensagens desativados.</p>
+<form id="review-form"><label>Página <input id="path" value="/Atendimento?id=100" size="42"></label>
+<label>Largura <select id="width"><option>1366</option><option>768</option><option>390</option><option>320</option></select></label>
+<label>Tema <select id="theme"><option value="dark">Escuro</option><option value="light">Claro</option></select></label>
+<label>Texto <select id="scale"><option value="100">100%</option><option value="200">200%</option></select></label>
+<button>Abrir</button><button type="button" id="sweep">Verificar todas as telas</button></form>
+<p id="progress" role="status">Escolha uma página.</p><iframe id="frame" title="Tela da CallMed em revisão" width="1366" height="900" src="/Atendimento?id=100"></iframe>
+<details><summary>Resultados</summary><pre id="results"></pre></details>
+<script>
+const frame=document.getElementById('frame'),progress=document.getElementById('progress'),results=[];
+const pages=[['publico','a','/'],['login','a','/acesso'],['cadastro','a','/Identity/Account/Register'],['recuperacao','a','/Identity/Account/ForgotPassword'],['privacidade-publica','a','/privacidade'],['termos','a','/termos-de-uso'],['android','a','/aplicativo'],['recepcao','f','/FuncionarioPainel'],['agenda','f','/Agenda'],['pacientes','f','/Paciente'],['novo-paciente','f','/Paciente/Create'],['detalhes-paciente','f','/Paciente/Details/1'],['editar-paciente','f','/Paciente/Edit/1'],['profissionais','a','/Medico'],['novo-profissional','a','/Medico/Create'],['equipe','a','/Funcionario'],['especialidades','a','/Especialidade'],['disponibilidades','a','/Disponibilidades'],['convenios','a','/Convenios'],['solicitacoes','f','/Solicitacoes'],['consultas-equipe','f','/Consulta'],['espera','f','/ListaEspera'],['exames','f','/HistoricoExames/Pendentes'],['relatorios','a','/Relatorios'],['configuracoes','a','/Configuracoes'],['integracoes','a','/Integracoes'],['resultados','a','/Operacao'],['piloto','a','/Piloto'],['medicao','a','/Piloto/Medicao'],['privacidade-gestao','a','/dados-e-privacidade/gestao'],['areas','a','/Organizacao'],['acessos','a','/Acessos'],['mensagens','f','/Atendimento?id=100'],['jornada','f','/Jornada'],['jornada-detalhe','p','/Jornada/Consulta/1'],['pep','a','/Psicologia/Pep'],['paciente-inicio','p','/Home'],['minhas-consultas','p','/Consulta'],['agendamento','p','/Consulta/Create'],['conta','p','/MinhaConta'],['privacidade-paciente','p','/dados-e-privacidade'],['profissional','g','/MedicoPainel'],['salas','f','/Salas'],['salas-online','f','/Salas?aba=online'],['agendamento-equipe','f','/Consulta/Create'],['novo-atendimento','f','/Atendimento/Nova'],['nova-solicitacao','f','/Solicitacoes/Create']];
+async function show(path,width,theme,scale){
+ if(!path.startsWith('/')||path.startsWith('//'))throw Error('Use uma rota local.');
+ frame.width=width;frame.height=900;
+ await new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=reject;frame.src=path;});
+ const win=frame.contentWindow,doc=frame.contentDocument;
+ if(win.CallMedTheme)win.CallMedTheme.set(theme);else doc.documentElement.dataset.theme=theme;
+ doc.documentElement.style.fontSize=scale+'%';
+ await doc.fonts.ready;
+ await Promise.race([Promise.all(doc.getAnimations({subtree:true}).filter(a=>a.constructor.name==='CSSTransition').map(a=>a.finished.catch(()=>{}))), new Promise(resolve=>setTimeout(resolve,500))]);
+ await Promise.race([new Promise(resolve=>win.requestAnimationFrame(()=>win.requestAnimationFrame(resolve))),new Promise(resolve=>setTimeout(resolve,250))]);
+ return {win,doc};
+}
+document.getElementById('review-form').onsubmit=async e=>{e.preventDefault();await show(document.getElementById('path').value,document.getElementById('width').value,document.getElementById('theme').value,document.getElementById('scale').value);progress.textContent='Página aberta.';};
+async function inspect(label,width,theme,scale,path){
+ const {win,doc}=await show(path,width,theme,scale);
+ const script=doc.createElement('script');script.src='/fixture/axe.js';await new Promise((resolve,reject)=>{script.onload=resolve;script.onerror=reject;doc.head.append(script);});
+ const report=await win.axe.run(doc,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}});
+ const bad=[...doc.querySelectorAll('body *')].filter(e=>e.offsetWidth>0&&e.getBoundingClientRect().right>Number(width)+2&&getComputedStyle(e).position!=='fixed'&&!e.closest('.table-scroll,.cm-table-scroll,.cm19-calendar-scroll,.cm19-availability-table')).slice(0,6).map(e=>e.tagName+'.'+e.className);
+ return {label,width:Number(width),theme,scale:Number(scale),title:doc.title,dimensions:{scroll:doc.documentElement.scrollWidth,viewport:win.innerWidth,body:doc.body.getBoundingClientRect().width},overflow:doc.documentElement.scrollWidth>Number(width)+2,elements:bad,violations:report.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.slice(0,5).map(n=>({target:n.target,html:n.html,summary:n.failureSummary}))}))};
+}
+document.getElementById('sweep').onclick=async()=>{
+ document.getElementById('sweep').disabled=true;results.length=0;let i=0;
+ const focus=new URLSearchParams(location.search).get('focus');
+ try{
+  for(const [label,role,path]of pages.filter(p=>!focus||focus.split(',').includes(p[0]))){
+   await fetch('/fixture/login/'+role);
+   if(['publico','login','cadastro','recuperacao','privacidade-publica','termos','android'].includes(label)){
+    // A fresh anonymous public view is sufficient; the fixture can clear only its own test cookie.
+    await fetch('/fixture/logout');
+   }
+   for(const [width,theme,scale]of [[1366,'dark',100],[1366,'light',100],[390,'dark',100],[390,'light',200]]){
+    progress.textContent=(++i)+' · '+label+' · '+width+' · '+theme+' · '+scale+'%';
+    results.push(await inspect(label,width,theme,scale,path));
+    document.getElementById('results').textContent=JSON.stringify(results,null,2);
+   }
+  }
+  progress.textContent='Concluído: '+results.length+' verificações; '+results.filter(x=>x.overflow||x.violations.length).length+' com observações.';
+ }catch(e){progress.textContent='Falha: '+e.message;}finally{document.getElementById('sweep').disabled=false;}
+};
+</script></html>

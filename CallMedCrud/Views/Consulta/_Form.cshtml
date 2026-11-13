@@ -1,0 +1,253 @@
+@model MKSANCrud.Models.Consulta
+@{
+    var especialidades = (ViewBag.Especialidades as IEnumerable<string> ?? Enumerable.Empty<string>()).ToList();
+    var especialidadeSelecionada = ViewBag.EspecialidadeSelecionada as string ?? string.Empty;
+    var pagamentoSelecionado = ViewBag.TipoPagamentoSelecionado as string ?? Model.TipoPagamento;
+    var ehEquipe = User.IsInRole("Funcionario") || User.IsInRole("Admin");
+    var pacienteTemConvenio = ViewBag.PacienteTemConvenio is bool temConvenio && temConvenio;
+    var pacienteConvenioValido = ViewBag.PacienteConvenioValido is bool convenioValido && convenioValido;
+    var nomeConvenioPaciente = ViewBag.PacienteNomeConvenio as string;
+}
+<div asp-validation-summary="ModelOnly" class="validation"></div>
+
+<ol class="cm19-booking-steps" aria-label="Etapas do agendamento">
+    <li class="active" data-booking-step="1"><b>1</b><span>Área de atuação</span></li>
+    <li data-booking-step="2"><b>2</b><span>Profissional</span></li>
+    <li data-booking-step="3"><b>3</b><span>Data</span></li>
+    <li data-booking-step="4"><b>4</b><span>Horário</span></li>
+    <li data-booking-step="5"><b>5</b><span>Confirmar</span></li>
+</ol>
+
+@if (ehEquipe)
+{
+    <section class="cm25-screen cm19-booking-section staff-patient">
+        <div class="cm19-booking-section-head"><span>Paciente</span><h2>Para quem é a consulta?</h2></div>
+        <div class="form-group"><select asp-for="PacienteId" asp-items="ViewBag.PacienteId" class="form-control" id="pacienteSelect" aria-label="Paciente"><option value="">Selecione um paciente</option></select><span asp-validation-for="PacienteId" class="validation"></span></div>
+        <div id="convenioInfo" class="cm19-inline-info"></div>
+    </section>
+}
+else
+{
+    <input asp-for="PacienteId" type="hidden" />
+    <div id="convenioInfo" hidden></div>
+}
+
+<section class="cm19-booking-section" data-section="specialty">
+    <div class="cm19-booking-section-head"><span>Etapa 1</span><h2>Escolha uma área de atuação</h2><p>Selecione a área do atendimento.</p></div>
+    <select name="especialidade" id="especialidadeSelect" class="cm19-native-select" aria-label="Especialidade">
+        <option value="">Selecione uma especialidade</option>
+        @foreach (var especialidade in especialidades)
+        {
+            <option value="@especialidade" selected="@(especialidade.Equals(especialidadeSelecionada, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">@especialidade</option>
+        }
+    </select>
+    <div class="cm19-specialty-grid" id="cm19SpecialtyGrid">
+        @foreach (var especialidade in especialidades)
+        {
+            <button type="button" class="cm19-specialty-option @(especialidade.Equals(especialidadeSelecionada, StringComparison.OrdinalIgnoreCase) ? "selected" : "")" data-specialty="@especialidade"><span><svg><use href="/icons/callmed-ui.svg#stethoscope"></use></svg></span><strong>@especialidade</strong></button>
+        }
+    </div>
+</section>
+
+<section class="cm19-booking-section" data-section="doctor">
+    <div class="cm19-booking-section-head"><span>Etapa 2</span><h2>Escolha o profissional</h2><p>Profissionais ativos da área de atuação escolhida.</p></div>
+    <select asp-for="MedicoId" asp-items="ViewBag.MedicoId" class="cm19-native-select" id="medicoSelect" aria-label="Profissional"><option value="">Selecione uma especialidade primeiro</option></select>
+    <span asp-validation-for="MedicoId" class="validation"></span>
+    <div class="cm19-choice-grid" id="cm19DoctorChoices"><div class="cm19-choice-placeholder">Escolha uma área de atuação para ver os profissionais.</div></div>
+    <button type="button" class="cm19-smart-slot" id="primeiraVagaButton"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar-check"></use></svg><span><strong>Encontrar a primeira vaga</strong><small id="primeiraVagaStatus">A CallMed procura automaticamente o horário mais próximo.</small></span></button>
+</section>
+
+<section class="cm19-booking-section" data-section="date">
+    <div class="cm19-booking-section-head"><span>Etapa 3</span><h2>Escolha a data</h2><p>Os dias com horários disponíveis ficam destacados no calendário.</p></div>
+    <select asp-for="Data" class="cm19-native-select" id="dataSelect" aria-label="Data da consulta" data-atual="@Model.Data.ToString("yyyy-MM-dd")"><option value="">Selecione um profissional primeiro</option></select>
+    <span asp-validation-for="Data" class="validation"></span>
+    <div class="cm19-date-choices" id="cm19DateChoices"><div class="cm19-choice-placeholder">Selecione um profissional.</div></div>
+</section>
+
+<section class="cm19-booking-section" data-section="time">
+    <div class="cm19-booking-section-head"><span>Etapa 4</span><h2>Escolha o horário</h2><p>Vagas disponíveis para a data selecionada.</p></div>
+    <select asp-for="Horario" class="cm19-native-select" id="horarioSelect" aria-label="Horário da consulta" data-atual="@Model.Horario"><option value="">Selecione uma data primeiro</option></select>
+    <span asp-validation-for="Horario" class="validation"></span>
+    <div class="cm19-time-choices" id="cm19TimeChoices"><div class="cm19-choice-placeholder">Selecione uma data.</div></div>
+</section>
+
+<section class="cm19-booking-section compact-options">
+    @if (ehEquipe)
+    {
+        <div class="form-group"><label for="tipoPagamentoSelect">Tipo de atendimento</label><select name="tipoPagamento" id="tipoPagamentoSelect" class="form-control"><option value="" selected="@(string.IsNullOrWhiteSpace(pagamentoSelecionado) ? "selected" : null)">Usar cadastro do paciente</option><option value="Particular" selected="@(pagamentoSelecionado == "Particular" ? "selected" : null)">Particular</option><option value="Convenio" selected="@(pagamentoSelecionado == "Convenio" ? "selected" : null)">Convênio</option></select></div>
+    }
+    else if (User.IsInRole("Paciente") && pacienteConvenioValido)
+    {
+        <div class="form-group">
+            <label for="tipoPagamentoSelect">Forma de atendimento</label>
+            <select name="tipoPagamento" id="tipoPagamentoSelect" class="form-control">
+                <option value="Convenio" selected="@(pagamentoSelecionado == "Convenio" ? "selected" : null)">Usar convênio cadastrado (@(string.IsNullOrWhiteSpace(nomeConvenioPaciente) ? "convênio" : nomeConvenioPaciente))</option>
+                <option value="Particular" selected="@(pagamentoSelecionado == "Particular" ? "selected" : null)">Atendimento particular</option>
+            </select>
+            <small>Você pode escolher o convênio cadastrado ou atendimento particular. Se houver uma regra explícita de não cobertura, o sistema pedirá que escolha particular.</small>
+        </div>
+    }
+    else if (User.IsInRole("Paciente") && pacienteTemConvenio)
+    {
+        <div class="cm19-inline-info" role="status">
+            Seu convênio cadastrado está vencido ou incompleto. Este agendamento será particular. Atualize seus dados em Minha Conta para voltar a usar o convênio.
+        </div>
+        <input type="hidden" name="tipoPagamento" value="Particular" />
+    }
+    else if (User.IsInRole("Paciente"))
+    {
+        <div class="cm19-inline-info">Forma de atendimento: particular.</div>
+        <input type="hidden" name="tipoPagamento" value="Particular" />
+    }
+    <div class="form-group"><label asp-for="Observacao">Observação <small>(opcional)</small></label><textarea asp-for="Observacao" class="form-control" maxlength="1000" rows="3" placeholder="Informações adicionais para o atendimento"></textarea></div>
+</section>
+
+<script>
+(function () {
+    const specialty = document.getElementById('especialidadeSelect');
+    const doctor = document.getElementById('medicoSelect');
+    const date = document.getElementById('dataSelect');
+    const time = document.getElementById('horarioSelect');
+    const doctorChoices = document.getElementById('cm19DoctorChoices');
+    const dateChoices = document.getElementById('cm19DateChoices');
+    const timeChoices = document.getElementById('cm19TimeChoices');
+    const firstSlot = document.getElementById('primeiraVagaButton');
+    const firstSlotStatus = document.getElementById('primeiraVagaStatus');
+    const consultaId = '@Model.Id';
+    let doctorCurrent = '@Model.MedicoId';
+    let dateCurrent = date?.dataset.atual || '';
+    let timeCurrent = time?.dataset.atual || '';
+
+    const ignoreParam = () => consultaId && consultaId !== '0' ? `&ignorarConsultaId=${encodeURIComponent(consultaId)}` : '';
+    const text = value => (value || '').trim();
+    const formatDate = value => { const [y,m,d] = value.split('-'); if(!d) return value; const dt = new Date(Number(y), Number(m)-1, Number(d)); return { day:d, month:dt.toLocaleDateString('pt-BR',{month:'short'}).replace('.',''), week:dt.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','') }; };
+
+    function updateSteps() {
+        const values = [specialty?.value, doctor?.value, date?.value, time?.value];
+        let current = 1;
+        values.forEach((v,i) => { if(v) current = Math.min(5, i + 2); });
+        document.querySelectorAll('[data-booking-step]').forEach((item,i) => { item.classList.toggle('active', i + 1 === current); item.classList.toggle('done', i + 1 < current); });
+        const permitted={specialty:true,doctor:!!specialty?.value,date:!!doctor?.value,time:!!date?.value};
+        document.querySelectorAll('.cm19-booking-section[data-section]').forEach(section=>{section.hidden=!permitted[section.dataset.section];});
+        const complete=values.every(Boolean), options=document.querySelector('.cm19-booking-section.compact-options');
+        if(options) options.hidden=!complete;
+        const submit=document.querySelector('#cm19BookingForm button[type=submit]');
+        if(submit) submit.disabled=!complete;
+        let summary=document.getElementById('booking-summary');
+        if(!summary){summary=document.createElement('div');summary.id='booking-summary';summary.className='cm-booking-summary';summary.setAttribute('role','status');document.querySelector('.cm19-booking-actions')?.before(summary);}
+        summary.hidden=!complete;
+        summary.textContent=complete ? `Revise sua escolha: ${specialty.value} · ${doctor.selectedOptions[0]?.textContent} · ${date.selectedOptions[0]?.textContent} às ${time.value}.` : '';
+
+    }
+
+    let visibleMonthKey = '';
+    const monthKey = value => value ? value.slice(0,7) : '';
+    const make = (tag, className, value) => {
+        const el = document.createElement(tag);
+        if (className) el.className = className;
+        if (value !== undefined) el.textContent = value;
+        return el;
+    };
+
+    function renderCalendar(select, host, keepNavigation = false) {
+        const values = [...select.options].filter(o => /^\d{4}-\d{2}-\d{2}$/.test(o.value));
+        host.replaceChildren();
+        host.setAttribute('aria-label','Escolher data da consulta');
+        if (!values.length) {
+            host.append(make('div','cm19-choice-placeholder',select.options[0]?.textContent || (doctor.value ? 'Nenhuma data disponível para este profissional.' : 'Selecione um profissional para ver as datas.')));
+            return;
+        }
+        const available = new Set(values.map(o => o.value));
+        const months = [...new Set(values.map(o => monthKey(o.value)))].sort();
+        if (!keepNavigation && select.value && available.has(select.value)) visibleMonthKey = monthKey(select.value);
+        if (!months.includes(visibleMonthKey)) visibleMonthKey = months[0];
+        const activeIndex = months.indexOf(visibleMonthKey);
+        const [year, month] = visibleMonthKey.split('-').map(Number);
+        const first = new Date(year, month-1, 1);
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const dateLabel = first.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+        const calendar = make('div','cm-booking-calendar');
+        const toolbar = make('div','cm-booking-calendar-toolbar');
+        const heading = make('div','cm-booking-calendar-title');
+        heading.append(make('strong','',dateLabel.charAt(0).toUpperCase()+dateLabel.slice(1)),make('small','',`${values.filter(o=>monthKey(o.value)===visibleMonthKey).length} dias com vagas`));
+        const controls = make('div','cm-booking-calendar-nav');
+        const nav = (direction, label, disabled) => {
+            const button = make('button','cm-calendar-nav-button',direction < 0 ? '‹' : '›');
+            button.type='button';button.title=label;button.setAttribute('aria-label',label);button.disabled=disabled;
+            button.addEventListener('click',()=>{ visibleMonthKey=months[activeIndex+direction]; renderCalendar(select,host,true); });
+            return button;
+        };
+        controls.append(nav(-1,'Mês anterior com vagas',activeIndex===0),nav(1,'Próximo mês com vagas',activeIndex===months.length-1));
+        toolbar.append(heading,controls);
+        const week = make('div','cm-booking-calendar-weekdays');
+        ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].forEach(label=>week.append(make('span','',label)));
+        const grid = make('div','cm-booking-calendar-days');
+        const offset=(first.getDay()+6)%7;
+        for(let empty=0;empty<offset;empty++) grid.append(make('span','cm-calendar-spacer'));
+        for(let day=1;day<=daysInMonth;day++) {
+            const key=`${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+            const enabled=available.has(key);
+            const selected=key===select.value;
+            const btn=make('button','cm-calendar-date'+(selected?' selected':'')+(enabled?' available':' unavailable'),String(day));
+            btn.type='button';btn.disabled=!enabled;btn.dataset.date=key;
+            btn.setAttribute('aria-label',new Date(year,month-1,day).toLocaleDateString('pt-BR',{dateStyle:'full'})+(enabled?' — disponível':' — sem vagas'));
+            btn.setAttribute('aria-pressed',String(selected));
+            if(enabled) {
+                btn.addEventListener('click',()=>{select.value=key;select.dispatchEvent(new Event('change',{bubbles:true}));});
+            }
+            grid.append(btn);
+        }
+        const legend=make('div','cm-booking-calendar-legend');
+        legend.append(make('span','calendar-available','● Disponível'), make('span','calendar-selected','● Selecionado'));
+        calendar.append(toolbar,week,grid,legend);host.append(calendar);
+    }
+
+    function renderButtons(select, host, kind) {
+        if (!select || !host) return;
+        if(kind==='date'){renderCalendar(select,host);return;}
+        const options = [...select.options].filter(o => o.value);
+        host.replaceChildren();
+        if (!options.length) { const state=make('div','cm19-choice-placeholder',select.options[0]?.textContent||'Selecione a etapa anterior.'); state.setAttribute('role','status'); host.append(state);return; }
+        options.forEach(option => {
+            const b=make('button',`cm19-${kind}-option${select.value===option.value?' selected':''}`);
+            b.type='button';b.dataset.value=option.value;b.setAttribute('aria-pressed',String(select.value===option.value));
+            if(kind==='doctor') {
+                const avatar=make('span','avatar',text(option.textContent).charAt(0).toUpperCase());
+                const description=make('span','');
+                description.append(make('strong','',text(option.textContent)),make('small','',text(specialty?.value)));
+                b.append(avatar,description,make('b','','›'));
+            } else b.append(make('strong','',text(option.textContent)));
+            b.addEventListener('click',()=>{select.value=option.value;select.dispatchEvent(new Event('change',{bubbles:true}));});
+            host.append(b);
+        });
+    }
+
+    async function loadDoctors() {
+        const requested=specialty.value;
+        date.innerHTML='<option value="">Selecione um profissional primeiro</option>'; time.innerHTML='<option value="">Selecione uma data primeiro</option>'; renderButtons(date,dateChoices,'date'); renderButtons(time,timeChoices,'time');
+        if(!specialty.value){ doctor.disabled=true; doctor.innerHTML='<option value="">Selecione uma especialidade primeiro</option>'; renderButtons(doctor,doctorChoices,'doctor'); updateSteps(); return; }
+        doctor.disabled=true; doctor.innerHTML='<option value="">Carregando...</option>'; doctorChoices.innerHTML='<div class="cm19-choice-placeholder">Carregando profissionais...</div>';
+        try{
+            const r=await fetch(`/Consulta/MedicosPorEspecialidade?especialidade=${encodeURIComponent(specialty.value)}`); if(!r.ok) throw new Error(); const items=await r.json(); if(specialty.value!==requested)return; doctor.replaceChildren(); const first=document.createElement('option'); first.value=''; first.textContent=items.length?'Selecione um profissional':'Nenhum profissional disponível'; doctor.append(first); items.forEach(item=>{const o=document.createElement('option');o.value=String(item.id);o.textContent=item.texto||item.nome;if(o.value===doctorCurrent)o.selected=true;doctor.append(o)}); doctor.disabled=!items.length; renderButtons(doctor,doctorChoices,'doctor'); if(doctor.value) await loadDates();
+        }catch{if(specialty.value!==requested)return;doctor.innerHTML='<option value="">Erro ao carregar profissionais</option>';renderButtons(doctor,doctorChoices,'doctor')} updateSteps();
+    }
+
+    async function loadDates(){ time.innerHTML='<option value="">Selecione uma data primeiro</option>';renderButtons(time,timeChoices,'time'); if(!doctor.value){date.innerHTML='<option value="">Selecione um profissional primeiro</option>';renderButtons(date,dateChoices,'date');updateSteps();return;} date.disabled=true;dateChoices.innerHTML='<div class="cm19-choice-placeholder">Carregando datas...</div>';try{const r=await fetch(`/Consulta/DatasDisponiveis?medicoId=${encodeURIComponent(doctor.value)}${ignoreParam()}`);if(!r.ok)throw new Error();const items=await r.json();date.replaceChildren();const first=document.createElement('option');first.value='';first.textContent=items.length?'Selecione uma data':'Nenhuma data disponível';date.append(first);items.forEach(item=>{const o=document.createElement('option');o.value=item.value;o.textContent=item.text;if(o.value===dateCurrent)o.selected=true;date.append(o)});renderButtons(date,dateChoices,'date');if(date.value)await loadTimes();}catch{date.innerHTML='<option value="">Erro ao carregar datas</option>';renderButtons(date,dateChoices,'date')}finally{date.disabled=false}updateSteps();}
+
+    async function loadTimes(){if(!doctor.value||!date.value){time.innerHTML='<option value="">Selecione uma data primeiro</option>';renderButtons(time,timeChoices,'time');updateSteps();return;}time.disabled=true;timeChoices.innerHTML='<div class="cm19-choice-placeholder">Carregando horários...</div>';try{const r=await fetch(`/Consulta/HorariosDisponiveis?medicoId=${encodeURIComponent(doctor.value)}&data=${encodeURIComponent(date.value)}${ignoreParam()}`);if(!r.ok)throw new Error();const items=await r.json();time.replaceChildren();const first=document.createElement('option');first.value='';first.textContent=items.length?'Selecione um horário':'Nenhum horário disponível';time.append(first);items.forEach(item=>{const o=document.createElement('option');o.value=item;o.textContent=item;if(o.value===timeCurrent)o.selected=true;time.append(o)});renderButtons(time,timeChoices,'time');}catch{time.innerHTML='<option value="">Erro ao carregar horários</option>';renderButtons(time,timeChoices,'time')}finally{time.disabled=false}updateSteps();}
+
+    document.querySelectorAll('[data-specialty]').forEach(button=>button.addEventListener('click',()=>{specialty.value=button.dataset.specialty||'';document.querySelectorAll('[data-specialty]').forEach(x=>x.classList.toggle('selected',x===button));specialty.dispatchEvent(new Event('change',{bubbles:true}));}));
+    specialty?.addEventListener('change',async()=>{doctorCurrent='';dateCurrent='';timeCurrent='';if(firstSlotStatus)firstSlotStatus.textContent='A CallMed procura automaticamente o horário mais próximo.';await loadDoctors();});
+    doctor?.addEventListener('change',async()=>{doctorCurrent=doctor.value;dateCurrent='';timeCurrent='';renderButtons(doctor,doctorChoices,'doctor');await loadDates();});
+    date?.addEventListener('change',async()=>{dateCurrent=date.value;timeCurrent='';renderButtons(date,dateChoices,'date');await loadTimes();});
+    time?.addEventListener('change',()=>{timeCurrent=time.value;renderButtons(time,timeChoices,'time');updateSteps();});
+
+    firstSlot?.addEventListener('click',async()=>{if(!specialty.value){firstSlotStatus.textContent='Escolha uma área de atuação primeiro.';return;}firstSlot.disabled=true;firstSlotStatus.textContent='Procurando a próxima vaga...';try{const r=await fetch(`/Consulta/OpcoesPorEspecialidade?especialidade=${encodeURIComponent(specialty.value)}`);if(!r.ok)throw new Error();const items=await r.json();if(!items.length){firstSlotStatus.textContent='Nenhuma vaga encontrada nos próximos 90 dias.';return;}const o=items[0];doctorCurrent=String(o.medicoId);dateCurrent=o.data;timeCurrent=o.horario;await loadDoctors();doctor.value=doctorCurrent;renderButtons(doctor,doctorChoices,'doctor');await loadDates();date.value=dateCurrent;renderButtons(date,dateChoices,'date');await loadTimes();time.value=timeCurrent;renderButtons(time,timeChoices,'time');firstSlotStatus.textContent=`${o.medico} — ${o.data.split('-').reverse().join('/')} às ${o.horario}`;updateSteps();}catch{firstSlotStatus.textContent='Não foi possível buscar a primeira vaga agora.';}finally{firstSlot.disabled=false;}});
+
+    const patient=document.getElementById('pacienteSelect'), info=document.getElementById('convenioInfo');
+    async function loadInsurance(){if(!patient||!info)return;if(!patient.value){info.textContent='';return;}try{const r=await fetch(`/Consulta/ConvenioPaciente?pacienteId=${encodeURIComponent(patient.value)}`);if(!r.ok)return;const d=await r.json();info.textContent=d.convenioValido?`Convênio válido: ${d.nomeConvenio||'informado'}${d.numeroConvenio?' — '+d.numeroConvenio:''}`:d.temConvenio?'Convênio cadastrado, mas inválido/vencido. Atendimento padrão particular.':'Paciente sem convênio válido: atendimento particular.';}catch{info.textContent='Não foi possível consultar o convênio agora.';}}
+    patient?.addEventListener('change',loadInsurance);loadInsurance();
+    document.addEventListener('DOMContentLoaded',updateSteps,{once:true});
+    if(specialty?.value)loadDoctors();else{doctor.disabled=true;renderButtons(doctor,doctorChoices,'doctor');renderButtons(date,dateChoices,'date');renderButtons(time,timeChoices,'time');updateSteps();}
+})();
+</script>

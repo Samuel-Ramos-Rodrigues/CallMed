@@ -1,0 +1,78 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
+}
+def signing = new Properties()
+def signingFile = rootProject.file('keystore.properties')
+if (signingFile.exists()) signingFile.withInputStream { signing.load(it) }
+def value = { env, key -> System.getenv(env)?.trim() ?: signing.getProperty(key)?.trim() }
+def keyFile = value('CALLMED_KEYSTORE_FILE', 'storeFile')
+def storePass = value('CALLMED_KEYSTORE_PASSWORD', 'storePassword')
+def keyAliasValue = value('CALLMED_KEY_ALIAS', 'keyAlias')
+def keyPass = value('CALLMED_KEY_PASSWORD', 'keyPassword')
+def ready = [keyFile, storePass, keyAliasValue, keyPass].every { it != null && !it.isEmpty() }
+if (gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') } && !ready)
+    throw new GradleException('Configure a assinatura em keystore.properties ou pelas variáveis CALLMED_KEYSTORE_*.')
+android {
+    namespace 'com.callmed.app'
+    compileSdk 36
+    buildToolsVersion '36.0.0'
+    defaultConfig {
+        applicationId 'com.callmed.app'
+        minSdk 26
+        targetSdk 36
+        versionCode 3400
+        versionName '34.0.0'
+        buildConfigField 'String', 'API_BASE_URL', '"https://callmed.onrender.com"'
+        ndk { abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64' }
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
+    signingConfigs {
+        if (ready) release {
+            storeFile rootProject.file(keyFile)
+            storePassword storePass
+            keyAlias keyAliasValue
+            keyPassword keyPass
+        }
+    }
+    buildTypes {
+        release {
+            if (ready) signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug { applicationIdSuffix '.debug'; versionNameSuffix '-debug' }
+    }
+    buildFeatures { compose true; buildConfig true }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+    kotlinOptions { jvmTarget = '17' }
+    packaging { resources { excludes += ['/META-INF/{AL2.0,LGPL2.1}'] } }
+    testOptions {
+        unitTests.includeAndroidResources = true
+        unitTests.all {
+            maxHeapSize = '2g'
+            if (System.getenv('ROBOLECTRIC_REPO_URL')) systemProperty 'robolectric.dependency.repo.url', System.getenv('ROBOLECTRIC_REPO_URL')
+        }
+    }
+}
+dependencies {
+    implementation platform('androidx.compose:compose-bom:2025.10.01')
+    implementation 'androidx.activity:activity-compose:1.11.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4'
+    implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.9.4'
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.foundation:foundation'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.material:material-icons-extended'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
+    implementation 'io.github.webrtc-sdk:android:150.7871.04'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20250517'
+    testImplementation 'org.robolectric:robolectric:4.16.1'
+    testImplementation 'androidx.compose.ui:ui-test-junit4'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+}

@@ -1,0 +1,39 @@
+@model MKSANCrud.ViewModels.AvaliacoesViewModel
+@using MKSANCrud.ViewModels
+@using MKSANCrud.Models.Atendimento
+@{ ViewData["Title"] = "Avaliações do atendimento"; }
+<section class="cm25-screen cm25-page cm-feedback-page">
+    <header class="cm25-page-hero"><div><span class="cm25-kicker">EXPERIÊNCIA DO PACIENTE</span><h1>Avaliações do atendimento</h1><p>Notas e comentários enviados ao final das conversas.</p></div><a class="btn secondary" asp-controller="Atendimento" asp-action="Index">Ir para atendimentos</a></header>
+    <form method="get" class="cm-feedback-filters">
+        <label>Mês de encerramento<input type="month" name="mes" value="@Model.Mes" required /></label>
+        <label>Canal<select name="canal"><option value="">Todos os canais</option>
+            @foreach (var canal in new[] { CanalAtendimento.Web, CanalAtendimento.WhatsApp, CanalAtendimento.Sms, CanalAtendimento.Email })
+            { <option value="@canal" selected="@(Model.Canal == canal.ToString() ? "selected" : null)">@AvaliacoesViewModel.CanalNome(canal)</option> }
+        </select></label><button type="submit" class="btn secondary">Aplicar</button>
+    </form>
+    <div class="v18-report-kpis">
+        <article><small>Respondidas</small><strong>@Model.Respondidas</strong><span>@Model.Total avaliações criadas no período</span></article>
+        <article><small>Nota média</small><strong>@(Model.Media?.ToString("0.0") ?? "—")</strong><span>escala de 1 a 5</span></article>
+        <article><small>Satisfação</small><strong>@(Model.Satisfacao.HasValue ? Model.Satisfacao.Value.ToString("0") + "%" : "—")</strong><span>notas 4 e 5 entre as respondidas</span></article>
+    </div>
+    <section class="v18-card"><header class="v18-card-header"><div><h2>Por canal</h2><p>Avaliação opcional. Ausência de resposta não conta como nota.</p></div></header>
+        <div class="table-responsive"><table class="table"><thead><tr><th>Canal</th><th>Criadas</th><th>Respondidas</th><th>Média</th></tr></thead><tbody>
+        @foreach (var item in Model.PorCanal) { <tr><td>@AvaliacoesViewModel.CanalNome(item.Canal)</td><td>@item.Total</td><td>@item.Respondidas</td><td>@(item.Media?.ToString("0.0") ?? "—")</td></tr> }
+        @if (!Model.PorCanal.Any()) { <tr><td colspan="4">Nenhuma avaliação neste período.</td></tr> }
+        </tbody></table></div>
+    </section>
+    <section class="v18-card"><header class="v18-card-header"><div><h2>Respostas recebidas</h2><p>Até 30 respostas por página. Os comentários são exibidos como enviados.</p></div></header>
+        @if (!Model.Itens.Any()) { <div class="v18-empty"><strong>Ainda não há respostas.</strong><small>As avaliações aparecerão aqui após os pacientes responderem.</small></div> }
+        <div class="cm-feedback-responses">
+        @foreach (var item in Model.Itens) {
+            <article><div><span class="cm-feedback-score">@item.Nota / 5</span><strong>@AvaliacoesViewModel.CanalNome(item.Canal)</strong><time>@item.RespondidoEm.ToString("dd/MM/yyyy HH:mm")</time><a asp-controller="Atendimento" asp-action="Index" asp-route-id="@item.ConversaId">Ver conversa</a></div>
+                <p>@(item.Comentario ?? "Sem comentário.")</p></article>
+        }
+        </div>
+        @if (Model.Paginas > 1) { <nav class="cm-feedback-pagination" aria-label="Páginas de avaliações">
+            @if (Model.Pagina > 1) { <a class="btn secondary" asp-route-mes="@Model.Mes" asp-route-canal="@Model.Canal" asp-route-pagina="@(Model.Pagina - 1)">Anterior</a> }
+            <span>Página @Model.Pagina de @Model.Paginas</span>
+            @if (Model.Pagina < Model.Paginas) { <a class="btn secondary" asp-route-mes="@Model.Mes" asp-route-canal="@Model.Canal" asp-route-pagina="@(Model.Pagina + 1)">Próxima</a> }
+        </nav> }
+    </section>
+</section>

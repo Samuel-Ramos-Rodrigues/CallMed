@@ -1,0 +1,115 @@
+@model MKSANCrud.ViewModels.ContaPaginaViewModel
+@{ ViewData["Title"] = "Minha conta"; }
+<section class="cm25-screen cm25-page cm-account-page" data-cm25-view="MinhaConta/Index.cshtml" data-account-page data-aba="@Model.Aba">
+    <header class="cm-account-page-heading"><div><span class="eyebrow">PERFIL E PREFERÊNCIAS</span><h1>Minha conta</h1><p>Seus dados, segurança e escolhas em um só lugar.</p></div><a class="btn secondary" asp-controller="Privacidade" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#shield"></use></svg>Dados e privacidade</a></header>
+    <section class="cm-account-hero" aria-label="Identificação da conta">
+        <div class="cm-account-avatar" aria-hidden="true">
+            @if (Model.FotoVersao is Guid versao) { <img src="@Url.Action("Foto", new { v = versao })" alt="" /> } else { <span>@Model.Iniciais</span> }
+        </div>
+        <div class="cm-account-heading"><span class="cm-account-role">@Model.Papel</span><h2>@Model.Nome</h2><p>@Model.Dados.Email</p></div>
+        <button type="button" class="btn secondary cm-account-change-photo" data-account-change-photo><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#edit"></use></svg>Alterar foto</button>
+    </section>
+    <div asp-validation-summary="All" class="validation cm-account-errors" role="alert" aria-live="polite"></div>
+    <nav class="cm-account-tabs" aria-label="Seções da minha conta">
+        <a href="#conta-dados" data-account-tab="dados"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg>Meus dados</a><a href="#conta-seguranca" data-account-tab="seguranca"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#shield-check"></use></svg>Segurança</a><a href="#conta-preferencias" data-account-tab="preferencias"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#settings"></use></svg>Preferências</a>
+    </nav>
+    <section id="conta-dados" data-account-panel="dados" class="cm-account-panel" aria-label="Meus dados">
+        <section class="cm-account-card cm-account-photo-card">
+            <div class="cm-account-photo-intro"><div class="cm-account-photo-preview" aria-hidden="true">@if (Model.FotoVersao is Guid fotoAtual) { <img src="@Url.Action("Foto", new { v = fotoAtual })" alt="" data-account-photo-preview /> } else { <img alt="" data-account-photo-preview hidden /><span data-account-photo-initials>@Model.Iniciais</span> }</div><div><h2>Foto do perfil</h2><p>JPG ou PNG, até 2 MB.</p></div></div>
+            <div class="cm-account-photo-actions">
+                <form asp-action="Foto" method="post" enctype="multipart/form-data" data-account-photo>
+                    <label class="sr-only" for="conta-foto">Escolher foto do perfil</label><input type="file" class="cm-account-file" id="conta-foto" name="foto" accept="image/jpeg,image/png" required aria-describedby="conta-foto-status" />
+                    <button type="button" class="btn secondary" data-account-choose-file hidden>Escolher foto</button>
+                    <button type="submit" class="btn secondary">Salvar foto</button><small id="conta-foto-status" role="status"></small>
+                </form>
+                @if (Model.FotoVersao.HasValue) { <form asp-action="RemoverFoto" method="post"><button type="submit" class="btn secondary">Remover foto</button></form> }
+            </div>
+        </section>
+        <form asp-action="SalvarDados" method="post" class="cm-account-card" data-account-data data-email-atual="@Model.Dados.Email">
+            <header><h2>Dados da conta</h2><p>Mantenha seus contatos atualizados.</p></header>
+            <div class="form-grid">
+                <div class="field"><label asp-for="Dados.Nome">Nome completo</label><input asp-for="Dados.Nome" autocomplete="name" /><span asp-validation-for="Dados.Nome" class="field-error"></span></div>
+                <div class="field"><label asp-for="Dados.Email">E-mail</label><input asp-for="Dados.Email" autocomplete="email" /><span asp-validation-for="Dados.Email" class="field-error"></span></div>
+                <div class="field"><label asp-for="Dados.Telefone">Telefone</label><input asp-for="Dados.Telefone" autocomplete="tel" inputmode="tel" placeholder="DDD e número" /><span asp-validation-for="Dados.Telefone" class="field-error"></span></div>
+                @if (Model.EhPaciente)
+                {
+                    <div class="field"><label>CPF</label><div class="cm-account-readonly">@Model.Cpf</div><small>Para corrigir o CPF, fale com a clínica.</small></div>
+                    <div class="field full"><label for="conta-nascimento">Data de nascimento</label><input asp-for="Dados.DataNascimento" type="hidden" id="conta-nascimento" asp-format="{0:yyyy-MM-dd}" /><div class="date-select" data-date-select data-target="conta-nascimento" data-mode="birth"></div><span asp-validation-for="Dados.DataNascimento" class="field-error"></span></div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Crm)) { <div class="field"><label>Registro profissional</label><div class="cm-account-readonly">@Model.Crm</div></div> }
+                @if (!string.IsNullOrEmpty(Model.Especialidade)) { <div class="field"><label>Área de atuação</label><div class="cm-account-readonly">@Model.Especialidade</div></div> }
+                @if (!string.IsNullOrEmpty(Model.Cargo)) { <div class="field"><label>Cargo</label><div class="cm-account-readonly">@Model.Cargo</div></div> }
+                <div class="field full" data-account-email-password><label asp-for="Dados.SenhaAtual">Senha atual para confirmar a alteração do e-mail</label><input asp-for="Dados.SenhaAtual" autocomplete="current-password" /><span asp-validation-for="Dados.SenhaAtual" class="field-error"></span></div>
+            </div>
+            @if (Model.EhPaciente)
+            {
+                <fieldset class="cm-account-insurance"><legend>Convênio</legend>
+                    <label class="cm-account-check"><input asp-for="Dados.TemConvenio" /><span>Possuo convênio</span></label>
+                    <div class="form-grid" data-account-insurance>
+                        <div class="field"><label asp-for="Dados.NomeConvenio">Nome do convênio</label><input asp-for="Dados.NomeConvenio" /><span asp-validation-for="Dados.NomeConvenio" class="field-error"></span></div>
+                        <div class="field"><label asp-for="Dados.NumeroConvenio">Carteirinha</label><input asp-for="Dados.NumeroConvenio" /><span asp-validation-for="Dados.NumeroConvenio" class="field-error"></span></div>
+                        <div class="field full"><label for="conta-validade">Validade do convênio</label><input asp-for="Dados.ValidadeConvenio" type="hidden" id="conta-validade" asp-format="{0:yyyy-MM-dd}" /><div class="date-select" data-date-select data-target="conta-validade" data-mode="validity"></div><span asp-validation-for="Dados.ValidadeConvenio" class="field-error"></span></div>
+                    </div>
+                </fieldset>
+            }
+            <footer class="cm-account-actions"><small>@(Model.AtualizadoEm.HasValue ? "Última atualização: " + ClinicaClock.ConverterUtc(Model.AtualizadoEm.Value).ToString("dd/MM/yyyy HH:mm") : "Revise seus dados antes de salvar.")</small><button class="btn" type="submit">Salvar meus dados</button></footer>
+        </form>
+    </section>
+    <section id="conta-seguranca" data-account-panel="seguranca" class="cm-account-panel" aria-label="Segurança">
+        <form asp-action="AlterarSenha" method="post" class="cm-account-card">
+            <header><h2>Alterar senha</h2><p>A troca da senha encerra seus outros acessos.</p></header>
+            <div class="form-grid">
+                <div class="field full"><label asp-for="Senha.SenhaAtual">Senha atual</label><input asp-for="Senha.SenhaAtual" autocomplete="current-password" /><span asp-validation-for="Senha.SenhaAtual" class="field-error"></span></div>
+                <div class="field"><label asp-for="Senha.NovaSenha">Nova senha</label><input asp-for="Senha.NovaSenha" autocomplete="new-password" aria-describedby="conta-senha-regras" /><span asp-validation-for="Senha.NovaSenha" class="field-error"></span></div>
+                <div class="field"><label asp-for="Senha.ConfirmarSenha">Confirmar nova senha</label><input asp-for="Senha.ConfirmarSenha" autocomplete="new-password" /><span asp-validation-for="Senha.ConfirmarSenha" class="field-error"></span></div>
+            </div>
+            <small id="conta-senha-regras">Use pelo menos 8 caracteres com maiúscula, minúscula, número e símbolo.</small>
+            <footer class="cm-account-actions"><a asp-area="Identity" asp-page="/Account/ForgotPassword">Esqueci minha senha</a><button class="btn" type="submit">Atualizar senha</button></footer>
+        </form>
+        <section class="cm-account-card">
+            <header class="cm-account-card-head"><div><h2>Dispositivos e acessos</h2><p>Cada acesso representa um login. Você pode encerrá-lo mesmo em outro dispositivo.</p></div><form asp-action="EncerrarOutrasSessoes" method="post"><button type="submit" class="btn secondary">Encerrar outros acessos</button></form></header>
+            @if (!Model.Sessoes.Any()) { <p class="cm-account-empty">Os dispositivos aparecerão aqui nos próximos logins. Você já pode usar o botão para encerrar outros acessos.</p> }
+            <ul class="cm-account-session-list">
+            @foreach (var s in Model.Sessoes)
+            {
+                <li><div><strong>@s.Dispositivo</strong><small>Login em @ClinicaClock.ConverterUtc(s.CriadoEm).ToString("dd/MM/yyyy HH:mm")</small></div>
+                    @if (s.RevogadaEm.HasValue) { <span class="cm-account-status">Encerrado</span> }
+                    else if (s.Id == Model.SessaoAtual) { <span class="cm-account-status current">Este acesso</span> }
+                    else { <form asp-action="EncerrarSessao" method="post"><input type="hidden" name="id" value="@s.Id" /><button type="submit" class="btn secondary small">Encerrar</button></form> }
+                </li>
+            }
+            </ul>
+        </section>
+        <section class="cm-account-card"><header><h2>Atividade recente</h2><p>Últimos acessos e alterações da sua conta.</p></header>
+            @if (!Model.Eventos.Any()) { <p class="cm-account-empty">As próximas alterações aparecerão aqui.</p> }
+            <ol class="cm-account-events">@foreach (var e in Model.Eventos) { <li><span>@e.Descricao</span><time datetime="@e.CriadoEm.ToString("O")">@ClinicaClock.ConverterUtc(e.CriadoEm).ToString("dd/MM/yyyy HH:mm")</time></li> }</ol>
+        </section>
+        @if (Model.EhPaciente)
+        {
+            <details class="cm-account-card cm-account-remove"><summary>Remover meu acesso</summary><p>O acesso será removido. Seu cadastro e histórico de consultas permanecem com a clínica.</p>
+                <form asp-action="Delete" method="post"><label class="field">Senha atual<input type="password" name="Confirmacao.SenhaAtual" autocomplete="current-password" required /></label><label class="cm-account-check"><input type="checkbox" name="Confirmacao.Confirmar" value="true" required /><span>Confirmo que desejo remover meu acesso.</span></label><button class="btn secondary" type="submit">Remover acesso</button></form>
+            </details>
+        }
+    </section>
+    <section id="conta-preferencias" data-account-panel="preferencias" class="cm-account-panel" aria-label="Preferências">
+        <form asp-action="SalvarPreferencias" method="post" class="cm-account-card" data-account-preferences>
+            <header><h2>Do seu jeito</h2><p>Salve suas escolhas para os próximos acessos à conta.</p></header>
+            <div class="field cm-account-theme"><label asp-for="Preferencias.Tema">Aparência</label><select asp-for="Preferencias.Tema" data-account-theme><option value="light">Claro</option><option value="dark">Escuro</option><option value="system">Acompanhar o dispositivo</option></select></div>
+            <fieldset class="cm-account-options"><legend>Acessibilidade</legend>
+                <label class="cm-account-check"><input asp-for="Preferencias.TextoMaior" data-account-a11y="large" /><span><strong>Texto maior</strong><small>Melhora a leitura dos textos e controles.</small></span></label>
+                <label class="cm-account-check"><input asp-for="Preferencias.AltoContraste" data-account-a11y="contrast" /><span><strong>Alto contraste</strong><small>Destaca textos, bordas e foco.</small></span></label>
+                <label class="cm-account-check"><input asp-for="Preferencias.ReduzirAnimacoes" data-account-a11y="motion" /><span><strong>Reduzir animações</strong><small>Uma navegação com menos movimento.</small></span></label>
+                <label class="cm-account-check"><input asp-for="Preferencias.ModoSimplificado" data-account-a11y="simple" /><span><strong>Modo simplificado</strong><small>Ações maiores na página inicial.</small></span></label>
+            </fieldset>
+            @if (Model.EhPaciente)
+            {
+                <fieldset class="cm-account-options"><legend>Avisos da clínica</legend><p>Estas escolhas valem para lembretes de consulta e avisos da lista de espera.</p>
+                    <label class="cm-account-check"><input asp-for="Preferencias.AvisosWhatsApp" /><span>Receber pelo WhatsApp</span></label><label class="cm-account-check"><input asp-for="Preferencias.AvisosEmail" /><span>Receber por e-mail</span></label><label class="cm-account-check"><input asp-for="Preferencias.AvisosSms" /><span>Receber por SMS</span></label>
+                    <div class="field"><label asp-for="Preferencias.CanalPreferido">Canal preferido</label><select asp-for="Preferencias.CanalPreferido"><option value="WhatsApp">WhatsApp</option><option value="Email">E-mail</option><option value="SMS">SMS</option><option value="Telefone">Ligação da recepção</option></select><small>Usamos primeiro um canal permitido e com contato disponível. Sem canais marcados, os avisos digitais automáticos ficam desativados.</small></div>
+                </fieldset>
+            }
+            <footer class="cm-account-actions"><small>As configurações de aparência já podem ser visualizadas nesta tela.</small><button class="btn" type="submit">Salvar preferências</button></footer>
+        </form>
+    </section>
+</section>
+@section Scripts { <script src="~/js/minha-conta.js" asp-append-version="true"></script><partial name="_ValidationScriptsPartial" /> }

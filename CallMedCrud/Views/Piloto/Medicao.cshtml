@@ -1,0 +1,39 @@
+@model MKSANCrud.Controllers.MedicaoPilotoPagina
+@{ViewData["Title"]="Medição do piloto";var i=Model.Input;}
+
+
+<section class="jornada cm-workspace" id="piloto-medicao">
+<header><div class="cm-page-intro"><span class="cm-intro-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#clipboard-check"></use></svg></span><div><span class="eyebrow">MEDIÇÃO DE RESULTADOS</span><h1>Medição do piloto</h1><p>Organize os dados conferidos pela equipe para acompanhar a evolução.</p></div></div><p>Registre um dia encerrado de toda a clínica. Some a capacidade dos profissionais, sem contar o mesmo horário mais de uma vez por profissional.</p><a asp-action="Index">Ver comparação antes e depois</a></header>
+@if(TempData["PilotoSalvo"] is string salvo){<p role="status">@salvo</p>}
+<form method="get" class="j-form"><label>Dia da medição<input type="date" name="data" value="@i.Data.ToString("yyyy-MM-dd")" min="2000-01-01" max="@Model.UltimoDia.ToString("yyyy-MM-dd")" required/></label><label>Etapa<select name="periodo"><option value="Antes" selected="@(i.Periodo=="Antes")">Antes — linha de base</option><option value="Piloto" selected="@(i.Periodo=="Piloto")">Piloto — agenda CallMed</option></select></label><button type="submit" class="btn secondary">Carregar dia e revisão atual</button></form>
+<div asp-validation-summary="All" role="alert"></div>
+@if(Model.Agenda is { } a){<article class="j-card"><h2>Prévia da agenda em @i.Data.ToString("dd/MM/yyyy")</h2><p>@a.Realizadas realizadas · @a.Faltas faltas · @a.Canceladas canceladas · @a.SemDesfecho sem desfecho</p><p><strong>@a.MinutosAgendados minutos agendados</strong>, excluindo canceladas. A duração usa a jornada quando cadastrada, ou a duração da consulta. Os totais serão conferidos novamente ao salvar.</p></article>}
+<form asp-action="Medicao" method="post" class="j-form" id="piloto-salvar">
+<input asp-for="Input.Data" type="hidden"/><input asp-for="Input.Periodo" type="hidden"/><input asp-for="Input.RevisaoAnterior" type="hidden"/><input asp-for="Input.AgendaHash" type="hidden"/>
+<h2>@(i.RevisaoAnterior==0?"Primeiro registro":"Nova revisão") · @i.Periodo</h2>
+@if(i.RevisaoAnterior>0){<p>A revisão @i.RevisaoAnterior continua no histórico. Descreva o motivo da correção abaixo.</p>}
+@if(i.Periodo=="Antes"){
+ <label>Consultas realizadas<input asp-for="Input.Realizadas" type="number" min="0" max="100000" required/></label>
+ <label>Faltas (paciente ausente)<input asp-for="Input.Faltas" type="number" min="0" max="100000" required/></label>
+ <label>Consultas canceladas<input asp-for="Input.Canceladas" type="number" min="0" max="100000" required/></label>
+ <label>Consultas sem desfecho registrado<input asp-for="Input.SemDesfecho" type="number" min="0" max="100000" required/></label>
+ <label>Minutos agendados, excluindo canceladas (opcional)<input asp-for="Input.MinutosAgendados" type="number" min="0" max="144000"/></label>
+}
+<p id="piloto-opcionais">Campos opcionais em branco indicam dado desconhecido. Informe zero somente se foi medido e realmente não houve atividade.</p>
+<label>Capacidade disponível dos profissionais em minutos (opcional)<input asp-for="Input.MinutosDisponiveis" type="number" min="0" max="144000" aria-describedby="piloto-capacidade piloto-opcionais"/></label>
+<p id="piloto-capacidade">Use a escala efetiva do dia: minutos ofertados para consultas, descontando pausas e bloqueios. Exemplo: dois profissionais com 240 minutos cada = 480 minutos. Ocupação acima de 100% indica excesso de agendamento e deve ser conferida.</p>
+<label>Minutos da recepção dedicados às consultas desse dia (opcional)<input asp-for="Input.MinutosRecepcao" type="number" min="0" max="144000" aria-describedby="piloto-recepcao piloto-opcionais"/></label>
+<p id="piloto-recepcao">Some o tempo efetivamente gasto pela equipe com marcação, confirmação, cancelamento e reagendamento das consultas desta data, inclusive tarefas feitas antes ou pelos canais. Use o mesmo método na linha de base e no piloto.</p>
+<label>Custo da hora da recepção em reais (opcional)<input asp-for="Input.CustoHoraRecepcao" type="number" min="0" max="10000" step="0.01" aria-describedby="piloto-custo"/></label>
+<p id="piloto-custo">Use custo real por hora de trabalho, com o mesmo critério nos dois períodos. O painel calcula apenas o custo proporcional aos minutos informados.</p>
+<label>Fonte e método da medição<input asp-for="Input.Fonte" maxlength="300" required aria-describedby="piloto-fonte"/></label>
+<p id="piloto-fonte">Identifique a escala, planilha ou medição de tempo usada. No Piloto, os totais de consultas vêm da agenda. Evite nomes de pacientes e informações clínicas.</p>
+<label>Motivo deste registro ou correção<textarea asp-for="Input.Motivo" maxlength="300" required></textarea></label>
+@if(i.RevisaoAnterior>0){<label class="j-check"><input asp-for="Input.Desconsiderar"/><span>Desconsiderar este dia na comparação. Use se o registro foi feito na data ou etapa errada; o histórico permanece. Para corrigir valores, deixe desmarcado e preencha os campos acima. Depois, é possível registrar uma nova revisão para voltar a considerar este dia.</span></label>}
+<label class="j-check"><input asp-for="Input.Conferido"/><span>Conferi o dia, o escopo de toda a clínica e as fontes. Entendo que esta medição entra na comparação de resultados.</span></label>
+<button type="submit" class="btn">Registrar medição conferida</button>
+</form>
+<section><h2>Histórico deste dia</h2><p>Até 50 revisões mais recentes. A comparação usa uma única revisão por dia e etapa, a mais recente. Horários de registro em UTC.</p>
+@if(Model.Historico.Count==0){<p>Ainda não há medição registrada.</p>}
+@foreach(var h in Model.Historico){<article class="j-card"><h3>Revisão @h.Revisao · @h.RegistradoEm.ToString("dd/MM/yyyy HH:mm 'UTC'")</h3><p>@h.Realizadas realizadas · @h.Faltas faltas · @h.Canceladas canceladas · @h.SemDesfecho sem desfecho</p>@if(h.Desconsiderada){<p><strong>Dia desconsiderado na comparação nesta revisão.</strong></p>}<p>Fonte: @h.Fonte</p><p>Motivo: @h.Motivo</p><p>Agendados: @(h.MinutosAgendados?.ToString()??"desconhecido") min · Capacidade: @(h.MinutosDisponiveis?.ToString()??"desconhecida") min · Recepção: @(h.MinutosRecepcao?.ToString()??"desconhecido") min · Custo/h: @(h.CustoHoraRecepcao?.ToString("N2")??"desconhecido")</p>@if(h.AgendaHash!=null){<p class="j-fingerprint">Impressão da agenda: @h.AgendaHash</p>}</article>}
+</section></section>

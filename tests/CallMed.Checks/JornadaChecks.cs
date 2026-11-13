@@ -1,0 +1,50 @@
+using System.Security.Claims;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
+using MKSANCrud.Data;
+using MKSANCrud.Models;
+using MKSANCrud.Options;
+using MKSANCrud.Services.Clinica;
+using MKSANCrud.Services.Agendamento;
+using MKSANCrud.Services.Atendimento;
+internal static class JornadaChecks {
+ public static ClaimsPrincipal User(string id,string role)=>new(new ClaimsIdentity([new(ClaimTypes.NameIdentifier,id),new(ClaimTypes.Role,role)],"fixture"));
+ public static async Task RunAsync(Action<bool,string> check){var clock=new ClinicaClock();await using var db=new MKSANContext(new DbContextOptionsBuilder<MKSANContext>().UseInMemoryDatabase("jornada-"+Guid.NewGuid()).ConfigureWarnings(w=>w.Ignore(InMemoryEventId.TransactionIgnoredWarning)).Options);var p=new Paciente{Id=1,UsuarioId="p",Nome="Paciente Fictício",Cpf="52998224725",Telefone="5579999990000",DataNascimento=new(2000,1,1)};var p2=new Paciente{Id=2,UsuarioId="p2",Nome="Outro Fictício",Cpf="11144477735",Telefone="5579999990001",DataNascimento=new(2000,1,1)};var m=new Medico{Crp="12/12345",RegistroVerificadoEm=DateTime.UtcNow,Id=1,UsuarioId="m",Nome="Médico Fictício",EspecialidadeId=1};var m2=new Medico{Crp="12/12345",RegistroVerificadoEm=DateTime.UtcNow,Id=2,UsuarioId="m2",Nome="Outro Profissional",EspecialidadeId=1};db.Pacientes.AddRange(p,p2);db.Medicos.AddRange(m,m2);db.Especialidades.Add(new(){Id=1,Nome="Clínica geral"});db.Salas.Add(new(){Id=1,Nome="Sala 1"});var c=new Consulta{Id=1,Paciente=p,Medico=m,Data=clock.Hoje,Horario=clock.Agora.ToString("HH:mm"),Status=ConsultaStatus.Confirmada};var c2=new Consulta{Id=2,Paciente=p2,Medico=m2,Data=clock.Hoje,Horario=clock.Agora.AddMinutes(15).ToString("HH:mm"),Status=ConsultaStatus.Confirmada};db.Consultas.AddRange(c,c2);await db.SaveChangesAsync();var j=new JornadaService(db,clock);ClaimsPrincipal patient=User("p","Paciente"),other=User("p2","Paciente"),doctor=User("m","Medico"),otherDoctor=User("m2","Medico"),staff=User("f","Funcionario");
+ check(await j.Visiveis(patient).CountAsync()==1&&await j.Visiveis(doctor).CountAsync()==1,"Jornada isola consultas por paciente e profissional responsável");
+ check(await j.MoverAsync(c,other,"cadastro",true,default)!=null,"Outro paciente não confirma pré-cadastro alheio");
+ check(await j.MoverAsync(c,patient,"checkin",true,default)!=null,"Check-in exige pré-cadastro conferido");
+ check(await j.MoverAsync(c,patient,"confirmar",true,default)==null&&await db.Jornadas.AnyAsync(x=>x.ConsultaId==c.Id&&x.PresencaConfirmadaEm!=null),"Confirmação ativa é separada da reserva do horário");
+ check(await j.MoverAsync(c,patient,"cadastro",true,default)==null,"Pré-cadastro reaproveita os dados existentes");
+ check(await j.MoverAsync(c,patient,"checkin",true,default)==null,"Check-in funciona dentro da janela da consulta");var stage=await db.Jornadas.SingleAsync(x=>x.ConsultaId==1);
+ check(stage.CheckInEm!=null&&stage.ChegadaEm==null,"Check-in remoto não confirma chegada presencial");
+ check(await j.MoverAsync(c,patient,"chegada",true,default)!=null,"Paciente não valida a própria chegada");
+ check(await j.MoverAsync(c,doctor,"iniciar",true,default)!=null,"Atendimento aguarda validação da recepção");
+ check(await j.AlocarAsync(c,staff,1,30,false,default)==null,"Recepção reserva sala por intervalo");
+ check(await j.AlocarAsync(c2,staff,1,30,false,default)!=null,"Sala rejeita sobreposição entre profissionais");
+ check(await j.AlocarAsync(c2,patient,1,30,false,default)!=null,"Paciente não controla salas da clínica");
+ check(await j.MoverAsync(c,staff,"chegada",true,default)==null&&await j.MoverAsync(c,otherDoctor,"iniciar",true,default)!=null,"Recepção valida chegada sem permitir atendimento por outro médico");
+ check(await j.MoverAsync(c,doctor,"iniciar",true,default)==null,"Profissional responsável inicia atendimento validado");var extra=new Consulta{Id=3,Paciente=p2,Medico=m,Data=clock.Hoje,Horario=clock.Agora.AddHours(2).ToString("HH:mm"),Status=ConsultaStatus.Confirmada};db.Consultas.Add(extra);db.Jornadas.Add(new(){ConsultaId=3,ChegadaEm=DateTime.UtcNow});await db.SaveChangesAsync();check(await j.MoverAsync(extra,doctor,"iniciar",true,default)!=null,"Profissional não inicia dois atendimentos simultâneos");var convenio=new ConvenioService(clock);var eligibility=new ConvenioElegibilidadeService(db,convenio);var agenda=new AgendamentoService(db,clock,new(db),convenio,eligibility,NullLogger<AgendamentoService>.Instance);
+ check(!(await agenda.CancelarAsync(c.Id)).Sucesso,"Cancelamento nos canais existentes respeita atendimento iniciado");
+ check(await j.MoverAsync(c,doctor,"concluir",true,default)==null&&c.Status==ConsultaStatus.Realizada,"Conclusão sincroniza jornada e consulta legada");
+ check(await db.PepEventos.CountAsync()>=3,"Alterações de consulta geram eventos PEP junto à persistência");
+ var cfg=new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string,string?>{{"Clinica:Encaixe:PrazoMinutos","15"}}).Build();var env=new AtendimentoEnvioService([],db,TimeProvider.System,NullLogger<AtendimentoEnvioService>.Instance,Options.Create(new GmailInboxOptions()));var motor=new EncaixeService(db,clock,eligibility,new(db,new(db)),env,cfg);var day=clock.Hoje.AddDays(1);db.Disponibilidades.Add(new(){Id=100,MedicoId=1,Data=day,Horario="11:00",Ativo=true});db.ListasEspera.AddRange(new(){Id=1,PacienteId=1,MedicoId=1,Ativa=true,Prioridade=0,CriadoEm=DateTime.UtcNow.AddDays(-2)},new(){Id=2,PacienteId=2,MedicoId=1,Ativa=true,Prioridade=5,CriadoEm=DateTime.UtcNow});await db.SaveChangesAsync();
+ check(await motor.ReservarAsync()==1,"Motor faz uma reserva exclusiva por vaga");var o=await db.Ofertas.SingleAsync();check(o.ListaEsperaId==2&&o.ExpiraEm>DateTime.UtcNow,"Prioridade e prazo determinam a oferta");
+ check(!await agenda.HorarioDisponivelAsync(1,day,"11:00"),"Reserva bloqueia agendamento comum do horário");check((await agenda.HorariosDisponiveisAsync(1,day)).Count==0,"Horários exibidos também excluem reservas temporárias");
+ check(!(await agenda.AgendarAsync(1,1,day,"11:00",null,ct:default,ofertaId:o.Id)).Sucesso,"Outro paciente não utiliza oferta alheia");
+ check(await motor.RecusarAsync(o.Id,2,default)&&await motor.ReservarAsync()==1,"Recusa passa a oferta ao próximo paciente compatível");var next=await db.Ofertas.SingleAsync(x=>x.Estado=="Aberta");var result=await agenda.AgendarAsync(1,1,day,"11:00",null,ct:default,ofertaId:next.Id);
+ check(result.Sucesso&&next.Estado=="Aceita"&&next.ConsultaId==result.Consulta?.Id,"Aceite cria consulta e consome oferta na mesma operação");
+ check(!(await agenda.AgendarAsync(1,1,day,"11:00",null,ct:default,ofertaId:next.Id)).Sucesso&&!await motor.RecusarAsync(next.Id,1,default),"Oferta aceita não duplica consulta nem aceita recusa atrasada");
+ check(EncaixeService.Periodo("09:00","Manhã")&&!EncaixeService.Periodo("19:00","Manhã"),"Fila respeita interesse por período");
+ var snapshot=JornadaService.Snapshot(result.Consulta!);check(!(await agenda.CancelarAsync(result.Consulta!.Id,default,snapshot+"modificado")).Sucesso,"Link antigo não cancela uma consulta com snapshot diferente");
+ check(System.Text.Json.JsonSerializer.Serialize(await j.IndicadoresAsync(default)).Contains("amostra"),"Espera média é acompanhada do tamanho da amostra");
+ db.Disponibilidades.Add(new(){MedicoId=1,Data=day.AddDays(1),Horario="12:00",Ativo=true});db.ListasEspera.Add(new(){Id=3,PacienteId=1,MedicoId=1,Ativa=true,Prioridade=0});await db.SaveChangesAsync();await motor.ReservarAsync();var expiring=await db.Ofertas.SingleAsync(x=>x.Estado=="Aberta");expiring.ExpiraEm=DateTime.UtcNow.AddSeconds(-1);await db.SaveChangesAsync();check(await motor.ReservarAsync()==1&&expiring.Estado=="Expirada"&&await db.Ofertas.AnyAsync(x=>x.Estado=="Aberta"&&x.ListaEsperaId!=expiring.ListaEsperaId),"Oferta expirada libera reserva e chama o próximo candidato");
+ var config=new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string,string?>{{"PepIntegration:Enabled","true"},{"PepIntegration:WebhookUrl","https://pep.test/events"},{"PepIntegration:WebhookSecret",new string('s',40)}}).Build();var fake=new PepMock(new string('s',40));var svc=new PepEntregaService(db,fake,config);var sent=await svc.ProcessarAsync(default);check(sent>0&&fake.ValidSignatures==sent,"PEP simulado recebe eventos com assinatura HMAC válida");check(await svc.ProcessarAsync(default)==0,"Eventos PEP entregues não são reenviados sem necessidade");
+ }
+ sealed class PepMock(string secret):HttpMessageHandler,IHttpClientFactory {public int ValidSignatures;public HttpClient CreateClient(string name)=>new(this,false);protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage r,CancellationToken ct){var body=await r.Content!.ReadAsStringAsync(ct);var ts=r.Headers.GetValues("X-CallMed-Timestamp").Single();var expected="sha256="+Convert.ToHexString(HMACSHA256.HashData(Encoding.UTF8.GetBytes(secret),Encoding.UTF8.GetBytes(ts+"."+body))).ToLowerInvariant();if(expected!=r.Headers.GetValues("X-CallMed-Signature").Single()||!r.Headers.Contains("Idempotency-Key"))throw new Exception("Invalid PEP event");ValidSignatures++;return new(HttpStatusCode.Accepted);}}
+}

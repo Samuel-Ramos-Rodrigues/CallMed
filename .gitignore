@@ -1,0 +1,39 @@
+# Compilação e ferramentas locais
+**/bin/
+**/obj/
+**/build/
+**/.gradle/
+**/.idea/
+.vs/
+.vscode/
+node_modules/
+__pycache__/
+*.pyc
+*.user
+*.suo
+*.iml
+*.log
+artifacts/
+**/test-results/
+# Configurações locais e credenciais
+.env
+**/.env
+.env.evolution
+**/appsettings.Production.json
+**/secrets.json
+**/local.properties
+**/keystore.properties
+*.jks
+*.keystore
+*.pfx
+*.p12
+*.pem
+*.key
+callmed-segredos*/
+# Pacotes de distribuição ficam fora do controle de versão, exceto o APK servido pelo site
+*.zip
+*.aab
+*.apk
+!CallMedCrud/App_Data/Aplicativo/CallMed.apk
+# Prévia local é gerada pelo ambiente de desenvolvimento
+.openai/

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" role="img" aria-labelledby="title desc">
+  <title id="title">Ilustração de cuidado em saúde</title>
+  <desc id="desc">Profissional de saúde com estetoscópio, acompanhado por um símbolo de saúde e uma pessoa em atendimento.</desc>
+  <defs>
+    <linearGradient id="coat" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#dff1f0"/></linearGradient>
+    <linearGradient id="scrub" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#21b6b1"/><stop offset="1" stop-color="#087f8c"/></linearGradient>
+  </defs>
+  <circle cx="118" cy="92" r="70" fill="#d7f6f0" opacity=".8"/>
+  <circle cx="118" cy="92" r="55" fill="#ecfbf8"/>
+  <circle cx="37" cy="36" r="18" fill="#55d0c5" opacity=".9"/>
+  <path d="M29 36h16M37 28v16" stroke="#123b4a" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="202" cy="49" r="18" fill="#fff" opacity=".9"/>
+  <path d="M202 39v20M192 49h20" stroke="#087f8c" stroke-width="4" stroke-linecap="round"/>
+  <ellipse cx="120" cy="160" rx="63" ry="9" fill="#123b4a" opacity=".12"/>
+  <!-- profissional -->
+  <path d="M69 150c2-28 12-43 31-47h36c19 4 28 19 31 47Z" fill="url(#coat)" stroke="#9bcfc9" stroke-width="1.5"/>
+  <path d="m94 104 26 28 26-28-10-11h-31Z" fill="url(#scrub)"/>
+  <path d="m94 105 17 17-10 28H83l6-30Z" fill="#f7fffd"/>
+  <path d="m146 105-17 17 10 28h18l-6-30Z" fill="#f7fffd"/>
+  <path d="M104 99h30l8 8-22 22-24-22Z" fill="#fff"/>
+  <path d="M112 126h8v26h-8z" fill="#d1e8e5"/>
+  <circle cx="120" cy="61" r="27" fill="#c98562"/>
+  <path d="M94 62c-4-22 7-35 27-35 20 0 31 13 26 34l-8-17c-14 4-24 2-35-3l-10 21Z" fill="#123b4a"/>
+  <path d="M105 64c3 2 6 2 9 0M126 64c3 2 6 2 9 0" fill="none" stroke="#6c3e32" stroke-width="2" stroke-linecap="round"/>
+  <path d="M114 77c4 3 8 3 12 0" fill="none" stroke="#874d3c" stroke-width="2" stroke-linecap="round"/>
+  <path d="M102 85c4 9 11 13 18 13s14-4 18-13" fill="#c98562"/>
+  <path d="M101 98c7 7 13 11 19 11s12-4 19-11" fill="none" stroke="#087f8c" stroke-width="2.5"/>
+  <!-- estetoscópio -->
+  <path d="M99 108v14c0 11 8 19 18 19s18-8 18-19v-10" fill="none" stroke="#123b4a" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="135" cy="115" r="5" fill="#55d0c5" stroke="#123b4a" stroke-width="2"/>
+  <!-- crachá -->
+  <rect x="145" y="119" width="13" height="18" rx="3" fill="#fff" stroke="#9bcfc9"/>
+  <path d="M148 125h7M148 129h7" stroke="#087f8c" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- pessoa atendida -->
+  <circle cx="184" cy="113" r="12" fill="#e9b99b"/>
+  <path d="M171 114c-1-12 4-20 13-20 10 0 15 8 13 19l-7-8-11 1Z" fill="#5c6f83"/>
+  <path d="M167 150c1-15 6-22 17-22s17 7 18 22Z" fill="#55d0c5"/>
+  <path d="M174 130 184 141l9-11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

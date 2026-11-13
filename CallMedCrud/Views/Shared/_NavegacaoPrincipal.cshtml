@@ -1,0 +1,18 @@
+@using MKSANCrud.Services.Usuarios
+@{
+    var c = ViewContext.RouteData.Values["controller"]?.ToString();
+    var a = ViewContext.RouteData.Values["action"]?.ToString();
+    string Icone(string controller) => controller switch {
+        "Home" or "FuncionarioPainel" or "MedicoPainel" => "home",
+        "Consulta" or "Agenda" or "Jornada" => "calendar",
+        "Atendimento" => "chat", "Salas" => "video", "MinhaConta" => "user", _ => "menu"
+    };
+}
+@foreach (var i in NavegacaoCallMed.Principais(User))
+{
+    var ehTele = i.Titulo is "Teleconsulta" or "Teleconsultas";
+    var ativo = c == i.Controller && (i.Controller != "Consulta" || (a == "Create") == (i.Action == "Create")) && (!ehTele || i.Controller != "Salas" || Context.Request.Query["aba"] == "online");
+    <a class="@(ativo ? "active" : "") @(ehTele ? "cm-nav-feature" : "") @(i.Titulo == "Check-in" ? "cm-nav-optional" : "")" aria-label="@i.Titulo" title="@i.Titulo" aria-current="@(ativo ? "page" : null)" asp-controller="@i.Controller" asp-action="@i.Action" asp-route-aba="@(i.Controller == "Salas" && ehTele ? "online" : null)" asp-fragment="@(i.Controller == "Jornada" && ehTele ? "j-consultas" : null)">
+        <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#@(ehTele ? "video" : Icone(i.Controller))"></use></svg><span class="cm-nav-full-label">@i.Titulo</span>@if(ehTele){<span class="cm-nav-short-label" aria-hidden="true">Vídeo</span>}
+    </a>
+}

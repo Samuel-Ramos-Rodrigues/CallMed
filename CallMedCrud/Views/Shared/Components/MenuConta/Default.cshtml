@@ -1,0 +1,22 @@
+@model MKSANCrud.ViewModels.MenuContaViewModel
+@{ var loginUrl = MKSANCrud.Services.Usuarios.PortaisAcesso.DoUsuario(User).UrlLogin; }
+<div class="v18-profile-wrap cm-header-account">
+    <button type="button" class="profile-trigger" data-popover-trigger="profile" aria-expanded="false" aria-label="Abrir menu da minha conta">
+        <span class="user-avatar" aria-hidden="true">
+            @if (Model.FotoVersao is Guid versao)
+            {
+                <img src="@Url.Action("Foto", "MinhaConta", new { v = versao })" alt="" width="36" height="36" decoding="async" data-header-avatar />
+            }
+            <span data-header-initials hidden="@Model.FotoVersao.HasValue">@Model.Iniciais</span>
+        </span>
+        <span class="profile-copy"><span>@Model.Nome</span><small>@Model.Papel</small></span>
+        <svg class="cm-profile-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4" /></svg>
+    </button>
+    <div class="v18-popover cm-account-menu" data-popover="profile" hidden>
+        <header><strong>@Model.Nome</strong><span>@Model.Papel</span>@if (!string.Equals(Model.Nome, Model.Email, StringComparison.OrdinalIgnoreCase)) { <small>@Model.Email</small> }</header>
+        <a asp-controller="MinhaConta" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg><span>Meu perfil</span></a>
+        <a asp-controller="MinhaConta" asp-action="Index" asp-route-aba="preferencias"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#settings"></use></svg><span>Preferências</span></a>
+        <button type="button" data-pwa-install><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#download"></use></svg><span>Instalar aplicativo</span></button>
+        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Content("~" + loginUrl)" method="post" data-mksan-logout><button type="submit"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#logout"></use></svg><span>Sair da conta</span></button></form>
+    </div>
+</div>

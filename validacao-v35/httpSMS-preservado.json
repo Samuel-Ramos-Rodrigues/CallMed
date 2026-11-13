@@ -1,0 +1,32 @@
+[
+  {
+    "original": "Options/Atendimento/SmsHttpOptions.cs",
+    "current": "src/CallMed.Application/Modules/Atendimento/Configuration/SmsHttpOptions.cs",
+    "identical": true,
+    "sha256": "726a423cbdabe65b0ae4a1613b1e3fd69c0980b03148ebef8a6a3fb7acc10380"
+  },
+  {
+    "original": "Services/Atendimento/Canais/Sms/HttpSmsWebhookValidator.cs",
+    "current": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Sms/HttpSmsWebhookValidator.cs",
+    "identical": true,
+    "sha256": "9923db707650a58331e87653d98faccc6cef6554fd52568470a619c194524db8"
+  },
+  {
+    "original": "Services/Atendimento/Canais/Sms/HttpSmsAtendimentoService.cs",
+    "current": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Sms/HttpSmsAtendimentoService.cs",
+    "identical": true,
+    "sha256": "7d1af4f8f61f7c565dcd271324447bf92c9564491f912624b159b1d7bd1bb4ef"
+  },
+  {
+    "original": "Services/Atendimento/Canais/Sms/SmsHttpSender.cs",
+    "current": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Sms/SmsHttpSender.cs",
+    "identical": true,
+    "sha256": "93a1f66e2b4ae71c27718405ba75240328e140078b97b695d852b3827b397a32"
+  },
+  {
+    "original": "Controllers/Api/AtendimentoWebhookController.cs",
+    "current": "CallMedCrud/Controllers/Api/AtendimentoWebhookController.cs",
+    "identical": true,
+    "sha256": "1b97c3406ef3eafcbbde636494198d39ec3b411c002bc852dd7afc51cad1002c"
+  }
+]

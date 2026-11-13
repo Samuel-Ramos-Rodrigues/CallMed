@@ -1,0 +1,53 @@
+const {spawn}=require('child_process');const fs=require('fs');const path=require('path');const {chromium}=require('playwright');
+const base=path.resolve(__dirname,'../..');const out=process.env.CALLMED_BROWSER_OUTPUT||path.join(require('os').tmpdir(),'callmed-piloto-'+Date.now());fs.mkdirSync(out,{recursive:true});const checks=[];function check(ok,label){if(!ok)throw Error(label);checks.push(label);console.log('PASS '+label);}
+const host=spawn(process.env.CALLMED_DOTNET_HOST||'dotnet',[`tests/CallMed.Checks/bin/${process.env.CALLMED_CHECKS_CONFIGURATION||'Debug'}/net10.0/CallMed.Checks.dll`,'--piloto-fixture'],{cwd:base,env:process.env});let browser;let page;
+(async()=>{
+ const upstream=await new Promise((resolve,reject)=>{let text='';host.stdout.on('data',b=>{text+=b;const m=text.match(/JORNADA_URL=(http:\/\/127\.0\.0\.1:\d+)/);if(m)resolve(m[1]);});host.stderr.on('data',b=>fs.appendFileSync(out+'/server.log',b));host.on('exit',n=>reject(Error('fixture exited '+n)));setTimeout(()=>reject(Error('fixture timeout')),25000).unref();});
+ browser=await chromium.launch({executablePath:process.env.CALLMED_CHROME_BIN,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const context=await browser.newContext({viewport:{width:1280,height:900},serviceWorkers:'block',acceptDownloads:true});
+ await context.route('https://callmed.test/**',async route=>{const u=new URL(route.request().url());const response=await route.fetch({url:upstream+u.pathname+u.search,maxRedirects:0});const headers=response.headers();if(headers.location?.startsWith('/'))headers.location='https://callmed.test'+headers.location;await route.fulfill({response,headers});});
+ page=await context.newPage();page.on('pageerror',e=>fs.appendFileSync(out+'/page-errors.log',String(e)+'\n'));
+ const get=async url=>page.goto('https://callmed.test'+url);
+ const fetchStatus=async(url,options={})=>page.evaluate(async({url,options})=>(await fetch(url,options)).status,{url,options});
+ check((await get('/Piloto')).status()===401,'Comparação exige autenticação');
+ for(const role of ['p','m','rt']){await get('/fixture/login/'+role);check((await get('/Piloto')).status()===403,'Paciente ou profissional clínico não acessa dados operacionais da equipe');}
+ await get('/fixture/login/f');await get('/Piloto');await page.locator('#piloto-comparacao').waitFor();
+ check(await page.getByText('Sem medições conferidas nesses períodos.',{exact:false}).count()===1,'Primeira comparação apresenta ausência de dados reais');
+ check(await fetchStatus('/Piloto/Medicao',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'Input.Periodo=Antes'})===400,'Registro sem antifalsificação é recusado');
+ await get('/Piloto/Medicao');await page.locator('#piloto-medicao').waitFor();
+ const ontem=await page.locator('form[method=get] input[name=data]').inputValue();const pd=new Date(ontem+'T12:00:00Z');pd.setUTCDate(pd.getUTCDate()-6);const pilotoDia=pd.toISOString().slice(0,10);const antes=new Date(pilotoDia+'T12:00:00Z');antes.setUTCDate(antes.getUTCDate()-10);const antesDia=antes.toISOString().slice(0,10);
+ await get('/Piloto/Medicao?data='+antesDia+'&periodo=Antes');
+ for(const [k,v] of Object.entries({Realizadas:'6',Faltas:'2',Canceladas:'1',SemDesfecho:'1',MinutosAgendados:'100',MinutosDisponiveis:'200',MinutosRecepcao:'60',CustoHoraRecepcao:'30.50',Fonte:'Escala e cronometragem fictícias',Motivo:'Linha de base fictícia'}))await page.locator('[name="Input.'+k+'"]').fill(v);
+ await page.locator('[name="Input.Conferido"][type=checkbox]').check();
+ async function body(){return page.locator('#piloto-salvar').evaluate(f=>new URLSearchParams(new FormData(f)).toString());}
+ async function post(data){return page.evaluate(async body=>{const r=await fetch('/Piloto/Medicao',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body,redirect:'manual'});return {status:r.status,type:r.type,text:await r.text()};},data);}
+ check(await page.locator("#piloto-salvar").evaluate(f=>f.checkValidity()),"Campos preenchidos atendem à validação nativa do formulário");
+ const stale=await body();const first=await post(stale);check(first.status===0||first.status===302,'Equipe registra linha de base conferida pelo formulário');
+ await get('/Piloto/Medicao?data='+antesDia+'&periodo=Antes');check(await page.getByRole('heading',{name:/Revisão 1/}).count()===1,'Registro exibe histórico e revisão atual');
+ const conflito=await post(stale);check(conflito.status===409&&conflito.text.includes('Outra pessoa registrou este dia'),'Formulário antigo recebe conflito e instrução de recarregar');
+ await page.locator('[name="Input.Faltas"]').fill('1');await page.locator('[name="Input.Motivo"]').fill('Correção de contagem fictícia');await page.locator('[name="Input.Conferido"][type=checkbox]').check();check([0,302].includes((await post(await body())).status),'Equipe corrige a contagem por nova revisão');
+ await get('/Piloto/Medicao?data='+antesDia+'&periodo=Antes');check(await page.getByRole('heading',{name:/Revisão [12]/}).count()===2,'Correção mantém duas revisões visíveis');
+ await get('/Piloto/Medicao?data='+pilotoDia+'&periodo=Piloto');check((await page.locator('#piloto-medicao').innerText()).includes('95 minutos agendados'),'Prévia do piloto usa consultas e durações reais da agenda da fixture');
+ for(const [k,v] of Object.entries({MinutosDisponiveis:'190',MinutosRecepcao:'20',CustoHoraRecepcao:'30.50',Fonte:'Escala e cronometragem fictícias do piloto',Motivo:'Primeira medição fictícia'}))await page.locator('[name="Input.'+k+'"]').fill(v);
+ await page.locator('[name="Input.Conferido"][type=checkbox]').check();check([0,302].includes((await post(await body())).status),'Fotografia do piloto e medições da equipe são registradas');
+ const url='/Piloto?antesInicio='+antesDia+'&antesFim='+antesDia+'&pilotoInicio='+pilotoDia+'&pilotoFim='+pilotoDia;
+ await get(url);check(await page.locator('#piloto-comparacao tbody tr').count()===4,'Comparação apresenta faltas, ocupação, esforço e custo por agendamento');
+ const exported=await page.evaluate(async url=>{const r=await fetch(url+'&exportar=true');return {status:r.status,cache:r.headers.get('cache-control'),json:await r.json()};},url);
+ check(exported.status===200&&exported.json.Medicoes.length===2&&exported.json.Comparacao.Antes.Faltas===1,'Exportação considera somente a última revisão de cada dia');
+ check(exported.json.Medicoes.every(x=>x.CustoHoraRecepcao===30.5),'Número decimal HTML mantém R$ 30,50 com aplicação em pt-BR');
+ check(exported.json.Comparacao.Piloto.Ocupacao===50&&exported.json.Comparacao.Piloto.Realizadas===1&&exported.json.Medicoes.some(x=>x.AgendaHash?.length===64),'Relatório usa ocupação por minutos e guarda impressão da fotografia');
+ check(!JSON.stringify(exported.json).includes('Paciente Fictício')&&!JSON.stringify(exported.json).includes('RegistradoPor')&&exported.cache.includes('no-store'),'Exportação agregada não contém pacientes nem identificadores de operadores e impede cache');
+ await get('/Piloto/Medicao?data='+pilotoDia+'&periodo=Piloto');await page.locator('[name="Input.Desconsiderar"][type=checkbox]').check();await page.locator('[name="Input.Conferido"][type=checkbox]').check();await page.locator('[name="Input.Motivo"]').fill('Dia registrado por engano');check([0,302].includes((await post(await body())).status),'Equipe desconsidera dia sem apagar o histórico');
+ const sem=await page.evaluate(async url=>await(await fetch(url+'&exportar=true')).json(),url);check(sem.Comparacao.Piloto.DiasMedidos===0&&sem.Medicoes.length===1,'Dia desconsiderado sai da amostra e não vira resultado zero');
+ await get('/Piloto/Medicao?data='+pilotoDia+'&periodo=Piloto');for(const [k,v] of Object.entries({MinutosDisponiveis:'190',MinutosRecepcao:'20',CustoHoraRecepcao:'30.50',Motivo:'Medição novamente conferida'}))await page.locator('[name="Input.'+k+'"]').fill(v);await page.locator('[name="Input.Conferido"][type=checkbox]').check();check([0,302].includes((await post(await body())).status),'Nova revisão restaura dia conferido mantendo a retirada no histórico');
+ const bad=await get('/Piloto?antesInicio='+pilotoDia+'&antesFim='+pilotoDia+'&pilotoInicio='+pilotoDia+'&pilotoFim='+pilotoDia);check(bad.status()===400&&(await page.locator('#piloto-comparacao').innerText()).includes('sem sobreposição'),'Períodos sobrepostos apresentam orientação na própria tela');
+ const axeReports=[];
+ for(const [name,target,selector] of [['medicao','/Piloto/Medicao?data='+pilotoDia,'#piloto-medicao'],['comparacao',url,'#piloto-comparacao']]){
+  await get(target);await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});const a=await page.evaluate(sel=>axe.run(document.querySelector(sel),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}),selector);axeReports.push({name,violations:a.violations});fs.writeFileSync(out+'/axe-'+name+'.json',JSON.stringify(a.violations,null,2));check(a.violations.length===0,'Tela de '+name+' sem violações na checagem automatizada WCAG');
+  await page.evaluate(async()=>{document.documentElement.dataset.theme='dark';getComputedStyle(document.body).backgroundColor;await Promise.all(document.getAnimations({subtree:true}).filter(a=>a.constructor.name==='CSSTransition').map(a=>a.finished.catch(()=>{})));});const dark=await page.evaluate(sel=>axe.run(document.querySelector(sel),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}),selector);axeReports.push({name:name+'-dark',violations:dark.violations});fs.writeFileSync(out+'/axe-'+name+'-dark.json',JSON.stringify(dark.violations,null,2));check(dark.violations.length===0,'Tela de '+name+' mantém acessibilidade automatizada no tema escuro');
+  await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='200%');check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'Tela de '+name+' mantém leitura a 200% em celular sem transbordamento da página');
+  await page.keyboard.press('Tab');check(await page.evaluate(()=>document.activeElement!==document.body),'Teclado alcança controles da tela de '+name);
+  await page.screenshot({path:out+'/'+name+'-mobile-200.png',fullPage:true});await page.evaluate(()=>document.documentElement.style.fontSize='');await page.setViewportSize({width:1280,height:900});
+ }
+ fs.writeFileSync(out+'/checks.json',JSON.stringify({checks,axeReports},null,2));console.log('BROWSER_DONE');
+})().catch(async e=>{console.error(e);if(page){fs.writeFileSync(out+'/debug.html',await page.content());await page.screenshot({path:out+'/debug.png',fullPage:true}).catch(()=>{});}process.exitCode=1;}).finally(async()=>{if(browser)await browser.close();host.kill('SIGTERM');});

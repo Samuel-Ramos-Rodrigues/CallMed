@@ -1,0 +1,17 @@
+@model IReadOnlyList<MKSANCrud.Models.SolicitacaoAtendimento>
+@using System.Security.Claims
+@{ ViewData["Title"] = "Ligações de confirmação"; var uid = User.FindFirstValue(ClaimTypes.NameIdentifier); }
+<section class="cm25-screen cm-tasks-page">
+    <header class="cm-consult-heading"><div><span class="eyebrow">RECEPÇÃO</span><h1>Ligações de confirmação</h1><p>Assuma uma ligação, entre em contato e registre a conclusão. A confirmação da consulta é uma ação separada.</p></div><a class="btn secondary" asp-action="Index">Voltar às solicitações</a></header>
+    @if (!Model.Any()) { <div class="cm25-panel"><h2>Nenhuma ligação pendente</h2><p>Novas tarefas aparecem aqui quando um lembrete exige contato por telefone.</p></div> }
+    @foreach (var tarefa in Model) {
+        <article class="cm25-panel cm-task-card">
+            <div><h2>@(tarefa.Paciente?.Nome ?? "Paciente")</h2><p>@tarefa.Paciente?.Telefone</p><p>@tarefa.Consulta?.Data.ToString("dd/MM/yyyy") às @tarefa.Consulta?.Horario · @tarefa.Consulta?.Medico?.Nome</p><p>@tarefa.Observacao</p><small>@(tarefa.ResponsavelUsuarioId is null ? "Aguardando responsável" : tarefa.ResponsavelUsuarioId == uid ? "Sob sua responsabilidade" : "Em atendimento pela equipe")</small></div>
+            <div class="cm-task-actions"><a class="btn secondary" asp-controller="Consulta" asp-action="Details" asp-route-id="@tarefa.ConsultaId">Ver consulta</a>
+            @if (tarefa.ResponsavelUsuarioId is null) { <form asp-action="AssumirTarefa" method="post"><input type="hidden" name="id" value="@tarefa.Id"/><button class="btn" type="submit">Assumir ligação</button></form> }
+            else if (tarefa.ResponsavelUsuarioId == uid) { <form asp-action="ConcluirTarefa" method="post"><input type="hidden" name="id" value="@tarefa.Id"/><button class="btn" type="submit">Concluir ligação</button></form> }
+            </div>
+        </article>
+    }
+    @if (Model.Count == 100) { <p>Mostrando as 100 ligações mais antigas. Conclua as tarefas para consultar as próximas.</p> }
+</section>

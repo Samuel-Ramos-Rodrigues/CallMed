@@ -1,0 +1,108 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuracao
+@{ ViewData["Title"] = "Integrações"; bool banco = ViewBag.BancoConectado == true; bool whats = ViewBag.WhatsAppAtivo == true; bool gemini = ViewBag.GeminiConfigurado == true; bool email = ViewBag.EmailConfigurado == true; bool emailEntrada = ViewBag.EmailEntradaConfigurado == true; bool gmailInbox = ViewBag.GmailInboxConfigurado == true; string emailEntradaProvider = ViewBag.EmailEntradaProvider as string ?? "não configurado"; bool envioAutomatico = !string.Equals(Configuracao["Atendimento:Email:EnviarRespostasAutomaticamente"], "false", StringComparison.OrdinalIgnoreCase); bool sms = ViewBag.SmsAtivo == true; bool legacy = ViewBag.LegacyConfigurada == true; }
+<section class="cm25-screen cm19-settings-page" data-cm25-view="Integracoes/Index.cshtml">
+    <header class="cm25-page-hero cm19-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#activity"></use></svg></div><div><span>SISTEMA</span><h1>Integrações</h1><p>Veja rapidamente quais serviços da CallMed estão disponíveis.</p></div><button type="button" class="btn secondary" id="channelStatusButton">Atualizar canais</button></header>
+    <div class="cm19-integration-grid" id="channelStatusContent">
+        <article class="cm25-panel cm19-card cm19-integration-card"><span class="cm19-integration-logo db">DB</span><div><h2>Neon / PostgreSQL</h2><p>Banco principal da aplicação.</p></div><b class="@(banco ? "on" : "off")">@(banco ? "Conectado" : "Indisponível")</b></article>
+        <article class="cm25-panel cm19-card cm19-integration-card" data-integration="whatsapp"><span class="cm19-integration-logo wa">W</span><div><h2>WhatsApp</h2><p>Evolution API para entrada e saída.</p></div><b class="@(whats ? "on" : "off")">@(whats ? "Habilitado no servidor" : "Inativo")</b></article>
+        <article class="cm25-panel cm19-card cm19-integration-card"><span class="cm19-integration-logo ai">AI</span><div><h2>Gemini</h2><p>Assistente inteligente integrado ao backend.</p></div><b class="@(gemini ? "on" : "off")">@(gemini ? "Configurado" : "Não configurado")</b></article>
+        <article class="cm25-panel cm19-card cm19-integration-card" data-integration="email"><span class="cm19-integration-logo mail">@@</span><div><h2>E-mail</h2><p>Saída pelo Brevo SMTP. Entrada via Gmail API; a IA pode responder automaticamente a mensagens administrativas no modo automático; casos que exigem revisão continuam com a equipe.</p><small class="cm19-security-note">Saída: @(email ? "configurada" : "não configurada") · Caixa: @emailEntradaProvider</small></div><b class="@(email ? "on" : "off")">@(email ? (gmailInbox ? "Brevo + Gmail configurados" : "Somente envio") : "Inativo")</b></article>
+        <article class="cm25-panel cm19-card cm19-integration-card" data-integration="sms"><span class="cm19-integration-logo sms">SMS</span><div><h2>SMS</h2><p>httpSMS para envio pelo celular e recebimento automático.</p></div><b class="@(sms ? "on" : "off")">@(sms ? "Configurado" : "Inativo")</b></article>
+        <article class="cm25-panel cm19-card cm19-integration-card" data-integration="web"><span class="cm19-integration-logo pwa">PWA</span><div><h2>Site / PWA</h2><p>Atendimento pelo próprio aplicativo CallMed.</p></div><b class="on">Ativo</b></article>
+        <article class="cm25-panel cm19-card cm19-integration-card" data-integration="legacy"><span class="cm19-integration-logo db">API</span><div><h2>HIS / Sistemas legados</h2><p>API v1 protegida por chave para integração com agendas e cadastros existentes.</p></div><b class="@(legacy ? "on" : "off")">@(legacy ? "Configurada" : "Não configurada")</b></article>
+    </div>
+    @if (TempData["IntegracaoEmailMensagem"] is string mensagemEmail)
+    {
+        var emailTesteSucesso = TempData["IntegracaoEmailSucesso"] is bool valorSucesso && valorSucesso;
+        <div class="cm25-panel cm25-content-card" role="status" aria-live="polite">
+            <p><strong>@(emailTesteSucesso ? "Resultado do teste" : "Atenção")</strong></p>
+            <p>@mensagemEmail</p>
+        </div>
+    }
+    <div class="cm25-panel cm25-content-card">
+        <h2>Testar envio de e-mail (Brevo SMTP)</h2>
+        <p>Envie uma mensagem simples para um endereço controlado por você. O remetente precisa estar verificado no Brevo.</p>
+        <form asp-controller="Integracoes" asp-action="TesteEmail" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label for="destinatarioTeste">E-mail destinatário do teste</label>
+                <input id="destinatarioTeste" name="destinatario" type="email" maxlength="254" autocomplete="email" required class="form-control" placeholder="voce@exemplo.com" />
+            </div>
+            <button type="submit" class="btn secondary">Enviar e-mail de teste</button>
+        </form>
+        <p class="cm19-security-note">O resultado indica se o servidor SMTP aceitou a mensagem; a entrega deve ser confirmada na caixa postal e em Brevo → Transactional → Email → Logs.</p>
+    </div>
+    <div class="cm25-panel cm25-content-card">
+        <h2>Entrada de e-mails pela API do Gmail</h2>
+        <p>O CallMed consulta a caixa do Gmail e registra mensagens na Central. No modo automático, a IA pode responder dúvidas administrativas simples sem aprovação individual. Demandas sensíveis e mensagens que exigem revisão são encaminhadas à equipe; rascunhos manuais continuam sujeitos à aprovação.</p>
+        <p>Configure no Render: <code>GmailInbox__Enabled</code>, <code>GmailInbox__MailboxEmail</code>, <code>GmailInbox__ClientId</code>, <code>GmailInbox__ClientSecret</code>, <code>GmailInbox__RefreshToken</code> e <code>GmailInbox__StartAfterUtc</code>. Defina StartAfterUtc como o instante UTC em que a integração será ativada; isso evita importar mensagens antigas da caixa. O OAuth deve conceder o escopo <code>https://www.googleapis.com/auth/gmail.modify</code>.</p>
+        <p>Leia <code>docs/GMAIL-API-RESPOSTAS-CENTRAL.md</code> para criar o projeto no Google Cloud e gerar o refresh token. Não cole credenciais nesta tela nem no chat.</p>
+        <p><strong>Modo de envio configurado:</strong> @(envioAutomatico ? "Automático para casos administrativos elegíveis" : "Revisão humana antes do envio automático")</p>
+        <span class="@(gmailInbox ? "status-chip success" : "status-chip neutral")">@(gmailInbox ? "Credenciais preenchidas" : "Aguardando configuração do Gmail")</span>
+    </div>
+    <div class="cm25-panel cm25-content-card">
+        <h2>Conexão do WhatsApp</h2>
+        <p>Consulte a instância sem enviar mensagens.</p>
+        <button type="button" class="btn secondary" id="evolutionCheck">Verificar conexão com a Evolution</button>
+        <p id="evolutionResult" role="status" aria-live="polite">A conexão ainda não foi verificada.</p>
+        <details id="evolutionDetails" hidden>
+            <summary>Detalhes da conexão usada pelo CallMed</summary>
+            <dl class="cm25-definition-grid">
+                <div><dt>Instância</dt><dd id="evolutionInstance"></dd></div>
+                <div><dt>Consulta realizada (GET)</dt><dd id="evolutionQuery"></dd></div>
+                <div><dt>HTTP da consulta</dt><dd id="evolutionHttp"></dd></div>
+                <div><dt>Rota de envio configurada (POST, não testada)</dt><dd id="evolutionSend"></dd></div>
+            </dl>
+        </details>
+    </div>
+    <p class="cm19-security-note">Nenhuma chave, senha ou connection string é exibida nesta tela.</p>
+</section>
+
+@section Scripts {
+<script>
+(() => {
+  const evolutionButton = document.getElementById('evolutionCheck');
+  evolutionButton.addEventListener('click', async () => {
+    evolutionButton.disabled = true;
+    const output = document.getElementById('evolutionResult');
+    const details = document.getElementById('evolutionDetails');
+    details.hidden = true;
+    output.textContent = 'Consultando a instância…';
+    try {
+      const response = await fetch('/Integracoes/EvolutionStatus', {credentials:'same-origin', cache:'no-store', redirect:'error'});
+      if (!response.ok) throw new Error();
+      const data = await response.json();
+      output.textContent = data.mensagem;
+      if (data.urlConsulta && data.urlEnvio) {
+        document.getElementById('evolutionInstance').textContent = data.instancia;
+        document.getElementById('evolutionQuery').textContent = data.urlConsulta;
+        document.getElementById('evolutionHttp').textContent = data.statusHttp ?? 'Sem resposta HTTP';
+        document.getElementById('evolutionSend').textContent = data.urlEnvio;
+        details.hidden = false;
+      }
+    } catch { output.textContent = 'Não foi possível verificar. Confira sua sessão e tente novamente.'; }
+    finally { evolutionButton.disabled = false; }
+  });
+  const button = document.getElementById('channelStatusButton');
+  const setState = (name, enabled, label) => {
+    const card = document.querySelector(`[data-integration="${name}"]`);
+    const badge = card?.querySelector(':scope > b');
+    if (!badge) return;
+    badge.className = enabled ? 'on' : 'off';
+    badge.textContent = enabled ? (label || 'Configurado') : 'Inativo';
+  };
+  button?.addEventListener('click', async () => {
+    const original = button.textContent; button.disabled = true; button.textContent = 'Verificando...';
+    try {
+      const r = await fetch('/api/atendimento/status', { credentials:'same-origin', cache:'no-store', headers:{Accept:'application/json'} });
+      if (!r.ok) throw new Error(); const d = await r.json();
+      setState('web', Boolean(d.web?.enabled && d.web?.outboundConfigured), 'Ativo');
+      setState('whatsapp', Boolean(d.whatsapp?.enabled && d.whatsapp?.inboundConfigured && d.whatsapp?.outboundConfigured));
+      setState('sms', Boolean(d.sms?.enabled && d.sms?.outboundConfigured), d.sms?.inboundConfigured ? 'Envio e recebimento configurados' : 'Envio configurado');
+      setState('email', Boolean(d.email?.outboundConfigured), d.email?.gmailInboxConfigured ? 'Brevo + Gmail configurados' : 'Envio configurado · Gmail pendente');
+    } catch { await window.CallMedUI.alert('Não foi possível consultar os canais agora. Tente novamente em alguns instantes.', { title: 'Falha ao verificar canais', type: 'error' }); }
+    finally { button.disabled = false; button.textContent = original; }
+  });
+})();
+</script>
+}

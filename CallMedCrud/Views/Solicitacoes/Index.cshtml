@@ -1,0 +1,71 @@
+@model MKSANCrud.ViewModels.SolicitacoesPainelViewModel
+@using MKSANCrud.Models
+@using MKSANCrud.Models.Atendimento
+@{
+    ViewData["Title"] = "Solicitações";
+    var pedidos = Model.PedidosAbertos;
+    var historicoPedidos = Model.HistoricoPedidos;
+    var temFiltro = !string.IsNullOrWhiteSpace(Model.Busca) || !string.IsNullOrWhiteSpace(Model.Canal);
+    var colunas = new[] { StatusSolicitacaoAtendimento.Nova, StatusSolicitacaoAtendimento.BuscandoHorario, StatusSolicitacaoAtendimento.AguardandoPaciente };
+    string CanalNome(CanalAtendimento c) => c switch { CanalAtendimento.WhatsApp => "WhatsApp", CanalAtendimento.Sms => "SMS", CanalAtendimento.Email => "E-mail", CanalAtendimento.Telefone => "Telefone", CanalAtendimento.Presencial => "Presencial", _ => "Site/PWA" };
+    string EtapaNome(StatusSolicitacaoAtendimento s) => s switch { StatusSolicitacaoAtendimento.Nova => "Novos pedidos", StatusSolicitacaoAtendimento.BuscandoHorario => "Definir horário", _ => "Aguardando resposta" };
+    string EtapaAjuda(StatusSolicitacaoAtendimento s) => s switch { StatusSolicitacaoAtendimento.Nova => "Confira paciente, contato e especialidade.", StatusSolicitacaoAtendimento.BuscandoHorario => "Escolha uma vaga e conclua o agendamento.", _ => "Retome o pedido quando o paciente responder." };
+
+}
+<section class="cm25-screen cm21-request-page cm-requests-screen cm-requests-organized" data-cm25-view="Solicitacoes/Index.cshtml" data-active-tab="solicitacoes">
+    <header class="cm-requests-hero cm25-page-hero">
+        <div class="cm-requests-title"><span class="cm-requests-hero-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#headset"></use></svg></span><div><span class="eyebrow">ADMINISTRAÇÃO E ATENDIMENTO</span><h1>Solicitações</h1><p>Organize os pedidos de consulta que ainda precisam de um horário.</p></div></div>
+        <div class="cm-requests-hero-actions"><a class="btn" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg>Nova solicitação</a><a class="text-link" asp-controller="Consulta" asp-action="Create">Agendar consulta <svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></a></div>
+    </header>
+    <aside class="cm-task-link"><div><strong>Ligações de confirmação</strong><p>Contato por telefone com pacientes que já têm consulta marcada.</p></div><a class="btn secondary" asp-action="Tarefas">Ver ligações (@(ViewBag.TarefasPendentes ?? 0))</a></aside>
+    <div class="cm-requests-overview" aria-label="Pedidos por etapa">
+        <article><span>Novos pedidos</span><strong>@Model.TotalRecebidas</strong><small>Conferir os dados do contato</small></article>
+        <article><span>Definir horário</span><strong>@Model.TotalBuscando</strong><small>Escolher uma vaga disponível</small></article>
+        <article><span>Aguardando resposta</span><strong>@Model.TotalAguardando</strong><small>Retomar o contato com o paciente</small></article>
+    </div>
+    <div class="cm-requests-flow-note"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar-check"></use></svg><p>Agendamento concluído? Acompanhe confirmações e histórico em <a asp-controller="Consulta" asp-action="Index">Consultas</a>.</p></div>
+    <section class="cm-requests-filter-panel" aria-labelledby="requests-filter-title">
+        <div class="cm-requests-filter-heading"><h2 id="requests-filter-title">Buscar solicitação</h2><span>Paciente, contato ou canal de origem.</span></div>
+        <form method="get" class="cm-requests-filters">
+            <input type="hidden" name="aba" value="@Model.Aba" />
+            <label class="cm-requests-search"><span class="visually-hidden">Buscar por paciente, CPF, telefone ou e-mail</span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg><input type="search" name="busca" value="@Model.Busca" placeholder="Paciente, CPF, telefone ou e-mail" /></label>
+            <label class="cm-requests-channel-filter"><span class="visually-hidden">Canal de origem</span><select name="canal"><option value="">Todos os canais</option>@foreach (var c in Enum.GetValues<CanalAtendimento>()) { <option value="@c" selected="@(Model.Canal == c.ToString() ? "selected" : null)">@CanalNome(c)</option> }<option value="SemCanal" selected="@(Model.Canal == "SemCanal" ? "selected" : null)">Canal não informado</option></select></label>
+            <button class="btn secondary" type="submit">Buscar</button>
+            @if (temFiltro) { <a class="text-link" asp-action="Index" asp-route-aba="@Model.Aba" asp-route-situacao="@Model.SituacaoConsulta">Limpar busca e canal</a> }
+        </form>
+        @if (temFiltro) { <p class="cm-requests-result-note">A busca e o canal estão aplicados aos pedidos e às contagens das etapas.</p> }
+    </section>
+        <section class="cm-request-workspace" aria-labelledby="requests-workspace-title">
+            <div class="cm-requests-board-heading"><div><h2 id="requests-workspace-title">Pedidos antes do agendamento</h2><p>Depois de agendar, o atendimento fica na área Consultas.</p></div></div>
+            @if (pedidos.Count == 0)
+            {
+                <div class="cm-requests-empty cm-requests-tab-empty"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#badge-check"></use></svg><div><h3>@(temFiltro ? "Nenhuma solicitação encontrada" : "Nenhum pedido para organizar")</h3><p>@(temFiltro ? "Altere a busca ou o canal para encontrar outro pedido." : "Os novos pedidos aparecerão aqui. Os agendamentos registrados ficam em Consultas.")</p>
+                    <a class="btn secondary" asp-controller="Consulta" asp-action="Index">Ver consultas <span aria-hidden="true">→</span></a>
+                </div></div>
+            }
+            else
+            {
+                <div class="cm-requests-board">
+                    @foreach (var coluna in colunas)
+                    {
+                        var itens = pedidos.Where(x => coluna == StatusSolicitacaoAtendimento.Nova ? x.Etapa is StatusSolicitacaoAtendimento.Nova or StatusSolicitacaoAtendimento.EmTriagem : x.Etapa == coluna).ToList();
+                        <section class="cm-request-column status-@coluna.ToString().ToLowerInvariant()" aria-label="@EtapaNome(coluna)">
+                            <header><div><span class="cm-request-column-dot" aria-hidden="true"></span><h3>@EtapaNome(coluna)</h3><span class="cm-request-column-count">@itens.Count</span></div><p>@EtapaAjuda(coluna)</p></header>
+                            <div class="cm-request-list" tabindex="0" aria-label="@EtapaNome(coluna)">
+                                @if (itens.Count == 0) { <p class="cm-request-stage-empty">Nenhum pedido nesta etapa.</p> }
+                                @foreach (var item in itens) { <partial name="~/Views/Solicitacoes/_Card.cshtml" model="item" /> }
+                            </div>
+                        </section>
+                    }
+                </div>
+            }
+        </section>
+        @if (historicoPedidos.Count > 0)
+        {
+            <details class="cm-requests-closed"><summary>Histórico de solicitações <span>@historicoPedidos.Count</span></summary><div>@foreach (var item in historicoPedidos) { <a asp-action="Detalhes" asp-route-id="@(item.Solicitacao!.Id)"><strong>Pedido #@(item.Solicitacao!.Id) · @item.NomePaciente</strong><span>@item.Situacao · @item.CanalNome<b aria-hidden="true"><svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></b></span></a> }</div></details>
+        }
+        <details class="cm-requests-more">
+            <summary>Mais opções</summary>
+            <aside class="cm-requests-offline" aria-labelledby="requests-offline-title"><span class="cm-requests-offline-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#clipboard"></use></svg></span><div><h2 id="requests-offline-title">Pedidos recebidos sem conexão</h2><p>Use durante uma falha de conexão. Depois, revise e envie os pedidos para continuar o agendamento.</p></div><a class="btn secondary" asp-action="Contingencia">Ver pedidos offline</a><a class="text-link" href="/contingencia.html">Registrar sem conexão <svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></a></aside>
+        </details>
+</section>
