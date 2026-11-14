@@ -28,7 +28,7 @@ for file in expected:
 # pré-migração. SHA é o blob Git do monolito no commit-base da V40.
 import hashlib
 original = b''.join(file.read_bytes() for file in expected[:-1])
-git_sha = hashlib.sha1(b'blob '+str(len(original)).encode()+b'\\0'+original).hexdigest()
+git_sha = hashlib.sha1(b'blob '+str(len(original)).encode()+b'\0'+original).hexdigest()
 if git_sha != 'af74bcfb45f83572b3cf3de646ec1182015fb795':
     sys.exit('CSS legado foi alterado durante a divisão modular: '+git_sha)
 for page in [*web.rglob('*.cshtml'), *web.rglob('*.html')]:
