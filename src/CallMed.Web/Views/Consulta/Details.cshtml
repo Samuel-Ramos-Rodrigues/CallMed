@@ -11,7 +11,32 @@
 }
 <section class="cm25-screen cm25-page v16-page comprovante-consulta" data-cm25-view="Consulta/Details.cshtml">
     <div class="cm25-page-hero v16-page-head compact-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg></div><div><span class="cm25-kicker v16-eyebrow">CONSULTA #@Model.Id</span><h1>Detalhes da consulta</h1><p>@Model.Data.ToString("dddd, dd/MM/yyyy") às @Model.Horario.</p></div><span class="status-pill status-@Model.Status.ToLowerInvariant()">@Model.Status</span></div>
-    <a class="btn secondary" asp-controller="Jornada" asp-action="Consulta" asp-route-id="@Model.Id">Preparação e check-in</a><div class="consultation-detail-grid-v16">
+    <section class="cm42-consulta-hub" aria-labelledby="cm42-consulta-hub-title">
+        <div class="cm42-consulta-hub-head">
+            <div>
+                <span class="eyebrow">JORNADA DA CONSULTA</span>
+                <h2 id="cm42-consulta-hub-title">Tudo sobre este atendimento, em um só lugar</h2>
+                <p>Consulte o andamento e acesse cada etapa sem procurar em outras áreas do sistema.</p>
+            </div>
+            <a class="btn" asp-controller="Jornada" asp-action="Consulta" asp-route-id="@Model.Id">Abrir minha jornada</a>
+        </div>
+        <ol class="cm42-consulta-steps" aria-label="Etapas da consulta">
+            <li class="done"><span class="cm42-step-number" aria-hidden="true">1</span><div><strong>Agendamento</strong><small>@Model.Data.ToString("dd/MM/yyyy") às @Model.Horario</small></div></li>
+            <li><span class="cm42-step-number" aria-hidden="true">2</span><div><strong>Confirmação</strong><small>Situação atual: @Model.Status</small></div></li>
+            <li><span class="cm42-step-number" aria-hidden="true">3</span><div><strong>Preparação e check-in</strong><small>Confira a etapa atual na jornada</small></div></li>
+            <li><span class="cm42-step-number" aria-hidden="true">4</span><div><strong>Atendimento presencial ou online</strong><small>Acesso conforme liberação e autorização</small></div></li>
+            <li class="@(Model.Status == ConsultaStatus.Realizada ? "done" : "")"><span class="cm42-step-number" aria-hidden="true">5</span><div><strong>Conclusão</strong><small>@(Model.Status == ConsultaStatus.Realizada ? "Atendimento realizado" : "Acompanhar no andamento da consulta")</small></div></li>
+        </ol>
+        <div class="cm42-consulta-links">
+            <a asp-controller="Jornada" asp-action="Consulta" asp-route-id="@Model.Id">Preparação, chegada e teleconsulta <span aria-hidden="true">↗</span></a>
+            @if (ehEquipe)
+            {
+                <a asp-controller="RecepcaoPendencias" asp-action="Index">Exceções que precisam da equipe <span aria-hidden="true">↗</span></a>
+            }
+        </div>
+        <p class="cm42-consulta-note">A confirmação, o check-in e a presença online são verificados nos fluxos próprios. Esta linha do tempo não os marca como concluídos sem validação.</p>
+    </section>
+    <div class="consultation-detail-grid-v16">
         <section class="cm25-panel v16-card consultation-main-v16"><div class="v16-card-head"><div><h2>Atendimento</h2><p>Profissional e paciente.</p></div></div><div class="detail-info-stack"><div><span>Paciente</span><strong>@Model.Paciente?.Nome</strong></div><div><span>Profissional</span><strong>@Model.Medico?.Nome</strong></div><div><span>Área de atuação</span><strong>@Model.Medico?.Especialidade</strong></div><div><span>Data</span><strong>@Model.Data.ToString("dd/MM/yyyy")</strong></div><div><span>Horário</span><strong>@Model.Horario</strong></div></div></section>
         <section class="cm25-panel v16-card"><div class="v16-card-head"><div><h2>Financeiro e observações</h2></div></div><div class="detail-info-stack"><div><span>Pagamento</span><strong>@Model.TipoPagamento</strong></div><div><span>Convênio</span><strong>@(string.IsNullOrWhiteSpace(Model.ConvenioUsado) ? "—" : Model.ConvenioUsado)</strong></div><div><span>Observação</span><strong>@(string.IsNullOrWhiteSpace(Model.Observacao) ? "—" : Model.Observacao)</strong></div></div></section>
     </div>
