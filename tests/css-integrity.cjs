@@ -20,7 +20,7 @@ for(const file of modules)if(!worker.includes("'/css/modules/"+file+"'"))throw E
 if(worker.includes("'/css/callmed.css'")||worker.includes("'/css/callmed-auth-v34.css'"))throw Error('Obsolete CSS in service worker');
 for(const staticPage of ['offline.html','contingencia.html']){
  const content=read('src/CallMed.Web/wwwroot/'+staticPage);
- const listed=[...content.matchAll(/\\/css\\/modules\\/([\\w-]+\\.css)/g)].map(x=>x[1]);
+ const listed=[...content.matchAll(/\/css\/modules\/([\w-]+\.css)/g)].map(x=>x[1]);
  if(JSON.stringify(listed)!==JSON.stringify(modules))throw Error(staticPage+' missing CSS modules or wrong order');
  if(content.includes('/css/callmed.css'))throw Error(staticPage+' loads removed CSS');
 }
