@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v90-horizon';
+const CACHE_NAME = 'callmed-static-v91-rebuild';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -7,22 +7,11 @@ const STATIC_ASSETS = [
     '/fonts/Manrope.ttf',
     '/js/conta/organizacao.js',
     '/contingencia.html',
-    '/css/modules/00-foundations.css',
-    '/css/modules/10-navigation.css',
-    '/css/modules/20-attendance.css',
-    '/css/modules/30-scheduling.css',
-    '/css/modules/40-public-and-components.css',
-    '/css/modules/50-senai-workflows.css',
-    '/css/modules/55-identity-public.css',
-    '/css/modules/60-doctor-ui.css',
-    '/css/modules/65-dashboards.css',
-    '/css/modules/70-clinical-theme.css',
-    '/css/modules/80-patient-and-operations.css',
-    '/css/modules/90-internal-modules.css',
-    '/css/modules/95-booking-calendar.css',
-    '/css/modules/99-consultation-journey.css',
-    '/css/modules/100-horizon-core.css',
-    '/css/modules/110-horizon-surfaces.css',
+    '/css/nova-00-design.css',
+    '/css/nova-10-shell.css',
+    '/css/nova-20-fluxos.css',
+    '/css/nova-30-acesso.css',
+    '/css/nova-40-modulos.css',
     '/js/core/contingencia.js',
     '/js/atendimento/solicitacao-medico-filter.js',
     '/js/core/preferences.js',

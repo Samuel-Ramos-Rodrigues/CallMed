@@ -7,10 +7,10 @@ body.callmed-app{--role:var(--primary);--role-bg:var(--accent-soft);
   radial-gradient(ellipse 800px 480px at 100% 0%,color-mix(in srgb,var(--primary) 7%,transparent),transparent 70%),
   radial-gradient(ellipse 580px 650px at 0% 65%,color-mix(in srgb,#ec879d 6%,transparent),transparent 75%),
   var(--bg)}
-body.cm43-patient{--role:#5246b7;--role-bg:#eeebff}
-body.cm43-doctor{--role:#165fbc;--role-bg:#e8f2ff}
-body.cm43-staff{--role:#196c7c;--role-bg:#e4f3f6}
-body.cm43-admin{--role:#7545ae;--role-bg:#f3eaff}
+body.nova-patient{--role:#5246b7;--role-bg:#eeebff}
+body.nova-doctor{--role:#165fbc;--role-bg:#e8f2ff}
+body.nova-staff{--role:#196c7c;--role-bg:#e4f3f6}
+body.nova-admin{--role:#7545ae;--role-bg:#f3eaff}
 :root[data-theme="dark"] body.callmed-app{--role:var(--accent);--role-bg:var(--accent-soft)}
 .app-header{position:sticky;top:0;z-index:100;min-height:var(--header);background:color-mix(in srgb,var(--surface) 92%,transparent);
  border-bottom:1px solid var(--line);backdrop-filter:blur(24px) saturate(135%);-webkit-backdrop-filter:blur(24px) saturate(135%)}

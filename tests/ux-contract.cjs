@@ -17,6 +17,6 @@ for(const field of ['cm42-flow-stages','asp-controller="Jornada" asp-action="Con
 if(!details.includes('data-cm-print') || details.includes('onclick="window.print()"'))throw Error('Consultation print action must be declarative');
 const shell=read('src/CallMed.Web/wwwroot/js/core/shell.js');
 if(!shell.includes("[data-cm-print]") || !shell.includes('window.print()'))throw Error('Print action lost its delegated handler');
-const css=read('src/CallMed.Web/wwwroot/css/modules/99-consultation-journey.css');
-if(!css.includes('grid-template-columns:repeat(4')||!css.includes('@media(max-width:630px)'))throw Error('Journey lacks responsive stages');
+const css=read('src/CallMed.Web/wwwroot/css/nova-20-fluxos.css');
+if(!css.includes('.cm42-flow-stages')||!css.includes('.cm42-stage')||!css.includes('@media(max-width:760px)'))throw Error('Journey lacks responsive stages');
 console.log('UX contract OK: grouped tasks, original routes and one consultation journey.');
