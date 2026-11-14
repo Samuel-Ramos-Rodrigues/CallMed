@@ -6,7 +6,6 @@ COPY src/CallMed.Application/CallMed.Application.csproj src/CallMed.Application/
 COPY src/CallMed.Worker/CallMed.Worker.csproj src/CallMed.Worker/
 RUN dotnet restore src/CallMed.Worker/CallMed.Worker.csproj
 COPY src/ src/
-COPY CallMedCrud/appsettings.json CallMedCrud/appsettings.json
 RUN dotnet publish src/CallMed.Worker/CallMed.Worker.csproj -c Release --no-restore -o /publish /p:UseAppHost=false
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app

@@ -5,7 +5,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const root = path.resolve(__dirname, '../CallMedCrud/wwwroot');
+const root = path.resolve(__dirname, '../src/CallMed.Web/wwwroot');
 let partial = fs.readFileSync(path.join(root, '../Views/Shared/_AssistenteFlutuante.cshtml'), 'utf8');
 partial = partial.slice(partial.indexOf('<div class="mksan-floating-actions"'), partial.lastIndexOf('</section>') + 10)
     .replace(/data-user-id="[^\n]*/, 'data-user-id="paciente-teste">')
@@ -16,7 +16,7 @@ partial = partial.slice(partial.indexOf('<div class="mksan-floating-actions"'), 
 assert(!partial.includes('@foreach'));
 let active = true, pending = null, rated = false, ends = 0, ratings = [], failRating = false, sends = 0, sendMode = 'ok';
 const createSurvey = () => { active = false; if (!pending && !rated) pending = {id: '11111111-1111-4111-a111-111111111111', conversaId: 1}; };
-const html = `<!doctype html><html lang="pt-BR" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/css/callmed.css"></head><body><main class="cm25-page"><h1>Portal do paciente</h1><p>Assistente CallMed</p></main>${partial}<script>window.CallMedUI={confirm:async()=>true};</script><script src="/js/assistente-flutuante.js"></script></body></html>`;
+const html = `<!doctype html><html lang="pt-BR" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/css/callmed.css"></head><body><main class="cm25-page"><h1>Portal do paciente</h1><p>Assistente CallMed</p></main>${partial}<script>window.CallMedUI={confirm:async()=>true};</script><script src="/js/atendimento/assistente-flutuante.js"></script></body></html>`;
 const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, 'http://localhost');
     const json = (body, status=200) => { res.writeHead(status, {'Content-Type':'application/json'}); res.end(JSON.stringify(body)); };

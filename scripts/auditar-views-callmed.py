@@ -8,7 +8,7 @@ from pathlib import Path
 import re
 import sys
 
-ROOT = Path(__file__).resolve().parents[1] / "CallMedCrud"
+ROOT = Path(__file__).resolve().parents[1] / "src" / "CallMed.Web"
 views = sorted(list((ROOT / "Views").rglob("*.cshtml")) + list((ROOT / "Areas").rglob("*.cshtml")))
 controllers = {p.stem.removesuffix("Controller"): p for p in (ROOT / "Controllers").rglob("*Controller.cs")}
 asset_ext = {".js", ".css", ".svg", ".png", ".ico", ".jpg", ".jpeg", ".webp", ".json"}

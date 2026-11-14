@@ -34,7 +34,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 internal static class JornadaFixture {public static async Task RunAsync(bool piloto=false,bool amplo=false,bool salas=false,bool perfilConsultas=false){
         if(piloto){System.Globalization.CultureInfo.DefaultThreadCurrentCulture=System.Globalization.CultureInfo.GetCultureInfo("pt-BR");System.Globalization.CultureInfo.DefaultThreadCurrentUICulture=System.Globalization.CultureInfo.GetCultureInfo("pt-BR");}
-        var builder=WebApplication.CreateBuilder(new WebApplicationOptions{ApplicationName=typeof(MKSANCrud.Controllers.ConsultaController).Assembly.FullName,EnvironmentName="Development",ContentRootPath=Path.GetFullPath("CallMedCrud")});
+        var builder=WebApplication.CreateBuilder(new WebApplicationOptions{ApplicationName=typeof(MKSANCrud.Controllers.ConsultaController).Assembly.FullName,EnvironmentName="Development",ContentRootPath=Path.GetFullPath("src/CallMed.Web")});
         builder.Logging.ClearProviders(); var database="jornada-fixture-"+Guid.NewGuid();
         builder.Services.AddDbContext<MKSANContext>(o=>o.UseInMemoryDatabase(database).ConfigureWarnings(w=>w.Ignore(InMemoryEventId.TransactionIgnoredWarning)));
         builder.Services.AddDataProtection().SetApplicationName("CallMed").PersistKeysToDbContext<MKSANContext>();

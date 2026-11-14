@@ -8,6 +8,6 @@
   <ItemGroup><FrameworkReference Include="Microsoft.AspNetCore.App" /></ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../CallMed.Application/CallMed.Application.csproj" />
-    <Content Include="../../CallMedCrud/appsettings.json" Link="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../CallMed.Web/appsettings.json" Link="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

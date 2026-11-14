@@ -18,7 +18,7 @@ internal static class AplicativoDownloadChecks
 {
     public static async Task RunAsync(Action<bool,string> check)
     {
-        var project=Path.GetFullPath("CallMedCrud");
+        var project=Path.GetFullPath("src/CallMed.Web");
         var source=Path.Combine(project,"App_Data","Aplicativo");
         var expected=await File.ReadAllBytesAsync(Path.Combine(source,"CallMed.apk"));
         var temp=Path.Combine(Path.GetTempPath(),"callmed-download-"+Guid.NewGuid());

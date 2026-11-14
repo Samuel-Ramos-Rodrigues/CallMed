@@ -1,6 +1,6 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const {webcrypto}=require('node:crypto');global.crypto=webcrypto;
-vm.runInThisContext(fs.readFileSync('CallMedCrud/wwwroot/js/fhir-clinico.js','utf8'));
+vm.runInThisContext(fs.readFileSync('src/CallMed.Web/wwwroot/js/clinico/fhir-clinico.js','utf8'));
 let count=0;const check=(f,title)=>{f();console.log('PASS '+title);count++};
 const payload={namespace:'https://clinic.test/fhir',pacienteId:42,paciente:'Paciente fictício',psicologoId:'p-12',psicologo:'Profissional fictício',crp:'15/88888',records:[{id:crypto.randomUUID(),escopo:'Prontuario',categoria:'Evolucao',criadoEm:'2026-11-08T13:00:00Z',text:{texto:'Texto fictício com acentuação: sessão 🟣.'}}]};
 const bundle=CallMedFhir.exportBundle(payload),text=JSON.stringify(bundle);

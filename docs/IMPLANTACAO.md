@@ -1,12 +1,35 @@
-# Implantação V35
-
-Extraia o pacote em uma pasta nova. A V35 move classes para novos projetos; extrair por cima da V34 deixaria cópias antigas compilando junto com as novas.
+# Implantação
 
 ## Render
 
 Mantenha o Dockerfile padrão e a raiz do repositório como contexto de build. O comando final continua sendo `dotnet CallMedCrud.dll`. Os projetos referenciados em `src/` precisam estar no mesmo repositório e no contexto Docker.
 
 Quem já implantou a V34 pode manter suas variáveis. Não há nova variável obrigatória nem novo schema. Certificado de Data Protection, banco, Gmail/SMTP, Evolution, httpSMS e TURN continuam com os nomes atuais. Preserve o certificado existente para continuar abrindo as chaves e links já emitidos.
+
+## Certificado de Data Protection
+
+Quem ainda não configurou o certificado executa uma vez, a partir da raiz:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\gerar-certificado-render.ps1
+```
+
+Ou no Linux:
+
+```sh
+bash scripts/gerar-certificado-render.sh
+```
+
+Transfira as duas variáveis de `callmed-segredos/render-secrets.env` para o ambiente do Render e use o mesmo certificado em todas as instâncias. Ele protege o chaveiro da aplicação e não substitui o certificado HTTPS do site. Guarde-o, preserve as chaves antigas e não gere outro a cada atualização. A Signing Key do httpSMS é outra configuração e não deve ser trocada por esse certificado.
+
+Confira a origem usada pelos links:
+
+```dotenv
+PublicOrigin=https://callmed.onrender.com
+AllowedHosts=callmed.onrender.com
+```
+
+Com outro domínio, configure o domínio real. Os modelos de variáveis estão em `infra/render/`.
 
 Para atualizar uma instalação anterior ao schema 37, execute no pre-deploy:
 

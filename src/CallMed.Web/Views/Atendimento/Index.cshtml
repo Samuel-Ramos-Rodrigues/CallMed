@@ -1,0 +1,407 @@
+@using MKSANCrud.Models.Atendimento
+@model MKSANCrud.ViewModels.AtendimentoCentralViewModel
+
+@{
+    ViewData["Title"] = "Central de Atendimento";
+    var abertas = Model.Conversas.Count(x => x.Ativa);
+    var emIa = Model.Conversas.Count(x => x.Modo == ModoAtendimento.IA && x.Ativa);
+    var humano = Model.Conversas.Count(x => x.Modo == ModoAtendimento.Humano && x.Ativa);
+    var naoLidas = Model.Conversas.Sum(x => x.NaoLidas);
+    var usuarioAtualId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    string EstadoCurto(string estado, string titulo) => estado switch {
+        "rascunho" => "Rascunho pronto", "respondida" => "Resposta enviada", "humano" => "Atendimento humano",
+        "analisando" => "Analisando", "gerando" => "Preparando resposta", "falha" => "Falha na resposta",
+        "encerrada" => "Conversa encerrada", "pendente" => "Aguardando análise", "equipe" => "Precisa da equipe",
+        "interrompida" => "Sem confirmação", "enviando" => "Enviando", _ => titulo
+    };
+
+    string CanalLabel(CanalAtendimento canal) => canal switch
+    {
+        CanalAtendimento.WhatsApp => "WhatsApp",
+        CanalAtendimento.Sms => "SMS",
+        CanalAtendimento.Email => "E-mail",
+        CanalAtendimento.Presencial => "Presencial",
+        CanalAtendimento.Telefone => "Telefone",
+        _ => "Site"
+    };
+
+    string AutorLabel(AutorMensagemAtendimento autor) => autor switch
+    {
+        AutorMensagemAtendimento.Paciente => "Paciente",
+        AutorMensagemAtendimento.Funcionario => "Equipe CallMed",
+        AutorMensagemAtendimento.Assistente => "Assistente CallMed",
+        _ => "Sistema"
+    };
+}
+
+<section class="cm25-screen cm-central" data-cm25-view="Atendimento/Index.cshtml" data-mobile-view="@(Model.ConversaSelecionada is null ? "inbox" : "chat")">
+    <header class="cm-central-heading">
+        <div><h1>Central de Atendimento</h1><p>Atenda pacientes, acompanhe conversas e conte com o suporte da IA.</p></div>
+            <label class="cm-classic-inbox-search cm-central-search" for="cmOrigemSearch"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="cmOrigemSearch" type="search" placeholder="Buscar paciente ou conversa…" autocomplete="off" aria-label="Buscar entre as conversas carregadas" /><kbd aria-hidden="true">Buscar</kbd></label>
+    </header>
+
+    <nav class="cm-central-tabs" aria-label="Visualização da Central no celular">
+        <button type="button" data-central-view="inbox" aria-controls="cmCentralInbox" aria-pressed="@(Model.ConversaSelecionada is null ? "true" : "false")">Conversas</button>
+        <button type="button" data-central-view="chat" aria-controls="cmCentralChat" aria-pressed="@(Model.ConversaSelecionada is null ? "false" : "true")">Conversa</button>
+        @if (Model.ConversaSelecionada is not null)
+        { <button type="button" data-central-view="context" aria-controls="cmCentralContext" aria-pressed="false">Paciente</button> }
+    </nav>
+
+    <div class="cm25-atendimento-shell atendimento-shell v16-atendimento-shell @(Model.ConversaSelecionada is null ? "no-context" : "")">
+        <aside class="atendimento-inbox v16-inbox" id="cmCentralInbox" aria-label="Caixa de conversas">
+            <nav class="cm-inbox-channels" aria-label="Filtrar conversas por canal">
+                <a asp-action="Index" asp-route-modo="@Model.FiltroModo" class="@(string.IsNullOrEmpty(Model.FiltroCanal) ? "active" : "")" aria-current="@(string.IsNullOrEmpty(Model.FiltroCanal) ? "true" : null)">Todas <b>@Model.Conversas.Count</b></a>
+                @foreach (var canalTab in new[] { CanalAtendimento.WhatsApp, CanalAtendimento.Sms, CanalAtendimento.Email, CanalAtendimento.Web })
+                {
+                    <a asp-action="Index" asp-route-canal="@canalTab" asp-route-modo="@Model.FiltroModo" class="@(string.Equals(Model.FiltroCanal, canalTab.ToString(), StringComparison.OrdinalIgnoreCase) ? "active" : "")" aria-label="Conversas por @CanalLabel(canalTab)" aria-current="@(string.Equals(Model.FiltroCanal, canalTab.ToString(), StringComparison.OrdinalIgnoreCase) ? "true" : null)" title="@CanalLabel(canalTab)"><partial name="_CanalIcon" model="canalTab" /></a>
+                }
+            </nav>
+            <div class="cm-inbox-toolbar">
+            <details class="cm-central-filter">
+                <summary><span>Filtros avançados @if (!string.IsNullOrWhiteSpace(Model.FiltroModo)) { <b class="cm-filter-count">1</b> }</span><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#settings"></use></svg></summary>
+    <form method="get" asp-action="Index" class="atendimento-filters v16-atendimento-filters">
+        <header><strong>Refinar conversas</strong><button type="button" data-close-inbox-menu aria-label="Fechar filtros">×</button></header>
+        <select name="canal" aria-label="Filtrar por canal">
+            <option value="">Todos os canais</option>
+            <option value="Web" selected="@(Model.FiltroCanal == "Web" ? "selected" : null)">Site</option>
+            <option value="WhatsApp" selected="@(Model.FiltroCanal == "WhatsApp" ? "selected" : null)">WhatsApp</option>
+            <option value="Sms" selected="@(Model.FiltroCanal == "Sms" ? "selected" : null)">SMS</option>
+            <option value="Email" selected="@(Model.FiltroCanal == "Email" ? "selected" : null)">E-mail</option>
+        </select>
+        <select name="modo" aria-label="Filtrar por atendimento">
+            <option value="">IA + Humano</option>
+            <option value="IA" selected="@(Model.FiltroModo == "IA" ? "selected" : null)">Assistente IA</option>
+            <option value="Humano" selected="@(Model.FiltroModo == "Humano" ? "selected" : null)">Atendimento humano</option>
+        </select>
+        <button type="submit" class="btn secondary">Aplicar</button>
+        @if (!string.IsNullOrWhiteSpace(Model.FiltroCanal) || !string.IsNullOrWhiteSpace(Model.FiltroModo))
+        { <a asp-action="Index" class="btn-link-clean">Limpar</a> }
+    </form>
+            </details>
+            <details class="cm-inbox-options"><summary aria-label="Opções da caixa de entrada" title="Opções"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#menu"></use></svg></summary>
+        <div class="cm-central-heading-actions cm-inbox-menu">
+            <a class="btn secondary" asp-controller="Avaliacoes" asp-action="Index">Avaliações</a>
+            <button type="button" class="btn secondary" id="channelStatusButton" aria-label="Situação dos canais">Canais</button>
+            <a asp-action="Nova" class="btn" aria-label="Novo atendimento"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#message-circle"></use></svg><span class="cm-central-create-label">Novo atendimento</span><span class="cm-central-create-short" aria-hidden="true">Novo</span></a>
+        </div>
+            </details>
+                <a class="cm-inbox-new" asp-action="Nova" aria-label="Novo atendimento" title="Novo atendimento"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg></a>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.FiltroCanal) || !string.IsNullOrWhiteSpace(Model.FiltroModo))
+            {
+                <div class="cm-inbox-active-filters" aria-label="Filtros aplicados"><span>@(Enum.TryParse<CanalAtendimento>(Model.FiltroCanal, true, out var filtroAtual) ? CanalLabel(filtroAtual) : "Todos os canais")@(string.IsNullOrWhiteSpace(Model.FiltroModo) ? "" : Model.FiltroModo == "IA" ? " · Assistente IA" : " · Atendimento humano")</span><a asp-action="Index" aria-label="Limpar filtros de canal e atendimento">Limpar filtros</a></div>
+            }
+            <p class="atendimento-empty-list" id="cmCentralSearchEmpty" role="status" hidden>Nenhuma conversa corresponde à busca.</p>
+            @if (!Model.Conversas.Any())
+            {
+                <div class="atendimento-empty-list">Nenhuma conversa encontrada.</div>
+            }
+            else
+            {
+                <div class="atendimento-conversation-list">
+                    @foreach (var resumo in Model.Conversas)
+                    {
+                        var ativa = Model.ConversaSelecionada?.Id == resumo.Id;
+                        <a asp-action="Index" asp-route-id="@resumo.Id" asp-route-canal="@Model.FiltroCanal" asp-route-modo="@Model.FiltroModo" class="atendimento-conversation @(ativa ? "active" : "")" aria-current="@(ativa ? "true" : null)" data-search="@resumo.Id @resumo.Identificador">
+                            <span class="cm-contact-avatar" aria-hidden="true">@(string.IsNullOrWhiteSpace(resumo.Nome) ? "?" : resumo.Nome[..1].ToUpperInvariant())<partial name="_CanalIcon" model="resumo.Canal" /></span>
+                            <span class="conversation-copy">
+                                <span class="conversation-topline"><strong>@resumo.Nome</strong><time datetime="@resumo.UltimaInteracaoEm.ToString("O")">@ClinicaClock.ConverterUtc(resumo.UltimaInteracaoEm).ToString("dd/MM HH:mm")</time></span>
+                                <small><span>@CanalLabel(resumo.Canal) · @(!resumo.Ativa ? "Encerrada" : resumo.Modo == ModoAtendimento.IA ? "IA" : "Humano")</span>@if (resumo.NaoLidas > 0){<b class="unread-count" aria-label="@resumo.NaoLidas mensagens não lidas">@resumo.NaoLidas</b>}</small>
+                                <span class="conversation-preview">@(string.IsNullOrWhiteSpace(resumo.UltimaMensagem) ? "Conversa iniciada" : resumo.UltimaMensagem)</span>
+                            </span>
+                        </a>
+                    }
+                </div>
+            }
+    <div class="cm-central-summary cm-inbox-summary" aria-label="Resumo das conversas carregadas">
+        <span><strong>@abertas</strong> abertas</span>
+        <span><strong>@emIa</strong> com a IA</span>
+        <span><strong>@humano</strong> com a equipe</span>
+        <span><strong>@naoLidas</strong> não lidas</span>
+    </div>
+
+        </aside>
+
+        <section class="atendimento-chat v16-chat" id="cmCentralChat" aria-label="Conversa selecionada">
+            @if (Model.ConversaSelecionada is null)
+            {
+                <div class="atendimento-empty-chat"><div class="empty-chat-mark">✉</div><h2>Selecione uma conversa</h2><p>Escolha um atendimento à esquerda para visualizar as mensagens e o paciente.</p></div>
+            }
+            else
+            {
+                var conversa = Model.ConversaSelecionada;
+                <header class="atendimento-chat-header v16-chat-header">
+                    <div class="atendimento-person">
+                        <span class="cm-contact-avatar cm-contact-avatar-large" aria-hidden="true">@(string.IsNullOrWhiteSpace(conversa.Paciente?.Nome ?? conversa.IdentificadorExterno) ? "?" : (conversa.Paciente?.Nome ?? conversa.IdentificadorExterno)[..1].ToUpperInvariant())<partial name="_CanalIcon" model="conversa.Canal" /></span>
+                        <div><strong>@(conversa.Paciente?.Nome ?? conversa.IdentificadorExterno)</strong><small>@CanalLabel(conversa.Canal) · @(!conversa.Ativa ? "Atendimento encerrado" : conversa.Modo == ModoAtendimento.IA ? "Assistente IA" : "Em atendimento humano")</small></div>
+                    </div>
+                    <div class="atendimento-header-actions">
+                        @if (!conversa.Ativa)
+                        {
+                            <span class="mode-pill mode-closed">● Conversa encerrada</span>
+                            <form asp-action="Assumir" method="post" class="atendimento-state-form" data-action-name="Reabrir e assumir atendimento"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn small">Reabrir e assumir</button></form>
+                        }
+                        else if (conversa.Modo == ModoAtendimento.IA)
+                        {
+                            <span class="mode-pill mode-ia">✦ Assistente IA</span>
+                            <form asp-action="Assumir" method="post" class="atendimento-state-form" data-action-name="Assumir atendimento"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn small">Assumir</button></form>
+                        }
+                        else if (string.IsNullOrWhiteSpace(conversa.ResponsavelUsuarioId))
+                        {
+                            <span class="mode-pill mode-waiting">● Aguardando equipe</span>
+                            <form asp-action="Assumir" method="post" class="atendimento-state-form" data-action-name="Assumir atendimento"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn small">Assumir</button></form>
+                            <form asp-action="DevolverParaIa" asp-antiforgery="true" method="post" class="atendimento-state-form" data-ia-action="true" data-action-name="Devolver para IA"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small" aria-label="Devolver para IA" title="Devolver para IA"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#spark"></use></svg><span class="cm-central-action-text">Devolver para IA</span></button></form>
+                            <form asp-action="Encerrar" method="post" class="atendimento-state-form" data-action-name="Encerrar conversa" data-confirm="Encerrar esta conversa? O histórico será preservado."><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small cm-close-conversation"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg>Encerrar</button></form>
+                        }
+                        else if (conversa.ResponsavelUsuarioId == usuarioAtualId)
+                        {
+                            <span class="mode-pill mode-humano">● Assumido por você</span>
+                            <form asp-action="DevolverParaIa" asp-antiforgery="true" method="post" class="atendimento-state-form" data-ia-action="true" data-action-name="Devolver para IA"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small" aria-label="Devolver para IA" title="Devolver para IA"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#spark"></use></svg><span class="cm-central-action-text">Devolver para IA</span></button></form>
+                            <form asp-action="Encerrar" method="post" class="atendimento-state-form" data-action-name="Encerrar conversa" data-confirm="Encerrar esta conversa? O histórico será preservado."><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small cm-close-conversation"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg>Encerrar</button></form>
+                        }
+                        else
+                        {
+                            <span class="mode-pill mode-humano">● Em atendimento humano</span>
+                            <form asp-action="Assumir" method="post" class="atendimento-state-form" data-action-name="Transferir atendimento para você" data-confirm="Este atendimento está com outro membro da equipe. Deseja assumir mesmo assim?"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn small">Assumir para mim</button></form>
+                            <form asp-action="Encerrar" method="post" class="atendimento-state-form" data-action-name="Encerrar conversa" data-confirm="Encerrar esta conversa? O histórico será preservado."><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn secondary small cm-close-conversation"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg>Encerrar</button></form>
+                        }
+                    </div>
+                </header>
+                @if (Model.EstadoIa is { } estadoIa)
+                {
+                    <div class="cm-ia-status" id="cmIaStatus" data-state="@estadoIa.Estado" aria-busy="@estadoIa.Trabalhando.ToString().ToLowerInvariant()">
+                        <span class="cm-ia-status-mark" aria-hidden="true">✦</span>
+                        <div class="cm-ia-status-copy" role="status" aria-live="polite" aria-atomic="true">
+                            <span class="cm-ia-heading">IA CallMed <strong id="cmIaTitle" title="@estadoIa.Titulo">@EstadoCurto(estadoIa.Estado, estadoIa.Titulo)</strong></span>
+                            <p id="cmIaDetail" >@estadoIa.Detalhe</p>
+                        </div>
+                        @if (conversa.Ativa && conversa.Canal == CanalAtendimento.Email)
+                        {
+                            <form asp-action="GerarRascunhoPendente" asp-antiforgery="true" method="post" class="atendimento-state-form cm-ia-draft-form" data-ia-action="true" data-action-name="Gerar rascunho" hidden="@(!estadoIa.PodeGerarRascunho)">
+                                <input type="hidden" name="id" value="@conversa.Id" />
+                                <button type="submit" class="btn secondary small" id="cmGerarRascunho" disabled="@(!estadoIa.PodeGerarRascunho)">Gerar rascunho</button>
+                            </form>
+                        }
+                        @if (Model.Mensagens.Any(m => m.Status == StatusMensagemAtendimento.AguardandoAprovacao))
+                        { <button class="btn secondary small cm-review-draft" type="button" data-review-draft>Revisar rascunho</button> }
+                    </div>
+                    <small id="cmIaConnection" class="cm-ia-connection" role="status" hidden>Não foi possível atualizar o andamento agora. Tentando reconectar…</small>
+                }
+                @if (conversa.Paciente is null && conversa.Canal != CanalAtendimento.Email)
+                {
+                    <div class="cm23-identity-warning" role="status">
+                        <span class="cm23-identity-warning-icon" aria-hidden="true">!</span>
+                        <div>
+                            <strong>Contato ainda não identificado</strong>
+                            <p>A IA pode informar profissionais e horários, mas agendamento, remarcação, cancelamento, consultas pessoais e lista de espera ficam bloqueados até a conversa ser vinculada a um paciente.</p>
+                        </div>
+                    </div>
+                }
+                <span id="cm-origem-channel-template" hidden><partial name="_CanalIcon" model="conversa.Canal" /></span>
+                <div class="atendimento-messages" id="atendimentoMessages" tabindex="0" role="log" aria-label="Histórico de mensagens" aria-live="polite" data-channel="@conversa.Canal.ToString()" data-conversa-id="@conversa.Id" data-last-id="@(Model.Mensagens.LastOrDefault()?.Id ?? 0)" data-mode="@conversa.Modo" data-active="@conversa.Ativa.ToString().ToLowerInvariant()" data-responsavel-id="@conversa.ResponsavelUsuarioId" data-paciente-id="@(conversa.PacienteId?.ToString() ?? string.Empty)" data-initial="@(string.IsNullOrWhiteSpace(conversa.Paciente?.Nome ?? conversa.IdentificadorExterno) ? "?" : (conversa.Paciente?.Nome ?? conversa.IdentificadorExterno)[..1].ToUpperInvariant())">
+                    @if (!Model.Mensagens.Any())
+                    {
+                        <div class="empty-state">Ainda não há mensagens nessa conversa.</div>
+                    }
+                    else
+                    {
+                        @foreach (var mensagem in Model.Mensagens)
+                        {
+                            var entrada = mensagem.Direcao == DirecaoMensagemAtendimento.Entrada;
+                            <article class="atendimento-message @(entrada ? "incoming" : "outgoing")" data-message-id="@mensagem.Id" data-author="@mensagem.Autor" data-initial="@(string.IsNullOrWhiteSpace(conversa.Paciente?.Nome ?? conversa.IdentificadorExterno) ? "?" : (conversa.Paciente?.Nome ?? conversa.IdentificadorExterno)[..1].ToUpperInvariant())">
+                                <div class="message-meta">
+                                    <span class="cm-origem-message-source"><partial name="_CanalIcon" model="conversa.Canal" /><strong>@(entrada ? $"Recebido por {CanalLabel(conversa.Canal)}" : mensagem.Status == StatusMensagemAtendimento.AguardandoAprovacao ? $"Rascunho para {CanalLabel(conversa.Canal)} · CallMed" : $"{AutorLabel(mensagem.Autor)} · {CanalLabel(conversa.Canal)}")</strong></span>
+                                    <time datetime="@mensagem.CriadoEm.ToString("O")">@ClinicaClock.ConverterUtc(mensagem.CriadoEm).ToString("dd/MM HH:mm")</time>
+                                </div>
+                                <p>@(mensagem.Texto?.Replace("**", string.Empty))</p>
+                                <div class="message-delivery">
+                                    @if (!entrada && mensagem.Status == StatusMensagemAtendimento.AguardandoAprovacao)
+                                    {
+                                        <div class="email-draft-review" role="status">
+                                            <strong>Rascunho · não enviado</strong>
+                                            <div class="email-draft-actions">
+                                                <form asp-action="AprovarRascunho" method="post" data-confirm="Enviar este rascunho por e-mail ao paciente?">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="mensagemId" value="@mensagem.Id" />
+                                                    <button type="submit" class="btn small">Aprovar e enviar</button>
+                                                </form>
+                                                <form asp-action="DescartarRascunho" method="post" data-confirm="Descartar este rascunho? Nenhum e-mail será enviado.">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="mensagemId" value="@mensagem.Id" />
+                                                    <button type="submit" class="btn secondary small">Descartar</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    }
+                                    else if (!entrada && mensagem.Status == StatusMensagemAtendimento.Ignorada && mensagem.Erro?.StartsWith("Rascunho descartado", StringComparison.OrdinalIgnoreCase) == true)
+                                    {
+                                        <small class="message-draft-discarded">Rascunho descartado pela equipe; não foi enviado.</small>
+                                    }
+                                    @if (mensagem.Status == StatusMensagemAtendimento.Falhou)
+                                    {
+                                        var aguardando = mensagem.ProximaTentativaEm > DateTime.UtcNow;
+                                        <div class="message-failure">
+                                            <small class="message-error">Falha no envio: @(mensagem.Erro ?? "erro não informado")</small>
+                                            @if (aguardando)
+                                            {
+                                                <small>Nova tentativa a partir de @ClinicaClock.ConverterUtc(mensagem.ProximaTentativaEm!.Value).ToString("dd/MM HH:mm:ss").</small>
+                                            }
+                                            @if (!mensagem.ReenvioBloqueado)
+                                            {
+                                                <form asp-action="Reenviar" method="post" class="atendimento-retry-form">
+                                                    <input type="hidden" name="mensagemId" value="@mensagem.Id" />
+                                                    <button type="submit" class="btn-link-clean" disabled="@aguardando">@(aguardando ? "Aguardando liberação" : "Tentar novamente")</button>
+                                                </form>
+                                            }
+                                        </div>
+                                    }
+                                    else if (!entrada && mensagem.Status == StatusMensagemAtendimento.Processando)
+                                    {
+                                        <small>Envio em processamento. Aguarde a confirmação.</small>
+                                    }
+                                    else if (!entrada && conversa.Canal == CanalAtendimento.Email && mensagem.Status == StatusMensagemAtendimento.Enviada)
+                                    {
+                                        <small class="message-sent" role="status">Enviada · aceita pelo servidor de e-mail</small>
+                                    }
+                                    else if (!entrada && conversa.Canal == CanalAtendimento.Sms && mensagem.Status is StatusMensagemAtendimento.AguardandoEnvio or StatusMensagemAtendimento.Enviada or StatusMensagemAtendimento.Entregue)
+                                    {
+                                        <small class="message-sent" role="status">@(mensagem.Status switch {
+                                            StatusMensagemAtendimento.AguardandoEnvio => "SMS na fila · aguardando envio pelo celular",
+                                            StatusMensagemAtendimento.Entregue => "SMS entregue · confirmação registrada",
+                                            _ => "Envio aceito · entrega não confirmada"
+                                        })</small>
+                                    }
+                                </div>
+                            </article>
+                        }
+                    }
+                </div>
+
+                @if (conversa.Ativa)
+                {
+                    <form asp-action="EnviarMensagem" method="post" class="atendimento-compose v16-compose">
+                        <input type="hidden" name="id" value="@conversa.Id" />
+                        <details class="cm-compose-menu">
+                            <summary aria-label="Ações da conversa" title="Ações da conversa"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg></summary>
+                            <nav aria-label="Atalhos do compositor"><a asp-controller="Agenda" asp-action="Index">Abrir agenda</a><a asp-controller="Solicitacoes" asp-action="Create">Novo pedido</a><a asp-controller="HistoricoExames" asp-action="Pendentes">Ver exames recebidos</a></nav>
+                        </details>
+                        <div class="cm-composer-field">
+                            <label class="visually-hidden" for="cmCentralMessage">Mensagem para o atendimento</label>
+                            <textarea id="cmCentralMessage" name="mensagem" maxlength="4000" rows="1" required placeholder="Digite sua mensagem…" aria-describedby="cmComposeHint"></textarea>
+                            <details class="cm-emoji-menu"><summary aria-label="Inserir emoji" title="Inserir emoji">☺</summary><div role="group" aria-label="Emojis">@foreach (var emoji in new[] { "🙂", "👋", "✅", "📅", "💜", "🙏" }) { <button type="button" data-insert-emoji="@emoji" aria-label="Inserir @emoji">@emoji</button> }</div></details>
+                        </div>
+                        <button type="submit" class="btn cm-send-message" aria-label="Enviar mensagem" title="Enviar mensagem"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#send"></use></svg></button>
+                        <small id="cmComposeHint" class="cm-compose-hint">Resposta por @CanalLabel(conversa.Canal) · Enter envia; Shift + Enter quebra a linha.</small>
+                    </form>
+                }
+                else
+                {
+                    <div class="atendimento-closed-compose"><strong>Conversa encerrada</strong><span>Reabra e assuma o atendimento para responder novamente.</span></div>
+                }
+            }
+        </section>
+
+        @if (Model.ConversaSelecionada is not null)
+        {
+            var conversa = Model.ConversaSelecionada;
+            <aside class="atendimento-context" id="cmCentralContext" aria-label="Paciente e contexto da conversa">
+                <section class="cm-context-card">
+                    <div class="cm-context-tabs" role="tablist" aria-label="Informações do atendimento">
+                        <button type="button" role="tab" id="cmTabPaciente" data-context-tab="patient" aria-controls="cmPanePatient" aria-selected="true">Paciente</button>
+                        <button type="button" role="tab" id="cmTabConsultas" data-context-tab="appointments" aria-controls="cmPaneAppointments" aria-selected="false" tabindex="-1">Consultas</button>
+                        <button type="button" role="tab" id="cmTabVinculo" data-context-tab="link" aria-controls="cmPaneLink" aria-selected="false" tabindex="-1">Vínculo</button>
+                        <button type="button" role="tab" id="cmTabConversa" data-context-tab="conversation" aria-controls="cmPaneConversation" aria-selected="false" tabindex="-1">Conversa</button>
+                    </div>
+                    <div class="cm-context-scroll">
+                        <section id="cmPanePatient" role="tabpanel" aria-labelledby="cmTabPaciente">
+                            <div class="context-profile">
+                                <span class="context-avatar" aria-hidden="true">@(string.IsNullOrWhiteSpace(conversa.Paciente?.Nome) ? "?" : conversa.Paciente.Nome[..1].ToUpperInvariant())</span>
+                                <div><strong>@(conversa.Paciente?.Nome ?? "Contato sem vínculo")</strong><span>@(conversa.Paciente is null ? conversa.IdentificadorExterno : "Paciente CallMed")</span>
+                                @if (conversa.Paciente?.DataNascimento is DateTime nascimento && nascimento <= ClinicaClock.ConverterUtc(DateTime.UtcNow).Date)
+                                { var hoje = ClinicaClock.ConverterUtc(DateTime.UtcNow).Date; var idade = hoje.Year - nascimento.Year - (nascimento.Date > hoje.AddYears(-(hoje.Year - nascimento.Year)) ? 1 : 0); <span>@idade anos</span> }
+                                </div>
+                                @if (conversa.Paciente is not null) { <a asp-controller="Paciente" asp-action="Edit" asp-route-id="@conversa.Paciente.Id" class="cm-icon-action" aria-label="Editar cadastro do paciente" title="Editar cadastro"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#edit"></use></svg></a> }
+                            </div>
+                            @if (conversa.Paciente is not null)
+                            {
+                                var proxima = Model.ProximaConsulta;
+                                <div class="cm-patient-facts">
+                                    <div class="cm-patient-fact cm-next-appointment"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><div><strong>Próxima consulta</strong>@if(proxima is not null){<a asp-controller="Consulta" asp-action="Details" asp-route-id="@proxima.Id">@proxima.Profissional <span>@proxima.Data.ToString("dd/MM/yyyy") · @proxima.Horario</span></a><small class="cm-context-status">@proxima.Status</small>}else{<p>Nenhuma consulta futura agendada.</p>}</div></div>
+                                    <div class="cm-patient-fact"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#shield"></use></svg><div><strong>Convênio</strong><p>@(conversa.Paciente.TemConvenio ? conversa.Paciente.NomeConvenio ?? "Convênio cadastrado" : "Particular")</p></div></div>
+                                    <div class="cm-patient-fact"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#phone"></use></svg><div><strong>Telefone</strong><p>@(string.IsNullOrWhiteSpace(conversa.Paciente.Telefone) ? "Não informado" : conversa.Paciente.Telefone)</p></div></div>
+                                    <div class="cm-patient-fact"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#mail"></use></svg><div><strong>E-mail</strong><p>@(string.IsNullOrWhiteSpace(conversa.Paciente.Email) ? "Não informado" : conversa.Paciente.Email)</p></div></div>
+                                    <div class="cm-patient-fact"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#message-circle"></use></svg><div><strong>Canal preferido</strong><p>@conversa.Paciente.CanalPreferido</p></div></div>
+                                </div>
+                            }
+                            else { <p class="context-muted">Vincule o contato a um paciente para consultar seus dados administrativos.</p><button type="button" class="btn secondary small" data-open-context="link">Vincular paciente</button> }
+                        </section>
+                        <section id="cmPaneAppointments" role="tabpanel" aria-labelledby="cmTabConsultas" hidden>
+                            <h3>Consultas registradas</h3>
+                            @if(Model.ConsultasPaciente.Count == 0) { <p class="context-muted">Não há consultas para este contato.</p> }
+                            @foreach(var consulta in Model.ConsultasPaciente) { <a class="cm-context-appointment" asp-controller="Consulta" asp-action="Details" asp-route-id="@consulta.Id"><strong>@consulta.Data.ToString("dd/MM/yyyy") · @consulta.Horario</strong><span>@consulta.Profissional</span><small>@consulta.Status · @consulta.Especialidade</small></a> }
+                        </section>
+                        <section id="cmPaneLink" role="tabpanel" aria-labelledby="cmTabVinculo" hidden>
+                @if (conversa.Canal != CanalAtendimento.Web)
+                {
+                    <div class="context-section">
+                        <h3>@(conversa.Paciente is null ? "Vincular paciente" : "Alterar vínculo")</h3>
+                        <form asp-action="VincularPaciente" method="post" class="context-link-form">
+                            <input type="hidden" name="id" value="@conversa.Id" />
+                            <select name="pacienteId" required aria-label="Paciente da conversa"><option value="">Selecione um paciente</option>@foreach (var opcao in Model.PacientesParaVinculo){<option value="@opcao.Id" selected="@(conversa.PacienteId == opcao.Id ? "selected" : null)">@opcao.Nome — @opcao.Email</option>}</select>
+                            <button type="submit" class="btn small">Salvar vínculo</button>
+                        </form>
+                        @if (conversa.PacienteId.HasValue)
+                        {
+                            <form asp-action="DesvincularPaciente" method="post" class="context-unlink"><input type="hidden" name="id" value="@conversa.Id" /><button type="submit" class="btn-link-clean danger-link">Desvincular paciente</button></form>
+                        }
+                    </div>
+                }
+
+
+                            @if(conversa.Canal == CanalAtendimento.Web) { <p class="context-muted">Esta conversa está vinculada à conta autenticada do paciente.</p> }
+                        </section>
+                        <section id="cmPaneConversation" role="tabpanel" aria-labelledby="cmTabConversa" hidden>
+                            <h3>Detalhes do atendimento</h3>
+                            <div class="context-info-row"><span>Conversa</span><strong>#@conversa.Id · @CanalLabel(conversa.Canal)</strong></div>
+                            <div class="context-info-row"><span>Situação</span><strong>@(conversa.Ativa ? "Aberta" : "Encerrada")</strong></div>
+                            <div class="context-info-row"><span>Modo</span><strong>@(conversa.Modo == ModoAtendimento.IA ? "Assistente IA" : "Humano")</strong></div>
+                            <div class="context-info-row"><span>Responsável</span><strong>@(conversa.ResponsavelUsuarioId == usuarioAtualId ? "Você" : string.IsNullOrWhiteSpace(conversa.ResponsavelUsuarioId) ? "Não atribuído" : "Outro atendente")</strong></div>
+                            @if (!string.IsNullOrWhiteSpace(conversa.Assunto)) { <div class="context-info-row"><span>Assunto</span><strong>@conversa.Assunto</strong></div> }
+                            @if(conversa.Canal == CanalAtendimento.Email) { <p class="context-muted">Rascunhos aguardam aprovação. Vincular o contato organiza o histórico e não autentica o remetente.</p> }
+                        </section>
+                    </div>
+                </section>
+                <section class="cm-context-actions">
+                    <h3>Ações rápidas</h3>
+                    <nav class="context-quick-actions" aria-label="Ações da recepção">
+                        <a asp-controller="Consulta" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg>Agendar consulta</a>
+                        <a asp-controller="Solicitacoes" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg>Novo pedido</a>
+                        <a asp-controller="HistoricoExames" asp-action="Pendentes"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#file-medical"></use></svg>Ver exames</a>
+                        @if(conversa.Paciente is not null) { <a asp-controller="Paciente" asp-action="Details" asp-route-id="@conversa.Paciente.Id"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg>Ver cadastro</a> } else { <button type="button" data-open-context="link"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user-round-check"></use></svg>Vincular</button> }
+                    </nav>
+                    @if (conversa.Ativa && conversa.Modo == ModoAtendimento.Humano && (string.IsNullOrWhiteSpace(conversa.ResponsavelUsuarioId) || conversa.ResponsavelUsuarioId == usuarioAtualId)) { <button type="button" class="btn secondary cm-context-return" data-central-action="DevolverParaIa"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#spark"></use></svg>Devolver para IA</button> }
+                    else if(conversa.Ativa && conversa.Modo == ModoAtendimento.IA) { <button type="button" class="btn secondary cm-context-return" data-central-action="Assumir"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user-round-check"></use></svg>Assumir atendimento</button> }
+                    else if(!conversa.Ativa) { <button type="button" class="btn secondary cm-context-return" data-central-action="Assumir">Reabrir e assumir</button> }
+                </section>
+            </aside>
+        }
+    </div>
+</section>
+
+<dialog id="channelStatusDialog" class="channel-status-dialog" aria-labelledby="channelStatusTitle">
+    <div class="channel-status-head">
+        <div>
+            <span class="cm25-kicker v16-eyebrow">CANAIS</span>
+            <h2 id="channelStatusTitle">Situação dos canais</h2>
+            <p>Disponibilidade de entrada e saída configurada no CallMed.</p>
+        </div>
+        <button type="button" class="channel-status-close" data-close-channel-status aria-label="Fechar">×</button>
+    </div>
+    <div id="channelStatusContent" class="channel-status-grid">
+        <div class="channel-status-loading">Verificando canais...</div>
+    </div>
+</dialog>
+
+@section Scripts {
+    <script src="~/js/atendimento/atendimento.js" asp-append-version="true"></script>
+}

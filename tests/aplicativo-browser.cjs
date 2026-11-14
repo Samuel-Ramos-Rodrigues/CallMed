@@ -2,7 +2,7 @@
 // CALLMED_APK_FIXTURES=<fixtures> NODE_PATH=<node_modules> CHROME_PATH=<chromium> node tests/aplicativo-browser.cjs
 const {chromium}=require('playwright');
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
-const root=path.resolve(__dirname,'../CallMedCrud/wwwroot'),apk=path.resolve(__dirname,'../CallMedCrud/App_Data/Aplicativo/CallMed.apk'),fixtures=process.env.CALLMED_APK_FIXTURES;
+const root=path.resolve(__dirname,'../src/CallMed.Web/wwwroot'),apk=path.resolve(__dirname,'../src/CallMed.Web/App_Data/Aplicativo/CallMed.apk'),fixtures=process.env.CALLMED_APK_FIXTURES;
 assert(fixtures,'Informe CALLMED_APK_FIXTURES.');
 const server=http.createServer((req,res)=>{
  const url=new URL(req.url,'http://localhost');let file;

@@ -5,7 +5,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const root = path.resolve(__dirname, '../CallMedCrud/wwwroot');
+const root = path.resolve(__dirname, '../src/CallMed.Web/wwwroot');
 let status, dynamic, posts, updates;
 // Observa o estado no último listener de submit, imediatamente antes do POST nativo.
 // O segundo evento verifica o bloqueio sem iniciar uma segunda navegação.
@@ -22,7 +22,7 @@ const observeSubmit = `<script>document.addEventListener('submit', event => {
     input.name = 'uiSnapshot'; input.value = JSON.stringify(snapshot); form.append(input);
 });</script>`;
 const draft = () => `<article class="atendimento-message outgoing" data-message-id="2" data-author="Assistente"><div class="message-meta"><strong>Rascunho para E-mail · CallMed</strong></div><p>Resposta fictícia.</p><div class="message-delivery"><div class="email-draft-review" role="status"><strong>Rascunho · não enviado</strong><div class="email-draft-actions"><form action="/Atendimento/AprovarRascunho" method="post" data-confirm="Enviar este rascunho por e-mail ao paciente?"><input type="hidden" name="mensagemId" value="2"><input type="hidden" name="__RequestVerificationToken" value="ficticio"><button type="submit" class="btn small">Aprovar e enviar</button></form><form action="/Atendimento/DescartarRascunho" method="post" data-confirm="Descartar este rascunho? Nenhum e-mail será enviado."><input type="hidden" name="__RequestVerificationToken" value="ficticio"><input type="hidden" name="mensagemId" value="2"><button type="submit" class="btn secondary small">Descartar</button></form></div></div></div></article>`;
-const html = () => `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><link rel="stylesheet" href="/css/callmed.css"></head><body><main><h1>Central · teste fictício</h1><div id="cmIaStatus"><strong id="cmIaTitle">Aguardando</strong></div><input type="hidden" name="__RequestVerificationToken" value="ficticio"><div id="atendimentoMessages" data-conversa-id="1" data-last-id="${dynamic ? 1 : 2}" data-channel="Email" data-mode="Humano" data-active="true" data-responsavel-id="" data-paciente-id="">${dynamic ? '' : draft()}</div></main><script src="/js/feedback.js"></script><script src="/js/atendimento.js"></script>${observeSubmit}</body></html>`;
+const html = () => `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><link rel="stylesheet" href="/css/callmed.css"></head><body><main><h1>Central · teste fictício</h1><div id="cmIaStatus"><strong id="cmIaTitle">Aguardando</strong></div><input type="hidden" name="__RequestVerificationToken" value="ficticio"><div id="atendimentoMessages" data-conversa-id="1" data-last-id="${dynamic ? 1 : 2}" data-channel="Email" data-mode="Humano" data-active="true" data-responsavel-id="" data-paciente-id="">${dynamic ? '' : draft()}</div></main><script src="/js/core/feedback.js"></script><script src="/js/atendimento/atendimento.js"></script>${observeSubmit}</body></html>`;
 const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, 'http://localhost');
     if (url.pathname === '/Atendimento/Atualizacoes') {
