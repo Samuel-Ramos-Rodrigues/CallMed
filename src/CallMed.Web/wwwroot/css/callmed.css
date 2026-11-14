@@ -9435,6 +9435,19 @@ body.cm39-shell .cm19-booking-page .cm19-booking-steps li {
     border-radius:8px;
   }
 }
+@media(max-width:500px) {
+  /* Dias em uma letra no celular; aria-label mantém nome completo. */
+  body.cm39-shell .cm19-booking-page .cm-booking-calendar-weekdays span[data-compact] {
+    font-size:0;
+    white-space:nowrap;
+  }
+  body.cm39-shell .cm19-booking-page .cm-booking-calendar-weekdays span[data-compact]::after {
+    content:attr(data-compact);
+    font-size:.79rem;
+    color:var(--muted);
+    line-height:1;
+  }
+}
 @media(max-width:380px) {
   body.cm39-shell .cm19-booking-page .cm-booking-calendar-title strong {
     font-size:1rem;
