@@ -1,0 +1,236 @@
+/* CallMed · SENAI — destaques úteis, sem novo menu ou estilo paralelo.
+   O atendimento conserva seu layout, regras e componentes originais. */
+.primary-nav .cm-nav-feature {position:relative;border:1px solid color-mix(in srgb,var(--teal) 46%,var(--line));background:color-mix(in srgb,var(--teal) 8%,var(--surface));color:var(--text);}
+.primary-nav .cm-nav-feature:hover,.primary-nav .cm-nav-feature.active {border-color:var(--teal);background:color-mix(in srgb,var(--teal) 14%,var(--surface));}
+.primary-nav .cm-nav-feature svg {color:var(--teal);}
+.cm-demand-focus {display:grid;grid-template-columns:minmax(0,1.18fr) minmax(280px,.82fr);gap:0;overflow:hidden;border:1px solid var(--line);border-radius:20px;background:var(--surface);}
+.cm-demand-focus-lead {padding:clamp(22px,3vw,42px);background:color-mix(in srgb,var(--teal) 8%,var(--surface));display:flex;flex-direction:column;align-items:flex-start;justify-content:center;}
+.cm-demand-focus .eyebrow,.cm-demand-doctor .eyebrow,.cm-demand-patient .eyebrow,.cm-demand-outcomes .eyebrow {display:flex;align-items:center;gap:8px;color:var(--teal);font-size:.71rem;letter-spacing:.08em;}
+.cm-demand-focus .eyebrow svg {width:18px;height:18px;}
+.cm-demand-focus-lead h2 {font-size:clamp(1.5rem,2.7vw,2.4rem);letter-spacing:-.045em;line-height:1.12;margin:12px 0 10px;max-width:490px;}
+.cm-demand-focus-lead p {color:var(--muted);max-width:480px;line-height:1.55;margin:0 0 20px;font-size:.9rem;}
+.cm-demand-main-link {background:var(--primary);color:white!important;text-decoration:none;display:inline-flex;align-items:center;gap:20px;padding:13px 18px;border-radius:11px;font-size:.88rem;font-weight:750;}
+.cm-demand-main-link:hover {background:var(--primary-hover);}
+.cm-demand-focus-links {padding:13px 28px;display:flex;flex-direction:column;justify-content:center;}
+.cm-demand-focus-links a {display:flex;align-items:center;gap:14px;min-width:0;padding:19px 0;border-bottom:1px solid var(--line);color:var(--text);text-decoration:none;}
+.cm-demand-focus-links a:last-child {border-bottom:0;}
+.cm-demand-focus-links a:hover strong,.cm-demand-focus-links a:hover>span:last-child {color:var(--teal);}
+.cm-demand-focus-links a>span:nth-child(2) {flex:1;min-width:0;display:grid;gap:3px;}
+.cm-demand-focus-links strong {font-size:.88rem;}
+.cm-demand-focus-links small {font-size:.74rem;color:var(--muted);line-height:1.4;}
+.cm-demand-step-icon {display:grid;place-items:center;background:var(--surface-2);border-radius:11px;min-width:41px;height:41px;}
+.cm-demand-step-icon svg,.cm-demand-patient-icon svg {height:19px;width:19px;color:var(--teal);}
+.cm-demand-utility {display:flex;gap:10px;flex-wrap:wrap;}
+.cm-demand-utility a {font-size:.79rem;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;text-decoration:none;font-weight:700;}
+.cm-demand-utility a:hover {border-color:var(--teal);}
+.cm-demand-outcomes {display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px 25px;border:1px solid var(--line);border-radius:15px;background:var(--surface);}
+.cm-demand-outcomes h2 {font-size:1.2rem;letter-spacing:-.025em;margin:6px 0;}
+.cm-demand-outcomes p {margin:0;color:var(--muted);font-size:.82rem;line-height:1.5;max-width:660px;}
+.cm-demand-outcomes a {white-space:nowrap;}
+.cm-demand-doctor {display:flex;justify-content:space-between;align-items:center;gap:20px;padding:25px 28px;background:color-mix(in srgb,var(--teal) 9%,var(--surface));border:1px solid var(--line);border-radius:16px;margin:16px 0 24px;}
+.cm-demand-doctor h2,.cm-demand-patient h2 {font-size:clamp(1.15rem,2vw,1.5rem);letter-spacing:-.03em;margin:7px 0;}
+.cm-demand-doctor p,.cm-demand-patient p {color:var(--muted);font-size:.85rem;margin:0;max-width:590px;line-height:1.55;}
+.cm-demand-doctor>a,.cm-demand-patient>a {display:inline-flex;align-items:center;gap:10px;border-radius:11px;white-space:nowrap;background:var(--primary);color:white;text-decoration:none;font-weight:750;font-size:.84rem;padding:13px 18px;}
+.cm-demand-doctor>a:hover,.cm-demand-patient>a:hover {background:var(--primary-hover);}
+.cm-demand-patient {display:flex;align-items:center;gap:20px;padding:22px 26px;border:1px solid var(--line);border-radius:18px;background:var(--surface);margin:18px 0 22px;}
+.cm-demand-patient>div:nth-child(2) {min-width:0;flex:1;}
+.cm-demand-patient-icon {display:grid;place-items:center;flex:0 0 54px;width:54px;height:54px;border-radius:16px;background:color-mix(in srgb,var(--teal) 12%,var(--surface-2));}
+.cm-demand-patient-icon svg {width:27px;height:27px;}
+@media (max-width:1000px) {.cm-demand-focus{grid-template-columns:1fr}.cm-demand-focus-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:15px}.cm-demand-focus-links a{flex-direction:column;align-items:flex-start;border:1px solid var(--line);padding:14px;border-radius:12px}.cm-demand-focus-links a>span:last-child{display:none}}
+@media (max-width:760px) {.cm-demand-patient,.cm-demand-doctor,.cm-demand-outcomes{flex-direction:column;align-items:stretch}.cm-demand-patient>a,.cm-demand-doctor>a{align-self:flex-start}.cm-demand-focus-links{grid-template-columns:1fr}.cm-demand-focus-links a{flex-direction:row;align-items:center;padding:14px}.cm-demand-focus-links a>span:last-child{display:block}.cm-demand-focus-lead{padding:24px}.cm-demand-focus-links{gap:7px}.cm-demand-outcomes{padding:20px}}
+@media (max-width:450px) {.cm-demand-utility a {flex:1 1 40%;text-align:center}.cm-demand-patient>a,.cm-demand-doctor>a{white-space:normal}.cm-demand-patient-icon{display:none}}
+@media (prefers-reduced-motion:reduce) {.cm-demand-focus *, .cm-demand-patient *, .cm-demand-doctor *{transition:none!important;animation:none!important}}
+
+.cm-nav-short-label {display:none;}
+@media(max-width: 820px) {
+ .callmed-mobile-nav .cm-nav-optional {display:none;}
+ .callmed-mobile-nav .cm-nav-feature {background:color-mix(in srgb,var(--teal) 10%,var(--surface));color:var(--text);}
+ .callmed-mobile-nav .cm-nav-feature svg {color:var(--teal);}
+ .callmed-mobile-nav .cm-nav-feature .cm-nav-full-label {display:none;}
+ .callmed-mobile-nav .cm-nav-feature .cm-nav-short-label {display:block;}
+}
+
+
+/* ==============================================================
+   CALLMED SENAI — REGRESSÃO VISUAL V35 / 12-11-2026
+   Aplica-se aos quatro perfis; autenticação usa CSS autêntico V34.
+   Ajustes de responsividade, grades e controles de formulário.
+   =============================================================== */
+/* Links no header nunca devem desaparecer por clipping em notebook/tablet. */
+.app-header-inner { min-width: 0; }
+.primary-nav { min-width: 0; }
+.primary-nav > a { flex-shrink: 0; }
+.header-tools { flex: 0 0 auto; min-width: 0; }
+@media (min-width: 821px) and (max-width: 1180px) {
+  .app-header-inner { gap: 14px; padding-inline: 16px; }
+  .primary-nav { gap: 5px; justify-content: flex-start; }
+  .primary-nav > a { flex: 0 0 44px; width: 44px; height: 44px; justify-content: center; padding: 8px; border-radius: 12px; }
+  .primary-nav > a svg { flex: 0 0 21px; width: 21px; height: 21px; }
+  .primary-nav > a .cm-nav-full-label,
+  .primary-nav > a .cm-nav-short-label { display: none; }
+  .app-brand img { width: 123px; }
+  .cm-search-shortcut { padding: 9px; }
+  .cm-search-shortcut span, .cm-search-shortcut kbd { display: none; }
+  .header-tools { gap: 3px; }
+}
+/* A tabela semanal possui profissional + sete dias + botão de ação: 9 colunas. */
+.cm19-availability-table { overflow-x: auto; overscroll-behavior-x: contain; }
+.cm19-av-row { grid-template-columns: minmax(180px, 1.7fr) repeat(7, minmax(86px, 1fr)) minmax(128px, 1fr); min-width: 1100px; align-items: stretch; }
+.cm19-av-row > * { min-width: 0; padding: 13px 10px; border-right: 1px solid var(--line); font-size: .75rem; }
+.cm19-av-row > :last-child { border-right: 0; }
+.cm19-av-row.header { background: var(--surface-2); font-weight: 750; color: var(--muted); }
+.cm19-av-row.header > * { display: flex; align-items: center; }
+.cm19-av-doctor { display: flex; align-items: center; gap: 9px; }
+.cm19-av-doctor > span { display: grid; place-items: center; flex: 0 0 35px; width: 35px; height: 35px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); font-weight: 800; }
+.cm19-av-doctor > div { min-width: 0; }
+.cm19-av-doctor strong, .cm19-av-doctor small, .cm19-av-day strong, .cm19-av-day small { display: block; overflow-wrap: anywhere; }
+.cm19-av-doctor small, .cm19-av-day small { color: var(--muted); font-size: .66rem; }
+.cm19-av-edit { display: inline-flex; align-self: center; justify-self: center; justify-content: center; align-items: center; border: 1px solid var(--line); border-radius: 9px; min-height: 37px; text-decoration: none; color: var(--accent); font-weight: 750; padding: 8px 12px; text-align: center; }
+.cm19-av-edit:hover { background: var(--accent-soft); border-color: var(--accent); }
+/* Médico: duas seções efetivas, não três colunas imaginárias. */
+.cm-doctor-slot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 16px; }
+.cm-doctor-slot-grid > .cm-doctor-panel { min-width: 0; }
+.cm-doctor-slots { display: grid; align-content: start; gap: 8px; max-height: 420px; overflow-y: auto; padding-right: 3px; }
+.cm-doctor-slots form { display: grid; grid-template-columns: minmax(58px, auto) minmax(0, 1fr) auto; gap: 9px; align-items: center; min-width: 0; padding: 10px 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; }
+.cm-doctor-slots form span { color: var(--muted); font-size: .77rem; white-space: nowrap; }
+.cm-doctor-slots form strong { font-size: .83rem; font-variant-numeric: tabular-nums; }
+.cm-doctor-slots form .btn-link { min-height: 36px; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; padding-inline: 10px; font-size: .77rem; }
+@media (max-width: 870px) { .cm-doctor-slot-grid { grid-template-columns: 1fr; } }
+@media (max-width: 440px) { .cm-doctor-slots form { grid-template-columns: auto 1fr; } .cm-doctor-slots form .btn-link { grid-column: 1 / -1; width: 100%; } }
+/* Cadastro: switch real, acessível por teclado, com estado nativo do checkbox. */
+.cm-switch-control { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; position: relative; cursor: pointer; user-select: none; }
+.cm-switch-control > .cm-switch-input { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; }
+.cm-switch-track { display: inline-flex; align-items: center; flex: 0 0 46px; width: 46px; height: 27px; border-radius: 999px; padding: 3px; background: var(--surface-3); border: 1px solid var(--line); transition: background .15s ease; }
+.cm-switch-track > span { width: 19px; height: 19px; border-radius: 50%; background: var(--text); box-shadow: 0 1px 4px #0003; transform: translateX(0); transition: transform .15s ease; }
+.cm-switch-input:checked + .cm-switch-track { background: var(--primary); border-color: var(--primary); }
+.cm-switch-input:checked + .cm-switch-track > span { background: #fff; transform: translateX(19px); }
+.cm-switch-input:focus-visible + .cm-switch-track { outline: 3px solid var(--focus); outline-offset: 3px; }
+.cm-switch-input:disabled + .cm-switch-track { opacity: .5; cursor: not-allowed; }
+.cm-switch-copy { font-size: .83rem; color: var(--text); font-weight: 650; }
+.toggle-field { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; column-gap: 18px; row-gap: 8px; }
+.toggle-field > small { flex-basis: 100%; }
+/* Proteção transversal de formulário e modais: conteúdo nunca deve forçar overflow da tela. */
+.cm25-section-card, .cm25-panel, .cm-doctor-panel, .identity-card, .form-grid > *, .cm25-form-grid > *, .cm-form-grid > * { min-width: 0; }
+:where(.cm25-screen,.cm25-panel,.cm-doctor-panel,.patient-form-section) :where(input,select,textarea) { max-width: 100%; }
+:where(.cm25-screen,.cm25-panel,.cm-doctor-panel) :where(button,.btn) { overflow-wrap: anywhere; }
+@media (max-width: 760px) {
+  .cm19-av-row { min-width: 1100px; }
+  .cm25-panel, .cm-doctor-panel { max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-switch-track, .cm-switch-track > span { transition: none; }
+}
+
+/* Identidade V34 preservada em escopo: um único CSS para todas as telas. */
+body.identity-body {
+
+  color-scheme: light;
+  --cm-bg: #F4F6FB;
+  --cm-bg-soft: #EDF1F8;
+  --cm-surface: #FFFFFF;
+  --cm-surface-raised: #FFFFFF;
+  --cm-surface-muted: #F6F8FC;
+  --cm-surface-strong: #E8EDF7;
+  --cm-ink: #19243D;
+  --cm-ink-2: #35435E;
+  --cm-muted: #52627E;
+  --cm-muted-2: #60708B;
+  --cm-border: #DDE4EF;
+  --cm-primary: #5C52CD;
+  --cm-primary-hover: #4A40B5;
+  --cm-primary-active: #3E359B;
+  --cm-primary-soft: #EEECFF;
+  --cm-primary-ink: #FFFFFF;
+  --cm-accent: #096F91;
+  --cm-accent-soft: #E5F3FA;
+  --cm-violet: #7658d8;
+  --cm-violet-soft: #f0eaff;
+  --cm-success: #16745f;
+  --cm-success-bg: #e2f5ed;
+  --cm-warning: #8a5a08;
+  --cm-warning-bg: #fff1d4;
+  --cm-danger: #b42342;
+  --cm-danger-bg: #ffeaee;
+  --cm-info: #155b94;
+  --cm-info-bg: #e4f1ff;
+  --cm-shadow: 0 8px 26px #1725440A;
+  --cm-shadow-lg: 0 24px 72px #0B10203D;
+  --cm-ring: 0 0 0 3px #5C52CD26;
+  --cm-radius-sm: 10px;
+  --cm-radius-lg: 18px;
+  --cm-radius-xl: 22px;
+  --cm-font: Manrope, "Segoe UI", system-ui, sans-serif;
+  --cm-content: 1640px;
+  --cm-vv-height: 100dvh;
+  --day-count: 7;
+  --navy: #29325f;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --cm-refino-linha: var(--cm-border);
+  --cm-refino-sombra: var(--cm-shadow-sm);
+  --cm-action: linear-gradient(135deg, #7041EB, #4324B4);
+  --cm-action-hover: linear-gradient(135deg, #6234DA, #38209A);
+  --cm-action-ink: #FFFFFF;
+  --cm-panel-shadow: 0 8px 28px #19214208;
+  --cm-panel-fill: var(--cm-surface);
+  --cm-shadow-sm: 0 2px 8px #17254405;
+  --cm-radius-md: 14px;
+  --cm-motion: 150ms ease;
+  --cm-border-strong: #8391AA;
+
+}
+:root[data-theme="dark"] body.identity-body {
+
+  color-scheme: dark;
+  --cm-surface-strong: #222B43;
+  --cm-ink: #F5F5FF;
+  --cm-ink-2: #E2E6FA;
+  --cm-primary: #B69AFF;
+  --cm-primary-hover: #D0BAFF;
+  --cm-primary-active: #CFCBFF;
+  --cm-primary-soft: #292248;
+  --cm-primary-ink: #19142E;
+  --cm-accent: #69D3FF;
+  --cm-accent-soft: #14364B;
+  --cm-violet: #b7a4ff;
+  --cm-violet-soft: #30294c;
+  --cm-success: #8be0c1;
+  --cm-success-bg: #163b37;
+  --cm-warning: #ffcf79;
+  --cm-warning-bg: #49351d;
+  --cm-danger: #ff9cad;
+  --cm-danger-bg: #482638;
+  --cm-info: #9dceff;
+  --cm-info-bg: #1d3553;
+  --cm-shadow-sm: 0 2px 8px #0000000A;
+  --cm-shadow: 0 10px 32px #0000001F;
+  --cm-shadow-lg: 0 22px 60px rgba(0, 0, 0, .32);
+  --cm-ring: 0 0 0 3px #AA79FF35;
+  --navy: #202849;
+  --cm-refino-linha: #354461;
+  --cm-refino-sombra: 0 8px 25px rgba(0,0,0,.15);
+  --cm-panel-shadow: 0 12px 38px #00000024;
+  --cm-bg: #090D19;
+  --cm-surface: #121827;
+  --cm-surface-raised: #191F32;
+  --cm-surface-muted: #181F32;
+  --cm-bg-soft: #0E1423;
+  --cm-muted: #B7C1D9;
+  --cm-muted-2: #9CAAC5;
+  --cm-border: #2A334B;
+  --cm-border-strong: #7484A5;
+
+}
+
+body.identity-body {
+  --bg: var(--cm-bg);
+  --surface: var(--cm-surface);
+  --text: var(--cm-ink);
+  --muted: var(--cm-muted);
+  --line: var(--cm-border);
+  --accent: var(--cm-primary);
+  color-scheme: light;
+}
+:root[data-theme="dark"] body.identity-body { color-scheme: dark; }
