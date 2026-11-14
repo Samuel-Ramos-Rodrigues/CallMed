@@ -80,3 +80,29 @@ Teste: `SalasChecks.cs` cobre ausência de pré-cadastro, registro automático a
 - Concorrência, reinícios, reentradas, relógio da clínica e idempotência.
 - Sem envio de mensagens reais em fixtures; prova de presença presencial diferente de check-in remoto.
 - Não executar migração irreversível sem ensaio em banco isolado.
+
+## Incrementos implementados na PR #3
+
+- **1 — Check-in online e presencial:** o registro da presença autenticada na teleconsulta faz check-in quando o pré-cadastro já está concluído. No presencial, `/checkin/terminal` fornece QR temporário de quatro minutos para o paciente autenticado confirmar a chegada; o QR não é prova física infalível, já que pode ser compartilhado. Conferir casos suspeitos continua sendo responsabilidade da equipe.
+- **2 — Recepção por exceções:** `/RecepcaoPendencias` reúne itens operacionais que exigem revisão (pré-cadastro, consentimento online e presença presencial ainda não registrada). Não substitui tarefas telefônicas nem o acompanhamento médico.
+- **3 — Confirmações e encaixes:** mantém-se o job de lembretes (5 min), o de fila (30 s) e os estados transacionais das ofertas; os avisos passam a orientar para ações seguras via link/portal, evitando prometer alteração de agenda por SMS/e-mail não autenticado.
+- **4 — Monitoramento de jobs:** renovação de agenda e rotinas de recuperação de WhatsApp, e-mail por IA e httpSMS agora publicam seu estado no mecanismo `SaudeRotinas`, junto de lembretes, fila e PEP. A escrita de telemetria nos canais de ciclo curto foi limitada a uma vez por minuto em sucesso.
+- **5 — Navegação e visual:** o catálogo foi reagru pado por tarefas em Hoje, Agenda e vagas, Atendimento, Consultas e teleconsulta, Pessoas e documentos, Indicadores e gestão, e Administração. O cabeçalho foi ajustado para cada perfil, mantendo Teleconsultas em destaque. O tema claro recebeu paleta verde e branca inspirada no protótipo, sem apagar o tema escuro, o login V34 ou a Central de três colunas.
+
+### Roteiro rápido de aceitação sem mensagens reais
+
+1. Acessar `/checkin/terminal` com conta da recepção e conferir QR atualizado; usar outro aparelho logado como paciente para concluir o check-in de uma consulta presencial de hoje com pré-cadastro feito.
+2. Verificar que outro paciente não confirma a consulta e que um QR expirado é recusado. Após escanear duas vezes, a chegada é registrada uma única vez.
+3. Entrar em teleconsulta autorizada: check-in digital aparece após o pré-cadastro, não registra chegada presencial e não autoriza automaticamente o início do médico.
+4. Abrir Pendências de hoje como recepção e confirmar que pacientes com preparo incompleto aparecem, enquanto etapas concluídas deixam de gerar tarefas repetitivas.
+5. Abrir Operação → Execução das rotinas e conferir os serviços configurados e o comportamento quando desativados. A ausência de envio de mensagens não significa falha do job.
+6. Acompanhar vaga de encaixe fictícia até expirar e ser oferecida a outro candidato; testar aceite concorrente em banco isolado.
+7. Conferir links e navegação dos quatro perfis em desktop/celular, bem como tema claro/escuro, foco, contraste e acesso à teleconsulta.
+8. Conferir todos os jobs do GitHub Actions antes de fazer merge na master.
+
+### Limites
+
+- Novo QR depende de `PublicOrigin` HTTPS (ou `RENDER_EXTERNAL_URL` HTTPS) e de chave Data Protection persistente, já exigida pelo CallMed.
+- O QR deve ficar visível somente na clínica; um código retransmitido durante a validade também pode ser usado. Para comprovação mais forte de presença, considerar totem com confirmação local ou um segundo fator vinculado à unidade.
+- A saúde dos jobs registra ciclos executados, não entrega efetiva de mensagens pelo provedor. Jobs e filas ainda dependem de instância ativa e configuração correta.
+- Sem migração de banco, sem mudanças nos provedores httpSMS/Evolution/Gmail/Brevo e sem alterar prontuários ou regras clínicas.
