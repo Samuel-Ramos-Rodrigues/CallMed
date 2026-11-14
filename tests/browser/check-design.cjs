@@ -17,6 +17,35 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
    await who.page.addScriptTag({path:axePath});const violations=await who.page.evaluate(()=>axe.run({runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}).then(r=>r.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary,html:n.html}))}))));if(violations.length){issues.push({label,theme,violations});console.error('AXE_VIOLATIONS '+JSON.stringify({label,theme,violations}));}
    if(['paciente-inicio','publico','login','cadastro','pep','privacidade-paciente','resultados','mensagens','jornada-detalhe','agendamento','areas','salas','configuracoes','pacientes','recepcao','admin-inicio','profissional'].includes(label))await who.page.screenshot({path:out+'/'+label+'-'+theme+'.png',fullPage:true});
   }
+  if(label==='solicitacoes'){
+   const layout=await who.page.evaluate(()=>{
+     const root=document.querySelector('.cm-requests-screen');
+     const overview=root?.querySelector('.cm-requests-overview');
+     const filter=root?.querySelector('.cm-requests-filter-panel');
+     const dummy=document.createElement('article');
+     dummy.className='cm-request-card';
+     root?.appendChild(dummy);
+     const result={root:!!root,overview:getComputedStyle(overview).display,filter:getComputedStyle(filter).display,card:getComputedStyle(dummy).display};
+     dummy.remove();
+     return result;
+   });
+   check(layout.root&&layout.overview==='grid'&&layout.filter==='grid'&&layout.card==='grid',
+    'Solicitações usa quadro, filtros e cartões com layout próprio V40');
+  }
+  if(label==='jornada'){
+    const layout=await who.page.evaluate(()=>({
+      toolbar:getComputedStyle(document.querySelector('.cm-journey-toolbar')).display,
+      section:getComputedStyle(document.querySelector('.cm-journey-section')).display,
+    }));
+    check(layout.toolbar==='flex'&&layout.section==='grid','Jornada usa barras e seções padronizadas V40');
+  }
+  if(label==='consultas-equipe'||label==='pacientes'){
+    const layout=await who.page.evaluate(()=>{
+      const table=document.querySelector('.cm-record-table');
+      return {table:!!table,minWidth:table?parseFloat(getComputedStyle(table).minWidth):0};
+    });
+    check(layout.table&&layout.minWidth>=730,'Cadastros e consultas mantêm tabela legível com rolagem interna');
+  }
   if(label==='profissional'){
    await who.page.evaluate(()=>document.documentElement.dataset.theme='light');
    await who.page.setViewportSize({width:1440,height:900});
