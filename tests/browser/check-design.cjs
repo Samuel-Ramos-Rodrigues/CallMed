@@ -15,7 +15,106 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
   for(const theme of ['light','dark']){
    await who.page.evaluate(async theme=>{document.documentElement.dataset.theme=theme;document.documentElement.style.colorScheme=theme;await Promise.all(document.getAnimations({subtree:true}).filter(a=>a.constructor.name==='CSSTransition').map(a=>a.finished.catch(()=>{})));},theme);
    await who.page.addScriptTag({path:axePath});const violations=await who.page.evaluate(()=>axe.run({runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}).then(r=>r.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary,html:n.html}))}))));if(violations.length){issues.push({label,theme,violations});console.error('AXE_VIOLATIONS '+JSON.stringify({label,theme,violations}));}
-   if(['paciente-inicio','publico','login','cadastro','pep','privacidade-paciente','resultados','mensagens','jornada-detalhe','agendamento','areas','salas','configuracoes','pacientes','recepcao','admin-inicio','profissional'].includes(label))await who.page.screenshot({path:out+'/'+label+'-'+theme+'.png',fullPage:true});
+   if(['paciente-inicio','publico','login','cadastro','pep','privacidade-paciente','resultados','mensagens','jornada-detalhe','jornada','agendamento','areas','salas','configuracoes','integracoes','pacientes','consultas-equipe','solicitacoes','exames','agenda','recepcao','admin-inicio','profissional'].includes(label))await who.page.screenshot({path:out+'/'+label+'-'+theme+'.png',fullPage:true});
+  }
+  if(label==='solicitacoes'){
+   const layout=await who.page.evaluate(()=>{
+     const root=document.querySelector('.cm-requests-screen');
+     const overview=root?.querySelector('.cm-requests-overview');
+     const filter=root?.querySelector('.cm-requests-filter-panel');
+     const dummy=document.createElement('article');
+     dummy.className='cm-request-card';
+     root?.appendChild(dummy);
+     const result={root:!!root,overview:getComputedStyle(overview).display,filter:getComputedStyle(filter).display,card:getComputedStyle(dummy).display};
+     dummy.remove();
+     return result;
+   });
+   check(layout.root&&layout.overview==='grid'&&layout.filter==='grid'&&layout.card==='grid',
+    'Solicitações usa quadro, filtros e cartões com layout próprio V40');
+  }
+  if(label==='jornada'){
+    const layout=await who.page.evaluate(()=>({
+      toolbar:getComputedStyle(document.querySelector('.cm-journey-toolbar')).display,
+      section:getComputedStyle(document.querySelector('.cm-journey-section')).display,
+    }));
+    check(layout.toolbar==='flex'&&layout.section==='grid','Jornada usa barras e seções padronizadas V40');
+  }
+  if(label==='consultas-equipe'||label==='pacientes'){
+    const layout=await who.page.evaluate(label=>{
+      const isEquipe=label==='consultas-equipe';
+      const root=document.querySelector(isEquipe?'.cm-consult-page':'.crud-v16');
+      const tableClass=isEquipe?'cm-consult-table':'cm-record-table';
+      let table=root?.querySelector('.'+tableClass);
+      let probe=false;
+      if(root&&!table){
+        table=document.createElement('table');
+        table.className=tableClass;
+        root.appendChild(table);
+        probe=true;
+      }
+      const width=table?parseFloat(getComputedStyle(table).minWidth):0;
+      if(probe)table.remove();
+      return {root:!!root,table:!!table,minWidth:width};
+    },label);
+    console.log('CM40_TABLE '+JSON.stringify({label,layout}));
+    check(layout.root&&layout.table&&layout.minWidth>=(label==='consultas-equipe'?740:730),
+      'Lista '+label+' permite tabela legível mesmo quando o filtro está vazio');
+  }
+  if(label==='consultas-equipe'){
+    const spacing=await who.page.evaluate(()=>{
+      const overview=document.querySelector('.cm-consult-overview');
+      const stat=overview?.querySelector('article');
+      const record=document.querySelector('.cm-consult-records');
+      return {grid:overview?getComputedStyle(overview).display:'',
+        statCard:stat?getComputedStyle(stat).display:'',
+        padding:record?parseFloat(getComputedStyle(record).paddingLeft):0};
+    });
+    check(spacing.grid==='grid'&&spacing.statCard==='flex'&&spacing.padding>=14,
+      'Consultas da equipe exibem indicadores separados e lista com respiro');
+  }
+  if(label==='agenda'){
+    const metrics=await who.page.evaluate(()=>{
+      const wrapper=document.querySelector('.cm19-agenda-metrics');
+      const card=wrapper?.querySelector('span');
+      return {grid:wrapper?getComputedStyle(wrapper).display:'',
+        item:card?getComputedStyle(card).display:'',
+        padding:card?parseFloat(getComputedStyle(card).paddingLeft):0};
+    });
+    check(metrics.grid==='grid'&&metrics.item==='grid'&&metrics.padding>=14,
+      'Agenda mantém métricas com títulos e números separados');
+  }
+  if(label==='pacientes'){
+    const spacing=await who.page.evaluate(()=>{
+      const el=document.querySelector('.crud-v16 .table-card>.v16-card-head');
+      return el?parseFloat(getComputedStyle(el).paddingLeft):0;
+    });
+    check(spacing>=16,'Cabeçalho da tabela de pacientes não fica encostado na borda');
+  }
+  if(label==='integracoes'){
+    const geometry=await who.page.evaluate(()=>{
+      const card=document.querySelector('.cm19-integration-card[data-integration="email"]');
+      const para=card?.querySelector('p');
+      const note=card?.querySelector('.cm19-security-note');
+      const status=card?.querySelector(':scope > b');
+      if(!card||!para||!note||!status)return {present:false};
+      const a=para.getBoundingClientRect(),b=note.getBoundingClientRect(),c=status.getBoundingClientRect(),d=card.getBoundingClientRect();
+      return {present:true,paraEnd:a.bottom,noteStart:b.top,noteEnd:b.bottom,statusStart:c.top,statusEnd:c.bottom,cardEnd:d.bottom};
+    });
+    console.log('CM40_EMAIL_CARD '+JSON.stringify(geometry));
+    check(geometry.present&&geometry.paraEnd<=geometry.noteStart+1&&
+      geometry.noteEnd<=geometry.statusStart+1&&geometry.statusEnd<=geometry.cardEnd-2,
+      'Integrações: descrição do e-mail, aviso e status sem sobreposição');
+  }
+  if(label==='profissional'){
+    const upcoming=await who.page.evaluate(()=>{
+      const list=document.querySelector('.cm37-doctor .cm-doctor-upcoming');
+      const first=list?.querySelector('article');
+      return {exists:!!list,display:list?getComputedStyle(list).display:'',
+        cardDisplay:first?getComputedStyle(first).display:'',children:list?.children.length||0};
+    });
+    check(upcoming.exists&&upcoming.display==='grid'&&
+      (upcoming.children===0||upcoming.cardDisplay==='grid'),
+      'Painel médico usa cartões para próximos pacientes em vez de lista sem layout');
   }
   if(label==='profissional'){
    await who.page.evaluate(()=>document.documentElement.dataset.theme='light');
@@ -63,6 +162,18 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
   }
   await who.page.setViewportSize({width:390,height:844});await who.page.evaluate(()=>document.documentElement.style.fontSize='200%');
   if(!await who.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2))overflows.push({label,...await who.page.evaluate(()=>({scroll:document.documentElement.scrollWidth,elements:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+2&&e.offsetWidth>0).slice(0,15).map(e=>({tag:e.tagName,c:e.className,r:e.getBoundingClientRect().right,w:e.offsetWidth}))}))});
+  if(label==='areas'){
+    const mobileNav=await who.page.evaluate(()=>{
+      const nav=document.querySelector('.callmed-mobile-nav');
+      const labels=[...nav.querySelectorAll('.cm-nav-full-label,.cm-nav-short-label,button>span')]
+        .filter(x=>getComputedStyle(x).display!=='none');
+      return {height:nav.getBoundingClientRect().height,
+        noBrokenWords:labels.every(x=>getComputedStyle(x).whiteSpace==='nowrap')};
+    });
+    console.log('CM40_MOBILE_NAV '+JSON.stringify(mobileNav));
+    check(mobileNav.height<=101&&mobileNav.noBrokenWords,
+      'Celular a 200% mantém barra inferior compacta sem quebra de palavras');
+  }
   if(['pep','privacidade-paciente','agendamento','login','areas','mensagens'].includes(label))await who.page.screenshot({path:out+'/'+label+'-mobile-200.png',fullPage:true});
   if(['paciente-inicio','recepcao','admin-inicio','profissional'].includes(label)){
     const layout=await who.page.evaluate(()=>({cards:document.querySelectorAll('.cm37-dashboard .cm37-card').length,
