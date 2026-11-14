@@ -42,19 +42,24 @@ require(not (root / "src/CallMed.Application/Services/Clinica/Contracts/IClinica
         "Contrato IClinicaClock duplicado na aplicacao.")
 
 css_root = root / "src/CallMed.Web/wwwroot/css"
-module_dir = css_root / "modules"
+expected = [
+    "nova-00-design.css", "nova-10-shell.css", "nova-20-fluxos.css",
+    "nova-30-acesso.css", "nova-40-modulos.css"
+]
 styles = sorted(p.relative_to(css_root).as_posix() for p in css_root.rglob("*.css"))
-require(len(styles) == 16 and all(s.startswith("modules/") for s in styles),
-        f"Somente os 16 modulos de CSS devem existir: {styles}")
+require(styles == sorted(expected), f"Exatamente cinco CSS NOVA, sem folha antiga: {styles}")
 head = read("src/CallMed.Web/Views/Shared/_DocumentHead.cshtml")
-linked = re.findall(r'href="~/css/modules/([\w-]+\.css)"', head)
-require(len(linked) == 16 and sorted("modules/" + x for x in linked) == styles,
-        "Head deve carregar todos os 16 modulos CSS na ordem declarada.")
-require("callmed.css" not in head and "callmed-auth-v34.css" not in head and "CallMedAuthCssV34" not in head,
-        "Referencia ao CSS legado.")
-css_joined = "".join((module_dir / name).read_text(encoding="utf-8") for name in linked if (module_dir / name).exists())
-require("Identidade V34 preservada em escopo" in css_joined,
-        "Estilos de autenticacao nao preservados na modularizacao.")
+linked = re.findall(r'href="~/css/(nova-[\w-]+\.css)"', head)
+require(linked == expected and head.count('rel="stylesheet"') == 5,
+        "O head deve carregar somente os cinco CSS NOVA em ordem.")
+require("modules/" not in head and "callmed.css" not in head and "cm43-horizon" not in head,
+        "Nao reintroduzir links legados.")
+css_joined = "".join((css_root / name).read_text(encoding="utf-8") for name in linked if (css_root / name).exists())
+require(".identity-shell" in css_joined and ".form-etapa.ativa" in css_joined
+        and ".campos-convenio.ativo" in css_joined,
+        "Login, cadastro em etapas e convenio opcional devem ter estilos novos.")
+require(":root.callmed-simple-mode" in css_joined and ".cm-booking-calendar" in css_joined,
+        "Regras de modo facil e calendario de agendamento ausentes.")
 
 deploy = read("src/CallMed.Application/Infrastructure/Startup/DatabaseDeployment.cs")
 version = re.search(r'public const int CurrentVersion = (\d+);', deploy)

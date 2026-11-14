@@ -253,6 +253,20 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
  }
  await admin.page.goto('https://callmed.test/Organizacao');await admin.page.locator('#cm-buscar-funcao').fill('salas');await admin.page.waitForFunction(()=>document.querySelector('#cm-busca-status').textContent.length>0);check((await admin.page.locator('.cm-funcao:visible').allTextContents()).every(t=>t.toLowerCase().includes('sala')),'Busca de funções continua filtrando os cartões');await admin.page.locator('#cm-buscar-funcao').fill('nenhum-resultado-ficticio');check(await admin.page.locator('#cm-busca-vazia').isVisible(),'Busca sem resultado apresenta orientação');
  await patient.page.goto('https://callmed.test/dados-e-privacidade');const privacy=patient.page.locator('form[action*=solicitar]');await privacy.locator('select').selectOption('Acesso');await privacy.locator('[name=confirmar]').check();const saved=await privacy.evaluate(async form=>(await fetch(form.action,{method:'POST',body:new URLSearchParams(new FormData(form)),redirect:'manual'})).status);check([0,302].includes(saved),'Pedido de privacidade é aceito pelo formulário agrupado');await patient.page.goto('https://callmed.test/dados-e-privacidade');check((await patient.page.locator('main').innerText()).includes('Protocolo'),'Solicitação registrada aparece com protocolo');
+ await patient.page.goto('https://callmed.test/');
+ await patient.page.evaluate(()=>{document.documentElement.classList.remove('callmed-simple-mode');try{localStorage.setItem('callmed-a11y-simple-mode','0')}catch{}});
+ const state=()=>patient.page.evaluate(()=>{
+   const easy=document.querySelector('.cm21-simple-home'),normal=document.querySelector('.patient-standard');
+   return {easy:!!easy&&getComputedStyle(easy).display!=='none',normal:!!normal&&getComputedStyle(normal).display!=='none'}
+ });
+ let mode=await state();
+ check(mode.normal&&!mode.easy,'Paciente: modo padrão não duplica modo fácil');
+ await patient.page.locator('.patient-standard [data-a11y-toggle="simple"]').click();
+ mode=await state();
+ check(mode.easy&&!mode.normal,'Paciente: ativar modo fácil oculta painel padrão');
+ await patient.page.locator('.cm21-simple-home [data-a11y-toggle="simple"]').click();
+ mode=await state();
+ check(mode.normal&&!mode.easy,'Paciente: sair do modo fácil restaura painel padrão');
  await admin.page.goto('https://callmed.test/Organizacao');
  check(await admin.page.locator('body.cm39-shell').count()===1,'Layout autenticado mantém identidade CallMed V39');
  check(await admin.page.locator('.primary-nav a').count()>=3,'Navegação por perfil permanece conectada às rotas');

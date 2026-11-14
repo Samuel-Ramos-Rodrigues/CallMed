@@ -16,7 +16,7 @@
 <head>
     <partial name="_DocumentHead" />
 </head>
-<body class="callmed-app cm43-horizon @(paciente ? "cm43-patient" : User.IsProfissionalSaude() ? "cm43-doctor" : User.IsInRole("Admin") ? "cm43-admin" : User.IsInRole("Funcionario") ? "cm43-staff" : "cm43-guest") @(autenticado ? "cm39-shell" : "") @(paciente ? "patient-context" : "staff-context") @(controller == "Atendimento" && action == "Index" ? "central-context" : "") @(focoConsultaOnline ? "teleconsulta-foco" : "") @(focoClinico ? "clinico-foco" : "")">
+<body class="callmed-app @(paciente ? "nova-patient" : User.IsProfissionalSaude() ? "nova-doctor" : User.IsInRole("Admin") ? "nova-admin" : User.IsInRole("Funcionario") ? "nova-staff" : "nova-guest") @(autenticado ? "cm39-shell" : "") @(paciente ? "patient-context" : "staff-context") @(controller == "Atendimento" && action == "Index" ? "central-context" : "") @(focoConsultaOnline ? "teleconsulta-foco" : "") @(focoClinico ? "clinico-foco" : "")">
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 @if (autenticado)
 {
