@@ -9122,3 +9122,43 @@ body.cm39-shell .cm19-integration-card .cm19-security-note {
   font-size:.74rem;line-height:1.5;
 }
 body.cm39-shell .cm19-integration-card>b {margin-top:4px;align-self:start}
+
+
+/* V40 — Painel médico: a lista de próximos pacientes estava sem layout,
+   produzindo conteúdo estreito em um cartão quase todo vazio. */
+body.cm39-shell .cm37-doctor .cm-doctor-upcoming {
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;min-width:0;margin-top:18px;
+}
+body.cm39-shell .cm37-doctor .cm-doctor-upcoming>article {
+  display:grid;grid-template-columns:51px minmax(0,1fr) auto;
+  align-items:center;gap:12px;min-width:0;padding:14px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface-2);
+}
+body.cm39-shell .cm37-doctor .cm-doctor-date {
+  display:grid;place-items:center;gap:1px;min-width:0;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:10px;padding:7px 4px;text-align:center;
+  font-size:.76rem;
+}
+body.cm39-shell .cm37-doctor .cm-doctor-date strong {font-size:1.45rem;line-height:1.15;color:var(--text)}
+body.cm39-shell .cm37-doctor .cm-doctor-date span {font-size:.7rem;color:var(--muted);text-transform:uppercase}
+body.cm39-shell .cm37-doctor .cm-doctor-upcoming>article>div {display:grid;align-content:center;justify-items:start;gap:5px;min-width:0}
+body.cm39-shell .cm37-doctor .cm-doctor-upcoming>article h3 {margin:0;font-size:.92rem;line-height:1.35;overflow-wrap:anywhere;color:var(--text)}
+body.cm39-shell .cm37-doctor .cm-doctor-upcoming>article small {font-size:.76rem;line-height:1.4;color:var(--muted)}
+body.cm39-shell .cm37-doctor .cm-doctor-upcoming .status-pill {margin:2px 0 0;font-size:.69rem}
+body.cm39-shell .cm37-doctor .cm-doctor-exams {
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:8px 10px;white-space:nowrap;font-size:.76rem;
+  border:1px solid var(--line);border-radius:9px;
+  background:var(--surface);color:var(--primary);text-decoration:none;
+}
+body.cm39-shell .cm37-doctor .cm-doctor-exams svg {width:15px;height:15px}
+body.cm39-shell .cm37-doctor .cm-doctor-exams:hover {background:var(--accent-soft)}
+@media(max-width:950px) {
+  body.cm39-shell .cm37-doctor .cm-doctor-upcoming {grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:510px) {
+  body.cm39-shell .cm37-doctor .cm-doctor-upcoming>article {grid-template-columns:49px minmax(0,1fr)}
+  body.cm39-shell .cm37-doctor .cm-doctor-exams {grid-column:2;justify-self:start}
+}
