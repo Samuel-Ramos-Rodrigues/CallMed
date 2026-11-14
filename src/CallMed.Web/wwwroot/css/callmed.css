@@ -8497,3 +8497,20 @@ body.cm38-shell .app-footer {max-width:880px;margin:0 auto;line-height:1.5}
   body.cm38-shell .primary-nav > a {min-height:48px;padding:8px 12px}
 }
 @media(prefers-reduced-motion:reduce) {body.cm38-shell .cm37-dashboard * {transition:none!important;animation:none!important}}
+
+
+/* V38: preservar alto contraste mesmo com paleta local no body. */
+html.cm38-ui.callmed-high-contrast[data-theme="light"] body.cm38-shell {
+  --bg:#FFFFFF;--surface:#FFFFFF;--surface-2:#F0F0F0;--surface-3:#E0E0E0;
+  --text:#000000;--muted:#222222;--line:#555555;--primary:#000000;
+  --primary-hover:#111111;--focus:#000000;--accent:#000000;--accent-soft:#F0F0F0;
+}
+html.cm38-ui.callmed-high-contrast[data-theme="dark"] body.cm38-shell {
+  --bg:#000000;--surface:#080808;--surface-2:#151515;--surface-3:#252525;
+  --text:#FFFFFF;--muted:#EEEEEE;--line:#FFFFFF;--primary:#FFD400;
+  --primary-hover:#FFE347;--focus:#FFFFFF;--accent:#FFD400;--accent-soft:#151515;
+}
+html.cm38-ui.callmed-high-contrast body.cm38-shell .cm37-dashboard {--cm37-primary:var(--primary)}
+html.cm38-ui.callmed-high-contrast[data-theme="dark"] body.cm38-shell .cm37-dashboard .cm37-button {
+  color:#000;background:var(--primary);border-color:var(--primary);
+}
