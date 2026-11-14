@@ -12,6 +12,19 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
  function report(){fs.writeFileSync(out+'/report.json',JSON.stringify({pages:selectedPages.length,checks,errors,issues,overflows},null,2));}
  for(const [label,who,url]of selectedPages){
   const response=await who.page.goto('https://callmed.test'+url);if(response.status()!==200){errors.push({label,status:response.status()});report();continue;}await who.page.evaluate(()=>document.fonts.ready);
+  if(label==='cadastro'){
+    const wizard=await who.page.evaluate(()=>{
+      const all=[...document.querySelectorAll('#form-cadastro .form-etapa')];
+      const visible=all.filter(el=>getComputedStyle(el).display!=='none');
+      const steps=document.querySelector('.register-shell .steps');
+      const insurance=document.querySelector('#camposConvenio');
+      return {total:all.length,active:visible.length,first:visible[0]?.dataset.etapa,
+        horizontal:getComputedStyle(steps).display==='flex',
+        insuranceHidden:getComputedStyle(insurance).display==='none'};
+    });
+    check(wizard.total===3&&wizard.active===1&&wizard.first==='1'&&wizard.horizontal&&wizard.insuranceHidden,
+      'Cadastro Horizon mostra somente a etapa ativa e oculta convenio opcional');
+  }
   for(const theme of ['light','dark']){
    await who.page.evaluate(async theme=>{document.documentElement.dataset.theme=theme;document.documentElement.style.colorScheme=theme;await Promise.all(document.getAnimations({subtree:true}).filter(a=>a.constructor.name==='CSSTransition').map(a=>a.finished.catch(()=>{})));},theme);
    await who.page.addScriptTag({path:axePath});const violations=await who.page.evaluate(()=>axe.run({runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}).then(r=>r.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary,html:n.html}))}))));if(violations.length){issues.push({label,theme,violations});console.error('AXE_VIOLATIONS '+JSON.stringify({label,theme,violations}));}

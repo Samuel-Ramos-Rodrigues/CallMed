@@ -3,7 +3,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {createHash}=require('node:crypto');
 const root=path.resolve(__dirname,'..');
-const modules=["00-foundations.css","10-navigation.css","20-attendance.css","30-scheduling.css","40-public-and-components.css","50-senai-workflows.css","55-identity-public.css","60-doctor-ui.css","65-dashboards.css","70-clinical-theme.css","80-patient-and-operations.css","90-internal-modules.css","95-booking-calendar.css","99-consultation-journey.css"];
+const modules=["00-foundations.css","10-navigation.css","20-attendance.css","30-scheduling.css","40-public-and-components.css","50-senai-workflows.css","55-identity-public.css","60-doctor-ui.css","65-dashboards.css","70-clinical-theme.css","80-patient-and-operations.css","90-internal-modules.css","95-booking-calendar.css","99-consultation-journey.css","100-horizon-core.css","110-horizon-surfaces.css"];
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const cssDir='src/CallMed.Web/wwwroot/css/modules/';
 const files=fs.readdirSync(path.join(root,cssDir)).filter(f=>f.endsWith('.css')).sort();
@@ -32,7 +32,7 @@ function assertStandaloneCss(name) {
   if(depth!==0||comment||quote)throw Error('Incomplete standalone stylesheet: '+name);
 }
 for(const name of modules)assertStandaloneCss(name);
-const bytes=Buffer.from(modules.slice(0,-1).map(m=>read(cssDir+m)).join(''),'utf8'); // baseline CSS limpo V42; 43 declarações antigas sobrepostas foram removidas
+const bytes=Buffer.from(modules.slice(0,13).map(m=>read(cssDir+m)).join(''),'utf8'); // baseline CSS limpo V42; 43 declarações antigas sobrepostas foram removidas
 const sha=createHash('sha1').update(Buffer.from('blob '+bytes.length+'\0')).update(bytes).digest('hex');
 if(sha!=='c97f6969de87c1787d063f798c5d02e47603d74b')throw Error('Cleaned CSS changed: '+sha);
 const head=read('src/CallMed.Web/Views/Shared/_DocumentHead.cshtml');
@@ -51,3 +51,11 @@ for(const staticPage of ['offline.html','contingencia.html']){
  if(content.includes('/css/callmed.css'))throw Error(staticPage+' loads removed CSS');
 }
 console.log('CSS integrity OK: '+modules.length+' modules, Git blob '+sha);
+
+// V43 Horizon: escopo explícito e identidade visual acessível em todas as superfícies.
+const shared=read('src/CallMed.Web/Views/Shared/_Layout.cshtml');
+const auth=read('src/CallMed.Web/Views/Shared/_AuthLayout.cshtml');
+const publicLayout=read('src/CallMed.Web/Views/Shared/_PublicLayout.cshtml');
+for(const [name,src] of [['main',shared],['auth',auth],['public',publicLayout]]) if(!src.includes('cm43-horizon'))throw Error('Horizon scope missing in '+name);
+const horizon=read(cssDir+'100-horizon-core.css')+read(cssDir+'110-horizon-surfaces.css');
+for(const s of ['prefers-reduced-motion','callmed-high-contrast','.cm37-dashboard','.identity-shell','.atendimento-shell','.cm-booking-calendar','.public-hero']) if(!horizon.includes(s))throw Error('Horizon missing visual/a11y contract: '+s);

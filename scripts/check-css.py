@@ -8,15 +8,15 @@ root = Path(__file__).resolve().parents[1]
 web = root / "src" / "CallMed.Web"
 css_dir = web / "wwwroot" / "css" / "modules"
 files = sorted((web / "wwwroot").rglob("*.css"))
-if len(files) != 14 or any(p.parent != css_dir for p in files):
-    sys.exit("São esperados exatamente 14 módulos CSS em wwwroot/css/modules.")
+if len(files) != 16 or any(p.parent != css_dir for p in files):
+    sys.exit("São esperados exatamente 16 módulos CSS em wwwroot/css/modules.")
 for file in files:
     text = file.read_text(encoding="utf-8")
     if re.search(r"@import\b", text, re.I):
         sys.exit(f"Não usar @import: {file.relative_to(root)}")
 head = (web / "Views/Shared/_DocumentHead.cshtml").read_text(encoding="utf-8")
 linked = re.findall(r"""href=["']~?/css/modules/([\w-]+\.css)["']""", head)
-if len(linked) != 14 or sorted(linked) != sorted(p.name for p in files):
+if len(linked) != 16 or sorted(linked) != sorted(p.name for p in files):
     sys.exit("A partial _DocumentHead deve referenciar cada módulo CSS uma única vez.")
 for page in [*web.rglob("*.cshtml"), *web.rglob("*.html")]:
     if {"bin", "obj"} & set(page.parts):
