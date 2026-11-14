@@ -8985,3 +8985,121 @@ body.cm39-shell :is(.cm-requests-screen,.cm19-settings-page,.cm25-exams-page,.jo
   body.cm39-shell .cm19-settings-grid {grid-template-columns:minmax(0,1fr)}
   body.cm39-shell .cm25-exams-page .cm25-exam-record .form-grid {grid-template-columns:minmax(0,1fr)}
 }
+
+
+/* V40 — Achados das capturas reais do navegador (fixtures sintéticos).
+   Equipe/Consultas: contadores sem espaçamento e título encostado na borda. */
+body.cm39-shell .cm-consult-page {display:grid;gap:19px;min-width:0}
+body.cm39-shell .cm-consult-heading {display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:0}
+body.cm39-shell .cm-consult-heading>div:first-child {min-width:0;flex:1 1 310px}
+body.cm39-shell .cm-consult-heading>div:last-child {display:flex;gap:9px;flex-wrap:wrap}
+body.cm39-shell .cm-consult-heading h1 {margin:4px 0 6px}
+body.cm39-shell .cm-consult-heading p {color:var(--muted);line-height:1.55;margin:0}
+body.cm39-shell .cm-consult-overview {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;margin:0;min-width:0;
+}
+body.cm39-shell .cm-consult-overview>article {
+  display:flex;align-items:center;gap:13px;min-width:0;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:14px;box-shadow:var(--shadow);padding:17px;
+}
+body.cm39-shell .cm-consult-overview .cm-consult-stat-icon {
+  display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;
+  background:var(--accent-soft);color:var(--primary);border-radius:11px;
+}
+body.cm39-shell .cm-consult-overview .cm-consult-stat-icon svg {width:21px;height:21px}
+body.cm39-shell .cm-consult-overview>article>div {display:grid;gap:3px;min-width:0}
+body.cm39-shell .cm-consult-overview>article>div>span {font-size:.8rem;line-height:1.4;color:var(--muted)}
+body.cm39-shell .cm-consult-overview>article>div>strong {font-size:clamp(1.45rem,2.1vw,1.95rem);font-weight:850;line-height:1.15;color:var(--text)}
+body.cm39-shell .cm-consult-records {
+  min-width:0;padding:clamp(17px,2vw,23px);
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:16px;box-shadow:var(--shadow);
+}
+body.cm39-shell .cm-consult-records>header {display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:16px}
+body.cm39-shell .cm-consult-records>header>div {min-width:0;flex:1 1 240px}
+body.cm39-shell .cm-consult-records>header h2 {margin:0 0 5px;font-size:1.15rem;color:var(--text)}
+body.cm39-shell .cm-consult-records>header p {margin:0;color:var(--muted);font-size:.85rem}
+body.cm39-shell .cm-consult-records>header>a {font-size:.81rem}
+body.cm39-shell .cm-consult-status-filters {
+  display:flex;gap:7px;flex-wrap:wrap;align-items:center;
+  margin:0 0 14px;padding:0;
+}
+body.cm39-shell .cm-consult-status-filters>a {
+  display:inline-flex;gap:7px;align-items:center;
+  padding:9px 12px;text-decoration:none;
+  border:1px solid var(--line);border-radius:9px;
+  color:var(--muted);font-size:.8rem;
+}
+body.cm39-shell .cm-consult-status-filters>a.active {
+  background:var(--accent-soft);border-color:var(--primary);color:var(--primary);
+}
+body.cm39-shell .cm-consult-status-filters b {font-size:.76rem}
+body.cm39-shell .cm-consult-filters {
+  display:grid;grid-template-columns:minmax(185px,1.4fr) repeat(3,minmax(130px,.9fr)) auto;
+  align-items:end;gap:10px;padding:14px;
+  border:1px solid var(--line);background:var(--surface-2);
+  border-radius:12px;margin:0 0 16px;
+}
+body.cm39-shell .cm-consult-filters label {min-width:0;margin:0;display:grid;gap:6px}
+body.cm39-shell .cm-consult-filters label>span {font-size:.76rem;font-weight:750;color:var(--muted)}
+body.cm39-shell .cm-consult-filters :is(select,input) {min-width:0;width:100%;font-size:.82rem}
+body.cm39-shell .cm-consult-filters .btn {min-height:44px}
+body.cm39-shell .cm-consult-filter-note {margin:0 0 14px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+body.cm39-shell .cm-consult-filter-note p {margin:0}
+body.cm39-shell .cm-consult-table-wrap {background:var(--surface)}
+body.cm39-shell .cm-consult-table th {white-space:nowrap}
+body.cm39-shell .cm-consult-table td {vertical-align:middle}
+body.cm39-shell .cm-consult-table .cm-consult-row-actions {display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+
+/* Cadastros: título, descrição e ações da tabela mantidos dentro do cartão. */
+body.cm39-shell .crud-v16 .table-card>.v16-card-head {
+  display:flex;align-items:flex-start;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;margin:0;padding:19px 19px 5px;
+}
+body.cm39-shell .crud-v16 .table-card>.v16-card-head h2 {margin:0 0 5px;font-size:1.12rem}
+body.cm39-shell .crud-v16 .table-card>.v16-card-head p {margin:0;color:var(--muted);font-size:.86rem}
+body.cm39-shell .crud-v16 .row-actions {display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+body.cm39-shell .crud-v16 .row-action {
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:7px 9px;min-height:33px;white-space:nowrap;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:8px;font-size:.76rem;font-weight:750;
+  text-decoration:none;color:var(--primary);
+}
+body.cm39-shell .crud-v16 .row-action:hover {background:var(--accent-soft)}
+body.cm39-shell .crud-v16 .row-action.danger {color:var(--danger)}
+
+/* Agenda geral: métricas que antes apareciam visualmente coladas. */
+body.cm39-shell .cm19-agenda-page .cm19-agenda-metrics {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;margin:0 0 18px;
+}
+body.cm39-shell .cm19-agenda-page .cm19-agenda-metrics>span {
+  display:grid;gap:5px;min-width:0;
+  padding:15px 18px;border:1px solid var(--line);
+  border-radius:13px;background:var(--surface);
+  box-shadow:var(--shadow);
+}
+body.cm39-shell .cm19-agenda-page .cm19-agenda-metrics small {font-size:.77rem;color:var(--muted)}
+body.cm39-shell .cm19-agenda-page .cm19-agenda-metrics strong {
+  font-size:clamp(1.4rem,2vw,1.9rem);line-height:1.15;
+  color:var(--text);font-weight:850;
+}
+body.cm39-shell .cm19-agenda-page .cm19-calendar {min-width:0}
+body.cm39-shell .cm19-agenda-page .cm19-calendar-scroll {max-width:100%;overflow-x:auto}
+@media(max-width:1120px) {
+  body.cm39-shell .cm-consult-overview {grid-template-columns:repeat(2,minmax(0,1fr))}
+  body.cm39-shell .cm-consult-filters {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:680px) {
+  body.cm39-shell .cm-consult-overview {grid-template-columns:repeat(2,minmax(0,1fr))}
+  body.cm39-shell .cm-consult-records {padding:15px}
+  body.cm39-shell .cm-consult-filters {grid-template-columns:minmax(0,1fr)}
+  body.cm39-shell .cm19-agenda-page .cm19-agenda-metrics {grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:390px) {
+  body.cm39-shell .cm-consult-overview {grid-template-columns:minmax(0,1fr)}
+  body.cm39-shell .cm-consult-overview>article {padding:13px}
+}
