@@ -50,6 +50,16 @@ jobs:
       - run: python3 scripts/check-architecture.py
       - run: python3 scripts/check-css.py
       - run: python3 scripts/auditar-views-callmed.py
+      - name: Auditar UX das páginas Razor (todos os perfis)
+        run: python3 scripts/auditar-ux-paginas.py
+      - name: Publicar inventário de ocorrências por página
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: callmed-v42-page-audit
+          path: artifacts/ui-page-audit.json
+          if-no-files-found: warn
+          retention-days: 14
       - name: NuGet vulnerability gate
         shell: bash
         run: |
