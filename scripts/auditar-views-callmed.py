@@ -13,11 +13,11 @@ views = sorted(list((ROOT / "Views").rglob("*.cshtml")) + list((ROOT / "Areas").
 # MVC partial controllers can implement actions in multiple source files.
 controllers = {}
 for source in (ROOT / "Controllers").rglob("*Controller*.cs"):
-    match = re.fullmatch(r"(.+Controller)(?:\\.[^.]+)*\\.cs", source.name)
+    match = re.fullmatch(r"(.+Controller)(?:\.[^.]+)*\.cs", source.name)
     if match:
         controllers.setdefault(match.group(1).removesuffix("Controller"), []).append(source)
 controller_sources = {
-    name: "\\n".join(p.read_text(encoding="utf-8-sig") for p in sources)
+    name: "\n".join(p.read_text(encoding="utf-8-sig") for p in sources)
     for name, sources in controllers.items()
 }
 asset_ext = {".js", ".css", ".svg", ".png", ".ico", ".jpg", ".jpeg", ".webp", ".json"}
