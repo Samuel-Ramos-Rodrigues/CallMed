@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {webcrypto} from 'node:crypto';
 import vm from 'node:vm';
 const {Window} = await import(process.env.CALLMED_HAPPY_DOM_MODULE || 'happy-dom');
-const source = fs.readFileSync(new URL('../CallMedCrud/wwwroot/js/core/contingencia.js', import.meta.url),'utf8');
+const source = fs.readFileSync(new URL('../src/CallMed.Web/wwwroot/js/core/contingencia.js', import.meta.url),'utf8');
 const store = new Map(); let queue=Promise.resolve(), quota=false, calls=0, responseMode='lost';
 const accepted=new Map(); const windows=[];
 const storage={getItem:k=>store.get(k)??null,setItem:(k,v)=>{if(quota)throw new Error('QuotaExceededError');store.set(k,v);}};
@@ -54,7 +54,7 @@ try {
     const events={};let cached;
     const sandbox={self:{location:{origin:'https://callmed.test'},addEventListener:(n,fn)=>events[n]=fn},URL,Response,
         fetch:async()=>{throw new Error('offline');},caches:{match:async url=>{cached=url;return new Response('cache');}}};
-    vm.runInNewContext(fs.readFileSync(new URL('../CallMedCrud/wwwroot/service-worker.js',import.meta.url),'utf8'),sandbox);
+    vm.runInNewContext(fs.readFileSync(new URL('../src/CallMed.Web/wwwroot/service-worker.js',import.meta.url),'utf8'),sandbox);
     let result;events.fetch({request:{method:'GET',url:'https://callmed.test/contingencia.html',mode:'navigate'},respondWith:p=>{result=p;}});await result;assert.equal(cached,'/contingencia.html');
     events.fetch({request:{method:'GET',url:'https://callmed.test/Paciente/Details/1',mode:'navigate'},respondWith:p=>{result=p;}});await result;assert.equal(cached,'/offline.html');
     console.log('PASS service worker usa formulário público offline e não guarda página de paciente');

@@ -31,7 +31,7 @@ internal static class ContaPerfilChecks
         check(ContaFotoValidador.Tipo(grande) is null && ContaFotoValidador.Tipo(Png[..^3]) is null, "Foto recusa tamanho excedido e imagem truncada");
         var dimensoes = Png.ToArray(); System.Buffers.Binary.BinaryPrimitives.WriteInt32BigEndian(dimensoes.AsSpan(16,4),100000);
         check(ContaFotoValidador.Tipo(dimensoes) is null && ContaService.DescreverNavegador("<script>segredo</script>") == "Navegador · outro dispositivo", "Foto limita dimensões e atividade não armazena User-Agent bruto");
-        var builder = WebApplication.CreateBuilder(new WebApplicationOptions { ApplicationName = typeof(LoginModel).Assembly.FullName, EnvironmentName = "Development", ContentRootPath = Path.GetFullPath("CallMedCrud") });
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions { ApplicationName = typeof(LoginModel).Assembly.FullName, EnvironmentName = "Development", ContentRootPath = Path.GetFullPath("src/CallMed.Web") });
         builder.Logging.ClearProviders();
         var databaseName = "perfil-http-" + Guid.NewGuid();
         builder.Services.AddDbContext<MKSANContext>(o => o.UseInMemoryDatabase(databaseName));

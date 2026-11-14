@@ -2,7 +2,7 @@
 
 ## Rota pública adicionada
 
-A página de Termos de Serviço está em `CallMedCrud/Views/Home/TermosDeUso.cshtml`, exposta anonimamente em `GET /termos-de-uso`. Ela usa o layout público e não exige login.
+A página de Termos de Serviço está em `src/CallMed.Web/Views/Home/TermosDeUso.cshtml`, exposta anonimamente em `GET /termos-de-uso`. Ela usa o layout público e não exige login.
 
 Depois que a versão for publicada no Render, o endereço esperado será:
 

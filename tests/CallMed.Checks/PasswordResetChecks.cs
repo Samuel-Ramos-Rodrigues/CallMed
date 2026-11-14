@@ -198,7 +198,7 @@ internal static class PasswordResetChecks
 
     private static async Task CheckHttpAsync(Action<bool, string> check)
     {
-        var contentRoot = Path.GetFullPath("CallMedCrud");
+        var contentRoot = Path.GetFullPath("src/CallMed.Web");
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { ApplicationName = typeof(ForgotPasswordModel).Assembly.FullName, EnvironmentName = "Development", ContentRootPath = contentRoot });
         builder.Logging.ClearProviders();
         var options = new DbContextOptionsBuilder<MKSANContext>().UseInMemoryDatabase("http-reset-" + Guid.NewGuid()).Options;

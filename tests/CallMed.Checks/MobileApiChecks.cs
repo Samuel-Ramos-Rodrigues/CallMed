@@ -36,7 +36,7 @@ internal static class MobileApiChecks
     const string Password="Paciente#2026";
     public static async Task RunAsync(Action<bool,string> check)
     {
-        var builder=WebApplication.CreateBuilder(new WebApplicationOptions{ApplicationName=typeof(MKSANCrud.Controllers.ConsultaController).Assembly.FullName,EnvironmentName="Development",ContentRootPath=Path.GetFullPath("CallMedCrud")});
+        var builder=WebApplication.CreateBuilder(new WebApplicationOptions{ApplicationName=typeof(MKSANCrud.Controllers.ConsultaController).Assembly.FullName,EnvironmentName="Development",ContentRootPath=Path.GetFullPath("src/CallMed.Web")});
         builder.Logging.ClearProviders(); var database="mobile-http-"+Guid.NewGuid();
         builder.Services.AddDbContext<MKSANContext>(o=>o.UseInMemoryDatabase(database).ConfigureWarnings(w=>w.Ignore(InMemoryEventId.TransactionIgnoredWarning)));
         builder.Services.AddDataProtection().SetApplicationName("CallMed").PersistKeysToDbContext<MKSANContext>();

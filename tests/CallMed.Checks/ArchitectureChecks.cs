@@ -73,9 +73,9 @@ internal static class ArchitectureChecks
     {
         public string ApplicationName{get;set;}="CallMedCrud";
         public string EnvironmentName{get;set;}=Environments.Development;
-        public string ContentRootPath{get;set;}=Path.GetFullPath("CallMedCrud");
+        public string ContentRootPath{get;set;}=Path.GetFullPath("src/CallMed.Web");
         public IFileProvider ContentRootFileProvider{get;set;}=new NullFileProvider();
-        public string WebRootPath{get;set;}=Path.GetFullPath("CallMedCrud/wwwroot");
+        public string WebRootPath{get;set;}=Path.GetFullPath("src/CallMed.Web/wwwroot");
         public IFileProvider WebRootFileProvider{get;set;}=new NullFileProvider();
     }
 }

@@ -5,7 +5,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const root = path.resolve(__dirname, '../CallMedCrud/wwwroot');
+const root = path.resolve(__dirname, '../src/CallMed.Web/wwwroot');
 let partial = fs.readFileSync(path.join(root, '../Views/Shared/_AssistenteFlutuante.cshtml'), 'utf8');
 partial = partial.slice(partial.indexOf('<div class="mksan-floating-actions"'), partial.lastIndexOf('</section>') + 10)
     .replace(/data-user-id="[^\n]*/, 'data-user-id="paciente-teste">')

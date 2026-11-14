@@ -1,4 +1,4 @@
-<p align="center"><img src="CallMedCrud/wwwroot/images/logo-callmed-horizontal.png" alt="CallMed" width="260"></p>
+<p align="center"><img src="src/CallMed.Web/wwwroot/images/logo-callmed-horizontal.png" alt="CallMed" width="260"></p>
 <h1 align="center">CallMed</h1>
 <p align="center"><strong>Agenda, atendimento e jornada do paciente em conexão.</strong></p>
 <p align="center">ASP.NET Core 10 · PostgreSQL · Razor · Android nativo · WebRTC</p>
@@ -39,13 +39,13 @@ flowchart TD
 
 | Caminho | Responsabilidade |
 |---|---|
-| `CallMedCrud/` | MVC, Razor/Identity, APIs, webhooks, componentes e arquivos do site. |
+| `src/CallMed.Web/` | MVC, Razor/Identity, APIs, webhooks, componentes e arquivos do site. |
 | `src/CallMed.Domain/` | Entidades, tipos e validações compartilhadas. |
 | `src/CallMed.Persistence/` | Contexto, mapeamentos EF Core e migrations. |
 | `src/CallMed.Application/Modules/` | Funcionalidades organizadas por domínio de trabalho. |
 | `src/CallMed.Application/Infrastructure/` | Implantação do banco, hospedagem e serviços compartilhados de infraestrutura. |
 | `src/CallMed.Worker/` | Execução separada das rotinas automáticas. |
-| `CallMedAndroid/` | Aplicativo nativo de pacientes, em Kotlin e Jetpack Compose. |
+| `mobile/android/` | Aplicativo nativo de pacientes, em Kotlin e Jetpack Compose. |
 | `tests/` | Verificações .NET/PostgreSQL, interface e roteiro de revisão local. |
 | `scripts/` | Validação do CSS, referências, certificado e integração. |
 | `infra/` | Modelos de variáveis do Render (`render/`) e Compose com Evolution (`evolution/`). |
@@ -60,7 +60,7 @@ Extraia a V35 em uma **pasta nova**, preservando suas configurações e chaves e
 ```powershell
 dotnet restore CallMed.sln
 dotnet build CallMed.sln -c Release -m:1
-dotnet run --project CallMedCrud
+dotnet run --project src/CallMed.Web
 ```
 
 Configure as variáveis do ambiente a partir de `.env.example`. Os exemplos são modelos de configuração; o aplicativo recebe os valores pelo ambiente, pelo gerenciador de segredos ou pelo arquivo local de configuração apropriado. Não publique credenciais no Git.
@@ -73,7 +73,7 @@ O modo padrão executa as rotinas dentro do site. A separação é opcional: `Do
 
 ## Interface e acessibilidade
 
-O site carrega somente `CallMedCrud/wwwroot/css/callmed.css`. Essa é a origem mantida, escrita para a V35; não é um bundle e não depende de CSS de versões anteriores. Faça alterações diretamente nela e execute:
+O site carrega somente `src/CallMed.Web/wwwroot/css/callmed.css`. Essa é a origem mantida, escrita para a V35; não é um bundle e não depende de CSS de versões anteriores. Faça alterações diretamente nela e execute:
 
 ```sh
 python scripts/check-css.py
@@ -97,7 +97,7 @@ A fixture local `--salas-fixture` usa dados fictícios e não envia mensagens re
 
 ## Android
 
-O APK nativo **34.0.0 / 3400** foi mantido, com a mesma assinatura e contrato de API. Ele continua distribuído em `/aplicativo`. A V35 altera a arquitetura do servidor e o visual do site; o app utiliza sua interface Compose própria. Abra `CallMedAndroid` no Android Studio para trabalhar no aplicativo.
+O APK nativo **34.0.0 / 3400** foi mantido, com a mesma assinatura e contrato de API. Ele continua distribuído em `/aplicativo`. A V35 altera a arquitetura do servidor e o visual do site; o app utiliza sua interface Compose própria. Abra `mobile/android` no Android Studio para trabalhar no aplicativo.
 
 ## Documentação
 

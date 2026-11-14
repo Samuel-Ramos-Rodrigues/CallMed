@@ -11,8 +11,8 @@ Apoiar a demanda "Plataforma Inteligente de Gestão e Otimização de Consultas 
 4. **Fila de espera — correção de estado**: exibe uma "vaga encontrada" somente se houver oferta aberta e ainda válida, com data, horário e hora-limite; cancelamento do pedido revoga suas ofertas abertas. Não é permitido aceitar oferta vencida por este fluxo.
 5. **Integração de e-mail**: texto da tela passou a refletir a configuração real de envio administrativo automático, distinguindo casos sensíveis e rascunhos sujeitos à revisão. Gmail API e Brevo SMTP não foram substituídos.
 6. **Terminologia multiprofissional**: mensagens gerais da lista de espera deixam de exigir exclusivamente psicólogo.
-7. **Segurança de distribuição**: removidos do ZIP `CallMedAndroid/callmed-upload.jks` e `CallMedAndroid/keystore.properties`, que continham material de assinatura. Incluído `keystore.properties.example` sem segredos. A assinatura de novos APKs RELEASE exige restaurar a chave **privadamente**; não gerar outra para atualizações sem verificar a política da loja.
-8. **Estilo único**: complementos responsivos e de acessibilidade em `CallMedCrud/wwwroot/css/callmed.css`, sem adicionar segunda folha CSS. Central de Atendimento continua com as três colunas e mesma lógica.
+7. **Segurança de distribuição**: removidos do ZIP `mobile/android/callmed-upload.jks` e `mobile/android/keystore.properties`, que continham material de assinatura. Incluído `keystore.properties.example` sem segredos. A assinatura de novos APKs RELEASE exige restaurar a chave **privadamente**; não gerar outra para atualizações sem verificar a política da loja.
+8. **Estilo único**: complementos responsivos e de acessibilidade em `src/CallMed.Web/wwwroot/css/callmed.css`, sem adicionar segunda folha CSS. Central de Atendimento continua com as três colunas e mesma lógica.
 
 ## O que já estava implementado e foi preservado
 

@@ -27,7 +27,7 @@ internal static class AuditPostgresChecks
         var connection=Environment.GetEnvironmentVariable("CALLMED_TEST_DB")??throw new Exception("Isolated PostgreSQL required");
         var cs=new Npgsql.NpgsqlConnectionStringBuilder(connection);
         if(cs.Host!="127.0.0.1"||!cs.Database!.StartsWith("callmed_test"))throw new Exception("Only an isolated local database is allowed");
-        var builder=WebApplication.CreateBuilder(new WebApplicationOptions{ApplicationName=typeof(MKSANCrud.Controllers.ConsultaController).Assembly.FullName,EnvironmentName="Development",ContentRootPath=Path.GetFullPath("CallMedCrud")});
+        var builder=WebApplication.CreateBuilder(new WebApplicationOptions{ApplicationName=typeof(MKSANCrud.Controllers.ConsultaController).Assembly.FullName,EnvironmentName="Development",ContentRootPath=Path.GetFullPath("src/CallMed.Web")});
         builder.Configuration["ConnectionStrings:MKSANContextConnection"]=connection;builder.Logging.ClearProviders();
         builder.Services.AddCallMedApplication(builder.Configuration,builder.Environment);
         await using var app=builder.Build();

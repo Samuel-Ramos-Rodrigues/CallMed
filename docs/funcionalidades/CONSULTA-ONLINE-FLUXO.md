@@ -45,7 +45,7 @@ Na modalidade presencial, permanece a validação da recepção antes do início
 
 Esta correção é do backend, das páginas e do JavaScript. **O APK continua 24.0.0 e não precisa ser recompilado ou reinstalado. Não há coluna ou patch de banco adicional.** O V31 e o modo coturn com segredo compartilhado permanecem. Para Metered, esta revisão acrescenta as opções `Clinica__Tele__TurnUsername` e `Clinica__Tele__TurnPassword`; veja [METERED-TURN.md](../integracoes/METERED-TURN.md).
 
-Atualize o backend completo. Se o repositório contém arquivos extras de outra versão, mantenha uma cópia fora do repositório e substitua a pasta que contém `CallMedCrud.csproj` pelo conteúdo completo desta entrega. A correção de `SalaAtendimento` continua incluída.
+Atualize o backend completo. Se o repositório contém arquivos extras de outra versão, mantenha uma cópia fora do repositório e substitua a pasta que contém `CallMed.Web.csproj` pelo conteúdo completo desta entrega. A correção de `SalaAtendimento` continua incluída.
 
 Verificação específica reproduzível:
 

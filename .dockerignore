@@ -15,7 +15,7 @@
 **/*.p12
 **/.env
 **/appsettings.Production.json
-CallMedAndroid
+mobile
 docs
 infra
 tests
