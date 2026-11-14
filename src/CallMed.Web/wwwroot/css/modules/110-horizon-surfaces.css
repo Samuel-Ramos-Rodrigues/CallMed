@@ -161,7 +161,7 @@ body.cm43-horizon.cm39-shell .cm37-dashboard .cm37-tele {
       var(--surface) 76%);
 }
 body.cm43-horizon.cm39-shell .cm37-dashboard .cm37-tele h2 { font-size: 1.25rem; }
-body.cm43-horizon.cm39-shell .cm37-dashboard .cm37-tele .cm37-eyebrow { color: #3d8eaf; }
+body.cm43-horizon.cm39-shell .cm37-dashboard .cm37-tele .cm37-eyebrow { color: #17627b; }
 :root[data-theme="dark"] body.cm43-horizon.cm39-shell .cm37-dashboard .cm37-tele .cm37-eyebrow { color: #98cceb; }
 body.cm43-horizon.cm39-shell .cm37-dashboard .cm37-listrow {
   gap: 12px;
@@ -765,6 +765,33 @@ body.cm43-horizon.public-body .public-footer {
 }
 :root[data-theme="dark"] body.cm43-horizon.public-body .public-hero .btn,
 :root[data-theme="dark"] body.cm43-horizon.public-body .public-links .btn { color: #092922; }
+
+
+/* Dark public screens: guarantee accessible ink on tinted CTA backgrounds. */
+:root[data-theme="dark"] body.cm43-horizon.public-body .btn:not(.secondary):not(.danger) {
+  background: #79e4c9;
+  color: #092922;
+  border-color: #79e4c9;
+}
+:root[data-theme="dark"] body.cm43-horizon.public-body .public-hero .public-actions .btn {
+  background: #086b62;
+  color: #fff;
+  border-color: #086b62;
+}
+:root[data-theme="dark"] body.cm43-horizon.public-body .cm25-kicker {
+  color: #a4efdb;
+}
+body.cm43-horizon.public-body .care-ticket .eyebrow {
+  color: #076c62;
+}
+body.cm43-horizon.public-body .care-ticket :is(.care-ticket-subtitle,.care-step > span,small) {
+  color: #486471;
+}
+:root[data-theme="dark"] body.cm43-horizon.public-body .public-install .btn.light {
+  background: #9df6d9;
+  color: #0b3029;
+  border-color: #9df6d9;
+}
 
 /* Static offline modes share the same system without pretending clinical data is local. */
 body.cm43-horizon:is(.offline-page,.contingencia-page) {

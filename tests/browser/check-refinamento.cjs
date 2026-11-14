@@ -112,7 +112,7 @@ let browser;
             for(const theme of ['light','dark']) {
                 console.log('VERIFY '+label+' '+width+' '+theme); await setTheme(who.page,theme);
                 check(await who.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),`${label}: ${width}px / ${theme} sem transbordamento`);
-                check(await who.page.locator('link[rel=stylesheet]').evaluateAll(links=>links.length===14&&links.every(l=>new URL(l.href).pathname.startsWith('/css/modules/'))),`${label}: 14 módulos CSS carregados na ordem declarada`);
+                check(await who.page.locator('link[rel=stylesheet]').evaluateAll(links=>links.length===16&&links.every(l=>new URL(l.href).pathname.startsWith('/css/modules/'))),`${label}: 16 módulos CSS carregados na ordem declarada`);
                 await who.page.addScriptTag({path:process.env.CALLMED_AXE_PATH||require.resolve('axe-core/axe.min.js')});
                 const violations=await who.page.evaluate(()=>axe.run({runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}).then(r=>r.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))}))));
                 report.accessibility.push({label,width,theme,violations});save();
