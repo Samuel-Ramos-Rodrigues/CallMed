@@ -262,3 +262,10 @@ a,button,summary{transition-property:color,background-color,border-color,box-sha
  .cm-requests-filters label,.cm-requests-filters select{width:100%}
 }
 
+
+
+/* Cabeçalho de listas acompanha a superfície externa, sem colar na borda. */
+.crud-v16 .table-card>.v16-card-head{padding:17px 19px 14px;border-bottom:1px solid var(--line)}
+.crud-v16 .table-card>.table-scroll{border:0;border-radius:0}
+.crud-v16 .table-card{padding:0;overflow:hidden}
+.crud-v16 .table-card>.v16-empty{margin:16px}
