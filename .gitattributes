@@ -61,3 +61,8 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# Releases binarios: nao tentar diffs textuais
+*.apk binary
+*.aab binary
+*.gz binary

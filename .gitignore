@@ -37,3 +37,8 @@ callmed-segredos*/
 !src/CallMed.Web/App_Data/Aplicativo/CallMed.apk
 # Prévia local é gerada pelo ambiente de desenvolvimento
 .openai/
+
+# Artefatos de build Android futuros: mappings historicos versionados permanecem no Git
+mobile/android/release/mapping-*.txt.gz
+mobile/android/release/*.apk
+mobile/android/release/*.aab

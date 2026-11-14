@@ -51,3 +51,14 @@ Navegação superior, menus por tarefa, componentes comuns de formulário/tabela
 Os namespaces `MKSANCrud.*`, identificadores de entidades, nomes de tabelas e contratos HTTP foram mantidos. Os aliases de `Medico`/`Psicologo` ainda apontam para `ProfissionalSaude`; removê-los de forma indiscriminada quebraria o código e o histórico do banco. O schema continua 37. A integração httpSMS foi transferida de pasta sem reescrever seus arquivos; a validação da entrega compara os hashes com a V34. O APK nativo 34.0.0 foi preservado e continua usando a API existente.
 
 O TWA, seus workflows e os rascunhos de publicação na loja foram removidos. Android App Links e a distribuição direta do APK continuam disponíveis. As opções antigas `Twa:*` permanecem apenas como aliases de configurações já implantadas.
+
+## Revisão incremental de estrutura (branch de auditoria)
+
+- **Apresentação:** login e cadastro continuam com visual V34, agora no CSS único de V35, isolado por `@scope (body.identity-body)`. O carregamento por condição foi retirado do `_DocumentHead`.
+- **Controllers:** as ações de atendimento e consulta foram separadas em arquivos de classe `partial`; a interpretação de payload da Evolution também foi isolada em um arquivo parcial. As rotas, atributos de autorização e assinaturas dos métodos não mudam.
+- **Encaixe:** a fase de notificação foi separada da seleção/reserva, sem mudança deliberada na lógica de concorrência ou envio do httpSMS. Futuras melhorias na reserva exigem testes reais de concorrência.
+- **Contrato compartilhado:** `IClinicaClock` passou a viver em `CallMed.Domain/Contracts/`, mantendo o namespace para compatibilidade. `Application` continua referenciando `Persistence` — a arquitetura segue sendo um monólito modular, não Clean Architecture estrita.
+- **Migração:** `DatabaseDeployment` continua validando `CallMedSchemaVersions` 37. Os inicializadores históricos são preservados; a revisão adicionou somente verificações estáticas do número e dos registros, não executou migrações em bancos de produção.
+- **Distribuição:** o APK servido pelo site e os arquivos `mapping-*.txt.gz` históricos foram preservados por serem necessários para distribuição e diagnóstico de versões. Novos arquivos de build e mapas devem ser publicados como artefatos, fora do repositório, a partir da próxima versão.
+
+Na CI, `python scripts/check-architecture.py` verifica referências entre projetos, contratos, estilo único, classes parciais e versão do schema. O build .NET e testes existentes permanecem obrigatórios antes de mesclar.

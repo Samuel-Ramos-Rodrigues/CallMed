@@ -43,6 +43,7 @@ jobs:
           for suite in salas-pg piloto-pg psicologia-pg jornada-pg amplo-pg audit-pg; do
             dotnet tests/CallMed.Checks/bin/Release/net10.0/CallMed.Checks.dll --"$suite"
           done
+      - run: python3 scripts/check-architecture.py
       - run: python3 scripts/check-css.py
       - run: python3 scripts/auditar-views-callmed.py
       - name: NuGet vulnerability gate
