@@ -9,7 +9,7 @@ A **V35** reorganiza a solução em projetos, remove o TWA e os materiais de ent
 
 ## O que o sistema reúne
 
-> **Novidade desta entrega SENAI:** Teleconsultas em destaque na navegação por perfil e no painel da recepção, junto de confirmações, fila inteligente e check-in. Guia: [`docs/DESTAQUES-PRIORIDADES-DA-DEMANDA.md`](docs/DESTAQUES-PRIORIDADES-DA-DEMANDA.md).
+> **Novidade desta entrega SENAI:** Teleconsultas em destaque na navegação por perfil e no painel da recepção, junto de confirmações, fila inteligente e check-in. Guia: [`docs/senai/DESTAQUES-PRIORIDADES-DA-DEMANDA.md`](docs/senai/DESTAQUES-PRIORIDADES-DA-DEMANDA.md).
 
 
 | Área | Recursos |
@@ -48,6 +48,8 @@ flowchart TD
 | `CallMedAndroid/` | Aplicativo nativo de pacientes, em Kotlin e Jetpack Compose. |
 | `tests/` | Verificações .NET/PostgreSQL, interface e roteiro de revisão local. |
 | `scripts/` | Validação do CSS, referências, certificado e integração. |
+| `infra/` | Modelos de variáveis do Render (`render/`) e Compose com Evolution (`evolution/`). |
+| `docs/` | Documentação: arquitetura, implantação, funcionalidades, integrações, Android, SENAI e SQL. |
 
 Consulte [a arquitetura completa](docs/ARQUITETURA.md) para dependências, limites e compatibilidade.
 
@@ -67,7 +69,7 @@ Configure as variáveis do ambiente a partir de `.env.example`. Os exemplos são
 
 O Dockerfile padrão publica o site e seus projetos referenciados. O comando permanece `dotnet CallMedCrud.dll`. Quem já implantou a V34 pode manter suas variáveis: **a V35 não exige nova variável nem muda o schema 37**.
 
-O modo padrão executa as rotinas dentro do site. A separação é opcional: `Dockerfile.worker` inicia o worker quando web e worker usam `Jobs__Mode=external`. Use um worker nesse desenho de implantação. Veja [a implantação](docs/IMPLANTACAO.md) e [o modelo de ambiente](RENDER.env.example).
+O modo padrão executa as rotinas dentro do site. A separação é opcional: `Dockerfile.worker` inicia o worker quando web e worker usam `Jobs__Mode=external`. Use um worker nesse desenho de implantação. Veja [a implantação](docs/IMPLANTACAO.md) e [o modelo de ambiente](infra/render/RENDER.env.example).
 
 ## Interface e acessibilidade
 
@@ -101,10 +103,11 @@ O APK nativo **34.0.0 / 3400** foi mantido, com a mesma assinatura e contrato de
 
 - [Arquitetura](docs/ARQUITETURA.md)
 - [Implantação](docs/IMPLANTACAO.md)
-- [Limpeza e compatibilidade](docs/LIMPEZA-V35.md)
-- [httpSMS](docs/HTTP-SMS.md)
-- [Gmail API](docs/GMAIL-API-RESPOSTAS-CENTRAL.md)
-- [TURN/Metered](docs/METERED-TURN.md)
-- [Acessos da equipe](docs/ACESSOS-DA-EQUIPE.md)
+- [httpSMS](docs/integracoes/HTTP-SMS.md)
+- [Gmail API](docs/integracoes/GMAIL-API-RESPOSTAS-CENTRAL.md)
+- [TURN/Metered](docs/integracoes/METERED-TURN.md)
+- [Acessos da equipe](docs/funcionalidades/ACESSOS-DA-EQUIPE.md)
+- [Android](docs/android/ANDROID-NATIVO.md)
+- [Demanda SENAI](docs/senai/DESAFIO-SENAI.md)
 
-Os resultados e limites da verificação desta entrega ficam em `validacao-v35/`. Configuração de provedores reais, permissões do dispositivo e chamadas em redes distintas devem ser conferidas no ambiente da clínica.
+Configuração de provedores reais, permissões do dispositivo e chamadas em redes distintas devem ser conferidas no ambiente da clínica.

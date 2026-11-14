@@ -40,4 +40,4 @@
  @if(Model.Equipe){<section class="cm-room-create" id="nova-sala"><h2>Cadastrar sala física</h2><p>Informe os dados que ajudam a recepção a escolher o espaço adequado.</p><form asp-action="Salvar" method="post" class="cm-form-grid"><input type="hidden" name="ativa" value="true"/><input type="hidden" name="data" value="@data"/><label>Nome da sala<input name="nome" maxlength="80" placeholder="Ex.: Consultório 03" required/></label><label>Localização<input name="localizacao" maxlength="120" placeholder="Ex.: térreo, próximo à recepção"/></label><label>Recursos disponíveis<textarea name="recursos" maxlength="500" rows="2" placeholder="Ex.: acesso sem degraus, mesa e maca"></textarea></label><button class="btn" type="submit">Cadastrar sala</button></form></section>}
  }
 </section>
-<script src="~/js/salas.js" asp-append-version="true" defer></script>
+<script src="~/js/jornada/salas.js" asp-append-version="true" defer></script>

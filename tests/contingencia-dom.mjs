@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {webcrypto} from 'node:crypto';
 import vm from 'node:vm';
 const {Window} = await import(process.env.CALLMED_HAPPY_DOM_MODULE || 'happy-dom');
-const source = fs.readFileSync(new URL('../CallMedCrud/wwwroot/js/contingencia.js', import.meta.url),'utf8');
+const source = fs.readFileSync(new URL('../CallMedCrud/wwwroot/js/core/contingencia.js', import.meta.url),'utf8');
 const store = new Map(); let queue=Promise.resolve(), quota=false, calls=0, responseMode='lost';
 const accepted=new Map(); const windows=[];
 const storage={getItem:k=>store.get(k)??null,setItem:(k,v)=>{if(quota)throw new Error('QuotaExceededError');store.set(k,v);}};

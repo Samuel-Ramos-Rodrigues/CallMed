@@ -36,7 +36,7 @@
         <h2>Entrada de e-mails pela API do Gmail</h2>
         <p>O CallMed consulta a caixa do Gmail e registra mensagens na Central. No modo automático, a IA pode responder dúvidas administrativas simples sem aprovação individual. Demandas sensíveis e mensagens que exigem revisão são encaminhadas à equipe; rascunhos manuais continuam sujeitos à aprovação.</p>
         <p>Configure no Render: <code>GmailInbox__Enabled</code>, <code>GmailInbox__MailboxEmail</code>, <code>GmailInbox__ClientId</code>, <code>GmailInbox__ClientSecret</code>, <code>GmailInbox__RefreshToken</code> e <code>GmailInbox__StartAfterUtc</code>. Defina StartAfterUtc como o instante UTC em que a integração será ativada; isso evita importar mensagens antigas da caixa. O OAuth deve conceder o escopo <code>https://www.googleapis.com/auth/gmail.modify</code>.</p>
-        <p>Leia <code>docs/GMAIL-API-RESPOSTAS-CENTRAL.md</code> para criar o projeto no Google Cloud e gerar o refresh token. Não cole credenciais nesta tela nem no chat.</p>
+        <p>Leia <code>docs/integracoes/GMAIL-API-RESPOSTAS-CENTRAL.md</code> para criar o projeto no Google Cloud e gerar o refresh token. Não cole credenciais nesta tela nem no chat.</p>
         <p><strong>Modo de envio configurado:</strong> @(envioAutomatico ? "Automático para casos administrativos elegíveis" : "Revisão humana antes do envio automático")</p>
         <span class="@(gmailInbox ? "status-chip success" : "status-chip neutral")">@(gmailInbox ? "Credenciais preenchidas" : "Aguardando configuração do Gmail")</span>
     </div>

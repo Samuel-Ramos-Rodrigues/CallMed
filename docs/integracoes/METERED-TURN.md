@@ -22,7 +22,7 @@ A [documentação oficial](https://www.metered.ca/docs/turn-server-service/quick
 | `Clinica__Tele__TurnPassword` | Campo `credential` da credencial TURN |
 | `Clinica__Tele__TurnSecret` | Vazio para usar Metered; reservado ao modo coturn com segredo compartilhado |
 
-Template de nomes em `docs/deploy/render-metered.env.example`; preencha os valores reais antes de importar. URLs começam com `stun:`, `turn:` ou `turns:`; não são o endereço HTTPS do dashboard ou da API.
+Template de nomes em `infra/render/render-metered.env.example`; preencha os valores reais antes de importar. URLs começam com `stun:`, `turn:` ou `turns:`; não são o endereço HTTPS do dashboard ou da API.
 
 O código usa a mesma credencial para as URLs TURN desta lista. Cadastre URLs pertencentes à credencial que criou. Se usar vários provedores com usuários diferentes, eles precisam de configuração separada que esta revisão não implementa.
 

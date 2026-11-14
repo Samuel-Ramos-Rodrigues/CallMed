@@ -1,9 +1,9 @@
 # Ambiente local com CallMed + Evolution no mesmo servidor.
-# Copie .env.evolution.example para .env.evolution antes de executar.
+# Copie infra/evolution/.env.evolution.example para infra/evolution/.env.evolution antes de executar.
 services:
   callmed:
     build:
-      context: .
+      context: ../..
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:

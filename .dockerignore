@@ -17,6 +17,6 @@
 **/appsettings.Production.json
 CallMedAndroid
 docs
+infra
 tests
-validacao-v35
 *.zip

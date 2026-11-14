@@ -52,4 +52,4 @@ Se a sua implantação desabilita patches automáticos, aplique esse SQL pelo pr
 
 ## O que depende de validação externa
 
-O recurso de medição está implementado, mas a linha de base, os tempos, as capacidades, os custos e os resultados do piloto precisam ser coletados pela clínica. Também continuam externos o aceite da empresa/escola da adaptação para Psicologia, revisão clínica e de governança, homologação do PEP escolhido e os ensaios físicos de chamadas/TURN/TalkBack descritos em `ACEITACAO-V26.md`. Esta versão não marca esses itens como concluídos nem altera sua aprovação.
+O recurso de medição está implementado, mas a linha de base, os tempos, as capacidades, os custos e os resultados do piloto precisam ser coletados pela clínica. Também continuam externos o aceite da empresa/escola da adaptação para Psicologia, revisão clínica e de governança, homologação do PEP escolhido e os ensaios físicos de chamadas/TURN/TalkBack descritos em `ACEITACAO.md`. Esta versão não marca esses itens como concluídos nem altera sua aprovação.

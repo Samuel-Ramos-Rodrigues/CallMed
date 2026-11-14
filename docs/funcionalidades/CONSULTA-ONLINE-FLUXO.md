@@ -43,7 +43,7 @@ Na modalidade presencial, permanece a validação da recepção antes do início
 
 ## Atualização e verificação
 
-Esta correção é do backend, das páginas e do JavaScript. **O APK continua 24.0.0 e não precisa ser recompilado ou reinstalado. Não há coluna ou patch de banco adicional.** O V31 e o modo coturn com segredo compartilhado permanecem. Para Metered, esta revisão acrescenta as opções `Clinica__Tele__TurnUsername` e `Clinica__Tele__TurnPassword`; veja [METERED-TURN.md](METERED-TURN.md).
+Esta correção é do backend, das páginas e do JavaScript. **O APK continua 24.0.0 e não precisa ser recompilado ou reinstalado. Não há coluna ou patch de banco adicional.** O V31 e o modo coturn com segredo compartilhado permanecem. Para Metered, esta revisão acrescenta as opções `Clinica__Tele__TurnUsername` e `Clinica__Tele__TurnPassword`; veja [METERED-TURN.md](../integracoes/METERED-TURN.md).
 
 Atualize o backend completo. Se o repositório contém arquivos extras de outra versão, mantenha uma cópia fora do repositório e substitua a pasta que contém `CallMedCrud.csproj` pelo conteúdo completo desta entrega. A correção de `SalaAtendimento` continua incluída.
 
@@ -55,6 +55,6 @@ dotnet run --project tests/CallMed.Checks -- --teleconsulta
 
 Foram executados 21 testes específicos de regras/permissões/horários, incluindo limite exato, expiração e meia-noite, além das verificações de regressão da jornada e dos canais. O teste de navegador exercita autorização pelo formulário real, espera com liberação automática para o profissional, proteção de acesso e conexão WebRTC com mídia fictícia.
 
-Para Metered ou outro provedor com credenciais de usuário/senha, veja [METERED-TURN.md](METERED-TURN.md); essa revisão acrescenta os dois campos opcionais no ambiente.
+Para Metered ou outro provedor com credenciais de usuário/senha, veja [METERED-TURN.md](../integracoes/METERED-TURN.md); essa revisão acrescenta os dois campos opcionais no ambiente.
 
 A conexão entre redes distintas ainda depende de STUN/TURN configurado. A correção da interface não fornece essa infraestrutura nem representa homologação clínica/regulatória. Não houve acesso ao banco de produção, envio de mensagens reais ou deploy no Render do usuário.

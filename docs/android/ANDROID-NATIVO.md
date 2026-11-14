@@ -1,6 +1,6 @@
 # Android nativo — integração com CallMed
 
-O cliente está em [`CallMedAndroid`](../CallMedAndroid/README-ANDROID.md). O APK nativo **24.0.0 / 2400** está compilado e incluído no download do site. **Publique primeiro o backend deste ZIP e depois instale o APK** sobre a versão anterior. A jornada exige o patch V31; veja [instalação e configuração](ARQUITETURA.md). O formato de chat por atendimento da versão 23.2.0 foi preservado.
+O cliente está em [`CallMedAndroid`](../../CallMedAndroid/README-ANDROID.md). O APK nativo **24.0.0 / 2400** está compilado e incluído no download do site. **Publique primeiro o backend deste ZIP e depois instale o APK** sobre a versão anterior. A jornada exige o patch V31; veja [instalação e configuração](../ARQUITETURA.md). O formato de chat por atendimento da versão 23.2.0 foi preservado.
 
 Preparação, confirmação ativa, check-in e ofertas de encaixe são nativos. Formulários cifrados e vídeo usam o navegador por ticket temporário de uso único e sessão restrita à consulta. O token de acesso da API não é transmitido ao navegador. Não há sincronização geral dos cookies do site com o app.
 
@@ -56,7 +56,7 @@ Os exames usam os campos existentes no site: nome, data e local. Não há arquiv
 
 Uma nova pergunta reabre a conversa no servidor, inclusive quando a avaliação anterior ainda está pendente. A API não exige avaliar antes de continuar. No app, cada ação invalida as leituras de histórico iniciadas antes dela. Só há um polling em andamento; uma resposta antiga não pode recolocar o estado encerrado nem apagar mensagens novas. O resultado do POST aplica seu estado antes da atualização do histórico. Falhas de rede não repetem automaticamente o envio.
 
-O formato `historicoVersao=2` separa cada atendimento pelos encerramentos já persistidos. A conversa finalizada sai da tela atual e permanece em Anteriores, em modo de leitura. Mensagens Web/app novas não apagam arquivos ao superar o limite antigo de 250. Detalhes, compatibilidade e paginação em [CHAT-POR-ATENDIMENTO.md](CHAT-POR-ATENDIMENTO.md).
+O formato `historicoVersao=2` separa cada atendimento pelos encerramentos já persistidos. A conversa finalizada sai da tela atual e permanece em Anteriores, em modo de leitura. Mensagens Web/app novas não apagam arquivos ao superar o limite antigo de 250. Detalhes, compatibilidade e paginação em [CHAT-POR-ATENDIMENTO.md](../funcionalidades/CHAT-POR-ATENDIMENTO.md).
 
 O aviso antigo de encerramento e seu convite de avaliação não aparecem durante o preparo da resposta à nova mensagem. O campo de texto e o botão de envio ficam lado a lado, com descrição acessível e alvo de toque de 56dp.
 

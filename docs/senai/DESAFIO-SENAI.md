@@ -37,6 +37,6 @@ Telefone e atendimento presencial continuam disponíveis na mesma agenda. O modo
 
 Os indicadores incluem taxa de faltas, confirmação ativa, tempo até confirmação, vagas recuperadas, check-ins, chegadas, espera com tamanho da amostra e minutos de trabalho administrativo por consulta. Registre período, população e fonte das medições Antes/Piloto, mantendo critérios comparáveis.
 
-Veja [funções, atualização e variáveis](ARQUITETURA.md), [testes executados](../validacao-v35/LEIA-ME.md), [contrato PEP](PEP-V24.md) e [validação clínica/regulatória](../validacao-v35/LEIA-ME.md).
+Veja [funções, atualização e variáveis](../ARQUITETURA.md) e [contrato PEP](../integracoes/PEP.md).
 
-O histórico da entrega anterior permanece em [ENTREGA-V22.md](LIMPEZA-V35.md) e nos documentos de versões anteriores. A adaptação funcional não constitui certificação LGPD, CFM, ANS ou FHIR.
+A adaptação funcional não constitui certificação LGPD, CFM, ANS ou FHIR.

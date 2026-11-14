@@ -1,6 +1,6 @@
 # APK nativo disponível no próprio site
 
-O download entrega o aplicativo nativo de pacientes **CallMed 23.2.0**, criado em Kotlin e Jetpack Compose, com os novos fluxos e ajustes de leitura. O módulo está em [`CallMedAndroid`](../CallMedAndroid/README-ANDROID.md). O projeto TWA anterior foi preservado em sua pasta.
+O download entrega o aplicativo nativo de pacientes **CallMed 23.2.0**, criado em Kotlin e Jetpack Compose, com os novos fluxos e ajustes de leitura. O módulo está em [`CallMedAndroid`](../../CallMedAndroid/README-ANDROID.md). O projeto TWA anterior foi preservado em sua pasta.
 
 ## Publicar no Render
 
@@ -46,4 +46,4 @@ O aplicativo não instala atualizações automaticamente. Mudanças no cliente K
 
 ## Verificação
 
-A compilação e publicação Release do servidor incluem o mesmo APK. Os 13 testes HTTP de download e as 12 verificações da interface no Chromium passaram com este arquivo. A compilação Android release, o lint e os 35 testes JVM/Compose também passaram. Veja [a validação completa](../CallMedAndroid/README-ANDROID.md).
+A compilação e publicação Release do servidor incluem o mesmo APK. Os 13 testes HTTP de download e as 12 verificações da interface no Chromium passaram com este arquivo. A compilação Android release, o lint e os 35 testes JVM/Compose também passaram. Veja [a validação completa](../../CallMedAndroid/README-ANDROID.md).

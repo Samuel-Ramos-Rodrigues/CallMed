@@ -51,4 +51,4 @@ Compare os resultados com medições de linha de base de períodos equivalentes,
 
 Pedidos de privacidade não apagam automaticamente prontuários. O responsável deve conferir identidade, fundamento, guarda aplicável, medidas efetivamente tomadas e referências da entrega antes de responder. A plataforma registra o fluxo; ela não substitui a análise profissional ou jurídica.
 
-Continuam externas: aceite formal da adaptação para Psicologia pela empresa/escola; revisão clínica e de governança; contratos e homologação dos provedores; testes físicos com TalkBack e chamadas entre redes reais; recuperação de backup em ambiente operacional; e dados reais do piloto. Consulte `ACEITACAO-V26.md` e `VALIDACAO-PSICOLOGIA-V26.md`.
+Continuam externas: aceite formal da adaptação para Psicologia pela empresa/escola; revisão clínica e de governança; contratos e homologação dos provedores; testes físicos com TalkBack e chamadas entre redes reais; recuperação de backup em ambiente operacional; e dados reais do piloto. Consulte `ACEITACAO.md`.

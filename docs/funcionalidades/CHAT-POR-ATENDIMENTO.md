@@ -45,4 +45,4 @@ As rotas existentes de mensagens, encerramento e avaliação foram preservadas. 
 
 ## Validação
 
-As verificações incluem histórico por titular, fronteiras entre atendimentos, conversa vazia após novo início, confirmação antes de arquivar uma conversa ativa, feedback opcional, marcação legada, paginação e preservação acima de 250 mensagens. Há testes nativos para consulta em modo de leitura, ausência de campo de envio no arquivo, início confirmado e texto ampliado. Veja [a validação do Android](../CallMedAndroid/README-ANDROID.md).
+As verificações incluem histórico por titular, fronteiras entre atendimentos, conversa vazia após novo início, confirmação antes de arquivar uma conversa ativa, feedback opcional, marcação legada, paginação e preservação acima de 250 mensagens. Há testes nativos para consulta em modo de leitura, ausência de campo de envio no arquivo, início confirmado e texto ampliado. Veja [a validação do Android](../../CallMedAndroid/README-ANDROID.md).

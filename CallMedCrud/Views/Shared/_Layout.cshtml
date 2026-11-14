@@ -82,15 +82,15 @@ else
     <main class="app-main" id="conteudo">@RenderBody()</main>
 }
 @if (!focoClinico && !(controller == "Atendimento" && action == "Index")) { <partial name="_AssistenteFlutuante" /> }
-<script src="~/js/shell.js" asp-append-version="true"></script>
-<script src="~/js/file-controls.js" asp-append-version="true"></script>
-<script src="~/js/date-select.js" asp-append-version="true"></script>
-<script src="~/js/accessibility.js" asp-append-version="true"></script>
-<script src="~/js/mobile-final.js" asp-append-version="true"></script>
-<script src="~/js/theme.js" asp-append-version="true"></script>
-<script src="~/js/pwa.js" asp-append-version="true"></script>
-<script src="~/js/confirmacoes.js" asp-append-version="true"></script>
-<script src="~/js/assistente-flutuante.js" asp-append-version="true"></script>
+<script src="~/js/core/shell.js" asp-append-version="true"></script>
+<script src="~/js/core/file-controls.js" asp-append-version="true"></script>
+<script src="~/js/core/date-select.js" asp-append-version="true"></script>
+<script src="~/js/core/accessibility.js" asp-append-version="true"></script>
+<script src="~/js/core/mobile-final.js" asp-append-version="true"></script>
+<script src="~/js/core/theme.js" asp-append-version="true"></script>
+<script src="~/js/core/pwa.js" asp-append-version="true"></script>
+<script src="~/js/atendimento/confirmacoes.js" asp-append-version="true"></script>
+<script src="~/js/atendimento/assistente-flutuante.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

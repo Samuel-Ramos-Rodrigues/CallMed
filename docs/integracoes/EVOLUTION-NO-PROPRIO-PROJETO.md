@@ -14,18 +14,18 @@ Sim: o CallMed pode integrar e hospedar a Evolution na mesma infraestrutura. O C
 | PostgreSQL Evolution | Persistência separada da integração |
 | Redis e volume de instâncias | Estado/cache e sessão da Evolution |
 
-O arquivo `compose.evolution.yml` sobe CallMed, Evolution, PostgreSQL da Evolution e Redis no mesmo projeto Compose. Mantém a conexão do CallMed que você informar, incluindo Neon. O banco da Evolution é separado para não misturar seus schemas com os do CRUD.
+O arquivo `infra/evolution/compose.evolution.yml` sobe CallMed, Evolution, PostgreSQL da Evolution e Redis no mesmo projeto Compose. Mantém a conexão do CallMed que você informar, incluindo Neon. O banco da Evolution é separado para não misturar seus schemas com os do CRUD.
 
 ## Teste local em Windows com Docker Desktop
 
-1. Na raiz do projeto, copie `.env.evolution.example` para `.env.evolution`.
+1. Na raiz do projeto, copie `infra/evolution/.env.evolution.example` para `infra/evolution/.env.evolution`.
 2. Preencha a conexão do CallMed, `EVOLUTION_API_KEY`, `CALLMED_WEBHOOK_SECRET` e `EVOLUTION_DB_PASSWORD`. Use valores aleatórios diferentes; senha hexadecimal do banco evita caracteres especiais na URI. Preencha `GEMINI_API_KEY` para o agente.
 3. Mantenha o nome de instância `callmed` ou use o mesmo nome em todos os lugares. A imagem está fixada como exemplo em `evoapicloud/evolution-api:v2.3.7`; homologue a versão escolhida com seu número. Não foi executado download/boot dessa imagem nesta entrega.
 4. Se o banco é novo, habilite migrations e configure o administrador inicial. Se é o banco existente, preserve sua política atual e mantenha os patches habilitados.
 5. Execute na raiz:
 
 ```powershell
-docker compose --env-file .env.evolution -f compose.evolution.yml up -d --build
+docker compose --env-file infra/evolution/.env.evolution -f infra/evolution/compose.evolution.yml up -d --build
 ```
 
 Abra `http://localhost:10000` para o CallMed. Evolution fica em `http://localhost:8080`. O exemplo usa Development e portas publicadas somente no loopback para teste local; essa não é uma publicação de produção.
@@ -58,7 +58,7 @@ Em seguida entre no CallMed como administrador e vá a **Integrações → Verif
 Não precisa mover o CRUD. Você pode rodar só os serviços da Evolution:
 
 ```powershell
-docker compose --env-file .env.evolution -f compose.evolution.yml up -d evolution-api
+docker compose --env-file infra/evolution/.env.evolution -f infra/evolution/compose.evolution.yml up -d evolution-api
 ```
 
 O Compose ainda exige o arquivo preenchido para interpolação. Publique a Evolution por HTTPS através de proxy e configure no servidor do CallMed:

@@ -7,8 +7,8 @@
 <header class="public-header"><nav class="public-nav"><a asp-controller="Home" asp-action="Index" class="app-brand"><img src="~/images/logo-callmed-horizontal.png" alt="CallMed" width="260" height="82" /></a><div class="public-links"><a href="/#como-funciona">Como funciona</a><a href="/acesso">Entrar</a><a class="btn" asp-area="Identity" asp-page="/Account/Register">Criar conta <span aria-hidden="true"><svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></span></a></div></nav></header>
 <main id="conteudo">@RenderBody()</main>
 <footer class="public-footer"><span>CallMed · Sua saúde, mais perto.</span><nav aria-label="Informações legais"><a asp-controller="Aplicativo" asp-action="Index">Aplicativo Android</a><a href="/privacidade">Política de privacidade</a><a href="/termos-de-uso">Termos de Serviço</a></nav></footer>
-<script src="~/js/theme.js" asp-append-version="true"></script>
-<script src="~/js/pwa.js" asp-append-version="true"></script>
+<script src="~/js/core/theme.js" asp-append-version="true"></script>
+<script src="~/js/core/pwa.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
