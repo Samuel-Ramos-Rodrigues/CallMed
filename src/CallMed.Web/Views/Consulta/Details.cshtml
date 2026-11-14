@@ -75,7 +75,7 @@
     }
     <partial name="_OrientacoesConsulta" model="Model" />
     <div class="cm25-sticky-actions v16-sticky-actions">
-        <button class="btn secondary" type="button" onclick="window.print()">Imprimir comprovante</button>
+        <button class="btn secondary" type="button" data-cm-print>Imprimir comprovante</button>
         @if(podeConfirmar){<form asp-action="Confirmar" asp-route-id="@Model.Id" method="post"><button class="btn" type="submit">Confirmar presença</button></form>}
         @if(ehEquipe && podeRealizar){<form asp-action="Realizar" asp-route-id="@Model.Id" method="post"><button class="btn" type="submit">Marcar realizada</button></form>}
         @if(ehEquipe && podeAusente){<form asp-action="Ausente" asp-route-id="@Model.Id" method="post" data-cm-confirm="Confirmar ausência deste paciente?" data-cm-confirm-title="Marcar ausência" data-cm-confirm-accept="Marcar ausência" data-cm-confirm-tone="warning"><button class="btn secondary" type="submit">Marcar ausência</button></form>}
