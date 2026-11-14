@@ -47,10 +47,8 @@ public sealed class CheckinController(
         SemCache();
         var token=TokenProtegido().Protect("unidade-v1",TimeSpan.FromMinutes(4));
         var origem=(configuration["PublicOrigin"]??configuration["RENDER_EXTERNAL_URL"]??"").TrimEnd('/');
-        if(!Uri.TryCreate(origem,UriKind.Absolute,out var uri)||uri.Scheme!="https")
-            origem=Url.Action("Abrir","Checkin",null,Request.Scheme)?.TrimEnd('/')??"";
-        if(!Uri.TryCreate(origem,UriKind.Absolute,out var baseUri)||baseUri.Scheme!="https")
-            return StatusCode(503,"Configure a origem pública HTTPS para o QR Code.");
+        if(!Uri.TryCreate(origem,UriKind.Absolute,out var uri)||uri.Scheme!="https"||!string.IsNullOrEmpty(uri.Query)||!string.IsNullOrEmpty(uri.Fragment))
+            return StatusCode(503,"Configure PublicOrigin com a origem HTTPS da clínica para o QR Code.");
         var link=origem+"/checkin?token="+Uri.EscapeDataString(token);
         using var data=QRCodeGenerator.GenerateQrCode(link,QRCodeGenerator.ECCLevel.Q);
         using var qr=new SvgQRCode(data);

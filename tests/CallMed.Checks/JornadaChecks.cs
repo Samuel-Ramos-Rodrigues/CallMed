@@ -27,7 +27,7 @@ internal static class JornadaChecks {
 var erroSemPreCadastro=await selfCheckin.RegistrarChegadaAutonomaAsync(c2,User("p2","Paciente"),default);
 check(erroSemPreCadastro!=null,"QR exige pré-cadastro confirmado antes da chegada");
 var etapaQr=await selfCheckin.ObterAsync(c2.Id,default);etapaQr.CadastroEm=DateTime.UtcNow;await db.SaveChangesAsync();
-check(await selfCheckin.RegistrarChegadaAutonomaAsync(c2,other,default)!=null,"Outro paciente não confirma chegada de consulta alheia");
+check(await selfCheckin.RegistrarChegadaAutonomaAsync(c2,patient,default)!=null,"Outro paciente não confirma chegada de consulta alheia");
 check(await selfCheckin.RegistrarChegadaAutonomaAsync(c2,User("p2","Paciente"),default)==null,"QR do paciente autorizado registra chegada sem recepção");
 var carimboQr=etapaQr.ChegadaEm;
 check(etapaQr.CheckInEm.HasValue&&carimboQr.HasValue,"QR registra check-in digital e chegada como etapas distintas");
