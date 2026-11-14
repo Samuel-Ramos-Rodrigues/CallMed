@@ -8655,3 +8655,200 @@ body.cm39-shell .cm37-dashboard summary:focus-visible {
   body.cm39-shell .header-tools {gap:3px}
   body.cm39-shell .user-avatar {width:32px;height:32px}
 }
+
+
+/* V40 — Auditoria de consistência visual: módulos internos do CallMed.
+   Corrige classes realmente usadas no Razor que ficaram sem apresentação
+   após a consolidação do CSS. Isolado das telas de login e da Central. */
+
+/* Solicitações: recuperar a hierarquia de filtros, etapas e cartões. */
+body.cm39-shell .cm-requests-screen {display:grid;gap:18px;min-width:0}
+body.cm39-shell .cm-requests-screen .cm-requests-hero {display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:0}
+body.cm39-shell .cm-requests-screen .cm-requests-title {display:flex;align-items:center;gap:15px;min-width:0;flex:1 1 340px}
+body.cm39-shell .cm-requests-screen .cm-requests-title>div {min-width:0}
+body.cm39-shell .cm-requests-screen .cm-requests-title h1 {margin:0 0 6px;line-height:1.18;font-size:clamp(1.55rem,2.2vw,2.15rem)}
+body.cm39-shell .cm-requests-screen .cm-requests-title p {margin:0;color:var(--muted);line-height:1.55}
+body.cm39-shell .cm-requests-screen .cm-requests-hero-actions {display:flex;flex-direction:row;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+body.cm39-shell .cm-requests-screen .cm-task-link {display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px 19px;background:var(--surface-2);border:1px solid var(--line);border-radius:14px}
+body.cm39-shell .cm-requests-screen .cm-task-link>div {flex:1 1 230px;min-width:0}
+body.cm39-shell .cm-requests-screen .cm-task-link strong {font-weight:800;color:var(--text)}
+body.cm39-shell .cm-requests-screen .cm-task-link p {font-size:.85rem;color:var(--muted);margin:4px 0 0}
+body.cm39-shell .cm-requests-overview {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+body.cm39-shell .cm-requests-overview>article {min-width:0;padding:19px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);display:grid;gap:4px}
+body.cm39-shell .cm-requests-overview>article>span {font-size:.85rem;color:var(--muted);font-weight:700}
+body.cm39-shell .cm-requests-overview>article>strong {font-size:clamp(1.55rem,2.25vw,2rem);color:var(--text);line-height:1.15}
+body.cm39-shell .cm-requests-overview>article>small {font-size:.76rem;color:var(--muted);line-height:1.45}
+body.cm39-shell .cm-requests-flow-note {display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--line);border-left:3px solid var(--primary);background:var(--surface-2);border-radius:11px}
+body.cm39-shell .cm-requests-flow-note svg {width:20px;height:20px;flex:0 0 20px;color:var(--primary)}
+body.cm39-shell .cm-requests-flow-note p {margin:0;font-size:.84rem;color:var(--muted);line-height:1.5}
+body.cm39-shell .cm-requests-filter-panel {display:grid;gap:14px;padding:20px;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+body.cm39-shell .cm-requests-filter-heading {display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+body.cm39-shell .cm-requests-filter-heading h2 {font-size:1.04rem;margin:0;color:var(--text)}
+body.cm39-shell .cm-requests-filter-heading>span {color:var(--muted);font-size:.82rem}
+body.cm39-shell .cm-requests-filters {display:grid;align-items:end;grid-template-columns:minmax(220px,2fr) minmax(170px,1fr) auto auto;gap:10px}
+body.cm39-shell .cm-requests-filters label {min-width:0;margin:0;position:relative}
+body.cm39-shell .cm-requests-filters .cm-requests-search>svg {position:absolute;top:50%;left:12px;transform:translateY(-50%);width:18px;height:18px;pointer-events:none;color:var(--muted)}
+body.cm39-shell .cm-requests-filters input[type="search"] {padding-left:38px;width:100%;min-width:0}
+body.cm39-shell .cm-requests-filters select {width:100%;min-width:0}
+body.cm39-shell .cm-requests-filters .text-link {padding:10px 0;font-size:.82rem}
+body.cm39-shell .cm-requests-result-note {margin:0;color:var(--muted);font-size:.82rem}
+body.cm39-shell .cm-request-workspace {min-width:0;display:grid;gap:15px}
+body.cm39-shell .cm-requests-board-heading {display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap}
+body.cm39-shell .cm-requests-board-heading h2 {font-size:1.13rem;margin:0 0 4px;color:var(--text)}
+body.cm39-shell .cm-requests-board-heading p {margin:0;color:var(--muted);font-size:.84rem}
+body.cm39-shell .cm-requests-board {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;align-items:start;min-width:0}
+body.cm39-shell .cm-request-column {min-width:0;display:grid;gap:12px;padding:13px;border:1px solid var(--line);border-radius:15px;background:var(--surface-2)}
+body.cm39-shell .cm-request-column>header {min-width:0;display:grid;gap:5px;padding:6px 6px 9px}
+body.cm39-shell .cm-request-column>header>div {display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+body.cm39-shell .cm-request-column h3 {margin:0;color:var(--text);font-size:.95rem;line-height:1.35}
+body.cm39-shell .cm-request-column>header p {margin:0;color:var(--muted);font-size:.78rem;line-height:1.5}
+body.cm39-shell .cm-request-column-dot {width:9px;height:9px;flex:0 0 9px;border-radius:50%;background:var(--primary)}
+body.cm39-shell .cm-request-column-count {margin-left:auto;border:1px solid var(--line);background:var(--surface);padding:2px 9px;border-radius:20px;font-weight:800;font-size:.78rem;color:var(--text)}
+body.cm39-shell .cm-request-list {min-width:0;display:grid;gap:11px}
+body.cm39-shell .cm-request-stage-empty {margin:0;padding:18px 10px;text-align:center;border:1px dashed var(--line);border-radius:11px;color:var(--muted);font-size:.84rem}
+body.cm39-shell .cm-request-card {min-width:0;display:grid;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:16px;box-shadow:0 3px 12px rgba(18,48,39,.035)}
+body.cm39-shell .cm-request-card-meta {display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.73rem}
+body.cm39-shell .cm-request-channel {display:inline-flex;align-items:center;gap:5px;font-weight:750;color:var(--primary)}
+body.cm39-shell .cm-request-channel svg {width:16px;height:16px}
+body.cm39-shell .cm-request-protocol {white-space:nowrap;color:var(--muted)}
+body.cm39-shell .cm-request-person {display:flex;align-items:center;gap:11px;min-width:0}
+body.cm39-shell .cm-request-person>div {min-width:0}
+body.cm39-shell .cm-request-person h4 {margin:0 0 3px;font-size:.93rem;line-height:1.35;overflow-wrap:anywhere;color:var(--text)}
+body.cm39-shell .cm-request-person p {margin:0;color:var(--muted);font-size:.8rem;line-height:1.45}
+body.cm39-shell .cm-request-avatar {display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:12px;background:var(--accent-soft);color:var(--primary);font-size:1rem;font-weight:850}
+body.cm39-shell .cm-request-preferences {display:grid;gap:7px}
+body.cm39-shell .cm-request-preferences>span {display:flex;align-items:flex-start;gap:7px;min-width:0;color:var(--muted);font-size:.78rem;line-height:1.45;overflow-wrap:anywhere}
+body.cm39-shell .cm-request-preferences svg {width:15px;height:15px;flex:0 0 15px;margin-top:2px}
+body.cm39-shell .cm-request-card .cm-request-note {margin:0;padding:10px 12px;border-radius:9px;background:var(--surface-2);font-size:.8rem;line-height:1.45;color:var(--muted);overflow-wrap:anywhere}
+body.cm39-shell .cm-request-booked {display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+body.cm39-shell .cm-request-booked svg {width:18px;height:18px;flex:0 0 18px;color:var(--primary)}
+body.cm39-shell .cm-request-booked span {display:grid;gap:4px;font-size:.74rem}
+body.cm39-shell .cm-request-booked strong {color:var(--text);font-size:.86rem}
+body.cm39-shell .cm-request-completed-at {color:var(--muted)}
+body.cm39-shell .cm-request-consult-actions {display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+body.cm39-shell .cm-request-consult-actions form {margin:0}
+body.cm39-shell .cm-request-consult-status {display:inline-flex;justify-self:start;background:var(--accent-soft);color:var(--primary);font-size:.73rem;font-weight:800;padding:5px 8px;border-radius:8px}
+body.cm39-shell .cm-request-card-action {display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.84rem;font-weight:800;color:var(--primary);border-top:1px solid var(--line);padding-top:12px;text-decoration:none}
+body.cm39-shell .cm-request-origin-link {display:inline-flex;align-items:center;gap:6px;font-size:.77rem;text-decoration:none;color:var(--muted)}
+body.cm39-shell .cm-direction-icon {width:15px;height:15px;flex:0 0 15px}
+body.cm39-shell .cm-requests-empty {display:flex;align-items:flex-start;gap:14px;background:var(--surface);border:1px dashed var(--line);border-radius:13px;padding:23px}
+body.cm39-shell .cm-requests-empty>svg {width:30px;height:30px;flex:0 0 30px;color:var(--primary)}
+body.cm39-shell .cm-requests-empty h3 {margin:0 0 6px;font-size:1.04rem}
+body.cm39-shell .cm-requests-empty p {margin:0 0 12px;color:var(--muted)}
+body.cm39-shell .cm-requests-closed,body.cm39-shell .cm-requests-more {background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+body.cm39-shell .cm-requests-closed>summary,body.cm39-shell .cm-requests-more>summary {padding:14px 17px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.85rem;font-weight:750}
+body.cm39-shell .cm-requests-closed>div {display:grid;border-top:1px solid var(--line)}
+body.cm39-shell .cm-requests-closed>div>a {display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--line);text-decoration:none}
+body.cm39-shell .cm-requests-closed>div>a:first-child {border-top:0}
+body.cm39-shell .cm-requests-closed>div>a span {font-size:.78rem;color:var(--muted)}
+body.cm39-shell .cm-requests-offline {display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px;border-top:1px solid var(--line)}
+body.cm39-shell .cm-requests-offline>div {min-width:0;flex:1 1 200px}
+body.cm39-shell .cm-requests-offline h2 {margin:0 0 5px;font-size:.98rem}
+body.cm39-shell .cm-requests-offline p {margin:0;color:var(--muted);font-size:.82rem}
+
+/* Jornada: estruturar etapas, ofertas e ações secundárias com estilo V39. */
+body.cm39-shell .jornada.cm-workspace {min-width:0;display:grid;gap:19px}
+body.cm39-shell .cm-journey-toolbar {display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:15px 18px;border:1px solid var(--line);background:var(--surface);border-radius:13px}
+body.cm39-shell .cm-journey-live {display:flex;align-items:center;gap:10px;min-width:0}
+body.cm39-shell .cm-journey-live>span {width:9px;height:9px;flex:0 0 9px;border-radius:50%;background:var(--primary)}
+body.cm39-shell .cm-journey-live p {margin:0;font-size:.86rem;color:var(--muted);line-height:1.45}
+body.cm39-shell .cm-journey-tools {display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+body.cm39-shell .cm-journey-tools label {font-size:.78rem;font-weight:700;color:var(--muted)}
+body.cm39-shell .cm-journey-tools input {min-width:0;min-height:40px}
+body.cm39-shell .cm-journey-section {display:grid;gap:15px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(16px,2vw,23px)}
+body.cm39-shell .cm-journey-section>header {display:flex;align-items:center;justify-content:space-between;gap:14px}
+body.cm39-shell .cm-journey-section>header>div {min-width:0}
+body.cm39-shell .cm-journey-section>header h2 {margin:0 0 5px;font-size:1.12rem;line-height:1.35;color:var(--text)}
+body.cm39-shell .cm-journey-section>header p {margin:0;color:var(--muted);font-size:.85rem}
+body.cm39-shell .cm-journey-section>header>svg {width:23px;height:23px;flex:0 0 23px;color:var(--primary)}
+body.cm39-shell .cm-journey-section>.j-grid {gap:13px}
+body.cm39-shell .cm-journey-management {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+body.cm39-shell .cm-journey-management>a {display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);text-decoration:none;min-width:0}
+body.cm39-shell .cm-journey-management>a>span:nth-child(2) {display:grid;gap:4px;min-width:0;flex:1}
+body.cm39-shell .cm-journey-management>a strong {color:var(--text);font-size:.88rem}
+body.cm39-shell .cm-journey-management>a small {color:var(--muted);font-size:.78rem;line-height:1.5}
+body.cm39-shell .cm-journey-management>a>svg {width:18px;height:18px;flex:0 0 18px;color:var(--primary)}
+body.cm39-shell .cm-journey-link-icon {display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;border-radius:11px;background:var(--accent-soft);color:var(--primary)}
+body.cm39-shell .cm-journey-link-icon svg {width:20px;height:20px}
+body.cm39-shell .cm-journey-indicators details>summary {display:flex;align-items:center;justify-content:space-between;gap:12px}
+body.cm39-shell .cm-journey-indicators details>summary>span {display:grid;gap:5px;font-weight:800}
+body.cm39-shell .cm-journey-indicators summary small {font-weight:500;color:var(--muted);font-size:.78rem}
+body.cm39-shell .cm-journey-indicators details>summary svg {width:20px;height:20px;color:var(--primary)}
+body.cm39-shell .cm-journey-metrics {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-top:14px}
+body.cm39-shell .cm-journey-admin {display:flex;flex-wrap:wrap;gap:9px}
+body.cm39-shell .cm-journey-admin>a {display:inline-flex;padding:10px 13px;background:var(--surface);border:1px solid var(--line);border-radius:9px;font-size:.82rem;text-decoration:none}
+body.cm39-shell .cm-journey-heading {display:grid;gap:8px;padding-bottom:15px;border-bottom:1px solid var(--line)}
+body.cm39-shell .cm-journey-heading h1 {margin:0;font-size:clamp(1.45rem,2.3vw,1.9rem)}
+body.cm39-shell .cm-journey-heading p {margin:0;color:var(--muted)}
+body.cm39-shell .cm-journey-next {padding:18px 20px;border-left:4px solid var(--primary);border-radius:11px;background:var(--surface-2);display:grid;gap:7px}
+body.cm39-shell .cm-journey-next strong {font-size:.94rem;line-height:1.5;color:var(--text)}
+body.cm39-shell .cm-journey-step {padding:0;overflow:hidden}
+body.cm39-shell .cm-journey-step>summary {display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 20px}
+body.cm39-shell .cm-journey-step>summary h2 {margin:0;font-size:1rem;line-height:1.35}
+body.cm39-shell .cm-journey-step>summary span {color:var(--muted);font-size:.78rem}
+body.cm39-shell .cm-journey-step[open]>summary {border-bottom:1px solid var(--line)}
+body.cm39-shell .cm-journey-step>:not(summary) {margin:14px 20px}
+body.cm39-shell .tele-resumo {display:grid;gap:7px;border-left:4px solid var(--primary)}
+body.cm39-shell .tele-resumo h2,body.cm39-shell .tele-resumo p {margin:0}
+body.cm39-shell .tele-resumo .btn {justify-self:start}
+body.cm39-shell .cm-consult-table-wrap {max-width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+body.cm39-shell .cm-consult-table {width:100%;min-width:740px}
+body.cm39-shell .cm-consult-table th,body.cm39-shell .cm-consult-table td {padding:13px 14px}
+body.cm39-shell .cm-consult-table .cm-request-consult-status {white-space:normal}
+body.cm39-shell .cm-consult-pagination {display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 2px;font-size:.84rem;color:var(--muted)}
+body.cm39-shell .cm-consult-table-wrap .cm-consult-patient {display:flex;align-items:center;gap:10px;min-width:0}
+body.cm39-shell .cm-consult-patient>div {display:grid;gap:4px}
+body.cm39-shell .cm-consult-patient small {font-size:.75rem;color:var(--muted)}
+body.cm39-shell .cm-consult-row-actions {align-items:center;gap:7px}
+body.cm39-shell .cm-consult-row-actions .btn {white-space:normal}
+body.cm39-shell .cm-consult-table-wrap .cm-consult-extra-actions {position:relative}
+
+/* Cadastros antigos: preservar funcionalidade, aproximar busca e tabelas da V39. */
+body.cm39-shell .crud-v16 .patient-toolbar {display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:15px 18px;background:var(--surface);border:1px solid var(--line);border-radius:13px}
+body.cm39-shell .crud-v16 .v16-search-form {display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0;flex:1 1 480px}
+body.cm39-shell .crud-v16 .v16-search-box {min-width:240px;flex:1 1 250px;position:relative}
+body.cm39-shell .crud-v16 .v16-search-box>span {position:absolute;left:11px;top:50%;transform:translateY(-50%);display:flex;color:var(--muted)}
+body.cm39-shell .crud-v16 .v16-search-box svg {width:17px;height:17px}
+body.cm39-shell .crud-v16 .v16-search-box input {width:100%;min-width:0;padding-left:37px}
+body.cm39-shell .crud-v16 .filter-toggle-link {font-size:.82rem;white-space:normal}
+body.cm39-shell .cm-record-table {min-width:730px}
+body.cm39-shell .cm-record-table th {font-size:.71rem;padding:13px 14px}
+body.cm39-shell .cm-record-table td {font-size:.83rem;line-height:1.5;padding:14px}
+body.cm39-shell .cm-record-table .entity-cell {display:flex;align-items:center;gap:10px;min-width:0}
+body.cm39-shell .cm-record-table .entity-cell>div {min-width:0}
+body.cm39-shell .cm-record-table .entity-cell strong {overflow-wrap:anywhere}
+body.cm39-shell .cm-record-table .row-actions {align-items:center}
+body.cm39-shell .table-scroll-hint {font-size:.77rem;color:var(--muted);padding:10px 14px 2px;margin:0}
+body.cm39-shell .simple-filter-v16 {display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;padding:17px}
+body.cm39-shell .simple-filter-v16>.filter-label {display:grid;gap:6px;min-width:190px;flex:1 1 200px;color:var(--muted);font-size:.8rem}
+body.cm39-shell .simple-filter-v16 select {width:100%;min-width:0}
+body.cm39-shell .simple-filter-v16 .btn {min-height:42px}
+
+@media(max-width:1180px) {
+  body.cm39-shell .cm-requests-board {grid-template-columns:repeat(2,minmax(0,1fr))}
+  body.cm39-shell .cm-request-column:last-child {grid-column:1/-1}
+}
+@media(max-width:900px) {
+  body.cm39-shell .cm-requests-filters {grid-template-columns:minmax(0,1fr) minmax(180px,.7fr)}
+  body.cm39-shell .cm-requests-filters .btn {justify-self:start}
+  body.cm39-shell .cm-journey-metrics {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px) {
+  body.cm39-shell .cm-requests-board {grid-template-columns:minmax(0,1fr)}
+  body.cm39-shell .cm-request-column:last-child {grid-column:auto}
+  body.cm39-shell .cm-requests-overview {grid-template-columns:minmax(0,1fr)}
+  body.cm39-shell .cm-requests-filters {grid-template-columns:minmax(0,1fr)}
+  body.cm39-shell .cm-requests-hero-actions {justify-content:stretch;width:100%}
+  body.cm39-shell .cm-requests-hero-actions .btn {flex:1}
+  body.cm39-shell .cm-journey-management {grid-template-columns:minmax(0,1fr)}
+  body.cm39-shell .cm-journey-section>.j-grid {grid-template-columns:minmax(0,1fr)}
+  body.cm39-shell .cm-journey-metrics {grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:450px) {
+  body.cm39-shell .cm-requests-overview {gap:10px}
+  body.cm39-shell .cm-requests-filter-panel {padding:15px}
+  body.cm39-shell .cm-request-card {padding:14px}
+  body.cm39-shell .cm-journey-toolbar {padding:12px}
+  body.cm39-shell .cm-journey-tools {width:100%}
+  body.cm39-shell .cm-journey-tools input {flex:1}
+}
