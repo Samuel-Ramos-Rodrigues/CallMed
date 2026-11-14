@@ -162,6 +162,18 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
   }
   await who.page.setViewportSize({width:390,height:844});await who.page.evaluate(()=>document.documentElement.style.fontSize='200%');
   if(!await who.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2))overflows.push({label,...await who.page.evaluate(()=>({scroll:document.documentElement.scrollWidth,elements:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+2&&e.offsetWidth>0).slice(0,15).map(e=>({tag:e.tagName,c:e.className,r:e.getBoundingClientRect().right,w:e.offsetWidth}))}))});
+  if(label==='areas'){
+    const mobileNav=await who.page.evaluate(()=>{
+      const nav=document.querySelector('.callmed-mobile-nav');
+      const labels=[...nav.querySelectorAll('.cm-nav-full-label,.cm-nav-short-label,button>span')]
+        .filter(x=>getComputedStyle(x).display!=='none');
+      return {height:nav.getBoundingClientRect().height,
+        noBrokenWords:labels.every(x=>getComputedStyle(x).whiteSpace==='nowrap')};
+    });
+    console.log('CM40_MOBILE_NAV '+JSON.stringify(mobileNav));
+    check(mobileNav.height<=101&&mobileNav.noBrokenWords,
+      'Celular a 200% mantém barra inferior compacta sem quebra de palavras');
+  }
   if(['pep','privacidade-paciente','agendamento','login','areas','mensagens'].includes(label))await who.page.screenshot({path:out+'/'+label+'-mobile-200.png',fullPage:true});
   if(['paciente-inicio','recepcao','admin-inicio','profissional'].includes(label)){
     const layout=await who.page.evaluate(()=>({cards:document.querySelectorAll('.cm37-dashboard .cm37-card').length,
