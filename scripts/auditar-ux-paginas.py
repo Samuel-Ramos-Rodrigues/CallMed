@@ -61,7 +61,13 @@ for file in PAGES:
             if "alt" not in attrs:
                 report(file, source, m.start(), "image_without_alt", "Imagem sem atributo alt.")
         if "style" in attrs:
-            report(file, source, m.start(), "inline_style", "Estilo inline dificulta a manutenção do tema.")
+            value = attrs["style"].strip().lower()
+            dynamic = value.startswith("--day-count:") or value.startswith("width:@")
+            report(file, source, m.start(),
+                   "data_driven_style" if dynamic else "inline_style",
+                   "Valor calculado pelo servidor; conferir semântica e acessibilidade." if dynamic
+                   else "Estilo fixo inline; mover para CSS.",
+                   "info" if dynamic else "review")
         if SENSITIVE.search(markup):
             report(file, source, m.start(), "inline_handler", "Handler JS inline; preferir addEventListener.")
         if tag == "a":
@@ -97,6 +103,8 @@ for file in PAGES:
 
 SUMMARY["findings"] = len(FINDINGS)
 SUMMARY["errors"] = sum(item["severity"] == "error" for item in FINDINGS)
+SUMMARY["reviews"] = sum(item["severity"] == "review" for item in FINDINGS)
+SUMMARY["informational"] = sum(item["severity"] == "info" for item in FINDINGS)
 result = {
     "summary": dict(SUMMARY),
     "areas": dict(sorted(PAGES_BY_AREA.items())),
@@ -108,10 +116,10 @@ path.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encodin
 print("Auditoria UX estática das views Razor")
 print(f"Arquivos: {SUMMARY['razor_files']} | Partials/layouts: {SUMMARY['partial_or_layout']}")
 print(f"Formulários: {SUMMARY['forms']} | Tabelas: {SUMMARY['tables']} | Imagens: {SUMMARY['images']}")
-print(f"Ocorrências para revisão: {SUMMARY['findings']} | Críticas: {SUMMARY['errors']}")
+print(f"Achados: {SUMMARY['findings']} | Revisão: {SUMMARY['reviews']} | Informativos: {SUMMARY['informational']} | Críticos: {SUMMARY['errors']}")
 for key, count in sorted(SUMMARY.items()):
     if key in ("razor_files", "partial_or_layout", "non_partial", "findings", "errors",
-               "html_tags", "forms", "tables", "buttons", "images", "search_inputs"):
+               "html_tags", "forms", "tables", "buttons", "images", "search_inputs", "reviews", "informational"):
         continue
     print(f"  {key}: {count}")
 for issue in result["findings"][:50]:
@@ -127,8 +135,9 @@ if summary_file:
                   f"{SUMMARY['tables']} tabelas; {SUMMARY['findings']} avisos; "
                   f"{SUMMARY['errors']} achados críticos.\n\n")
         out.write("| Regra | Ocorrências |\n|---|---:|\n")
-        for key in ("inline_style", "inline_handler", "image_without_alt", "empty_href",
-                    "javascript_href", "target_blank_rel", "search_name_review", "duplicate_static_id"):
+        for key in ("inline_style", "data_driven_style", "inline_handler", "image_without_alt",
+                    "empty_href", "javascript_href", "target_blank_rel", "search_name_review",
+                    "duplicate_static_id", "conditional_id_review"):
             out.write(f"| {key} | {SUMMARY[key]} |\n")
 if SUMMARY["errors"]:
     raise SystemExit("Corrija links javascript: antes de integrar.")
