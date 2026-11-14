@@ -24,6 +24,13 @@ for file in expected:
     content = file.read_text()
     if not content.strip() or re.search(r'@import\b', content, re.I):
         sys.exit(f'Módulo vazio ou com @import: {file}')
+# A sequência dos 12 primeiros módulos deve reconstruir byte a byte o CSS
+# pré-migração. SHA é o blob Git do monolito no commit-base da V40.
+import hashlib
+original = b''.join(file.read_bytes() for file in expected[:-1])
+git_sha = hashlib.sha1(b'blob '+str(len(original)).encode()+b'\\0'+original).hexdigest()
+if git_sha != 'af74bcfb45f83572b3cf3de646ec1182015fb795':
+    sys.exit('CSS legado foi alterado durante a divisão modular: '+git_sha)
 for page in [*web.rglob('*.cshtml'), *web.rglob('*.html')]:
     if {'bin','obj'} & set(page.parts):
         continue
