@@ -49,3 +49,24 @@ body.cm39-shell .cm42-consulta-note {font-size:.75rem;line-height:1.5;color:var(
   body.cm39-shell .cm42-consulta-links>a {width:100%}
   body.cm39-shell .cm42-consulta-hub-head>.btn {width:100%}
 }
+
+/* Navegação contextual: agenda, confirmações e encaixes no mesmo contexto. */
+body.cm39-shell .cm42-agenda-tasks {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;margin:8px 0 20px;min-width:0;
+}
+body.cm39-shell .cm42-agenda-tasks>a {
+  display:grid;align-content:start;gap:6px;min-width:0;
+  padding:14px 16px;min-height:88px;
+  text-decoration:none;background:var(--surface);
+  color:var(--text);border:1px solid var(--line);
+  border-radius:13px;box-shadow:var(--shadow);
+}
+body.cm39-shell .cm42-agenda-tasks>a[aria-current="page"] {
+  border-color:var(--primary);background:var(--accent-soft);
+}
+body.cm39-shell .cm42-agenda-tasks>a:hover {border-color:var(--primary);background:var(--surface-2)}
+body.cm39-shell .cm42-agenda-tasks strong {font-size:.86rem;line-height:1.3;overflow-wrap:anywhere}
+body.cm39-shell .cm42-agenda-tasks small {font-size:.76rem;color:var(--muted);line-height:1.4}
+@media(max-width:1000px){body.cm39-shell .cm42-agenda-tasks{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:530px){body.cm39-shell .cm42-agenda-tasks{grid-template-columns:minmax(0,1fr)}}
