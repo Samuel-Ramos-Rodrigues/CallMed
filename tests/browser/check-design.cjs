@@ -75,15 +75,16 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
  await admin.page.goto('https://callmed.test/Organizacao');await admin.page.locator('#cm-buscar-funcao').fill('salas');await admin.page.waitForFunction(()=>document.querySelector('#cm-busca-status').textContent.length>0);check((await admin.page.locator('.cm-funcao:visible').allTextContents()).every(t=>t.toLowerCase().includes('sala')),'Busca de funções continua filtrando os cartões');await admin.page.locator('#cm-buscar-funcao').fill('nenhum-resultado-ficticio');check(await admin.page.locator('#cm-busca-vazia').isVisible(),'Busca sem resultado apresenta orientação');
  await patient.page.goto('https://callmed.test/dados-e-privacidade');const privacy=patient.page.locator('form[action*=solicitar]');await privacy.locator('select').selectOption('Acesso');await privacy.locator('[name=confirmar]').check();const saved=await privacy.evaluate(async form=>(await fetch(form.action,{method:'POST',body:new URLSearchParams(new FormData(form)),redirect:'manual'})).status);check([0,302].includes(saved),'Pedido de privacidade é aceito pelo formulário agrupado');await patient.page.goto('https://callmed.test/dados-e-privacidade');check((await patient.page.locator('main').innerText()).includes('Protocolo'),'Solicitação registrada aparece com protocolo');
  await admin.page.goto('https://callmed.test/Organizacao');
- check(await admin.page.locator('html.cm38-ui body.cm38-shell').count()===1,'Interface autenticada mantém a identidade visual da referência');
- check(await admin.page.locator('.primary-nav a').count()>=3,'Navegação horizontal apresenta as opções reais do perfil');
- const sizeBefore=await admin.page.evaluate(()=>parseFloat(getComputedStyle(document.documentElement).fontSize));
- await admin.page.locator('[data-cm38-font-adjust="up"]').click();
- const sizeAfter=await admin.page.evaluate(()=>parseFloat(getComputedStyle(document.documentElement).fontSize));
- check(sizeAfter>sizeBefore,'Controle A+ aumenta o tamanho do texto imediatamente');
- await admin.page.locator('[data-cm38-font-adjust="down"]').click();
- await admin.page.locator('.cm38-access-controls [data-a11y-toggle="contrast"]').click();
- check(await admin.page.evaluate(()=>document.documentElement.classList.contains('callmed-high-contrast')),'Botão de contraste do cabeçalho alterna o modo acessível');
- await admin.page.locator('.cm38-access-controls [data-a11y-toggle="contrast"]').click();
+ check(await admin.page.locator('body.cm39-shell').count()===1,'Layout autenticado mantém identidade CallMed V39');
+ check(await admin.page.locator('.primary-nav a').count()>=3,'Navegação por perfil permanece conectada às rotas');
+ check(await admin.page.locator('.cm38-access-controls').count()===0,'Cabeçalho não duplica controles de acessibilidade');
+ check(await admin.page.locator('[data-popover-trigger="accessibility"]').count()===1,'Acessibilidade mantém acesso no menu contextual');
+ check(await admin.page.locator('.app-brand img').count()===1,'Logo original preservada');
+ const navLayout=await admin.page.evaluate(()=>{
+   const body=document.body;const main=document.querySelector('main.app-main');
+   const logo=document.querySelector('.app-header .app-brand img');
+   return {classOk:body.classList.contains('cm39-shell'),logo:!!logo,mainWidth:main?.getBoundingClientRect().width||0};
+ });
+ check(navLayout.classOk&&navLayout.logo&&navLayout.mainWidth>=1000,'Layout principal aproveita espaço de desktop');
  await admin.page.locator('[data-modules-open]').click();check(await admin.page.locator('#modulesDialog').isVisible(),'Menu de áreas abre pelo teclado e clique');await admin.page.keyboard.press('Escape');check(!await admin.page.locator('#modulesDialog').isVisible(),'Escape fecha o diálogo de navegação');report();console.log('DESIGN_REPORT '+JSON.stringify({pages:selectedPages.length,errors:errors.length,issues:issues.length,overflows:overflows.length}));check(errors.length===0&&issues.length===0&&overflows.length===0,'Revisão visual sem páginas com falha, violações ou transbordamento');if(errors.length||issues.length||overflows.length)process.exitCode=1;
 })().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{if(browser)await browser.close();dotnet.kill('SIGTERM');});
