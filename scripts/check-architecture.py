@@ -47,7 +47,7 @@ styles = sorted(p.relative_to(css_root).as_posix() for p in css_root.rglob("*.cs
 require(len(styles) == 14 and all(s.startswith("modules/") for s in styles),
         f"Somente os 14 modulos de CSS devem existir: {styles}")
 head = read("src/CallMed.Web/Views/Shared/_DocumentHead.cshtml")
-linked = re.findall(r'href="~/css/modules/([\\w-]+\\.css)"', head)
+linked = re.findall(r'href="~/css/modules/([\w-]+\.css)"', head)
 require(len(linked) == 14 and sorted("modules/" + x for x in linked) == styles,
         "Head deve carregar todos os 14 modulos CSS na ordem declarada.")
 require("callmed.css" not in head and "callmed-auth-v34.css" not in head and "CallMedAuthCssV34" not in head,
