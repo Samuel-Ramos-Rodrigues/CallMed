@@ -622,6 +622,157 @@ body.cm43-horizon.identity-body .steps .step.active {
 body.cm43-horizon.identity-body .register-card { max-width: 530px; }
 body.cm43-horizon.identity-body .register-shell .identity-showcase { min-height: 740px; }
 
+
+/* The registration wizard previously displayed all steps because its
+   presentation classes were never defined in the modular styles. */
+:root[data-theme="light"] body.cm43-horizon.identity-body {
+  --cm-primary: #0b766e;
+  --cm-primary-hover: #08655d;
+  --cm-primary-soft: #ddf4eb;
+  --cm-accent: #0b766e;
+  --cm-accent-soft: #e3f6ef;
+}
+:root[data-theme="dark"] body.cm43-horizon.identity-body {
+  --cm-primary: #89e7cf;
+  --cm-primary-hover: #aff5df;
+  --cm-primary-soft: #1c4940;
+  --cm-primary-ink: #082e27;
+  --cm-accent: #89e7cf;
+  --cm-accent-soft: #1c4940;
+}
+body.cm43-horizon.identity-body .register-shell .identity-panel {
+  align-items: center;
+}
+body.cm43-horizon.identity-body .register-shell .identity-card-header { margin-bottom: 22px; }
+body.cm43-horizon.identity-body .register-shell .steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  margin: 4px 0 25px;
+  background: var(--cm-surface-muted);
+  border: 1px solid var(--cm-border);
+  border-radius: 16px;
+}
+body.cm43-horizon.identity-body .register-shell .steps .step {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  flex: 1 1 0;
+  color: var(--cm-muted);
+  opacity: .78;
+}
+body.cm43-horizon.identity-body .register-shell .steps .step span {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--cm-surface);
+  color: var(--cm-muted);
+  border: 1px solid var(--cm-border);
+  font-size: .79rem;
+  font-weight: 850;
+}
+body.cm43-horizon.identity-body .register-shell .steps .step p {
+  font-size: .77rem;
+  font-weight: 750;
+  color: inherit;
+  line-height: 1.35;
+  margin: 0;
+}
+body.cm43-horizon.identity-body .register-shell .steps .step.ativo { opacity: 1; color: var(--cm-primary); }
+body.cm43-horizon.identity-body .register-shell .steps .step.ativo span {
+  background: var(--cm-primary-soft);
+  color: var(--cm-primary);
+  border-color: color-mix(in srgb,var(--cm-primary) 38%,var(--cm-border));
+}
+body.cm43-horizon.identity-body .register-shell .steps .step[aria-current="step"] span {
+  color: #fff;
+  border-color: #0b766e;
+  background: #0b766e;
+  box-shadow: 0 0 0 4px color-mix(in srgb,var(--cm-primary) 14%,transparent);
+}
+body.cm43-horizon.identity-body .register-shell .steps .linha {
+  flex: 0 1 20px;
+  height: 1px;
+  min-width: 4px;
+  background: var(--cm-border);
+}
+body.cm43-horizon.identity-body .register-shell .form-etapa:not(.ativa) { display: none; }
+body.cm43-horizon.identity-body .register-shell .form-etapa.ativa {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+body.cm43-horizon.identity-body .register-shell .campos-convenio:not(.ativo) { display: none; }
+body.cm43-horizon.identity-body .register-shell .campos-convenio.ativo {
+  display: grid;
+  gap: 15px;
+  padding: 16px 17px;
+  background: var(--cm-surface-muted);
+  border: 1px solid var(--cm-border);
+  border-radius: 14px;
+}
+body.cm43-horizon.identity-body .register-shell .input-group { min-width: 0; }
+body.cm43-horizon.identity-body .register-shell .botoes-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--cm-border);
+  margin-top: 22px;
+  padding-top: 21px;
+}
+body.cm43-horizon.identity-body .register-shell .botoes-form > button {
+  min-height: 44px;
+  min-width: 123px;
+  padding: 10px 16px;
+}
+body.cm43-horizon.identity-body .register-shell .aviso,
+body.cm43-horizon.identity-body .register-shell .password-guidance,
+body.cm43-horizon.identity-body .register-shell .checklist {
+  padding: 14px 16px;
+  border: 1px solid var(--cm-border);
+  border-radius: 12px;
+  background: var(--cm-surface-muted);
+  font-size: .83rem;
+  color: var(--cm-muted);
+}
+body.cm43-horizon.identity-body .register-shell .checklist strong { color: var(--cm-ink); }
+body.cm43-horizon.identity-body .register-shell .terms-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: .8rem;
+  line-height: 1.55;
+}
+body.cm43-horizon.identity-body .register-shell .terms-consent input { margin-top: 4px; }
+body.cm43-horizon.identity-body .register-shell .terms-consent label {
+  font-size: .8rem;
+  line-height: 1.55;
+}
+body.cm43-horizon.identity-body .register-shell .register-preview-avatar {
+  background: #82ebce;
+  color: #0b3831;
+}
+@media(max-width: 600px) {
+  body.cm43-horizon.identity-body .register-shell .steps { gap: 4px; padding: 10px; }
+  body.cm43-horizon.identity-body .register-shell .steps .step {
+    flex-direction: column;
+    gap: 5px;
+    text-align: center;
+  }
+  body.cm43-horizon.identity-body .register-shell .steps .step span { width: 27px; height: 27px; flex-basis: 27px; }
+  body.cm43-horizon.identity-body .register-shell .steps .step p { font-size: .67rem; }
+  body.cm43-horizon.identity-body .register-shell .steps .linha { flex-basis: 7px; }
+  body.cm43-horizon.identity-body .register-shell .botoes-form > button { flex: 1 1 110px; }
+}
+
 /* MARKETING HOME, HELP, LEGAL, OFFLINE. All keep the existing DOM and logo. */
 body.cm43-horizon.public-body {
   --bg: #f5f9fb;
