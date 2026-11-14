@@ -9162,3 +9162,43 @@ body.cm39-shell .cm37-doctor .cm-doctor-exams:hover {background:var(--accent-sof
   body.cm39-shell .cm37-doctor .cm-doctor-upcoming>article {grid-template-columns:49px minmax(0,1fr)}
   body.cm39-shell .cm37-doctor .cm-doctor-exams {grid-column:2;justify-self:start}
 }
+
+
+/* V40 — Reflow no celular com texto a 200%: impedir rótulos quebrados
+   letra por letra; nomes completos permanecem em aria-label/title. */
+@media(max-width:820px) {
+  body.cm39-shell .callmed-mobile-nav {
+    align-items:stretch;justify-content:space-between;
+    gap:4px;padding:7px 6px max(9px,env(safe-area-inset-bottom));
+    max-height:100px;overflow-x:auto;overflow-y:hidden;
+    scrollbar-width:thin;
+  }
+  body.cm39-shell .callmed-mobile-nav>a,
+  body.cm39-shell .callmed-mobile-nav>button {
+    display:flex;flex:1 0 0;flex-direction:column;
+    min-width:50px;max-width:none;min-height:52px;
+    justify-content:center;align-items:center;
+    gap:5px;padding:6px 2px;
+    overflow:hidden;white-space:nowrap;
+    font-size:.62rem;line-height:1.15;
+  }
+  body.cm39-shell .callmed-mobile-nav :is(.cm-nav-full-label,.cm-nav-short-label,button>span) {
+    display:block;max-width:100%;min-width:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    text-align:center;line-height:1.25;word-break:normal;
+  }
+  body.cm39-shell .callmed-mobile-nav .cm-nav-feature .cm-nav-full-label {display:none}
+  body.cm39-shell .callmed-mobile-nav .cm-nav-feature .cm-nav-short-label {display:block}
+  body.cm39-shell .callmed-mobile-nav svg {width:20px;height:20px;flex:0 0 20px}
+  body.cm39-shell .header-tools .v18-icon-button {
+    padding:0;white-space:nowrap;overflow:hidden;
+    flex-shrink:0;font-size:.67rem;
+  }
+  body.cm39-shell .cm-area>summary {display:flex;align-items:center;justify-content:space-between;gap:9px}
+  body.cm39-shell .cm-area>summary>strong {min-width:0;overflow-wrap:anywhere}
+  body.cm39-shell .cm-area>summary>span {flex:0 0 auto;white-space:nowrap;font-size:.7rem}
+}
+@media(max-width:380px){
+  body.cm39-shell .callmed-mobile-nav>a,
+  body.cm39-shell .callmed-mobile-nav>button {min-width:46px}
+}
