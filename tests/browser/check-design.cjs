@@ -186,7 +186,7 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
       const rect=el=>el.getBoundingClientRect();
       const buttons=[...days.querySelectorAll('button')];
       const cols=getComputedStyle(days).gridTemplateColumns.split(' ').filter(Boolean);
-      const a=rect(buttons[0]),next=rect(buttons[1]),eight=rect(buttons[7]);
+      const a=rect(buttons[1]),next=rect(buttons[2]),eight=rect(buttons[8]); // dias 2 e 3: mesma semana; dia 9: próxima semana
       return {present:true,columns:cols.length,
         hostWidth:rect(host).width,calendarWidth:rect(root).width,
         dayWidth:a.width,horizontal:next.left>a.left+4,
