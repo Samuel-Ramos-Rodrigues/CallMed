@@ -95,6 +95,11 @@ jobs:
         shell: [powershell, pwsh]
     steps:
       - uses: actions/checkout@v4
-      - name: Certificate creation, import and safe repeat
-        shell: ${{ matrix.shell }}
+      - name: Certificate creation and import (Windows PowerShell)
+        if: matrix.shell == 'powershell'
+        shell: powershell
+        run: ./tests/check-certificado.ps1
+      - name: Certificate creation and import (PowerShell 7)
+        if: matrix.shell == 'pwsh'
+        shell: pwsh
         run: ./tests/check-certificado.ps1
