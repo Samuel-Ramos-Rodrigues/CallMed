@@ -9121,7 +9121,7 @@ body.cm39-shell .cm19-integration-card .cm19-security-note {
   margin:10px 0 0;padding:10px 12px;
   font-size:.74rem;line-height:1.5;
 }
-body.cm39-shell .cm19-integration-card>b {margin-top:4px;align-self:start}
+body.cm39-shell .cm19-integration-card>b {margin-top:4px;align-self:start;justify-self:start;max-width:100%}
 
 
 /* V40 — Painel médico: a lista de próximos pacientes estava sem layout,
