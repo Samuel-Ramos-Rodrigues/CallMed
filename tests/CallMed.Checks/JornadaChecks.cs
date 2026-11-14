@@ -23,7 +23,16 @@ internal static class JornadaChecks {
  check(await j.MoverAsync(c,patient,"cadastro",true,default)==null,"Pré-cadastro reaproveita os dados existentes");
  check(await j.MoverAsync(c,patient,"checkin",true,default)==null,"Check-in funciona dentro da janela da consulta");var stage=await db.Jornadas.SingleAsync(x=>x.ConsultaId==1);
  check(stage.CheckInEm!=null&&stage.ChegadaEm==null,"Check-in remoto não confirma chegada presencial");
- check(await j.MoverAsync(c,patient,"chegada",true,default)!=null,"Paciente não valida a própria chegada");
+ check(await j.MoverAsync(c,patient,"chegada",true,default)!=null,"Paciente não valida a própria chegada");var selfCheckin=new JornadaService(db,clock);
+var erroSemPreCadastro=await selfCheckin.RegistrarChegadaAutonomaAsync(c2,User("p2","Paciente"),default);
+check(erroSemPreCadastro!=null,"QR exige pré-cadastro confirmado antes da chegada");
+var etapaQr=await selfCheckin.ObterAsync(c2.Id,default);etapaQr.CadastroEm=DateTime.UtcNow;await db.SaveChangesAsync();
+check(await selfCheckin.RegistrarChegadaAutonomaAsync(c2,other,default)!=null,"Outro paciente não confirma chegada de consulta alheia");
+check(await selfCheckin.RegistrarChegadaAutonomaAsync(c2,User("p2","Paciente"),default)==null,"QR do paciente autorizado registra chegada sem recepção");
+var carimboQr=etapaQr.ChegadaEm;
+check(etapaQr.CheckInEm.HasValue&&carimboQr.HasValue,"QR registra check-in digital e chegada como etapas distintas");
+check(await selfCheckin.RegistrarChegadaAutonomaAsync(c2,User("p2","Paciente"),default)==null&&etapaQr.ChegadaEm==carimboQr,"Leitura repetida não duplica chegada");
+
  check(await j.MoverAsync(c,doctor,"iniciar",true,default)!=null,"Atendimento aguarda validação da recepção");
  check(await j.AlocarAsync(c,staff,1,30,false,default)==null,"Recepção reserva sala por intervalo");
  check(await j.AlocarAsync(c2,staff,1,30,false,default)!=null,"Sala rejeita sobreposição entre profissionais");

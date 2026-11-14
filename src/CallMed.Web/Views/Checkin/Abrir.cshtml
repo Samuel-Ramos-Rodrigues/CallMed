@@ -1,0 +1,18 @@
+@model List<MKSANCrud.Controllers.CheckinOpcao>
+@{ViewData["Title"]="Registrar minha chegada";var valido=ViewBag.Valido is true;var token=ViewBag.Token as string;}
+<section class="cm-workspace cm-simple-page" aria-labelledby="checkin-titulo">
+ <header class="cm-page-intro"><div><span class="eyebrow">CALLMED · AUTOATENDIMENTO</span><h1 id="checkin-titulo">Registrar minha chegada</h1><p>Escolha sua consulta de hoje. Só você pode confirmar a chegada em sua conta.</p></div></header>
+ @if(!valido){<div class="alert warning" role="alert">O QR Code não está disponível ou expirou. Leia novamente o código exibido na clínica.</div>}
+ else if(Model.Count==0){<p>Não há consulta ativa agendada para hoje nesta conta.</p>}
+ else{
+  <div class="j-grid">
+  @foreach(var consulta in Model){
+   <article class="j-card"><h2>@consulta.Profissional</h2><p>@consulta.Data.ToString("dd/MM/yyyy") às <strong>@consulta.Horario</strong></p>
+   @if(consulta.Tele){<p>Esta é uma teleconsulta. Sua presença online é registrada ao entrar na sala.</p><a class="btn secondary" asp-controller="Jornada" asp-action="Consulta" asp-route-id="@consulta.Id">Acessar consulta</a>}
+   else{<form method="post" asp-controller="Checkin" asp-action="Registrar"><input type="hidden" name="token" value="@token"/><input type="hidden" name="id" value="@consulta.Id"/><button class="btn" type="submit">Confirmar minha chegada</button></form>}
+   </article>
+  }
+  </div>
+ }
+ <p><a asp-controller="Jornada" asp-action="Index">Voltar às minhas consultas</a></p>
+</section>
