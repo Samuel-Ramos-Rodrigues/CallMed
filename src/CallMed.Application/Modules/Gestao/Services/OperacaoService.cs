@@ -12,7 +12,7 @@ public sealed class OperacaoService(MKSANContext db,IClinicaClock clock) {
   var inicioUtc=clock.ConverterParaUtc(inicio);var fimUtc=clock.ConverterParaUtc(fim.AddDays(1));
   var ofertas=await db.Ofertas.AsNoTracking().Where(o=>o.CriadoEm>=inicioUtc&&o.CriadoEm<fimUtc).ToListAsync(ct);
   var notas=await db.AvaliacoesAtendimento.AsNoTracking().Where(a=>a.RespondidoEm>=inicioUtc&&a.RespondidoEm<fimUtc&&a.Nota>=1&&a.Nota<=5).Select(a=>a.Nota!.Value).ToListAsync(ct);
-  var espera=js.Where(j=>j.ChegadaEm.HasValue&&j.InicioEm>=j.ChegadaEm).Select(j=>(j.InicioEm!.Value-j.ChegadaEm!.Value).TotalMinutes).ToArray();
+  var espera=js.Where(j=>!j.Tele&&j.ChegadaEm.HasValue&&j.InicioEm>=j.ChegadaEm).Select(j=>(j.InicioEm!.Value-j.ChegadaEm!.Value).TotalMinutes).ToArray();
   var realizadas=cs.Count(c=>c.Status==ConsultaStatus.Realizada);var faltas=cs.Count(c=>c.Status==ConsultaStatus.Ausente);
   return new(inicio,fim,cs.Count,realizadas,faltas,cs.Count(c=>c.Status==ConsultaStatus.Cancelada),cs.Count(c=>!JornadaService.Encerrada(c)),
    Taxa(faltas,realizadas+faltas),js.Count(j=>j.PresencaConfirmadaEm!=null),js.Count(j=>j.CheckInEm!=null),espera.Length,
