@@ -77,8 +77,9 @@ for file in PAGES:
         if tag == "input" and attrs.get("type", "").lower() == "search":
             SUMMARY["search_inputs"] += 1
             ident = attrs.get("id", "")
-            if "aria-label" not in attrs and "aria-labelledby" not in attrs and ident not in label_fors:
-                # Pode haver label ancestral, que requer inspeção contextual.
+            prefix = source[:m.start()].lower()
+            in_label = prefix.rfind("<label") > prefix.rfind("</label>")
+            if "aria-label" not in attrs and "aria-labelledby" not in attrs and ident not in label_fors and not in_label:
                 report(file, source, m.start(), "search_name_review", "Conferir nome acessível da busca.")
         ident = attrs.get("id")
         # IDs Razor interpolados/gerados por loops não são IDs estáticos confiáveis.
@@ -88,8 +89,11 @@ for file in PAGES:
     for ident, locations in id_locations.items():
         if len(locations) > 1:
             for pos in locations[1:]:
-                report(file, source, pos, "duplicate_static_id",
-                       f'ID estático "{ident}" aparece mais de uma vez na mesma view.')
+                conditional = bool(re.search(r"@(?:if|switch|else)\b", source))
+                report(file, source, pos, "conditional_id_review" if conditional else "duplicate_static_id",
+                       f'ID "{ident}" reaparece em código Razor condicional; verificar no DOM.' if conditional
+                       else f'ID estático "{ident}" aparece mais de uma vez na mesma view.',
+                       "info" if conditional else "review")
 
 SUMMARY["findings"] = len(FINDINGS)
 SUMMARY["errors"] = sum(item["severity"] == "error" for item in FINDINGS)
