@@ -2,15 +2,15 @@
 
 Origem auditada: `src/CallMed.Web/wwwroot/css/callmed.css`, blob Git `8b99b4dbe4b21ae5c6722efd07a9b47a5baee768` (base V41).
 Arquivo original: 252956 caracteres e 9459 linhas. A árvore contém **um único CSS legado**, não vários arquivos para apagar.
-**Regra desta migração:** concatenação dos módulos reproduz integralmente o CSS original, na ordem original. Não fizemos remoção arbitrária de declarações nem mudanças de seletor.
+**Estado atualizado:** a separação inicial reproduzia integralmente o CSS V41. Na limpeza seguinte, 43 declarações totalmente sobrescritas no mesmo seletor e contexto foram eliminadas, sem mudar os 6.686 valores finais verificados. A cascata continua na ordem original. Hash Git do CSS limpo: `66e6cc81f3f9be61afd2804096e3295c50307009` (base original V41: `8b99b4dbe4b21ae5c6722efd07a9b47a5baee768`).
 
 ## Ordem da cascata
-1. `src/CallMed.Web/wwwroot/css/modules/00-foundations.css` — 16026 caracteres
-2. `src/CallMed.Web/wwwroot/css/modules/10-navigation.css` — 13877 caracteres
-3. `src/CallMed.Web/wwwroot/css/modules/20-attendance.css` — 14408 caracteres
-4. `src/CallMed.Web/wwwroot/css/modules/30-scheduling.css` — 53326 caracteres
-5. `src/CallMed.Web/wwwroot/css/modules/40-public-and-components.css` — 31829 caracteres
-6. `src/CallMed.Web/wwwroot/css/modules/50-senai-workflows.css` — 15442 caracteres
+1. `src/CallMed.Web/wwwroot/css/modules/00-foundations.css` — 15509 caracteres
+2. `src/CallMed.Web/wwwroot/css/modules/10-navigation.css` — 13750 caracteres
+3. `src/CallMed.Web/wwwroot/css/modules/20-attendance.css` — 14295 caracteres
+4. `src/CallMed.Web/wwwroot/css/modules/30-scheduling.css` — 53043 caracteres
+5. `src/CallMed.Web/wwwroot/css/modules/40-public-and-components.css` — 31685 caracteres
+6. `src/CallMed.Web/wwwroot/css/modules/50-senai-workflows.css` — 15395 caracteres
 7. `src/CallMed.Web/wwwroot/css/modules/55-identity-public.css` — 35823 caracteres
 8. `src/CallMed.Web/wwwroot/css/modules/60-doctor-ui.css` — 4924 caracteres
 9. `src/CallMed.Web/wwwroot/css/modules/65-dashboards.css` — 12009 caracteres
@@ -23,9 +23,9 @@ Arquivo original: 252956 caracteres e 9459 linhas. A árvore contém **um único
 Variáveis declaradas: 80. Valores duplicados podem ser sobreposições por tema/escopo; **não são apagados automaticamente**.
 | Variável | Definições | Referências var() | Exemplos de valores |
 |---|---:|---:|---|
-| `--accent` | 10 | 94 | #a797ff · #5733c5 · #d9cbff |
-| `--accent-soft` | 9 | 70 | #29244b · #efeaff · #21143e |
-| `--bg` | 10 | 15 | #0b1120 · #f4f7fc · #000 |
+| `--accent` | 9 | 94 | #a797ff · #d9cbff · #392078 |
+| `--accent-soft` | 8 | 70 | #29244b · #21143e · #eee8ff |
+| `--bg` | 9 | 15 | #0b1120 · #000 · #fff |
 | `--cm-accent` | 2 | 2 | #096F91 · #69D3FF |
 | `--cm-accent-soft` | 2 | 1 | #E5F3FA · #14364B |
 | `--cm-action` | 1 | 1 | linear-gradient(135deg, #7041EB, #4324B4) |
@@ -81,27 +81,27 @@ Variáveis declaradas: 80. Valores duplicados podem ser sobreposições por tema
 | `--cm37-primary` | 4 | 10 | var(--primary) · #0b5e4f · #8ce3b8 |
 | `--cm37-primary-ink` | 3 | 1 | #fff · #10251e |
 | `--cm37-soft` | 3 | 4 | var(--surface-2) · #e8f4f1 |
-| `--content` | 2 | 3 | 1440px · 1510px |
+| `--content` | 1 | 3 | 1510px |
 | `--danger` | 4 | 11 | #ffb4bf · #af2745 · #ffb7c7 |
 | `--danger-soft` | 2 | 3 | #3b2030 · #fff0f3 |
 | `--day-count` | 1 | 2 | 7 |
-| `--focus` | 11 | 8 | #c5b9ff · #6036d0 · #fff |
+| `--focus` | 8 | 8 | #fff · #000 · #96e8dc |
 | `--header` | 2 | 2 | 78px · 68px |
-| `--line` | 10 | 209 | #2a3952 · #d5deec · #aaa |
-| `--muted` | 10 | 160 | #acbad1 · #52637b · #eee |
+| `--line` | 9 | 209 | #2a3952 · #aaa · #555 |
+| `--muted` | 9 | 160 | #acbad1 · #eee · #222 |
 | `--navy` | 2 | 0 | #29325f · #202849 |
-| `--primary` | 9 | 64 | #6540db · #6036d0 · #5f66e9 |
-| `--primary-hover` | 9 | 4 | #7651e9 · #4e26ba · #7077f3 |
+| `--primary` | 6 | 64 | #5f66e9 · #0B6550 · #0B6752 |
+| `--primary-hover` | 6 | 4 | #7077f3 · #084C3D · #07533F |
 | `--radius` | 1 | 7 | 18px |
 | `--radius-sm` | 1 | 1 | 11px |
 | `--shadow` | 4 | 15 | 0 14px 42px #02071330 · 0 10px 34px #273d5e0b · 0 12px 32px rgba(21,62,45,.045) |
 | `--space` | 1 | 0 | 24px |
 | `--success` | 4 | 7 | #88e4c1 · #167254 · #a3ffd6 |
-| `--surface` | 10 | 109 | #111b2e · #fff · #080808 |
-| `--surface-2` | 9 | 44 | #17243a · #f1f4fa · #151515 |
-| `--surface-3` | 9 | 8 | #202f48 · #e7edf7 · #252525 |
+| `--surface` | 9 | 109 | #111b2e · #080808 · #fff |
+| `--surface-2` | 8 | 44 | #17243a · #151515 · #f0f0f0 |
+| `--surface-3` | 8 | 8 | #202f48 · #252525 · #e0e0e0 |
 | `--teal` | 4 | 22 | #53ddc2 · #087b69 · #0B6752 |
-| `--text` | 10 | 79 | #edf3ff · #16243c · #fff |
+| `--text` | 9 | 79 | #edf3ff · #fff · #000 |
 | `--warning` | 4 | 6 | #ffda91 · #805700 · #ffe4a3 |
 
 ## Variáveis referenciadas sem declaração literal
@@ -115,9 +115,13 @@ Variáveis declaradas: 80. Valores duplicados podem ser sobreposições por tema
 
 ## Como manter
 Não recriar arquivos `vXX-refino.css`. Novos seletores devem ir ao módulo funcional apropriado. Nunca alterar a ordem das folhas sem validar desktop/celular, tema claro/escuro, login V34 e Central 3 colunas.
-Esta fase modulariza fisicamente o CSS. Deduplicação de regras e tokens será uma segunda etapa, de risco maior, condicionada a evidência de testes visuais.
+A modularização física está concluída. A primeira rodada de deduplicação removeu 43 declarações antigas, com equivalência da cascata verificada. A remoção de seletores supostamente órfãos ainda depende de comprovação de que nenhuma view ou rotina JavaScript os utiliza.
 Este branch contém também o calendário responsivo da PR nº 9 (V41), da qual deriva. Não fazer dois merges paralelos dessas correções sem conciliar as branches.
 
 ## Complemento V42
 
-Adicionado `99-consultation-journey.css`, posterior aos **13 módulos que preservam o CSS base**. Ele contém somente a nova linha do tempo em `Consulta/Details.cshtml`. O teste SHA valida os 13 arquivos de base e verifica que o novo módulo está linkado e presente no PWA. Total: **14 arquivos CSS**.
+Adicionado `99-consultation-journey.css`, posterior aos **13 módulos do CSS base após a limpeza**. Ele contém somente a nova linha do tempo em `Consulta/Details.cshtml`. O teste SHA valida os 13 arquivos de base e verifica que o novo módulo está linkado e presente no PWA. Total: **14 arquivos CSS**.
+
+## Limpeza sem mudança de aparência (V42)
+
+Foram retiradas 43 declarações de propriedades sobrescritas no mesmo seletor e contexto. O inventário de **80 tokens** foi mantido, e os totais de definições foram atualizados. O teste de integridade protege a concatenação atual dos 13 módulos; o módulo 99 continua independente. Consulte `CSS_CLEANUP_V42.md`.
