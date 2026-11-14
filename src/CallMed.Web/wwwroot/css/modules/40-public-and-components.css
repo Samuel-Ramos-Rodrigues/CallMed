@@ -689,8 +689,6 @@
 }
 .cm-doctor-slot-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
 }
 .cm-doctor-slot-grid > a {
     padding: 10px;
@@ -1242,9 +1240,6 @@
     --content: 1510px;
 }
 :root[data-theme="light"] {
-    --primary: #424ebc;
-    --primary-hover: #323eab;
-    --focus: #126b77;
 }
 .primary-nav {gap: 8px;}
 .primary-nav a {font-size: .84rem; font-weight: 700; border-radius: 12px; padding: 10px 14px;}

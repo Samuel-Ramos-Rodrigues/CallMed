@@ -31,8 +31,6 @@
 .primary-nav {
     display: flex;
     align-items: center;
-    gap: 4px;
-    min-width: 0;
     flex: 1;
 }
 .primary-nav a {
@@ -40,12 +38,8 @@
     align-items: center;
     gap: 8px;
     min-height: 42px;
-    padding: 10px 12px;
     color: var(--muted);
-    font-size: 0.78rem;
-    font-weight: 750;
     text-decoration: none;
-    border-radius: 10px;
     white-space: nowrap;
 }
 .primary-nav a svg {

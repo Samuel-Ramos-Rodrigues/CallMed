@@ -123,8 +123,6 @@
 
 /* Identidade V34 preservada em escopo: um único CSS para todas as telas. */
 body.identity-body {
-
-  color-scheme: light;
   --cm-bg: #F4F6FB;
   --cm-bg-soft: #EDF1F8;
   --cm-surface: #FFFFFF;
@@ -182,8 +180,6 @@ body.identity-body {
 
 }
 :root[data-theme="dark"] body.identity-body {
-
-  color-scheme: dark;
   --cm-surface-strong: #222B43;
   --cm-ink: #F5F5FF;
   --cm-ink-2: #E2E6FA;

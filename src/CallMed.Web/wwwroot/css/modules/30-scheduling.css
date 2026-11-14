@@ -129,9 +129,7 @@
 }
 .cm19-av-row {
     display: grid;
-    grid-template-columns: 180px repeat(7, minmax(90px, 1fr));
     border-bottom: 1px solid var(--line);
-    min-width: 800px;
 }
 .cm19-av-row > div {
     padding: 15px;
@@ -775,7 +773,6 @@
 .identity-shell {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    min-height: 100dvh;
 }
 .identity-showcase {
     display: flex;
@@ -986,7 +983,6 @@
 }
 .care-illustration {
     position: relative;
-    min-height: 380px;
     display: grid;
     place-items: center;
     border: 1px solid var(--line);
@@ -1032,11 +1028,9 @@
 }
 .care-step {
     display: flex;
-    gap: 12px;
     align-items: center;
     border-top: 1px solid var(--line);
     padding: 16px 0;
-    font-size: 0.85rem;
 }
 .care-step svg {
     color: var(--teal);
@@ -1848,7 +1842,6 @@
         max-width: 600px;
     }
     .care-illustration {
-        min-height: 300px;
         max-width: 600px;
     }
     .public-how {
@@ -1857,9 +1850,6 @@
         margin-bottom: 30px;
     }
     .public-how-item {
-        display: grid;
-        grid-template-columns: 44px 1fr;
-        gap: 0 18px;
     }
     .public-feature-icon {
         grid-row: 1/3;

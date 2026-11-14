@@ -1,6 +1,4 @@
-/* CallMed 35 — folha autoral única. Editar este arquivo diretamente.
-   Ordem: fundamentos, componentes, navegação, áreas, atendimento, formulários,
-   conta, salas, público, assistente, responsividade e acessibilidade. */
+/* CallMed V42 — fundamentos compartilhados; folhas funcionais carregadas em módulos. */
 
 @font-face {
     font-family: Manrope;
@@ -18,8 +16,6 @@
     --muted: #acbad1;
     --line: #2a3952;
     --accent: #a797ff;
-    --primary: #6540db;
-    --primary-hover: #7651e9;
     --accent-soft: #29244b;
     --teal: #53ddc2;
     --success: #88e4c1;
@@ -29,8 +25,6 @@
     --shadow: 0 14px 42px #02071330;
     --radius: 18px;
     --radius-sm: 11px;
-    --focus: #c5b9ff;
-    --content: 1440px;
     --header: 78px;
     --space: 24px;
     font:
@@ -41,24 +35,12 @@
 }
 :root[data-theme="light"] {
     color-scheme: light;
-    --bg: #f4f7fc;
-    --surface: #fff;
-    --surface-2: #f1f4fa;
-    --surface-3: #e7edf7;
-    --text: #16243c;
-    --muted: #52637b;
-    --line: #d5deec;
-    --accent: #5733c5;
-    --primary: #6036d0;
-    --primary-hover: #4e26ba;
-    --accent-soft: #efeaff;
     --teal: #087b69;
     --success: #167254;
     --warning: #805700;
     --danger: #af2745;
     --danger-soft: #fff0f3;
     --shadow: 0 10px 34px #273d5e0b;
-    --focus: #6036d0;
 }
 *,
 *::before,
