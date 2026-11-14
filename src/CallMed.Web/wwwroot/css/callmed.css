@@ -8852,3 +8852,21 @@ body.cm39-shell .simple-filter-v16 .btn {min-height:42px}
   body.cm39-shell .cm-journey-tools {width:100%}
   body.cm39-shell .cm-journey-tools input {flex:1}
 }
+
+/* V40: blocos que no CSS anterior estavam apenas em @scope(body.identity-body)
+   e, portanto, não alcançavam as páginas autenticadas de Solicitações. */
+body.cm39-shell .cm-requests-screen .cm-requests-hero-icon {
+  display:grid;place-items:center;flex:0 0 48px;width:48px;height:48px;
+  border:1px solid var(--line);border-radius:13px;
+  color:var(--primary);background:var(--accent-soft);
+}
+body.cm39-shell .cm-requests-screen .cm-requests-hero-icon svg {width:24px;height:24px}
+body.cm39-shell .cm-requests-screen .cm-requests-offline-icon {
+  display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;
+  border-radius:11px;background:var(--accent-soft);color:var(--primary);
+}
+body.cm39-shell .cm-requests-screen .cm-requests-offline-icon svg {width:20px;height:20px}
+@media(max-width:700px){
+  body.cm39-shell .cm-requests-screen .cm-requests-hero-icon {width:42px;height:42px;flex-basis:42px}
+  body.cm39-shell .cm-requests-screen .cm-requests-hero-icon svg {width:21px;height:21px}
+}
