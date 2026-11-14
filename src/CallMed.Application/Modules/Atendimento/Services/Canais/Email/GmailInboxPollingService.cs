@@ -42,6 +42,8 @@ public sealed class GmailInboxPollingService : BackgroundService
                 {
                     _avisouInativo = false;
                     await ProcessarCicloAsync(stoppingToken);
+                    using var scope = _scopes.CreateScope();
+                    await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(scope.ServiceProvider,"gmail-polling",true,stoppingToken);
                 }
                 else if (!_avisouInativo)
                 {
@@ -56,6 +58,8 @@ public sealed class GmailInboxPollingService : BackgroundService
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Falha no ciclo de leitura do Gmail. As mensagens não processadas continuarão disponíveis para nova tentativa.");
+                using var scope=_scopes.CreateScope();
+                await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(scope.ServiceProvider,"gmail-polling",false,stoppingToken);
             }
 
             var intervalo = TimeSpan.FromSeconds(Math.Clamp(_options.PollIntervalSeconds, 30, 900));
