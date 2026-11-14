@@ -290,3 +290,10 @@ table a{font-weight:750}
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+/* Texto grande: min-content não pode alargar um workspace. */
+.cm25-screen,.cm-workspace,.jornada,.cm-salas,.cm-requests-screen,.cm37-dashboard,
+.cm25-panel,.v16-card,.j-card,.cm-page-intro,.cm25-page-hero,.cm-request-workspace{max-width:100%;min-width:0}
+:is(.cm-workspace,.jornada,.cm-salas,.cm-requests-screen,.cm37-dashboard) :is(article,section,aside,header,form,div){min-width:0}
+:is(.cm-workspace,.jornada,.cm-salas,.cm-requests-screen,.cm37-dashboard) :is(h1,h2,h3,strong,small,p,a,span){overflow-wrap:anywhere}
+

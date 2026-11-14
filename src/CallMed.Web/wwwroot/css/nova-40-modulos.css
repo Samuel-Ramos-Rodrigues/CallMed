@@ -242,3 +242,23 @@ a,button,summary{transition-property:color,background-color,border-color,box-sha
  .cm-room-create .cm-form-grid{grid-template-columns:1fr}
  .cm-confirm-popover{right:-58px}
 }
+
+
+/* Wrap sem ocultar links e métricas em fonte 200%. */
+.cm-requests-title>div,.cm-requests-hero-actions,.cm-task-link>div,
+.cm-requests-board,.cm-request-column,.cm-request-workspace,.cm-request-card,.cm-requests-filter-panel,
+.cm-online-list,.cm-online-card,.cm-online-card>div,.cm-online-actions,.cm-refresh-line,.cm-summary-strip{min-width:0;max-width:100%}
+.cm-requests-title,.cm-task-link{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cm-task-link{justify-content:space-between;padding:18px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.cm-task-link>div{flex:1 1 210px}
+.cm-task-link>.btn{max-width:100%;white-space:normal}
+.cm-online-card :is(strong,small,p,span,div,a,button){overflow-wrap:anywhere;min-width:0}
+.cm-requests-hero :is(h1,p,span,a){overflow-wrap:anywhere}
+@media(max-width:600px){
+ .cm-online-list,.cm-rooms-grid{grid-template-columns:minmax(0,1fr)}
+ .cm-online-card{padding:14px}
+ .cm-online-actions{display:flex;flex-wrap:wrap;gap:8px}
+ .cm-requests-hero-actions,.cm-requests-title{max-width:100%}
+ .cm-requests-filters label,.cm-requests-filters select{width:100%}
+}
+

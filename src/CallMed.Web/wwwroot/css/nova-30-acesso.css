@@ -245,3 +245,11 @@ body.identity-body{min-height:100dvh;background:#f3f1fc;color:#222346;
  .auth-legal-footer{padding-inline:18px}
  .privacy-shell{border-radius:0;margin:0;box-shadow:none}
 }
+
+
+/* Cadastro opcional de convênio: estado dirigido pelo script do formulário. */
+.campos-convenio{display:none}
+.campos-convenio.ativo{display:grid}
+.care-ticket .eyebrow{color:#4b389d!important}
+.care-ticket>small{color:#515e75}
+

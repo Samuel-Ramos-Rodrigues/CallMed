@@ -352,3 +352,20 @@ body.central-context .app-main{max-width:1840px;padding:21px clamp(10px,1.8vw,30
  .cm19-booking-steps li{justify-content:center}
  .cm19-time-choices{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+
+
+/* Conserva rolagem dentro do chat ao ampliar texto, sem alargar o documento. */
+.atendimento-shell :is(.atendimento-inbox,.atendimento-chat,.atendimento-context,.cm-composer-field){min-width:0;max-width:100%}
+.atendimento-shell :is(.atendimento-header-actions,.cm-ia-status,.cm-inbox-toolbar){flex-wrap:wrap;min-width:0}
+.atendimento-shell :is(.atendimento-header-actions>*,.cm-ia-status>*,.cm-inbox-toolbar>*){min-width:0;max-width:100%}
+.atendimento-shell :is(.atendimento-person,.cm-ia-status-copy,.conversation-copy){min-width:0;overflow-wrap:anywhere}
+.atendimento-shell .atendimento-header-actions button{max-width:100%;overflow-wrap:anywhere}
+@media(max-width:760px){
+ .cm-central,.cm-central-heading,.atendimento-shell,.cm-central-tabs{width:100%;max-width:100%;min-width:0}
+ .cm-classic-inbox-search kbd{display:none}
+ .atendimento-shell .atendimento-header-actions{justify-content:start}
+ .atendimento-chat-header>.atendimento-person{flex:1 1 170px}
+ .atendimento-compose{flex-wrap:wrap}
+ .atendimento-compose>.cm-composer-field{flex:1 1 150px}
+}
+
