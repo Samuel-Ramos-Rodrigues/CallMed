@@ -9103,3 +9103,22 @@ body.cm39-shell .cm19-agenda-page .cm19-calendar-scroll {max-width:100%;overflow
   body.cm39-shell .cm-consult-overview {grid-template-columns:minmax(0,1fr)}
   body.cm39-shell .cm-consult-overview>article {padding:13px}
 }
+
+
+/* V40: impedir que a descrição longa de e-mail/WhatsApp seja sobreposta
+   pelo aviso de configuração e pelo indicador no cartão de Integrações. */
+body.cm39-shell .cm19-integration-card {
+  display:grid;grid-auto-rows:max-content;align-content:start;
+  min-height:max-content;
+}
+body.cm39-shell .cm19-integration-card>div {
+  display:grid;gap:6px;align-content:start;
+  min-height:max-content;
+}
+body.cm39-shell .cm19-integration-card .cm19-security-note {
+  position:static;inset:auto;transform:none;
+  display:block;max-height:none;overflow:visible;
+  margin:10px 0 0;padding:10px 12px;
+  font-size:.74rem;line-height:1.5;
+}
+body.cm39-shell .cm19-integration-card>b {margin-top:4px;align-self:start}
