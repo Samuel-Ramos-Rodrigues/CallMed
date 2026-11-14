@@ -32,9 +32,9 @@ function assertStandaloneCss(name) {
   if(depth!==0||comment||quote)throw Error('Incomplete standalone stylesheet: '+name);
 }
 for(const name of modules)assertStandaloneCss(name);
-const bytes=Buffer.from(modules.slice(0,-1).map(m=>read(cssDir+m)).join(''),'utf8'); // baseline V41 sem as regras novas da V42
+const bytes=Buffer.from(modules.slice(0,-1).map(m=>read(cssDir+m)).join(''),'utf8'); // baseline CSS limpo V42; 43 declarações antigas sobrepostas foram removidas
 const sha=createHash('sha1').update(Buffer.from('blob '+bytes.length+'\0')).update(bytes).digest('hex');
-if(sha!=='8b99b4dbe4b21ae5c6722efd07a9b47a5baee768')throw Error('Original CSS changed: '+sha);
+if(sha!=='66e6cc81f3f9be61afd2804096e3295c50307009')throw Error('Cleaned CSS changed: '+sha);
 const head=read('src/CallMed.Web/Views/Shared/_DocumentHead.cshtml');
 const linked=[...head.matchAll(/~\/css\/modules\/([\w-]+\.css)/g)].map(x=>x[1]);
 if(JSON.stringify(linked)!==JSON.stringify(modules))throw Error('Module order in head does not match CSS source');
