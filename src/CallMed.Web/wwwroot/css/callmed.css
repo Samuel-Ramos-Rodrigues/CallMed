@@ -8231,6 +8231,12 @@ body.identity-body {
   --cm37-line:#c9d3db;
   --cm37-soft:#e8f4f1;
   --cm37-primary:#0b5e4f;
+  --cm37-primary-ink:#fff;
+}
+:root[data-theme="dark"] .cm37-dashboard {
+  /* Tom claro para garantir contraste WCAG AA no fundo escuro dos painéis. */
+  --cm37-primary:#8ce3b8;
+  --cm37-primary-ink:#10251e;
 }
 .cm37-dashboard *,
 .cm37-dashboard *::before,
@@ -8284,7 +8290,7 @@ body.identity-body {
   font-weight:750;font-size:.89rem;text-decoration:none;line-height:1.35;
   overflow-wrap:anywhere;cursor:pointer;
 }
-.cm37-dashboard .cm37-button {background:var(--cm37-primary);color:#fff;border:2px solid var(--cm37-primary)}
+.cm37-dashboard .cm37-button {background:var(--cm37-primary);color:var(--cm37-primary-ink);border:2px solid var(--cm37-primary)}
 .cm37-dashboard .cm37-button-secondary,
 .cm37-dashboard .cm37-linkbtn {background:var(--cm37-bg);border:2px solid var(--cm37-primary);color:var(--cm37-primary)}
 .cm37-dashboard .cm37-button:hover,
