@@ -7,7 +7,7 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
 
  const admin=await pageFor('a'),f=await pageFor('f'),patient=await pageFor('p'),doctor=await pageFor('g'),anon=await pageFor('p');await anon.context.clearCookies();
  const axePath=process.env.CALLMED_AXE_PATH||require.resolve('axe-core/axe.min.js');const issues=[],errors=[],overflows=[];
- const pages=[['publico',anon,'/'],['login',anon,'/acesso'],['cadastro',anon,'/Identity/Account/Register'],['recuperacao',anon,'/Identity/Account/ForgotPassword'],['privacidade-publica',anon,'/privacidade'],['termos',anon,'/termos-de-uso'],['android',anon,'/aplicativo'],['recepcao',f,'/FuncionarioPainel'],['agenda',f,'/Agenda'],['pacientes',f,'/Paciente'],['novo-paciente',f,'/Paciente/Create'],['detalhes-paciente',f,'/Paciente/Details/1'],['editar-paciente',f,'/Paciente/Edit/1'],['profissionais',admin,'/Medico'],['novo-profissional',admin,'/Medico/Create'],['equipe',admin,'/Funcionario'],['especialidades',admin,'/Especialidade'],['disponibilidades',admin,'/Disponibilidades'],['convenios',admin,'/Convenios'],['solicitacoes',f,'/Solicitacoes'],['consultas-equipe',f,'/Consulta'],['espera',f,'/ListaEspera'],['exames',f,'/HistoricoExames/Pendentes'],['relatorios',admin,'/Relatorios'],['configuracoes',admin,'/Configuracoes'],['integracoes',admin,'/Integracoes'],['resultados',admin,'/Operacao'],['piloto',admin,'/Piloto'],['medicao',admin,'/Piloto/Medicao'],['privacidade-gestao',admin,'/dados-e-privacidade/gestao'],['areas',admin,'/Organizacao'],['acessos',admin,'/Acessos'],['mensagens',f,'/Atendimento?id=100'],['jornada',f,'/Jornada'],['jornada-detalhe',patient,'/Jornada/Consulta/1'],['pep',admin,'/Psicologia/Pep'],['paciente-inicio',patient,'/Home'],['minhas-consultas',patient,'/Consulta'],['agendamento',patient,'/Consulta/Create'],['conta',patient,'/MinhaConta'],['privacidade-paciente',patient,'/dados-e-privacidade'],['profissional',doctor,'/MedicoPainel'],['salas',f,'/Salas'],['salas-online',f,'/Salas?aba=online'],['agendamento-equipe',f,'/Consulta/Create'],['novo-atendimento',f,'/Atendimento/Nova'],['nova-solicitacao',f,'/Solicitacoes/Create']];
+ const pages=[['publico',anon,'/'],['login',anon,'/acesso'],['cadastro',anon,'/Identity/Account/Register'],['recuperacao',anon,'/Identity/Account/ForgotPassword'],['privacidade-publica',anon,'/privacidade'],['termos',anon,'/termos-de-uso'],['android',anon,'/aplicativo'],['recepcao',f,'/FuncionarioPainel'],['admin-inicio',admin,'/FuncionarioPainel'],['agenda',f,'/Agenda'],['pacientes',f,'/Paciente'],['novo-paciente',f,'/Paciente/Create'],['detalhes-paciente',f,'/Paciente/Details/1'],['editar-paciente',f,'/Paciente/Edit/1'],['profissionais',admin,'/Medico'],['novo-profissional',admin,'/Medico/Create'],['equipe',admin,'/Funcionario'],['especialidades',admin,'/Especialidade'],['disponibilidades',admin,'/Disponibilidades'],['convenios',admin,'/Convenios'],['solicitacoes',f,'/Solicitacoes'],['consultas-equipe',f,'/Consulta'],['espera',f,'/ListaEspera'],['exames',f,'/HistoricoExames/Pendentes'],['relatorios',admin,'/Relatorios'],['configuracoes',admin,'/Configuracoes'],['integracoes',admin,'/Integracoes'],['resultados',admin,'/Operacao'],['piloto',admin,'/Piloto'],['medicao',admin,'/Piloto/Medicao'],['privacidade-gestao',admin,'/dados-e-privacidade/gestao'],['areas',admin,'/Organizacao'],['acessos',admin,'/Acessos'],['mensagens',f,'/Atendimento?id=100'],['jornada',f,'/Jornada'],['jornada-detalhe',patient,'/Jornada/Consulta/1'],['pep',admin,'/Psicologia/Pep'],['paciente-inicio',patient,'/Home'],['minhas-consultas',patient,'/Consulta'],['agendamento',patient,'/Consulta/Create'],['conta',patient,'/MinhaConta'],['privacidade-paciente',patient,'/dados-e-privacidade'],['profissional',doctor,'/MedicoPainel'],['salas',f,'/Salas'],['salas-online',f,'/Salas?aba=online'],['agendamento-equipe',f,'/Consulta/Create'],['novo-atendimento',f,'/Atendimento/Nova'],['nova-solicitacao',f,'/Solicitacoes/Create']];
  const focus=(process.env.CALLMED_DESIGN_FOCUS||'').split(',').filter(Boolean);const selectedPages=pages.filter(p=>!focus.length||focus.includes(p[0]));
  function report(){fs.writeFileSync(out+'/report.json',JSON.stringify({pages:selectedPages.length,checks,errors,issues,overflows},null,2));}
  for(const [label,who,url]of selectedPages){
@@ -15,7 +15,7 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
   for(const theme of ['light','dark']){
    await who.page.evaluate(async theme=>{document.documentElement.dataset.theme=theme;document.documentElement.style.colorScheme=theme;await Promise.all(document.getAnimations({subtree:true}).filter(a=>a.constructor.name==='CSSTransition').map(a=>a.finished.catch(()=>{})));},theme);
    await who.page.addScriptTag({path:axePath});const violations=await who.page.evaluate(()=>axe.run({runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}).then(r=>r.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary,html:n.html}))}))));if(violations.length){issues.push({label,theme,violations});console.error('AXE_VIOLATIONS '+JSON.stringify({label,theme,violations}));}
-   if(['paciente-inicio','publico','login','cadastro','pep','privacidade-paciente','resultados','mensagens','jornada-detalhe','agendamento','areas','salas','configuracoes','pacientes','recepcao','profissional'].includes(label))await who.page.screenshot({path:out+'/'+label+'-'+theme+'.png',fullPage:true});
+   if(['paciente-inicio','publico','login','cadastro','pep','privacidade-paciente','resultados','mensagens','jornada-detalhe','agendamento','areas','salas','configuracoes','pacientes','recepcao','admin-inicio','profissional'].includes(label))await who.page.screenshot({path:out+'/'+label+'-'+theme+'.png',fullPage:true});
   }
   if(label==='profissional'){
    await who.page.evaluate(()=>document.documentElement.dataset.theme='light');
@@ -45,9 +45,31 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
      'Painel médico: métricas e progresso sem sobreposições em 1440px');
    await who.page.setViewportSize({width:1280,height:900});
   }
+  if(['paciente-inicio','recepcao','admin-inicio','profissional'].includes(label)){
+   const layout=await who.page.evaluate(()=>{
+      const root=document.querySelector('.cm37-dashboard');
+      if(!root)return {present:false};
+      const metrics=[...root.querySelectorAll('.cm37-metrics > *, .cm-doctor-metrics > article')];
+      const rect=e=>e.getBoundingClientRect();
+      const metricFits=metrics.every(card=>[...card.querySelectorAll('strong,small')].every(el=>{
+        const b=rect(el),c=rect(card);return b.left>=c.left-2&&b.right<=c.right+2;
+      }));
+      return {present:true,heading:!!root.querySelector('h1'),cards:root.querySelectorAll('.cm37-card').length,
+      metricFits,overflow:document.documentElement.scrollWidth>innerWidth+2};
+   });
+   console.log('CM37_LAYOUT '+JSON.stringify({label,layout}));
+   check(layout.present&&layout.heading&&layout.cards>=3&&layout.metricFits&&!layout.overflow,
+     'Painel '+label+' com cartões sem sobreposição em desktop');
+  }
   await who.page.setViewportSize({width:390,height:844});await who.page.evaluate(()=>document.documentElement.style.fontSize='200%');
   if(!await who.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2))overflows.push({label,...await who.page.evaluate(()=>({scroll:document.documentElement.scrollWidth,elements:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+2&&e.offsetWidth>0).slice(0,15).map(e=>({tag:e.tagName,c:e.className,r:e.getBoundingClientRect().right,w:e.offsetWidth}))}))});
   if(['pep','privacidade-paciente','agendamento','login','areas','mensagens'].includes(label))await who.page.screenshot({path:out+'/'+label+'-mobile-200.png',fullPage:true});
+  if(['paciente-inicio','recepcao','admin-inicio','profissional'].includes(label)){
+    const layout=await who.page.evaluate(()=>({cards:document.querySelectorAll('.cm37-dashboard .cm37-card').length,
+      overflow:document.documentElement.scrollWidth>innerWidth+2}));
+    console.log('CM37_MOBILE '+JSON.stringify({label,layout}));
+    check(layout.cards>=3&&!layout.overflow,'Painel '+label+' responsivo em 390px com fonte ampliada');
+  }
   await who.page.setViewportSize({width:1280,height:900});await who.page.evaluate(()=>{document.documentElement.style.fontSize='';document.documentElement.dataset.theme='light';document.documentElement.style.colorScheme='light';});report();console.log('VISITED '+label);
  }
  await admin.page.goto('https://callmed.test/Organizacao');await admin.page.locator('#cm-buscar-funcao').fill('salas');await admin.page.waitForFunction(()=>document.querySelector('#cm-busca-status').textContent.length>0);check((await admin.page.locator('.cm-funcao:visible').allTextContents()).every(t=>t.toLowerCase().includes('sala')),'Busca de funções continua filtrando os cartões');await admin.page.locator('#cm-buscar-funcao').fill('nenhum-resultado-ficticio');check(await admin.page.locator('#cm-busca-vazia').isVisible(),'Busca sem resultado apresenta orientação');

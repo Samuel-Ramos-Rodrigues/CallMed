@@ -17,43 +17,82 @@
 }
 @if (Model.Autenticado)
 {
-    <section class="patient-home">
-        <section class="cm21-simple-home" aria-label="Modo simplificado"><h1>Olá, @Model.NomePaciente!</h1><p>O que você deseja fazer?</p><div class="cm21-simple-actions"><a asp-controller="Consulta" asp-action="Create">Marcar consulta</a><a asp-controller="Consulta" asp-action="Index">Minhas consultas</a><button type="button" data-open-callmed-ai>Falar com atendimento</button><a asp-controller="ListaEspera" asp-action="Index">Lista de espera</a><a asp-controller="Jornada" asp-action="Index">Pré-atendimento / check-in</a><a asp-controller="Jornada" asp-action="Index" asp-fragment="j-consultas">Preparar consulta por vídeo</a></div><button type="button" class="btn secondary" data-a11y-toggle="simple">Sair do modo fácil</button></section>
-        <div class="patient-standard">
-            <header class="workspace-heading"><div><span class="eyebrow">SEU ESPAÇO DE CUIDADO</span><h1>Olá, @Model.NomePaciente<span class="heading-dot">.</span></h1><p>Vamos cuidar do seu próximo passo?</p></div><button type="button" class="btn secondary" data-a11y-toggle="simple">Aa · Modo fácil</button></header>
-            <div class="patient-overview">
-                <section class="patient-appointment"><span class="eyebrow">SUA PRÓXIMA CONSULTA</span>
-                @if (proxima is not null)
-                {
-                    <div class="patient-appointment-body"><div class="appointment-date"><strong>@proxima.Data.ToString("dd")</strong><span>@proxima.Data.ToString("MMMM", culturaPt)</span></div><div><span class="status-pill status-@proxima.Status.ToLowerInvariant()">@proxima.Status</span><h2>@proxima.Medico?.Nome</h2><p>@proxima.Medico?.Especialidade</p><strong>@proxima.Data.ToString("dddd", culturaPt) · @proxima.Horario</strong></div></div>
-                    <a class="btn light" asp-controller="Consulta" asp-action="Details" asp-route-id="@proxima.Id">Ver detalhes e orientações <span aria-hidden="true"><svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></span></a>
-                }
-                else
-                {
-                    <h2>Um horário<br />para cuidar de você.</h2><p>Escolha a especialidade e encontre uma vaga disponível.</p><a class="btn light" asp-controller="Consulta" asp-action="Create">Marcar minha consulta <span aria-hidden="true"><svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></span></a>
-                }
-                </section>
-                <nav class="patient-quicklinks" aria-label="Seu atendimento"><a asp-controller="Jornada" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar-check"></use></svg><span><strong>Pré-atendimento e check-in</strong><small>Prepare seus dados e confirme a chegada</small></span><b aria-hidden="true"><svg class="cm-direction-icon"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></b></a><a asp-controller="Consulta" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg><span><strong>Marcar uma consulta</strong><small>Encontre um horário para você</small></span><b aria-hidden="true"><svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></b></a><a asp-controller="Consulta" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span><strong>Minhas consultas</strong><small>Acompanhe sua agenda</small></span><b aria-hidden="true"><svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></b></a><a asp-controller="HistoricoExames" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#file-medical"></use></svg><span><strong>Meus exames</strong><small>Consulte seu histórico</small></span><b aria-hidden="true"><svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></b></a><button type="button" data-open-callmed-ai><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#chat"></use></svg><span><strong>Preciso de ajuda</strong><small>Converse com o atendimento</small></span><b aria-hidden="true"><svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></b></button></nav>
+    <section class="cm37-dashboard cm37-patient patient-home" aria-labelledby="cm37-patient-title">
+        <section class="cm21-simple-home" aria-label="Modo simplificado">
+            <h1>Olá, @Model.NomePaciente!</h1><p>O que você deseja fazer?</p>
+            <div class="cm21-simple-actions">
+                <a asp-controller="Consulta" asp-action="Create">Marcar consulta</a>
+                <a asp-controller="Consulta" asp-action="Index">Minhas consultas</a>
+                <a asp-controller="Jornada" asp-action="Index">Preparar minha consulta</a>
+                <button type="button" data-open-callmed-ai>Falar com atendimento</button>
+                <a asp-controller="ListaEspera" asp-action="Index">Lista de espera</a>
             </div>
-            <section class="cm-demand-patient" aria-labelledby="cm-demand-patient-title">
-                <div class="cm-demand-patient-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#video"></use></svg></div>
-                <div><span class="eyebrow">CONSULTA A DISTÂNCIA</span><h2 id="cm-demand-patient-title">Sua teleconsulta, sem complicação.</h2><p>Se sua consulta for online, confira as orientações, faça a preparação e acesse a sala no horário permitido.</p></div>
-                <a asp-controller="Jornada" asp-action="Index" asp-fragment="j-consultas">Preparar consulta online <span aria-hidden="true">↗</span></a>
-            </section>
-            <div class="patient-details-grid"><section class="panel"><header class="panel-heading"><div><span class="eyebrow">ACOMPANHAMENTO</span><h2>Seus pedidos</h2></div></header>
-                @if (Model.SolicitacoesRecentes.Any())
-                {
-                    @foreach(var pedido in Model.SolicitacoesRecentes.Take(4))
+            <button type="button" class="btn secondary" data-a11y-toggle="simple">Sair do modo fácil</button>
+        </section>
+        <div class="patient-standard cm37-stack">
+            <header class="cm37-head">
+                <div><span class="cm37-eyebrow">MEU CUIDADO</span><h1 id="cm37-patient-title">Olá, @Model.NomePaciente!</h1><p>Veja sua próxima consulta e o que precisa fazer agora.</p></div>
+                <button type="button" class="cm37-linkbtn" data-a11y-toggle="simple">Ativar modo fácil</button>
+            </header>
+            <div class="cm37-main-grid">
+                <section class="cm37-card cm37-feature" aria-labelledby="cm37-next-appointment">
+                    <span class="cm37-eyebrow">PRÓXIMA CONSULTA</span>
+                    @if (proxima is not null)
                     {
-                        <div class="request-row"><span class="request-dot"></span><div><strong>@(pedido.Especialidade?.Nome ?? "Solicitação de consulta")</strong><small>@ClinicaClock.ConverterUtc(pedido.CriadoEm).ToString("dd/MM · HH:mm")</small></div><span class="soft-pill">@StatusPedido(pedido.Status)</span></div>
+                        <div class="cm37-between"><h2 id="cm37-next-appointment">@(proxima.Medico?.Nome ?? "Profissional")</h2><span class="status-pill status-@proxima.Status.ToLowerInvariant()">@proxima.Status</span></div>
+                        <p>@(proxima.Medico?.Especialidade ?? "Consulta")</p>
+                        <p class="cm37-date">@proxima.Data.ToString("dd/MM/yyyy") · @proxima.Horario</p>
+                        <div class="cm37-actions">
+                            <a class="cm37-button" asp-controller="Consulta" asp-action="Details" asp-route-id="@proxima.Id">Ver consulta e orientações</a>
+                            <a class="cm37-button-secondary" asp-controller="Jornada" asp-action="Index">Preparar / check-in</a>
+                        </div>
                     }
-                }
-                else { <div class="empty-state compact"><h3>Tudo tranquilo por aqui.</h3><p>O andamento das suas solicitações aparecerá neste espaço.</p></div> }
-            </section><section class="patient-support"><span class="eyebrow">DO SEU JEITO</span><h2>Seu atendimento,<br />suas preferências.</h2><p>Convênio: <strong>@Model.Convenio</strong></p><a class="text-link" asp-controller="MinhaConta" asp-action="Index">Conferir meus dados <svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></a><hr /><a class="text-link" asp-controller="ListaEspera" asp-action="Index">Acompanhar lista de espera <svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></a></section></div>
+                    else
+                    {
+                        <h2 id="cm37-next-appointment">Nenhuma consulta futura</h2>
+                        <p>Escolha um horário disponível para começar.</p>
+                        <a class="cm37-button" asp-controller="Consulta" asp-action="Create">Marcar minha consulta</a>
+                    }
+                </section>
+                <nav class="cm37-card cm37-quick" aria-label="Ações principais">
+                    <h2>O que você quer fazer?</h2>
+                    <a asp-controller="Consulta" asp-action="Create"><span>Marcar uma consulta</span><span aria-hidden="true">↗</span></a>
+                    <a asp-controller="Consulta" asp-action="Index"><span>Minhas consultas</span><span aria-hidden="true">↗</span></a>
+                    <a asp-controller="Jornada" asp-action="Index" asp-fragment="j-consultas"><span>Acessar teleconsulta</span><span aria-hidden="true">↗</span></a>
+                    <button type="button" data-open-callmed-ai><span>Falar com atendimento</span><span aria-hidden="true">↗</span></button>
+                </nav>
+            </div>
+            <section class="cm37-card cm37-tele" aria-labelledby="cm37-patient-tele">
+                <div><span class="cm37-eyebrow">CONSULTAS ONLINE</span><h2 id="cm37-patient-tele">Teleconsulta sem complicação</h2><p>Confira a preparação e acesse a sala no horário autorizado.</p></div>
+                <a class="cm37-button-secondary" asp-controller="Jornada" asp-action="Index" asp-fragment="j-consultas">Preparar e entrar na sala</a>
+            </section>
+            <div class="cm37-columns">
+                <section class="cm37-card" aria-labelledby="cm37-patient-requests">
+                    <div class="cm37-between"><h2 id="cm37-patient-requests">Meus pedidos</h2><a asp-controller="Solicitacoes" asp-action="Index">Ver todos</a></div>
+                    @if (Model.SolicitacoesRecentes.Any())
+                    {
+                        @foreach(var pedido in Model.SolicitacoesRecentes.Take(3))
+                        {
+                            <div class="cm37-listrow"><div><strong>@(pedido.Especialidade?.Nome ?? "Solicitação de consulta")</strong><small>@ClinicaClock.ConverterUtc(pedido.CriadoEm).ToString("dd/MM · HH:mm")</small></div><span class="cm37-status">@StatusPedido(pedido.Status)</span></div>
+                        }
+                    }
+                    else { <p class="cm37-muted">Nenhuma solicitação aberta neste momento.</p> }
+                </section>
+                <section class="cm37-card" aria-labelledby="cm37-patient-more">
+                    <h2 id="cm37-patient-more">Seu acompanhamento</h2>
+                    <div class="cm37-listrow"><div><strong>Pré-atendimento</strong><small>Preencha dados necessários antes de sair de casa</small></div><a asp-controller="Jornada" asp-action="Index">Abrir</a></div>
+                    <div class="cm37-listrow"><div><strong>Lista de espera</strong><small>Acompanhe ofertas de vagas</small></div><a asp-controller="ListaEspera" asp-action="Index">Abrir</a></div>
+                    <div class="cm37-listrow"><div><strong>Exames e documentos</strong><small>Histórico de exames</small></div><a asp-controller="HistoricoExames" asp-action="Index">Abrir</a></div>
+                    <div class="cm37-listrow"><div><strong>Dados pessoais</strong><small>Convênio e preferências</small></div><a asp-controller="MinhaConta" asp-action="Index">Abrir</a></div>
+                </section>
+            </div>
             @if (Model.ProximasConsultas.Skip(1).Any())
             {
-                <section class="panel patient-future"><header class="panel-heading"><h2>Mais adiante na sua agenda</h2><a class="text-link" asp-controller="Consulta" asp-action="Index">Ver todas <svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></a></header>
-                @foreach(var consulta in Model.ProximasConsultas.Skip(1).Take(3)) { <a class="request-row" asp-controller="Consulta" asp-action="Details" asp-route-id="@consulta.Id"><time>@consulta.Data.ToString("dd/MM")<small>@consulta.Horario</small></time><div><strong>@consulta.Medico?.Nome</strong><small>@consulta.Medico?.Especialidade</small></div><span aria-hidden="true"><svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></span></a> }
+                <section class="cm37-card" aria-labelledby="cm37-patient-upcoming"><div class="cm37-between"><h2 id="cm37-patient-upcoming">Depois da próxima consulta</h2><a asp-controller="Consulta" asp-action="Index">Ver agenda</a></div>
+                @foreach(var item in Model.ProximasConsultas.Skip(1).Take(3))
+                {
+                    <a class="cm37-listrow" asp-controller="Consulta" asp-action="Details" asp-route-id="@item.Id"><div><strong>@(item.Medico?.Nome ?? "Profissional")</strong><small>@item.Data.ToString("dd/MM") · @item.Horario</small></div><span aria-hidden="true">↗</span></a>
+                }
                 </section>
             }
         </div>

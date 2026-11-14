@@ -1,75 +1,86 @@
 @model MKSANCrud.ViewModels.FuncionarioPainelViewModel
 @using System.Globalization
 @{
-    var admin = User.IsInRole("Admin");
-    ViewData["Title"] = admin ? "Operação da clínica" : "Recepção e operação";
-    var primeiroNome = Model.NomeUsuario.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "equipe";
-    var pt = CultureInfo.GetCultureInfo("pt-BR");
-    var proximas = Model.ProximasConsultas.OrderBy(x => x.Data).ThenBy(x => x.Horario).Take(7).ToList();
+    var admin=User.IsInRole("Admin");
+    ViewData["Title"]=admin?"Visão geral da clínica":"Recepção de hoje";
+    var nome=Model.NomeUsuario.Split(' ',StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()??"equipe";
+    var pt=CultureInfo.GetCultureInfo("pt-BR");
+    var proximas=Model.ProximasConsultas.OrderBy(x=>x.Data).ThenBy(x=>x.Horario).Take(6).ToList();
 }
-<section class="senai-home" aria-labelledby="senai-title">
-    <header class="senai-home-header">
-        <div>
-            <span class="eyebrow">CALLMED · OPERAÇÃO CONECTADA</span>
-            <h1 id="senai-title">Olá, @primeiroNome.</h1>
-            <p>Acompanhe a agenda e resolva o que precisa da equipe. Cada ação leva à área certa.</p>
-        </div>
-        <div class="senai-home-date"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg><span>@Model.Hoje.ToString("dddd, dd 'de' MMMM", pt)</span></div>
+<section class="cm37-dashboard cm37-operations" aria-labelledby="cm37-ops-title">
+    <header class="cm37-head">
+        <div><span class="cm37-eyebrow">@(admin?"GESTÃO DA CLÍNICA":"RECEPÇÃO · HOJE")</span><h1 id="cm37-ops-title">@(admin?"Visão geral da operação":"Olá, "+nome+"!")</h1>
+            <p>@(admin?"Acompanhe indicadores e acesse a operação sem misturar configurações com tarefas do dia.":"Resolva as pendências do dia. Os check-ins automáticos não precisam da sua confirmação.")</p></div>
+        <div class="cm37-date">@Model.Hoje.ToString("dddd, dd 'de' MMMM",pt)</div>
     </header>
-
-    <section class="cm-demand-focus" aria-labelledby="cm-demand-focus-title">
-        <div class="cm-demand-focus-lead">
-            <span class="eyebrow"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#video"></use></svg> ATENDIMENTO SEM DISTÂNCIAS</span>
-            <h2 id="cm-demand-focus-title">Teleconsultas, em primeiro plano.</h2>
-            <p>Acompanhe salas online, entrada dos participantes e andamento das consultas, sem mudar de plataforma.</p>
-            <a class="cm-demand-main-link" asp-controller="Salas" asp-action="Index" asp-route-aba="online">Acompanhar teleconsultas <span aria-hidden="true">↗</span></a>
-        </div>
-        <nav class="cm-demand-focus-links" aria-label="Etapas essenciais da jornada clínica">
-            <a asp-controller="Confirmacoes" asp-action="Index"><span class="cm-demand-step-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar-check"></use></svg></span><span><strong>Confirmações</strong><small>Lembretes e respostas dos pacientes</small></span><span aria-hidden="true">↗</span></a>
-            <a asp-controller="ListaEspera" asp-action="Index"><span class="cm-demand-step-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#clock"></use></svg></span><span><strong>Fila inteligente</strong><small>Recuperar vagas por cancelamento</small></span><span aria-hidden="true">↗</span></a>
-            <a asp-controller="Jornada" asp-action="Index"><span class="cm-demand-step-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user-round-check"></use></svg></span><span><strong>Pré-atendimento e check-in</strong><small>Preparar a chegada com antecedência</small></span><span aria-hidden="true">↗</span></a>
-        </nav>
-    </section>
-    <nav class="cm-demand-utility" aria-label="Ações frequentes"><a asp-controller="Checkin" asp-action="Terminal">Exibir QR Code</a><a asp-controller="RecepcaoPendencias" asp-action="Index">Pendências de hoje</a><a asp-controller="Consulta" asp-action="Create">+ Agendar consulta</a><a asp-controller="Atendimento" asp-action="Index">Abrir mensagens</a><a asp-controller="Piloto" asp-action="Index">Ver indicadores da demanda</a></nav>
-
-    <div class="senai-home-numbers" role="group" aria-label="Situação da clínica">
-        <a asp-controller="Agenda" asp-action="Index"><span>Consultas hoje</span><strong>@Model.ConsultasHoje</strong><small>@Model.ConfirmadasHoje confirmadas</small></a>
-        <a asp-controller="Atendimento" asp-action="Index"><span>Conversas abertas</span><strong>@Model.ConversasAbertas</strong><small>@Model.ConversasHumano com a equipe</small></a>
-        <a asp-controller="Solicitacoes" asp-action="Index"><span>Solicitações pendentes</span><strong>@Model.SolicitacoesPendentes</strong><small>@Model.SolicitacoesAtrasadas com atraso</small></a>
-        <a asp-controller="ListaEspera" asp-action="Index"><span>Lista de espera</span><strong>@Model.ListaEsperaAtiva</strong><small>@Model.VagasRecuperadasListaEspera vagas recuperadas</small></a>
+    @if(admin)
+    {
+        <section class="cm37-card cm37-feature cm37-admin-lead" aria-labelledby="cm37-admin-focus">
+            <div><span class="cm37-eyebrow">ACOMPANHAMENTO OPERACIONAL</span><h2 id="cm37-admin-focus">Sua clínica em um só lugar</h2><p>Consultas, atendimento e encaixes com dados da operação. As configurações ficam na área de gestão.</p></div>
+            <div class="cm37-actions"><a class="cm37-button" asp-controller="Operacao" asp-action="Index">Ver indicadores e automações</a><a class="cm37-button-secondary" asp-controller="RecepcaoPendencias" asp-action="Index">Acompanhar recepção</a></div>
+        </section>
+    }
+    else
+    {
+        <section class="cm37-card cm37-feature" aria-labelledby="cm37-reception-focus">
+            <div><span class="cm37-eyebrow">PRÓXIMA AÇÃO</span><h2 id="cm37-reception-focus">O que precisa da recepção?</h2><p>Pré-cadastros incompletos, chegadas assistidas e solicitações que precisam de uma pessoa.</p></div>
+            <div class="cm37-actions"><a class="cm37-button" asp-controller="RecepcaoPendencias" asp-action="Index">Resolver pendências</a><a class="cm37-button-secondary" asp-controller="Checkin" asp-action="Terminal">Exibir QR de check-in</a></div>
+        </section>
+    }
+    <div class="cm37-metrics" aria-label="Resumo da clínica">
+        <a class="cm37-card cm37-metric" asp-controller="Agenda" asp-action="Index"><small>Consultas hoje</small><strong>@Model.ConsultasHoje</strong><span>@Model.ConfirmadasHoje confirmadas</span></a>
+        <a class="cm37-card cm37-metric" asp-controller="Atendimento" asp-action="Index"><small>Conversas abertas</small><strong>@Model.ConversasAbertas</strong><span>@Model.ConversasHumano com a equipe</span></a>
+        <a class="cm37-card cm37-metric" asp-controller="Solicitacoes" asp-action="Index"><small>Solicitações pendentes</small><strong>@Model.SolicitacoesPendentes</strong><span>@Model.SolicitacoesAtrasadas atrasadas</span></a>
+        <a class="cm37-card cm37-metric" asp-controller="ListaEspera" asp-action="Index"><small>Na fila de espera</small><strong>@Model.ListaEsperaAtiva</strong><span>@Model.VagasRecuperadasListaEspera vagas recuperadas</span></a>
     </div>
-
-    <div class="senai-home-workspace">
-        <section class="senai-home-agenda" aria-labelledby="senai-agenda">
-            <div class="senai-card-title"><div><span class="eyebrow">ROTINA DE HOJE</span><h2 id="senai-agenda">Próximas consultas</h2></div><a asp-controller="Agenda" asp-action="Index">Abrir agenda <span aria-hidden="true">↗</span></a></div>
-            @if(proximas.Count > 0)
+    <div class="cm37-columns cm37-ops-grid">
+        <section class="cm37-card" aria-labelledby="cm37-ops-day">
+            <div class="cm37-between"><div><span class="cm37-eyebrow">AGENDA</span><h2 id="cm37-ops-day">Próximas consultas</h2></div><a asp-controller="Agenda" asp-action="Index">Abrir agenda</a></div>
+            @if(proximas.Count==0){<p class="cm37-muted">Nenhuma consulta futura encontrada.</p>}
+            else
             {
-                <div class="senai-agenda-scroll" tabindex="0" aria-label="Tabela de próximas consultas">
-                    <table><thead><tr><th scope="col">Data e hora</th><th scope="col">Paciente</th><th scope="col">Profissional</th><th scope="col">Status</th><th scope="col">Detalhes</th></tr></thead><tbody>
+                <div class="cm37-table-scroll" tabindex="0" aria-label="Lista de próximas consultas">
+                    <table class="cm37-table"><thead><tr><th>Quando</th><th>Paciente</th><th>Profissional</th><th>Status</th><th>Detalhes</th></tr></thead><tbody>
                     @foreach(var consulta in proximas)
                     {
-                        var paciente = consulta.Paciente?.Nome ?? "Paciente";
-                        <tr><td><strong>@consulta.Horario</strong><small>@consulta.Data.ToString("dd/MM")</small></td><td>@paciente</td><td>@(consulta.Medico?.Nome ?? "A definir")</td><td><span class="status-pill status-@consulta.Status.ToString().ToLowerInvariant()">@consulta.Status</span></td><td><a asp-controller="Consulta" asp-action="Details" asp-route-id="@consulta.Id" aria-label="Ver consulta de @paciente">Ver <span aria-hidden="true">↗</span></a></td></tr>
+                        var paciente=consulta.Paciente?.Nome??"Paciente";
+                        <tr><td><strong>@consulta.Horario</strong><small>@consulta.Data.ToString("dd/MM")</small></td><td>@paciente</td><td>@(consulta.Medico?.Nome??"A definir")</td><td><span class="status-pill status-@consulta.Status.ToString().ToLowerInvariant()">@consulta.Status</span></td><td><a asp-controller="Consulta" asp-action="Details" asp-route-id="@consulta.Id" aria-label="Ver consulta de @paciente">Abrir</a></td></tr>
                     }
                     </tbody></table>
                 </div>
             }
-            else
-            {
-                <div class="senai-empty"><h3>Nenhuma consulta futura encontrada.</h3><p>Abra a agenda para disponibilizar novos horários.</p><a class="btn secondary" asp-controller="Disponibilidades" asp-action="Index">Gerenciar horários</a></div>
-            }
         </section>
-        <aside class="senai-home-priorities" aria-labelledby="senai-priorities">
-            <div class="senai-card-title"><div><span class="eyebrow">AGORA</span><h2 id="senai-priorities">O que precisa de atenção</h2></div></div>
-            <a asp-controller="Solicitacoes" asp-action="Index"><span><strong>Responder solicitações</strong><small>@Model.SolicitacoesPendentes pedido(s) aguardando resolução</small></span><b>@Model.SolicitacoesPendentes</b></a>
-            <a asp-controller="Confirmacoes" asp-action="Index"><span><strong>Conferir confirmações pendentes</strong><small>@Model.AguardandoHoje aguardando confirmação hoje</small></span><b>@Model.AguardandoHoje</b></a>
-            <a asp-controller="ListaEspera" asp-action="Index"><span><strong>Acompanhar encaixes</strong><small>Ofertas, prioridade e prazo de aceite</small></span><b aria-hidden="true">↗</b></a>
-            <a asp-controller="RecepcaoPendencias" asp-action="Index"><span><strong>Resolver pendências</strong><small>Cadastro e chegada: somente exceções</small></span><b aria-hidden="true">↗</b></a>
+        <aside class="cm37-card cm37-quick" aria-labelledby="cm37-ops-pending">
+            <h2 id="cm37-ops-pending">@(admin?"Pontos de atenção":"Pendências da equipe")</h2>
+            <a asp-controller="Solicitacoes" asp-action="Index"><span><strong>Pedidos aguardando equipe</strong><small>@Model.SolicitacoesPendentes solicitações</small></span><span class="cm37-count">@Model.SolicitacoesPendentes</span></a>
+            <a asp-controller="Confirmacoes" asp-action="Index"><span><strong>Confirmações pendentes</strong><small>@Model.AguardandoHoje consultas de hoje</small></span><span class="cm37-count">@Model.AguardandoHoje</span></a>
+            <a asp-controller="RecepcaoPendencias" asp-action="Index"><span><strong>Exceções do check-in</strong><small>Mostrar somente casos que precisam de ajuda</small></span><span aria-hidden="true">↗</span></a>
+            <a asp-controller="ListaEspera" asp-action="Index"><span><strong>Fila inteligente</strong><small>Ofertas e prazos de encaixe</small></span><span aria-hidden="true">↗</span></a>
         </aside>
     </div>
-
-    <section class="cm-demand-outcomes" aria-labelledby="cm-demand-outcomes-title">
-        <div><span class="eyebrow">RESULTADOS DO DESAFIO</span><h2 id="cm-demand-outcomes-title">Menos faltas. Mais horários aproveitados.</h2><p>Acompanhe faltas, ocupação, vagas recuperadas e tempo de atendimento com dados registrados pela clínica.</p></div>
-        <a class="btn secondary" asp-controller="Piloto" asp-action="Index">Ver resultados da clínica <span aria-hidden="true">↗</span></a>
+    <section class="cm37-card cm37-tele" aria-labelledby="cm37-ops-online">
+        <div><span class="cm37-eyebrow">TELECONSULTAS</span><h2 id="cm37-ops-online">Atendimentos online</h2><p>Acompanhe a presença e as salas virtuais sem abrir outro sistema.</p></div>
+        <a class="cm37-button-secondary" asp-controller="Salas" asp-action="Index" asp-route-aba="online">Abrir teleconsultas</a>
     </section>
+    @if(admin)
+    {
+        <section class="cm37-card" aria-labelledby="cm37-admin-areas">
+            <div class="cm37-between"><h2 id="cm37-admin-areas">Gestão da clínica</h2><a asp-controller="Organizacao" asp-action="Index">Todas as funções</a></div>
+            <nav class="cm37-action-grid" aria-label="Áreas administrativas">
+                <a asp-controller="Piloto" asp-action="Index"><strong>Indicadores SENAI</strong><small>Ocupação, faltas e resultados</small></a>
+                <a asp-controller="Integracoes" asp-action="Index"><strong>Integrações e canais</strong><small>WhatsApp, Gmail e httpSMS</small></a>
+                <a asp-controller="Configuracoes" asp-action="Index"><strong>Configurações</strong><small>Preferências operacionais</small></a>
+                <a asp-controller="Acessos" asp-action="Index"><strong>Equipe e acessos</strong><small>Permissões do sistema</small></a>
+            </nav>
+        </section>
+    }
+    else
+    {
+        <nav class="cm37-action-grid" aria-label="Ações frequentes de recepção">
+            <a asp-controller="Consulta" asp-action="Create"><strong>Agendar consulta</strong><small>Encontrar horários disponíveis</small></a>
+            <a asp-controller="Atendimento" asp-action="Index"><strong>Central de Atendimento</strong><small>Mensagens, IA e equipe</small></a>
+            <a asp-controller="Confirmacoes" asp-action="Index"><strong>Confirmações</strong><small>Acompanhar respostas</small></a>
+            <a asp-controller="Checkin" asp-action="Terminal"><strong>QR de chegada</strong><small>Autoatendimento presencial</small></a>
+        </nav>
+    }
 </section>
