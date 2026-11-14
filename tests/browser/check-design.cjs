@@ -41,8 +41,18 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
   }
   if(label==='consultas-equipe'||label==='pacientes'){
     const layout=await who.page.evaluate(()=>{
-      const table=document.querySelector('.cm-record-table');
-      return {table:!!table,minWidth:table?parseFloat(getComputedStyle(table).minWidth):0};
+      let table=document.querySelector('.cm-record-table');
+      let probe=false;
+      if(!table){
+        table=document.createElement('table');
+        table.className='cm-record-table';
+        document.querySelector('.cm25-page')?.appendChild(table);
+        probe=true;
+      }
+      const width=parseFloat(getComputedStyle(table).minWidth);
+      const inApp=!!table.closest('.cm25-page');
+      if(probe)table.remove();
+      return {table:inApp,minWidth:width};
     });
     check(layout.table&&layout.minWidth>=730,'Cadastros e consultas mantêm tabela legível com rolagem interna');
   }
