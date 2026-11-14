@@ -14,6 +14,9 @@ const details=read('src/CallMed.Web/Views/Consulta/Details.cshtml');
 for(const field of ['cm42-flow-stages','asp-controller="Jornada" asp-action="Consulta"','consultaEncerrada','presencaConfirmada']){
  if(!details.includes(field))throw Error('Jornada of appointment missing '+field);
 }
+if(!details.includes('data-cm-print') || details.includes('onclick="window.print()"'))throw Error('Consultation print action must be declarative');
+const shell=read('src/CallMed.Web/wwwroot/js/core/shell.js');
+if(!shell.includes("[data-cm-print]") || !shell.includes('window.print()'))throw Error('Print action lost its delegated handler');
 const css=read('src/CallMed.Web/wwwroot/css/modules/99-consultation-journey.css');
 if(!css.includes('grid-template-columns:repeat(4')||!css.includes('@media(max-width:630px)'))throw Error('Journey lacks responsive stages');
 console.log('UX contract OK: grouped tasks, original routes and one consultation journey.');
