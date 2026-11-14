@@ -40,21 +40,25 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
     check(layout.toolbar==='flex'&&layout.section==='grid','Jornada usa barras e seções padronizadas V40');
   }
   if(label==='consultas-equipe'||label==='pacientes'){
-    const layout=await who.page.evaluate(()=>{
-      let table=document.querySelector('.cm-record-table');
+    const layout=await who.page.evaluate(label=>{
+      const isEquipe=label==='consultas-equipe';
+      const root=document.querySelector(isEquipe?'.cm-consult-page':'.crud-v16');
+      const tableClass=isEquipe?'cm-consult-table':'cm-record-table';
+      let table=root?.querySelector('.'+tableClass);
       let probe=false;
-      if(!table){
+      if(root&&!table){
         table=document.createElement('table');
-        table.className='cm-record-table';
-        document.querySelector('.cm25-page')?.appendChild(table);
+        table.className=tableClass;
+        root.appendChild(table);
         probe=true;
       }
-      const width=parseFloat(getComputedStyle(table).minWidth);
-      const inApp=!!table.closest('.cm25-page');
+      const width=table?parseFloat(getComputedStyle(table).minWidth):0;
       if(probe)table.remove();
-      return {table:inApp,minWidth:width};
-    });
-    check(layout.table&&layout.minWidth>=730,'Cadastros e consultas mantêm tabela legível com rolagem interna');
+      return {root:!!root,table:!!table,minWidth:width};
+    },label);
+    console.log('CM40_TABLE '+JSON.stringify({label,layout}));
+    check(layout.root&&layout.table&&layout.minWidth>=(label==='consultas-equipe'?740:730),
+      'Lista '+label+' permite tabela legível mesmo quando o filtro está vazio');
   }
   if(label==='profissional'){
    await who.page.evaluate(()=>document.documentElement.dataset.theme='light');
