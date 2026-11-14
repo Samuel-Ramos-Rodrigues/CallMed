@@ -78,9 +78,10 @@ public sealed class AtendimentoEmailAutomaticoBackgroundService(
                 {
                     using var scope = scopes.CreateScope();
                     await scope.ServiceProvider.GetRequiredService<AtendimentoEmailAutomaticoService>().ProcessarPendenciasAsync(stoppingToken);
+                    await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(scope.ServiceProvider,"email-ia",true,stoppingToken);
                 }
                 catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested) { break; }
-                catch (Exception ex) { logger.LogError(ex, "Falha no ciclo de retomada automática dos e-mails."); }
+                catch (Exception ex) { logger.LogError(ex, "Falha no ciclo de retomada automática dos e-mails."); using var scope=scopes.CreateScope(); await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(scope.ServiceProvider,"email-ia",false,stoppingToken); }
             } while (await timer.WaitForNextTickAsync(stoppingToken));
         }
         catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested) { }

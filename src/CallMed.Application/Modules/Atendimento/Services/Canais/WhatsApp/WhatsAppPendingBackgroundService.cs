@@ -26,9 +26,13 @@ public sealed class WhatsAppPendingBackgroundService(IServiceScopeFactory scopes
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(2));
         try { while (await timer.WaitForNextTickAsync(ct)) {
             try { using var scope = scopes.CreateScope(); var sp = scope.ServiceProvider;
-                if (sp.GetRequiredService<IOptions<EvolutionWhatsAppOptions>>().Value.Enabled)
+                if (sp.GetRequiredService<IOptions<EvolutionWhatsAppOptions>>().Value.Enabled) {
                     await ProcessarAsync(sp.GetRequiredService<MKSANContext>(), sp.GetRequiredService<AtendimentoOrquestradorService>(), ct);
-            } catch (Exception ex) when (!ct.IsCancellationRequested) { logger.LogError(ex, "Falha ao retomar entradas persistidas do WhatsApp."); }
+                    await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(sp,"whatsapp-pendencias",true,ct);
+                }
+            } catch (Exception ex) when (!ct.IsCancellationRequested) { logger.LogError(ex, "Falha ao retomar entradas persistidas do WhatsApp.");
+                using var scope=scopes.CreateScope();
+                await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(scope.ServiceProvider,"whatsapp-pendencias",false,ct); }
         } } catch (OperationCanceledException) when (ct.IsCancellationRequested) { }
     }
 }

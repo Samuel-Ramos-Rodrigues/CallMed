@@ -111,9 +111,10 @@ public sealed class HttpSmsAtendimentoBackgroundService(
                 {
                     using var scope = scopes.CreateScope();
                     await scope.ServiceProvider.GetRequiredService<HttpSmsAtendimentoService>().ProcessarPendenciasAsync(stoppingToken);
+                    await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(scope.ServiceProvider,"httpsms-pendencias",true,stoppingToken);
                 }
                 catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested) { break; }
-                catch (Exception ex) { logger.LogError(ex, "Falha no ciclo de atendimento automático por httpSMS."); }
+                catch (Exception ex) { logger.LogError(ex, "Falha no ciclo de atendimento automático por httpSMS."); using var scope=scopes.CreateScope(); await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(scope.ServiceProvider,"httpsms-pendencias",false,stoppingToken); }
             }
         }
         catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested) { }

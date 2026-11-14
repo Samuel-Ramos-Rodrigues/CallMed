@@ -41,6 +41,7 @@ public sealed class AgendaRenovacaoBackgroundService : BackgroundService
             using var scope = _scopeFactory.CreateScope();
             var agenda = scope.ServiceProvider.GetRequiredService<AgendaMedicoService>();
             await agenda.SincronizarTodosMedicosAtivosAsync(120, ct);
+            await OperacaoService.RegistrarAsync(scope.ServiceProvider,"agenda-renovacao",true,ct);
             _logger.LogInformation("Janela de agenda médica renovada com sucesso.");
         }
         catch (OperationCanceledException) when (ct.IsCancellationRequested)
@@ -50,6 +51,8 @@ public sealed class AgendaRenovacaoBackgroundService : BackgroundService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Falha ao renovar a janela de agenda médica.");
+            using var scope=_scopeFactory.CreateScope();
+            await OperacaoService.RegistrarAsync(scope.ServiceProvider,"agenda-renovacao",false,ct);
         }
     }
 }
