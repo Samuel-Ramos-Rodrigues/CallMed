@@ -90,6 +90,21 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
     });
     check(spacing>=16,'Cabeçalho da tabela de pacientes não fica encostado na borda');
   }
+  if(label==='integracoes'){
+    const geometry=await who.page.evaluate(()=>{
+      const card=document.querySelector('.cm19-integration-card[data-integration="email"]');
+      const para=card?.querySelector('p');
+      const note=card?.querySelector('.cm19-security-note');
+      const status=card?.querySelector(':scope > b');
+      if(!card||!para||!note||!status)return {present:false};
+      const a=para.getBoundingClientRect(),b=note.getBoundingClientRect(),c=status.getBoundingClientRect(),d=card.getBoundingClientRect();
+      return {present:true,paraEnd:a.bottom,noteStart:b.top,noteEnd:b.bottom,statusStart:c.top,statusEnd:c.bottom,cardEnd:d.bottom};
+    });
+    console.log('CM40_EMAIL_CARD '+JSON.stringify(geometry));
+    check(geometry.present&&geometry.paraEnd<=geometry.noteStart+1&&
+      geometry.noteEnd<=geometry.statusStart+1&&geometry.statusEnd<=geometry.cardEnd-2,
+      'Integrações: descrição do e-mail, aviso e status sem sobreposição');
+  }
   if(label==='profissional'){
    await who.page.evaluate(()=>document.documentElement.dataset.theme='light');
    await who.page.setViewportSize({width:1440,height:900});
