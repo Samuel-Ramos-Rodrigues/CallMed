@@ -692,7 +692,7 @@ body.cm43-horizon.identity-body .register-shell .steps .step {
   min-width: 0;
   flex: 1 1 0;
   color: var(--cm-muted);
-  opacity: .78;
+  opacity: 1;
 }
 body.cm43-horizon.identity-body .register-shell .steps .step span {
   flex: 0 0 30px;
