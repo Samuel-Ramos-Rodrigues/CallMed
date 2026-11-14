@@ -18,4 +18,10 @@ if(head.includes('~/css/callmed.css')||fs.existsSync(path.join(root,'src/CallMed
 const worker=read('src/CallMed.Web/wwwroot/service-worker.js');
 for(const file of modules)if(!worker.includes("'/css/modules/"+file+"'"))throw Error('PWA missing '+file);
 if(worker.includes("'/css/callmed.css'")||worker.includes("'/css/callmed-auth-v34.css'"))throw Error('Obsolete CSS in service worker');
+for(const staticPage of ['offline.html','contingencia.html']){
+ const content=read('src/CallMed.Web/wwwroot/'+staticPage);
+ const listed=[...content.matchAll(/\\/css\\/modules\\/([\\w-]+\\.css)/g)].map(x=>x[1]);
+ if(JSON.stringify(listed)!==JSON.stringify(modules))throw Error(staticPage+' missing CSS modules or wrong order');
+ if(content.includes('/css/callmed.css'))throw Error(staticPage+' loads removed CSS');
+}
 console.log('CSS integrity OK: '+modules.length+' modules, Git blob '+sha);

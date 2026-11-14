@@ -15,7 +15,7 @@ for file in files:
     if re.search(r"@import\b", text, re.I):
         sys.exit(f"Não usar @import: {file.relative_to(root)}")
 head = (web / "Views/Shared/_DocumentHead.cshtml").read_text(encoding="utf-8")
-linked = re.findall(r"""href=["']~/css/modules/([\w-]+\.css)["']""", head)
+linked = re.findall(r"""href=["']~?/css/modules/([\w-]+\.css)["']""", head)
 if len(linked) != 14 or sorted(linked) != sorted(p.name for p in files):
     sys.exit("A partial _DocumentHead deve referenciar cada módulo CSS uma única vez.")
 for page in [*web.rglob("*.cshtml"), *web.rglob("*.html")]:
@@ -26,6 +26,6 @@ for page in [*web.rglob("*.cshtml"), *web.rglob("*.html")]:
         sys.exit(f"Estilo incorporado em {page.relative_to(root)}.")
     for tag in re.findall(r"<link\b[^>]*>", source, re.I):
         if re.search(r"""\brel=["']stylesheet["']""", tag, re.I):
-            if not re.search(r"""href=["']~/css/modules/[\w-]+\.css["']""", tag):
+            if not re.search(r"""href=["']~?/css/modules/[\w-]+\.css["']""", tag):
                 sys.exit(f"Folha CSS fora da lista em {page.relative_to(root)}")
 print(f"CSS modular: {len(files)} módulos e referências verificados.")
