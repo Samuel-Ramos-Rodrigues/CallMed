@@ -106,6 +106,17 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
       'Integrações: descrição do e-mail, aviso e status sem sobreposição');
   }
   if(label==='profissional'){
+    const upcoming=await who.page.evaluate(()=>{
+      const list=document.querySelector('.cm37-doctor .cm-doctor-upcoming');
+      const first=list?.querySelector('article');
+      return {exists:!!list,display:list?getComputedStyle(list).display:'',
+        cardDisplay:first?getComputedStyle(first).display:'',children:list?.children.length||0};
+    });
+    check(upcoming.exists&&upcoming.display==='grid'&&
+      (upcoming.children===0||upcoming.cardDisplay==='grid'),
+      'Painel médico usa cartões para próximos pacientes em vez de lista sem layout');
+  }
+  if(label==='profissional'){
    await who.page.evaluate(()=>document.documentElement.dataset.theme='light');
    await who.page.setViewportSize({width:1440,height:900});
    await who.page.evaluate(()=>document.fonts.ready);
