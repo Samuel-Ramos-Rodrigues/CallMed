@@ -1239,8 +1239,6 @@
     --focus: #96e8dc;
     --content: 1510px;
 }
-:root[data-theme="light"] {
-}
 .primary-nav {gap: 8px;}
 .primary-nav a {font-size: .84rem; font-weight: 700; border-radius: 12px; padding: 10px 14px;}
 .primary-nav a.active {box-shadow: inset 0 -2px 0 var(--primary);}

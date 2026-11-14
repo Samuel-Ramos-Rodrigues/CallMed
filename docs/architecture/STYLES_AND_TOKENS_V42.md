@@ -2,14 +2,14 @@
 
 Origem auditada: `src/CallMed.Web/wwwroot/css/callmed.css`, blob Git `8b99b4dbe4b21ae5c6722efd07a9b47a5baee768` (base V41).
 Arquivo original: 252956 caracteres e 9459 linhas. A árvore contém **um único CSS legado**, não vários arquivos para apagar.
-**Estado atualizado:** a separação inicial reproduzia integralmente o CSS V41. Na limpeza seguinte, 43 declarações totalmente sobrescritas no mesmo seletor e contexto foram eliminadas, sem mudar os 6.686 valores finais verificados. A cascata continua na ordem original. Hash Git do CSS limpo: `66e6cc81f3f9be61afd2804096e3295c50307009` (base original V41: `8b99b4dbe4b21ae5c6722efd07a9b47a5baee768`).
+**Estado atualizado:** a separação inicial reproduzia integralmente o CSS V41. Na limpeza seguinte, 43 declarações totalmente sobrescritas no mesmo seletor e contexto foram eliminadas, sem mudar os 6.686 valores finais verificados. A cascata continua na ordem original. Hash Git do CSS limpo: `c97f6969de87c1787d063f798c5d02e47603d74b` (base original V41: `8b99b4dbe4b21ae5c6722efd07a9b47a5baee768`).
 
 ## Ordem da cascata
 1. `src/CallMed.Web/wwwroot/css/modules/00-foundations.css` — 15509 caracteres
 2. `src/CallMed.Web/wwwroot/css/modules/10-navigation.css` — 13750 caracteres
 3. `src/CallMed.Web/wwwroot/css/modules/20-attendance.css` — 14295 caracteres
-4. `src/CallMed.Web/wwwroot/css/modules/30-scheduling.css` — 53043 caracteres
-5. `src/CallMed.Web/wwwroot/css/modules/40-public-and-components.css` — 31685 caracteres
+4. `src/CallMed.Web/wwwroot/css/modules/30-scheduling.css` — 53014 caracteres
+5. `src/CallMed.Web/wwwroot/css/modules/40-public-and-components.css` — 31655 caracteres
 6. `src/CallMed.Web/wwwroot/css/modules/50-senai-workflows.css` — 15395 caracteres
 7. `src/CallMed.Web/wwwroot/css/modules/55-identity-public.css` — 35823 caracteres
 8. `src/CallMed.Web/wwwroot/css/modules/60-doctor-ui.css` — 4924 caracteres

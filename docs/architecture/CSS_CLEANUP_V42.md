@@ -25,7 +25,7 @@ Também foi corrigido o cabeçalho desatualizado que descrevia `00-foundations.c
 ## Integridade e regressão
 
 - Git blob do CSS anterior: `8b99b4dbe4b21ae5c6722efd07a9b47a5baee768`.
-- Git blob da concatenação dos 13 módulos limpos: `66e6cc81f3f9be61afd2804096e3295c50307009`.
+- Git blob da concatenação dos 13 módulos limpos: `c97f6969de87c1787d063f798c5d02e47603d74b`.
 - `tests/css-integrity.cjs` protege esse estado, bem como fronteiras dos módulos, ordem da cascata e PWA.
 - Suítes de navegador com os quatro perfis simulados, temas, acessibilidade, calendário V41 e central de atendimento V42 devem passar antes de integrar.
 - O inventário de 80 tokens foi mantido. Alguns tokens de compatibilidade ainda não são referenciados em CSS, mas não foram apagados sem auditar o consumo por JavaScript.
@@ -37,3 +37,5 @@ Temas claro/escuro, login e cadastro, navegação superior e móvel, logo horizo
 ## Próxima revisão futura
 
 Verificar seletores candidatos a desuso frente a Razor, JS e páginas geradas (classes dinâmicas); avançar a limpeza em pequenos lotes com capturas de comparação. Também revisar o JavaScript embutido em `Consulta/_Form.cshtml`, sem misturar essa migração com alterações no comportamento dos agendamentos.
+
+Complemento: 2 regras sem declarações também foram removidas (`.public-how-item` em media query e `:root[data-theme="light"]`), totalizando **43 declarações e 2 blocos vazios** limpos.
