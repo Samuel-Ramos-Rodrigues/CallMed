@@ -3,12 +3,12 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {createHash}=require('node:crypto');
 const root=path.resolve(__dirname,'..');
-const modules=["00-foundations.css","10-navigation.css","20-attendance.css","30-scheduling.css","40-public-and-components.css","50-senai-workflows.css","55-identity-public.css","60-doctor-ui.css","65-dashboards.css","70-clinical-theme.css","80-patient-and-operations.css","90-internal-modules.css","95-booking-calendar.css"];
+const modules=["00-foundations.css","10-navigation.css","20-attendance.css","30-scheduling.css","40-public-and-components.css","50-senai-workflows.css","55-identity-public.css","60-doctor-ui.css","65-dashboards.css","70-clinical-theme.css","80-patient-and-operations.css","90-internal-modules.css","95-booking-calendar.css","99-consultation-journey.css"];
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const cssDir='src/CallMed.Web/wwwroot/css/modules/';
 const files=fs.readdirSync(path.join(root,cssDir)).filter(f=>f.endsWith('.css')).sort();
 if(JSON.stringify(files)!==JSON.stringify([...modules].sort()))throw Error('CSS module set differs from expected');
-const bytes=Buffer.from(modules.map(m=>read(cssDir+m)).join(''),'utf8');
+const bytes=Buffer.from(modules.slice(0,-1).map(m=>read(cssDir+m)).join(''),'utf8'); // baseline V41 sem as regras novas da V42
 const sha=createHash('sha1').update(Buffer.from('blob '+bytes.length+'\0')).update(bytes).digest('hex');
 if(sha!=='8b99b4dbe4b21ae5c6722efd07a9b47a5baee768')throw Error('Original CSS changed: '+sha);
 const head=read('src/CallMed.Web/Views/Shared/_DocumentHead.cshtml');

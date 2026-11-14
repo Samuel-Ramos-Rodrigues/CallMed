@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v88-css-modular';
+const CACHE_NAME = 'callmed-static-v89-journey';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -20,6 +20,7 @@ const STATIC_ASSETS = [
     '/css/modules/80-patient-and-operations.css',
     '/css/modules/90-internal-modules.css',
     '/css/modules/95-booking-calendar.css',
+    '/css/modules/99-consultation-journey.css',
     '/js/core/contingencia.js',
     '/js/atendimento/solicitacao-medico-filter.js',
     '/js/core/preferences.js',

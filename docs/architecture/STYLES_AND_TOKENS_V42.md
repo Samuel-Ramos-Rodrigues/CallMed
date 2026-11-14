@@ -117,3 +117,7 @@ Variáveis declaradas: 80. Valores duplicados podem ser sobreposições por tema
 Não recriar arquivos `vXX-refino.css`. Novos seletores devem ir ao módulo funcional apropriado. Nunca alterar a ordem das folhas sem validar desktop/celular, tema claro/escuro, login V34 e Central 3 colunas.
 Esta fase modulariza fisicamente o CSS. Deduplicação de regras e tokens será uma segunda etapa, de risco maior, condicionada a evidência de testes visuais.
 Este branch contém também o calendário responsivo da PR nº 9 (V41), da qual deriva. Não fazer dois merges paralelos dessas correções sem conciliar as branches.
+
+## Complemento V42
+
+Adicionado `99-consultation-journey.css`, posterior aos **13 módulos que preservam o CSS base**. Ele contém somente a nova linha do tempo em `Consulta/Details.cshtml`. O teste SHA valida os 13 arquivos de base e verifica que o novo módulo está linkado e presente no PWA. Total: **14 arquivos CSS**.
