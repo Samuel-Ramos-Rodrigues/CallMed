@@ -1,7 +1,7 @@
 /* Preferências aplicadas antes do CSS, compartilhadas por todas as telas. */
 (() => {
     const root = document.documentElement;
-    let preference = 'dark';
+    let preference = 'light';
     try {
         const item = document.cookie.split(';').map(v => v.trim()).find(v => v.startsWith('callmed-initial-preferences='));
         if (item) {

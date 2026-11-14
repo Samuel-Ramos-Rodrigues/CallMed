@@ -9,9 +9,9 @@
     const readPreference = () => {
         try {
             const value = localStorage.getItem(STORAGE_KEY);
-            return allowed.has(value) ? value : 'dark';
+            return allowed.has(value) ? value : 'light';
         } catch {
-            return 'dark';
+            return 'light';
         }
     };
 
@@ -40,11 +40,11 @@
 
     const updateMeta = theme => {
         const meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute('content', theme === 'dark' ? '#0B1020' : '#F4F6FB');
+        if (meta) meta.setAttribute('content', theme === 'dark' ? '#0B1020' : '#F7FAF9');
     };
 
     const apply = (preference, persist = true) => {
-        if (!allowed.has(preference)) preference = 'dark';
+        if (!allowed.has(preference)) preference = 'light';
         const theme = effectiveTheme(preference);
 
         root.dataset.themePreference = preference;
@@ -86,7 +86,7 @@
 
     window.CallMedTheme = {
         set: preference => apply(preference),
-        get: () => root.dataset.themePreference || 'dark',
+        get: () => root.dataset.themePreference || 'light',
         current: () => root.dataset.theme || effectiveTheme(readPreference())
     };
 })();
