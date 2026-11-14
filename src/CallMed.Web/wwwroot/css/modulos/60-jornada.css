@@ -1,0 +1,26 @@
+/* Layout da jornada: cabecalho alinhado sem perder a leitura em telas estreitas. */
+.cm-journey-page-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+.cm-journey-page-heading > div {
+    flex: 1 1 280px;
+    min-width: 0;
+}
+.cm-journey-page-heading .btn {
+    flex: 0 0 auto;
+}
+@media (max-width: 640px) {
+    .cm-journey-page-heading {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .cm-journey-page-heading > div {
+        flex-basis: auto;
+    }
+}
+

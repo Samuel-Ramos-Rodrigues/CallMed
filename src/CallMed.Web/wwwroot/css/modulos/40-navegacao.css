@@ -1,0 +1,195 @@
+/* SENAI — Navegação e rotina clínica unificadas (V35). Estas regras complementam
+   o CSS único e não alteram a lógica das telas, da Central ou dos perfis. */
+:root {
+    --primary: #5f66e9;
+    --primary-hover: #7077f3;
+    --focus: #96e8dc;
+    --content: 1510px;
+}
+:root[data-theme="light"] {
+    --primary: #424ebc;
+    --primary-hover: #323eab;
+    --focus: #126b77;
+}
+.primary-nav {gap: 8px;}
+.primary-nav a {font-size: .84rem; font-weight: 700; border-radius: 12px; padding: 10px 14px;}
+.primary-nav a.active {box-shadow: inset 0 -2px 0 var(--primary);}
+.cm-search-shortcut {padding: 9px 14px; border-radius: 12px; background: var(--surface); color: var(--text);}
+.cm-search-shortcut span {display: inline; font-weight: 700;}
+.cm-search-shortcut:hover {border-color: var(--primary);}
+.cm-menu-conteudo .cm-modulo-grupo, .cm-area {border: 1px solid var(--line); border-radius: 16px; overflow: hidden;}
+:where(a, button, input, select, textarea, summary, [tabindex="0"]):focus-visible {outline: 3px solid var(--focus); outline-offset: 3px;}
+.senai-home {display: grid; gap: 22px; max-width: 1480px; margin: 0 auto;}
+.senai-home-header {display: flex; justify-content: space-between; align-items: end; gap: 20px; padding: 18px 0 4px;}
+.senai-home-header .eyebrow, .senai-home-flow .eyebrow, .senai-card-title .eyebrow {color: var(--teal);}
+.senai-home-header h1 {font-size: clamp(1.8rem,3vw,2.75rem); line-height: 1.14; margin: 8px 0; letter-spacing: -.045em;}
+.senai-home-header p {max-width: 620px; margin: 0; color: var(--muted);}
+.senai-home-date {display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: .82rem; white-space: nowrap;}
+.senai-home-date svg, .senai-home-actions svg {width: 20px; height: 20px; flex-shrink: 0;}
+.senai-home-actions {display: flex; gap: 10px; flex-wrap: wrap;}
+.senai-home-actions a {display: inline-flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 12px; font-size: .83rem; font-weight: 700; text-decoration: none;}
+.senai-home-actions a:hover {border-color: var(--primary); background: var(--surface-2);}
+.senai-home-actions .senai-action-primary {background: var(--primary); border-color: var(--primary); color: white;}
+.senai-home-actions .senai-action-primary:hover {background: var(--primary-hover); color: white;}
+.senai-home-numbers {display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border: 1px solid var(--line); border-radius: 18px; background: var(--surface); overflow: hidden;}
+.senai-home-numbers a {padding: 19px 24px; display: flex; flex-direction: column; gap: 3px; text-decoration: none; color: var(--text); border-right: 1px solid var(--line);}
+.senai-home-numbers a:last-child {border-right: 0;}
+.senai-home-numbers a:hover {background: var(--surface-2);}
+.senai-home-numbers strong {font-size: clamp(1.7rem,3vw,2.3rem); line-height: 1.2; font-variant-numeric: tabular-nums;}
+.senai-home-numbers span {color: var(--muted); font-size: .81rem; font-weight: 700;}
+.senai-home-numbers small {font-size: .74rem; color: var(--teal);}
+.senai-home-workspace {display: grid; grid-template-columns: minmax(0,1.75fr) minmax(300px,1fr); gap: 16px; align-items: stretch;}
+.senai-home-agenda,.senai-home-priorities,.senai-home-flow {border: 1px solid var(--line); border-radius: 18px; background: var(--surface); padding: 24px; min-width: 0;}
+.senai-card-title {display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px;}
+.senai-card-title h2 {margin: 4px 0 0; font-size: 1.18rem; line-height: 1.3; letter-spacing: -.018em;}
+.senai-card-title a {font-size: .8rem; white-space: nowrap; text-decoration: none; font-weight: 750; color: var(--accent);}
+.senai-agenda-scroll {max-width: 100%; overflow-x: auto;}
+.senai-agenda-scroll table {width: 100%; border-collapse: collapse; min-width: 580px; text-align: left; font-size: .81rem;}
+.senai-agenda-scroll th {padding: 12px 9px; color: var(--muted); font-weight: 650; border-bottom: 1px solid var(--line);}
+.senai-agenda-scroll td {padding: 13px 9px; border-bottom: 1px solid var(--line);}
+.senai-agenda-scroll td:first-child strong,.senai-agenda-scroll td:first-child small {display: block;}
+.senai-agenda-scroll td:first-child small {font-size: .69rem; color: var(--muted);}
+.senai-home-priorities > a {display: flex; justify-content: space-between; align-items: center; gap: 10px; border-top: 1px solid var(--line); padding: 14px 3px; text-decoration: none; color: var(--text);}
+.senai-home-priorities > a:hover {color: var(--accent);}
+.senai-home-priorities > a span {display: grid; gap: 3px;}
+.senai-home-priorities > a strong {font-size: .87rem;}
+.senai-home-priorities > a small {font-size: .76rem; color: var(--muted);}
+.senai-home-priorities > a b {font-variant-numeric: tabular-nums; padding: 5px 10px; background: var(--surface-2); border-radius: 8px;}
+.senai-flow-steps {display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 10px;}
+.senai-flow-steps a {display: grid; gap: 6px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 14px; color: var(--text); text-decoration: none;}
+.senai-flow-steps a:hover {border-color: var(--accent);}
+.senai-flow-steps a span {color: var(--teal); font-weight: 800; font-size: .75rem;}
+.senai-flow-steps a strong {font-size: .82rem;}
+.senai-flow-steps a small {font-size: .7rem; color: var(--muted);}
+.senai-home-flow-note {color: var(--muted); font-size: .78rem; margin: 16px 0 0;}
+.senai-empty {padding: 30px 8px; text-align: center; color: var(--muted);}
+.senai-empty h3 {color: var(--text); font-size: 1rem;}
+@media(max-width: 1150px) {.senai-home-workspace{grid-template-columns:1fr}.senai-flow-steps{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width: 820px) {.cm-search-shortcut span{display:none}.senai-home-header{align-items:start;flex-direction:column}.senai-home-numbers{grid-template-columns:repeat(2,minmax(0,1fr))}.senai-home-numbers a:nth-child(2){border-right:0}.senai-home-numbers a:nth-child(-n+2){border-bottom:1px solid var(--line)}.senai-flow-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.senai-home-agenda,.senai-home-priorities,.senai-home-flow{padding:17px}}
+@media(max-width: 440px) {.senai-home-actions a{flex:1 1 44%;justify-content:center;text-align:center;padding:12px 9px;font-size:.75rem}.senai-home-numbers a{padding:14px}.senai-flow-steps a{padding:11px}}
+@media(prefers-reduced-motion: reduce){.senai-home *{animation:none!important;transition:none!important}}
+
+
+/* CallMed · SENAI — destaques úteis, sem novo menu ou estilo paralelo.
+   O atendimento conserva seu layout, regras e componentes originais. */
+.primary-nav .cm-nav-feature {position:relative;border:1px solid color-mix(in srgb,var(--teal) 46%,var(--line));background:color-mix(in srgb,var(--teal) 8%,var(--surface));color:var(--text);}
+.primary-nav .cm-nav-feature:hover,.primary-nav .cm-nav-feature.active {border-color:var(--teal);background:color-mix(in srgb,var(--teal) 14%,var(--surface));}
+.primary-nav .cm-nav-feature svg {color:var(--teal);}
+.cm-demand-focus {display:grid;grid-template-columns:minmax(0,1.18fr) minmax(280px,.82fr);gap:0;overflow:hidden;border:1px solid var(--line);border-radius:20px;background:var(--surface);}
+.cm-demand-focus-lead {padding:clamp(22px,3vw,42px);background:color-mix(in srgb,var(--teal) 8%,var(--surface));display:flex;flex-direction:column;align-items:flex-start;justify-content:center;}
+.cm-demand-focus .eyebrow,.cm-demand-doctor .eyebrow,.cm-demand-patient .eyebrow,.cm-demand-outcomes .eyebrow {display:flex;align-items:center;gap:8px;color:var(--teal);font-size:.71rem;letter-spacing:.08em;}
+.cm-demand-focus .eyebrow svg {width:18px;height:18px;}
+.cm-demand-focus-lead h2 {font-size:clamp(1.5rem,2.7vw,2.4rem);letter-spacing:-.045em;line-height:1.12;margin:12px 0 10px;max-width:490px;}
+.cm-demand-focus-lead p {color:var(--muted);max-width:480px;line-height:1.55;margin:0 0 20px;font-size:.9rem;}
+.cm-demand-main-link {background:var(--primary);color:white!important;text-decoration:none;display:inline-flex;align-items:center;gap:20px;padding:13px 18px;border-radius:11px;font-size:.88rem;font-weight:750;}
+.cm-demand-main-link:hover {background:var(--primary-hover);}
+.cm-demand-focus-links {padding:13px 28px;display:flex;flex-direction:column;justify-content:center;}
+.cm-demand-focus-links a {display:flex;align-items:center;gap:14px;min-width:0;padding:19px 0;border-bottom:1px solid var(--line);color:var(--text);text-decoration:none;}
+.cm-demand-focus-links a:last-child {border-bottom:0;}
+.cm-demand-focus-links a:hover strong,.cm-demand-focus-links a:hover>span:last-child {color:var(--teal);}
+.cm-demand-focus-links a>span:nth-child(2) {flex:1;min-width:0;display:grid;gap:3px;}
+.cm-demand-focus-links strong {font-size:.88rem;}
+.cm-demand-focus-links small {font-size:.74rem;color:var(--muted);line-height:1.4;}
+.cm-demand-step-icon {display:grid;place-items:center;background:var(--surface-2);border-radius:11px;min-width:41px;height:41px;}
+.cm-demand-step-icon svg,.cm-demand-patient-icon svg {height:19px;width:19px;color:var(--teal);}
+.cm-demand-utility {display:flex;gap:10px;flex-wrap:wrap;}
+.cm-demand-utility a {font-size:.79rem;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;text-decoration:none;font-weight:700;}
+.cm-demand-utility a:hover {border-color:var(--teal);}
+.cm-demand-outcomes {display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px 25px;border:1px solid var(--line);border-radius:15px;background:var(--surface);}
+.cm-demand-outcomes h2 {font-size:1.2rem;letter-spacing:-.025em;margin:6px 0;}
+.cm-demand-outcomes p {margin:0;color:var(--muted);font-size:.82rem;line-height:1.5;max-width:660px;}
+.cm-demand-outcomes a {white-space:nowrap;}
+.cm-demand-doctor {display:flex;justify-content:space-between;align-items:center;gap:20px;padding:25px 28px;background:color-mix(in srgb,var(--teal) 9%,var(--surface));border:1px solid var(--line);border-radius:16px;margin:16px 0 24px;}
+.cm-demand-doctor h2,.cm-demand-patient h2 {font-size:clamp(1.15rem,2vw,1.5rem);letter-spacing:-.03em;margin:7px 0;}
+.cm-demand-doctor p,.cm-demand-patient p {color:var(--muted);font-size:.85rem;margin:0;max-width:590px;line-height:1.55;}
+.cm-demand-doctor>a,.cm-demand-patient>a {display:inline-flex;align-items:center;gap:10px;border-radius:11px;white-space:nowrap;background:var(--primary);color:white;text-decoration:none;font-weight:750;font-size:.84rem;padding:13px 18px;}
+.cm-demand-doctor>a:hover,.cm-demand-patient>a:hover {background:var(--primary-hover);}
+.cm-demand-patient {display:flex;align-items:center;gap:20px;padding:22px 26px;border:1px solid var(--line);border-radius:18px;background:var(--surface);margin:18px 0 22px;}
+.cm-demand-patient>div:nth-child(2) {min-width:0;flex:1;}
+.cm-demand-patient-icon {display:grid;place-items:center;flex:0 0 54px;width:54px;height:54px;border-radius:16px;background:color-mix(in srgb,var(--teal) 12%,var(--surface-2));}
+.cm-demand-patient-icon svg {width:27px;height:27px;}
+@media (max-width:1000px) {.cm-demand-focus{grid-template-columns:1fr}.cm-demand-focus-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:15px}.cm-demand-focus-links a{flex-direction:column;align-items:flex-start;border:1px solid var(--line);padding:14px;border-radius:12px}.cm-demand-focus-links a>span:last-child{display:none}}
+@media (max-width:760px) {.cm-demand-patient,.cm-demand-doctor,.cm-demand-outcomes{flex-direction:column;align-items:stretch}.cm-demand-patient>a,.cm-demand-doctor>a{align-self:flex-start}.cm-demand-focus-links{grid-template-columns:1fr}.cm-demand-focus-links a{flex-direction:row;align-items:center;padding:14px}.cm-demand-focus-links a>span:last-child{display:block}.cm-demand-focus-lead{padding:24px}.cm-demand-focus-links{gap:7px}.cm-demand-outcomes{padding:20px}}
+@media (max-width:450px) {.cm-demand-utility a {flex:1 1 40%;text-align:center}.cm-demand-patient>a,.cm-demand-doctor>a{white-space:normal}.cm-demand-patient-icon{display:none}}
+@media (prefers-reduced-motion:reduce) {.cm-demand-focus *, .cm-demand-patient *, .cm-demand-doctor *{transition:none!important;animation:none!important}}
+
+.cm-nav-short-label {display:none;}
+@media(max-width: 820px) {
+ .callmed-mobile-nav .cm-nav-optional {display:none;}
+ .callmed-mobile-nav .cm-nav-feature {background:color-mix(in srgb,var(--teal) 10%,var(--surface));color:var(--text);}
+ .callmed-mobile-nav .cm-nav-feature svg {color:var(--teal);}
+ .callmed-mobile-nav .cm-nav-feature .cm-nav-full-label {display:none;}
+ .callmed-mobile-nav .cm-nav-feature .cm-nav-short-label {display:block;}
+}
+
+
+/* ==============================================================
+   CALLMED SENAI — REGRESSÃO VISUAL V35 / 12-11-2026
+   Aplica-se aos quatro perfis; autenticação usa CSS autêntico V34.
+   Ajustes de responsividade, grades e controles de formulário.
+   =============================================================== */
+/* Links no header nunca devem desaparecer por clipping em notebook/tablet. */
+.app-header-inner { min-width: 0; }
+.primary-nav { min-width: 0; }
+.primary-nav > a { flex-shrink: 0; }
+.header-tools { flex: 0 0 auto; min-width: 0; }
+@media (min-width: 821px) and (max-width: 1180px) {
+  .app-header-inner { gap: 14px; padding-inline: 16px; }
+  .primary-nav { gap: 5px; justify-content: flex-start; }
+  .primary-nav > a { flex: 0 0 44px; width: 44px; height: 44px; justify-content: center; padding: 8px; border-radius: 12px; }
+  .primary-nav > a svg { flex: 0 0 21px; width: 21px; height: 21px; }
+  .primary-nav > a .cm-nav-full-label,
+  .primary-nav > a .cm-nav-short-label { display: none; }
+  .app-brand img { width: 123px; }
+  .cm-search-shortcut { padding: 9px; }
+  .cm-search-shortcut span, .cm-search-shortcut kbd { display: none; }
+  .header-tools { gap: 3px; }
+}
+/* A tabela semanal possui profissional + sete dias + botão de ação: 9 colunas. */
+.cm19-availability-table { overflow-x: auto; overscroll-behavior-x: contain; }
+.cm19-av-row { grid-template-columns: minmax(180px, 1.7fr) repeat(7, minmax(86px, 1fr)) minmax(128px, 1fr); min-width: 1100px; align-items: stretch; }
+.cm19-av-row > * { min-width: 0; padding: 13px 10px; border-right: 1px solid var(--line); font-size: .75rem; }
+.cm19-av-row > :last-child { border-right: 0; }
+.cm19-av-row.header { background: var(--surface-2); font-weight: 750; color: var(--muted); }
+.cm19-av-row.header > * { display: flex; align-items: center; }
+.cm19-av-doctor { display: flex; align-items: center; gap: 9px; }
+.cm19-av-doctor > span { display: grid; place-items: center; flex: 0 0 35px; width: 35px; height: 35px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); font-weight: 800; }
+.cm19-av-doctor > div { min-width: 0; }
+.cm19-av-doctor strong, .cm19-av-doctor small, .cm19-av-day strong, .cm19-av-day small { display: block; overflow-wrap: anywhere; }
+.cm19-av-doctor small, .cm19-av-day small { color: var(--muted); font-size: .66rem; }
+.cm19-av-edit { display: inline-flex; align-self: center; justify-self: center; justify-content: center; align-items: center; border: 1px solid var(--line); border-radius: 9px; min-height: 37px; text-decoration: none; color: var(--accent); font-weight: 750; padding: 8px 12px; text-align: center; }
+.cm19-av-edit:hover { background: var(--accent-soft); border-color: var(--accent); }
+/* Médico: duas seções efetivas, não três colunas imaginárias. */
+.cm-doctor-slot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 16px; }
+.cm-doctor-slot-grid > .cm-doctor-panel { min-width: 0; }
+.cm-doctor-slots { display: grid; align-content: start; gap: 8px; max-height: 420px; overflow-y: auto; padding-right: 3px; }
+.cm-doctor-slots form { display: grid; grid-template-columns: minmax(58px, auto) minmax(0, 1fr) auto; gap: 9px; align-items: center; min-width: 0; padding: 10px 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; }
+.cm-doctor-slots form span { color: var(--muted); font-size: .77rem; white-space: nowrap; }
+.cm-doctor-slots form strong { font-size: .83rem; font-variant-numeric: tabular-nums; }
+.cm-doctor-slots form .btn-link { min-height: 36px; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; padding-inline: 10px; font-size: .77rem; }
+@media (max-width: 870px) { .cm-doctor-slot-grid { grid-template-columns: 1fr; } }
+@media (max-width: 440px) { .cm-doctor-slots form { grid-template-columns: auto 1fr; } .cm-doctor-slots form .btn-link { grid-column: 1 / -1; width: 100%; } }
+/* Cadastro: switch real, acessível por teclado, com estado nativo do checkbox. */
+.cm-switch-control { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; position: relative; cursor: pointer; user-select: none; }
+.cm-switch-control > .cm-switch-input { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; }
+.cm-switch-track { display: inline-flex; align-items: center; flex: 0 0 46px; width: 46px; height: 27px; border-radius: 999px; padding: 3px; background: var(--surface-3); border: 1px solid var(--line); transition: background .15s ease; }
+.cm-switch-track > span { width: 19px; height: 19px; border-radius: 50%; background: var(--text); box-shadow: 0 1px 4px #0003; transform: translateX(0); transition: transform .15s ease; }
+.cm-switch-input:checked + .cm-switch-track { background: var(--primary); border-color: var(--primary); }
+.cm-switch-input:checked + .cm-switch-track > span { background: #fff; transform: translateX(19px); }
+.cm-switch-input:focus-visible + .cm-switch-track { outline: 3px solid var(--focus); outline-offset: 3px; }
+.cm-switch-input:disabled + .cm-switch-track { opacity: .5; cursor: not-allowed; }
+.cm-switch-copy { font-size: .83rem; color: var(--text); font-weight: 650; }
+.toggle-field { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; column-gap: 18px; row-gap: 8px; }
+.toggle-field > small { flex-basis: 100%; }
+/* Proteção transversal de formulário e modais: conteúdo nunca deve forçar overflow da tela. */
+.cm25-section-card, .cm25-panel, .cm-doctor-panel, .identity-card, .form-grid > *, .cm25-form-grid > *, .cm-form-grid > * { min-width: 0; }
+:where(.cm25-screen,.cm25-panel,.cm-doctor-panel,.patient-form-section) :where(input,select,textarea) { max-width: 100%; }
+:where(.cm25-screen,.cm25-panel,.cm-doctor-panel) :where(button,.btn) { overflow-wrap: anywhere; }
+@media (max-width: 760px) {
+  .cm19-av-row { min-width: 1100px; }
+  .cm25-panel, .cm-doctor-panel { max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-switch-track, .cm-switch-track > span { transition: none; }
+}
+
