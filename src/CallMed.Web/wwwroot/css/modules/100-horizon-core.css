@@ -64,10 +64,14 @@ body.cm43-horizon {
   --cm43-button-ink: #0c2924;
   color-scheme: dark;
 }
-body.cm43-horizon.cm43-patient { --cm43-role: #098f85; --cm43-role-soft: #ddf6ee; }
-body.cm43-horizon.cm43-doctor { --cm43-role: #416bd0; --cm43-role-soft: #e8effe; }
-body.cm43-horizon.cm43-staff { --cm43-role: #1b879b; --cm43-role-soft: #e1f5f8; }
-body.cm43-horizon.cm43-admin { --cm43-role: #7259c4; --cm43-role-soft: #eee9ff; }
+body.cm43-horizon.cm43-patient { --cm43-role: #096e66; --cm43-role-soft: #ddf6ee; }
+body.cm43-horizon.cm43-doctor { --cm43-role: #315aac; --cm43-role-soft: #e8effe; }
+body.cm43-horizon.cm43-staff { --cm43-role: #136c7a; --cm43-role-soft: #e1f5f8; }
+body.cm43-horizon.cm43-admin { --cm43-role: #5d4ba8; --cm43-role-soft: #eee9ff; }
+:root[data-theme="dark"] body.cm43-horizon.cm43-patient { --cm43-role: #8eefd8; }
+:root[data-theme="dark"] body.cm43-horizon.cm43-doctor { --cm43-role: #a3baff; }
+:root[data-theme="dark"] body.cm43-horizon.cm43-staff { --cm43-role: #9dd8e7; }
+:root[data-theme="dark"] body.cm43-horizon.cm43-admin { --cm43-role: #c6b6ff; }
 :root[data-theme="dark"] body.cm43-horizon:is(.cm43-patient,.cm43-doctor,.cm43-staff,.cm43-admin) {
   --cm43-role-soft: var(--surface-3);
 }
