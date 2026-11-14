@@ -2,7 +2,7 @@
 
 Aplicativo de pacientes em Kotlin e Jetpack Compose, versão **34.0.0**, código **3400**, Android mínimo **8.0 / API 26**. Usa o mesmo servidor e banco do site por HTTPS e pela API `/api/mobile/v1`.
 
-A reorganização V35 do backend mantém os contratos do aplicativo. O APK entregue em `../CallMedCrud/App_Data/Aplicativo/CallMed.apk` e seu arquivo `release.json` foram preservados. O site distribui o instalador em `/aplicativo`.
+A reorganização V35 do backend mantém os contratos do aplicativo. O APK entregue em `../../src/CallMed.Web/App_Data/Aplicativo/CallMed.apk` e seu arquivo `release.json` foram preservados. O site distribui o instalador em `/aplicativo`.
 
 ## Desenvolvimento
 

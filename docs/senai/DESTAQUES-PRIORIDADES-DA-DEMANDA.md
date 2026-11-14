@@ -26,14 +26,14 @@ A tela de entrada da equipe não duplica os serviços existentes: oferece acesso
 ## Arquivos alterados
 
 - `src/CallMed.Application/Modules/Contas/Services/NavegacaoCallMed.cs`
-- `CallMedCrud/Views/Shared/_NavegacaoPrincipal.cshtml`
-- `CallMedCrud/Views/FuncionarioPainel/Index.cshtml`
-- `CallMedCrud/Views/MedicoPainel/Index.cshtml`
-- `CallMedCrud/Views/Home/Index.cshtml`
-- `CallMedCrud/Views/Jornada/Index.cshtml`
-- `CallMedCrud/Views/Salas/Index.cshtml`
-- `CallMedCrud/wwwroot/icons/callmed-ui.svg`
-- `CallMedCrud/wwwroot/css/callmed.css`
+- `src/CallMed.Web/Views/Shared/_NavegacaoPrincipal.cshtml`
+- `src/CallMed.Web/Views/FuncionarioPainel/Index.cshtml`
+- `src/CallMed.Web/Views/MedicoPainel/Index.cshtml`
+- `src/CallMed.Web/Views/Home/Index.cshtml`
+- `src/CallMed.Web/Views/Jornada/Index.cshtml`
+- `src/CallMed.Web/Views/Salas/Index.cshtml`
+- `src/CallMed.Web/wwwroot/icons/callmed-ui.svg`
+- `src/CallMed.Web/wwwroot/css/callmed.css`
 - `scripts/validar-demanda-senai.py` (atualizado para conferir os destaques novos)
 - Este documento e README.
 

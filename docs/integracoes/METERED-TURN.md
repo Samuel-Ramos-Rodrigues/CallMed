@@ -37,7 +37,7 @@ O código usa a mesma credencial para as URLs TURN desta lista. Cadastre URLs pe
 
 ## Atualizar e testar
 
-1. Publique o backend completo desta revisão. Se o repositório ainda mistura arquivos de outras versões, substitua a pasta que contém `CallMedCrud.csproj` pela pasta completa do ZIP, mantendo uma cópia anterior fora do repositório.
+1. Publique o backend completo desta revisão. Se o repositório ainda mistura arquivos de outras versões, substitua a pasta que contém `CallMed.Web.csproj` pela pasta completa do ZIP, mantendo uma cópia anterior fora do repositório.
 2. Preencha as variáveis reais, salve e aplique no Render.
 3. Use uma consulta configurada como **Online, por vídeo** dentro da janela permitida. O paciente autoriza e ambos entram com suas contas.
 4. Teste um participante no Wi-Fi e o outro em rede móvel. Verifique câmera, microfone e encerramento.

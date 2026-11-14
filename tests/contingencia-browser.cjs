@@ -4,7 +4,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert/strict');
-const root = path.resolve(__dirname, '../CallMedCrud/wwwroot');
+const root = path.resolve(__dirname, '../src/CallMed.Web/wwwroot');
 let mode = 'lost-response', received = new Map(), attempts = 0;
 const server = http.createServer(async(req,res) => {
     const url = new URL(req.url, 'http://localhost');

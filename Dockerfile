@@ -3,11 +3,10 @@ WORKDIR /src
 COPY src/CallMed.Domain/CallMed.Domain.csproj src/CallMed.Domain/
 COPY src/CallMed.Persistence/CallMed.Persistence.csproj src/CallMed.Persistence/
 COPY src/CallMed.Application/CallMed.Application.csproj src/CallMed.Application/
-COPY CallMedCrud/CallMedCrud.csproj CallMedCrud/
-RUN dotnet restore CallMedCrud/CallMedCrud.csproj
+COPY src/CallMed.Web/CallMed.Web.csproj src/CallMed.Web/
+RUN dotnet restore src/CallMed.Web/CallMed.Web.csproj
 COPY src/ src/
-COPY CallMedCrud/ CallMedCrud/
-RUN dotnet publish CallMedCrud/CallMedCrud.csproj -c Release --no-restore -o /publish /p:UseAppHost=false
+RUN dotnet publish src/CallMed.Web/CallMed.Web.csproj -c Release --no-restore -o /publish /p:UseAppHost=false
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 EXPOSE 10000

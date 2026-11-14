@@ -2,7 +2,7 @@
 // CALLMED_CONTA_FIXTURES=<saída dos checks --conta> NODE_PATH=<node_modules> CHROME_PATH=<chrome> node tests/minha-conta-browser.cjs
 const {chromium}=require('playwright');
 const fs=require('node:fs'), path=require('node:path'), http=require('node:http'), assert=require('node:assert/strict');
-const root=path.resolve(__dirname,'../CallMedCrud/wwwroot');
+const root=path.resolve(__dirname,'../src/CallMed.Web/wwwroot');
 const fixtures=process.env.CALLMED_CONTA_FIXTURES;
 assert(fixtures,'Informe CALLMED_CONTA_FIXTURES com o HTML gerado pelos checks HTTP.');
 const server=http.createServer((req,res)=>{

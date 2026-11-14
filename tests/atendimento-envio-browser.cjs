@@ -5,7 +5,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const root = path.resolve(__dirname, '../CallMedCrud/wwwroot');
+const root = path.resolve(__dirname, '../src/CallMed.Web/wwwroot');
 let status, dynamic, posts, updates;
 // Observa o estado no último listener de submit, imediatamente antes do POST nativo.
 // O segundo evento verifica o bloqueio sem iniciar uma segunda navegação.

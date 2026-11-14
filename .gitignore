@@ -34,6 +34,6 @@ callmed-segredos*/
 *.zip
 *.aab
 *.apk
-!CallMedCrud/App_Data/Aplicativo/CallMed.apk
+!src/CallMed.Web/App_Data/Aplicativo/CallMed.apk
 # Prévia local é gerada pelo ambiente de desenvolvimento
 .openai/

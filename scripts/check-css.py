@@ -3,7 +3,7 @@
 from pathlib import Path
 import re,sys
 root=Path(__file__).resolve().parents[1]
-web=root/'CallMedCrud'
+web=root/'src'/'CallMed.Web'
 files=sorted((web/'wwwroot').rglob('*.css'))
 if files != [web/'wwwroot/css/callmed.css']:
     sys.exit('O site deve conter somente wwwroot/css/callmed.css.')

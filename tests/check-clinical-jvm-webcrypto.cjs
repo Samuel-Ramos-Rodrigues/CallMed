@@ -1,5 +1,5 @@
 const {webcrypto:c}=require('node:crypto'),fs=require('node:fs'),assert=require('node:assert/strict');
-(async()=>{const v=JSON.parse(fs.readFileSync('CallMedAndroid/app/src/test/resources/clinical-interop.json')),j=JSON.parse(fs.readFileSync('CallMedAndroid/app/build/test-results/clinical-jvm-interop.json')),e=new TextEncoder(),d=new TextDecoder(),un=s=>Buffer.from(s,'base64');
+(async()=>{const v=JSON.parse(fs.readFileSync('mobile/android/app/src/test/resources/clinical-interop.json')),j=JSON.parse(fs.readFileSync('mobile/android/app/build/test-results/clinical-jvm-interop.json')),e=new TextEncoder(),d=new TextDecoder(),un=s=>Buffer.from(s,'base64');
 const privateKey=await c.subtle.importKey('jwk',v.key.privateJwk,{name:'RSA-OAEP',hash:'SHA-256'},false,['unwrapKey']);const env=j.envelope;
 const aes=await c.subtle.unwrapKey('raw',un(env.destinatarios[0].key),privateKey,{name:'RSA-OAEP'},{name:'AES-GCM',length:256},false,['decrypt']);
 const plain=JSON.parse(d.decode(await c.subtle.decrypt({name:'AES-GCM',iv:un(env.iv),additionalData:e.encode(v.aad)},aes,un(env.ciphertext))));assert.deepEqual(plain,j.expected);console.log('PASS WebCrypto abre respostas produzidas pelo Android com RSA-OAEP/SHA256/MGF1-SHA256');

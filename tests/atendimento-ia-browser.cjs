@@ -5,7 +5,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const root = path.resolve(__dirname, '../CallMedCrud/wwwroot');
+const root = path.resolve(__dirname, '../src/CallMed.Web/wwwroot');
 const states = {
     pendente: { estado: 'pendente', titulo: 'Mensagem aguardando análise da IA', detalhe: 'Para mensagens antigas, use Gerar rascunho.', trabalhando: false, podeGerarRascunho: true },
     analisando: { estado: 'analisando', titulo: 'IA analisando a mensagem…', detalhe: 'Verificando o pedido e as informações disponíveis.', trabalhando: true, podeGerarRascunho: false },

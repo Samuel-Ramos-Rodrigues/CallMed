@@ -4,7 +4,7 @@ A solução é um monólito modular com cinco projetos de produção. A interfac
 
 ```mermaid
 flowchart TD
-    Browser["Site e PWA"] --> Web["CallMedCrud · adaptador web"]
+    Browser["Site e PWA"] --> Web["CallMed.Web · adaptador web"]
     Android["Android nativo"] --> Web
     Web --> Application["CallMed.Application"]
     Worker["CallMed.Worker"] --> Application
@@ -19,7 +19,7 @@ flowchart TD
 | `src/CallMed.Domain` | Entidades, enumerações, constantes e validações de registro profissional. Mantém `Usuario : IdentityUser` por compatibilidade; não é um domínio totalmente independente de framework. |
 | `src/CallMed.Persistence` | `MKSANContext`, configurações EF Core e migrations históricas. Não conhece controllers nem a aplicação web. |
 | `src/CallMed.Application` | Módulos de negócio, casos de uso, consultas, contratos, integrações, configuração e registro de dependências. |
-| `CallMedCrud` | Controllers MVC/mobile/webhooks, Razor/Identity, componentes, middleware, bootstrap e arquivos públicos. O executável permanece `CallMedCrud.dll`. |
+| `src/CallMed.Web` | Controllers MVC/mobile/webhooks, Razor/Identity, componentes, middleware, bootstrap e arquivos públicos. O executável permanece `CallMedCrud.dll`. |
 | `src/CallMed.Worker` | Host das rotinas automáticas quando o modo externo é escolhido explicitamente. Não referencia o projeto web. |
 
 ## Módulos da aplicação
@@ -42,7 +42,7 @@ O modo externo usa `Dockerfile.worker` e as mesmas configurações de banco, cer
 
 ## Interface
 
-Todo o site utiliza exclusivamente `CallMedCrud/wwwroot/css/callmed.css`, uma folha escrita para a V35. Os 13 módulos antigos, o bundle anterior e o gerador foram removidos. Não há etapa de concatenação nem importação de CSS. `scripts/check-css.py` valida o contrato. Os nomes de classes usados pelo JavaScript foram preservados quando necessários ao comportamento.
+Todo o site utiliza exclusivamente `src/CallMed.Web/wwwroot/css/callmed.css`, uma folha escrita para a V35. Os 13 módulos antigos, o bundle anterior e o gerador foram removidos. Não há etapa de concatenação nem importação de CSS. `scripts/check-css.py` valida o contrato. Os nomes de classes usados pelo JavaScript foram preservados quando necessários ao comportamento.
 
 Navegação superior, menus por tarefa, componentes comuns de formulário/tabela/status, temas claro e escuro, ampliação de texto, alto contraste, foco de teclado e redução de movimento compõem a base visual. A Central conserva três colunas em telas amplas e alterna conversas, chat e contexto no celular.
 

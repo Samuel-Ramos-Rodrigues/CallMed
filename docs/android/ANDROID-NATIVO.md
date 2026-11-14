@@ -1,6 +1,6 @@
 # Android nativo — integração com CallMed
 
-O cliente está em [`CallMedAndroid`](../../CallMedAndroid/README-ANDROID.md). O APK nativo **24.0.0 / 2400** está compilado e incluído no download do site. **Publique primeiro o backend deste ZIP e depois instale o APK** sobre a versão anterior. A jornada exige o patch V31; veja [instalação e configuração](../ARQUITETURA.md). O formato de chat por atendimento da versão 23.2.0 foi preservado.
+O cliente está em [`mobile/android`](../../mobile/android/README-ANDROID.md). O APK nativo **24.0.0 / 2400** está compilado e incluído no download do site. **Publique primeiro o backend deste ZIP e depois instale o APK** sobre a versão anterior. A jornada exige o patch V31; veja [instalação e configuração](../ARQUITETURA.md). O formato de chat por atendimento da versão 23.2.0 foi preservado.
 
 Preparação, confirmação ativa, check-in e ofertas de encaixe são nativos. Formulários cifrados e vídeo usam o navegador por ticket temporário de uso único e sessão restrita à consulta. O token de acesso da API não é transmitido ao navegador. Não há sincronização geral dos cookies do site com o app.
 
@@ -66,6 +66,6 @@ O aviso antigo de encerramento e seu convite de avaliação não aparecem durant
 dotnet run --project tests/CallMed.Checks -- --mobile
 ```
 
-Execute na raiz do projeto, contendo `CallMedCrud`. A suíte sobe HTTP local com Identity e banco em memória. IA simulada; nenhuma mensagem externa é enviada. A suíte completa também inclui as verificações de login web, recuperação de senha, perfil, feedback e canais anteriores.
+Execute na raiz do projeto, contendo `src/CallMed.Web`. A suíte sobe HTTP local com Identity e banco em memória. IA simulada; nenhuma mensagem externa é enviada. A suíte completa também inclui as verificações de login web, recuperação de senha, perfil, feedback e canais anteriores.
 
 Antes de uso com pacientes, homologue no aparelho: login, agendamento, mudança de tela, foto, teclado, rotação, atendimento humano, avaliação e reinstalação por cima do APK anterior. Os testes automatizados e a compilação não substituem essa verificação em um celular físico.

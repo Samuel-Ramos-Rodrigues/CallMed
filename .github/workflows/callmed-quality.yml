@@ -48,9 +48,9 @@ jobs:
       - name: NuGet vulnerability gate
         shell: bash
         run: |
-          dotnet list CallMedCrud/CallMedCrud.csproj package --include-transitive --vulnerable --format json > vulnerabilities.json
+          dotnet list src/CallMed.Web/CallMed.Web.csproj package --include-transitive --vulnerable --format json > vulnerabilities.json
           python3 scripts/check-vulnerabilities.py vulnerabilities.json
-      - run: dotnet publish CallMedCrud/CallMedCrud.csproj -c Release --no-restore -o artifacts/web
+      - run: dotnet publish src/CallMed.Web/CallMed.Web.csproj -c Release --no-restore -o artifacts/web
       - run: dotnet publish src/CallMed.Worker/CallMed.Worker.csproj -c Release --no-restore -o artifacts/worker
   browser:
     runs-on: ubuntu-latest
@@ -84,8 +84,8 @@ jobs:
           java-version: '21'
       - uses: android-actions/setup-android@v3
       - uses: gradle/actions/setup-gradle@v4
-      - run: chmod +x CallMedAndroid/gradlew
-      - run: CallMedAndroid/gradlew -p CallMedAndroid --no-daemon testDebugUnitTest assembleDebug
+      - run: chmod +x mobile/android/gradlew
+      - run: mobile/android/gradlew -p mobile/android --no-daemon testDebugUnitTest assembleDebug
   certificate-generator:
     runs-on: windows-latest
     strategy:

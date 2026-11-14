@@ -3,8 +3,10 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>CallMedCrud</AssemblyName>
+    <RootNamespace>CallMedCrud</RootNamespace>
   </PropertyGroup>
-  <ItemGroup><ProjectReference Include="../src/CallMed.Application/CallMed.Application.csproj" /></ItemGroup>
+  <ItemGroup><ProjectReference Include="../CallMed.Application/CallMed.Application.csproj" /></ItemGroup>
   <ItemGroup>
     <Content Include="App_Data/Aplicativo/CallMed.apk" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Update="App_Data/Aplicativo/release.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />

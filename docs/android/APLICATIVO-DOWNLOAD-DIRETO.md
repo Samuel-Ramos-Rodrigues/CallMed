@@ -1,11 +1,11 @@
 # APK nativo disponível no próprio site
 
-O download entrega o aplicativo nativo de pacientes **CallMed 23.2.0**, criado em Kotlin e Jetpack Compose, com os novos fluxos e ajustes de leitura. O módulo está em [`CallMedAndroid`](../../CallMedAndroid/README-ANDROID.md). O projeto TWA anterior foi preservado em sua pasta.
+O download entrega o aplicativo nativo de pacientes **CallMed 23.2.0**, criado em Kotlin e Jetpack Compose, com os novos fluxos e ajustes de leitura. O módulo está em [`mobile/android`](../../mobile/android/README-ANDROID.md). O projeto TWA anterior foi preservado em sua pasta.
 
 ## Publicar no Render
 
 1. Atualize o repositório com este projeto completo e publique o serviço existente. Esta entrega inclui as rotas `/api/mobile/v1` usadas pelo nativo.
-2. Inclua `CallMedCrud/App_Data/Aplicativo/CallMed.apk` e `release.json`. O `.gitignore` libera especificamente esse APK público; as chaves privadas continuam ignoradas.
+2. Inclua `src/CallMed.Web/App_Data/Aplicativo/CallMed.apk` e `release.json`. O `.gitignore` libera especificamente esse APK público; as chaves privadas continuam ignoradas.
 3. O `.csproj` copia os dois arquivos para a saída de publicação. O Dockerfile os leva ao contêiner. As pastas de código Android e as chaves de assinatura ficam fora do contexto Docker.
 4. Após publicar, abra `https://callmed.onrender.com/aplicativo` e confira a versão **23.2.0**.
 5. Baixe o APK, abra-o no celular e confirme a instalação. Se necessário, autorize a instalação pelo navegador usado no download.
@@ -40,10 +40,10 @@ A instalação PWA do site continua disponível. As telas do novo APK são nativ
 
 ## Atualizar o app
 
-Aumente o `versionCode` no módulo `CallMedAndroid`, mantenha a chave e gere `assembleRelease`. Substitua `CallMed.apk` e atualize `release.json` com a versão, código, tamanho, SHA-256 e Android mínimo reais. Atualize também as expectativas de versão/hash dos testes de download. Publique os dois arquivos juntos.
+Aumente o `versionCode` no módulo `mobile/android`, mantenha a chave e gere `assembleRelease`. Substitua `CallMed.apk` e atualize `release.json` com a versão, código, tamanho, SHA-256 e Android mínimo reais. Atualize também as expectativas de versão/hash dos testes de download. Publique os dois arquivos juntos.
 
 O aplicativo não instala atualizações automaticamente. Mudanças no cliente Kotlin exigem novo APK; mudanças compatíveis nas APIs são publicadas no servidor.
 
 ## Verificação
 
-A compilação e publicação Release do servidor incluem o mesmo APK. Os 13 testes HTTP de download e as 12 verificações da interface no Chromium passaram com este arquivo. A compilação Android release, o lint e os 35 testes JVM/Compose também passaram. Veja [a validação completa](../../CallMedAndroid/README-ANDROID.md).
+A compilação e publicação Release do servidor incluem o mesmo APK. Os 13 testes HTTP de download e as 12 verificações da interface no Chromium passaram com este arquivo. A compilação Android release, o lint e os 35 testes JVM/Compose também passaram. Veja [a validação completa](../../mobile/android/README-ANDROID.md).
