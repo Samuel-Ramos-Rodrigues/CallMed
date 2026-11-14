@@ -1,0 +1,17 @@
+@model MKSANCrud.Controllers.PendenciasRecepcaoPage
+@{ViewData["Title"]="Pendências de hoje";}
+<section class="cm-workspace cm-simple-page" aria-labelledby="pendencias-titulo">
+ <header class="cm-page-intro"><div><span class="eyebrow">RECEPÇÃO · GESTÃO POR EXCEÇÕES</span><h1 id="pendencias-titulo">O que precisa de atenção</h1><p>O sistema registra os check-ins. A equipe resolve apenas o que está pendente, sem confirmar cada chegada manualmente.</p></div></header>
+ <div class="j-grid">
+  <article class="j-card"><h2>Consultas de hoje</h2><p><strong>@Model.ConsultasHoje</strong> agendamentos ativos.</p></article>
+  <article class="j-card"><h2>Chegadas registradas</h2><p><strong>@Model.ChegadasConfirmadas</strong> chegadas presenciais ou registradas pelo profissional na consulta online.</p></article>
+  <article class="j-card"><h2>Check-ins online</h2><p><strong>@Model.ProntosOnline</strong> pré-check-ins digitais de teleconsultas.</p></article>
+ </div>
+ <section class="j-card"><div class="cm-page-intro"><div><h2>Exceções (@Model.Pendencias.Count)</h2><p>Atualize a página para conferir as novas etapas da jornada.</p></div><a class="btn secondary" asp-action="Index">Atualizar</a></div>
+ @if(Model.Pendencias.Count==0){<p>Nenhuma pendência nas etapas verificadas. Os demais atendimentos seguem automaticamente.</p>}
+ else{<div class="table-wrap" tabindex="0"><table><thead><tr><th>Horário</th><th>Paciente</th><th>Profissional</th><th>O que falta</th><th>Ação</th></tr></thead><tbody>
+ @foreach(var i in Model.Pendencias){<tr><td>@i.Horario</td><td>@i.Paciente</td><td>@i.Profissional</td><td>@i.Motivo</td><td><a asp-controller="Jornada" asp-action="Consulta" asp-route-id="@i.ConsultaId">Ver consulta</a></td></tr>}
+ </tbody></table></div>}
+ </section>
+ <nav class="j-actions" aria-label="Mais opções de recepção"><a class="btn secondary" asp-controller="Checkin" asp-action="Terminal">Exibir QR Code</a><a class="btn secondary" asp-controller="Solicitacoes" asp-action="Tarefas">Ligações e tarefas</a><a class="btn secondary" asp-controller="Atendimento" asp-action="Index">Central de Atendimento</a></nav>
+</section>

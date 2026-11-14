@@ -96,11 +96,11 @@ public sealed class LembreteConsultaBackgroundService : BackgroundService
                 var texto = tipo24
                     ? $"Olá, {c.Paciente.Nome}! Lembrete CallMed: sua consulta com {c.Medico?.Nome} está marcada para {c.Data:dd/MM} às {c.Horario}."
                     : $"Olá, {c.Paciente.Nome}! Sua consulta CallMed com {c.Medico?.Nome} será em {c.Data:dd/MM} às {c.Horario}.";
+                // A operacao privada exige confirmacao segura. Respostas livres ao canal
+                // nao devem ser apresentadas como uma reserva ou cancelamento confirmado.
                 texto += destino.Value.Canal == CanalAtendimento.Email
-                    ? "\n\nPara confirmar presença, remarcar ou cancelar, acesse sua conta no CallMed ou entre em contato com a recepção. Responder a este e-mail não conclui essas ações automaticamente. Se solicitar ajuda por e-mail, aguarde a confirmação da equipe."
-                    : tipo24
-                        ? " Responda CONFIRMAR para confirmar presença, REMARCAR para escolher outro horário ou CANCELAR para liberar a vaga."
-                        : " Se estiver tudo certo, responda CONFIRMAR. Se precisar, responda REMARCAR ou CANCELAR.";
+                    ? "\n\nPara confirmar, remarcar ou cancelar, use o link seguro abaixo ou sua conta CallMed. Responder a este e-mail não conclui essas ações automaticamente."
+                    : " Para confirmar, remarcar ou cancelar, use o link seguro abaixo ou acesse sua conta CallMed. Se precisar de ajuda, responda por aqui para falar com a equipe.";
                 var link=await scope.ServiceProvider.GetRequiredService<ConsultaLinkService>().CriarAsync(c,ct);
                 if(link!=null)texto+="\n\nConfirme, cancele ou escolha outro horário pelo link seguro: "+link+"\nPrepare os dados e faça check-in em sua conta CallMed.";
                 texto += "\n\n" + orientacoes.Texto(c);

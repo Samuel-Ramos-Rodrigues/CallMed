@@ -51,6 +51,31 @@ public sealed class JornadaService(MKSANContext db,IClinicaClock clock) {
   }
   j.AtualizadoEm=agora;Audit(u,acao,c.Id);await db.SaveChangesAsync(ct);if(tx!=null)await tx.CommitAsync(ct);return null;
  }
+ // Chegada por autoatendimento: o controller verifica um QR temporario assinado
+ // e o servico preserva as regras clinicas, identidade e idempotencia.
+ public async Task<string?> RegistrarChegadaAutonomaAsync(Consulta c,ClaimsPrincipal usuario,CancellationToken ct) {
+  if(!Paciente(usuario,c))return "A consulta não pertence a esta conta.";
+  await using var tx=db.Database.IsRelational()?await db.Database.BeginTransactionAsync(ct):null;
+  await LockAsync("jornada:"+c.Id,ct);
+  if(db.Database.IsRelational())await db.Entry(c).ReloadAsync(ct);
+  if(Encerrada(c)||c.Data.Date!=clock.Hoje)return "Esta consulta não está disponível para chegada hoje.";
+  if(!TimeSpan.TryParse(c.Horario,System.Globalization.CultureInfo.InvariantCulture,out var horario))return "O horário precisa ser revisado.";
+  var inicio=c.Data.Date.Add(horario);
+  if(clock.Agora<inicio.AddHours(-2)||clock.Agora>inicio.AddHours(4))return "O check-in presencial está disponível de duas horas antes até quatro horas após o horário da consulta.";
+  var j=await ObterAsync(c.Id,ct);
+  await db.Entry(j).ReloadAsync(ct);
+  if(j.Tele)return "Para teleconsulta, entre na sala online da consulta.";
+  if(j.CadastroEm==null)return "Confira seu pré-cadastro antes de registrar a chegada.";
+  if(j.ChegadaEm.HasValue){if(tx!=null)await tx.CommitAsync(ct);return null;}
+  var agora=DateTime.UtcNow;
+  j.CheckInEm??=agora;
+  j.ChegadaEm=agora;
+  j.AtualizadoEm=agora;
+  Audit(usuario,"Chegada presencial por QR temporário",c.Id);
+  await db.SaveChangesAsync(ct);
+  if(tx!=null)await tx.CommitAsync(ct);
+  return null;
+ }
  public async Task<string?> AlocarAsync(Consulta c,ClaimsPrincipal u,int? salaId,int duracao,bool tele,CancellationToken ct) {
   if(!Equipe(u))return "Somente a recepção pode organizar as salas.";if(duracao<5||duracao>240)return "Escolha duração entre 5 e 240 minutos.";
   await using var tx=db.Database.IsRelational()?await db.Database.BeginTransactionAsync(ct):null;await LockAsync("jornada:"+c.Id,ct);if(db.Database.IsRelational())await db.Entry(c).ReloadAsync(ct);var j=await ObterAsync(c.Id,ct);await db.Entry(j).ReloadAsync(ct);
@@ -62,7 +87,7 @@ public sealed class JornadaService(MKSANContext db,IClinicaClock clock) {
   if(j.Tele!=tele){j.ConsentimentoEm=null;j.ConsentimentoVersao=null;}c.DuracaoMinutos=duracao;j.SalaId=salaId;j.Duracao=duracao;j.Tele=tele;j.AtualizadoEm=DateTime.UtcNow;Audit(u,"Organizar sala",c.Id);await db.SaveChangesAsync(ct);if(tx!=null)await tx.CommitAsync(ct);return null;
  }
  public async Task<object> IndicadoresAsync(CancellationToken ct) {
-  var inicio=DateTime.UtcNow.AddDays(-30);var js=await db.Jornadas.AsNoTracking().Include(x=>x.Consulta).Where(x=>x.AtualizadoEm>=inicio).ToListAsync(ct);var tempos=js.Where(x=>x.InicioEm!=null&&x.ChegadaEm!=null&&x.InicioEm>=x.ChegadaEm).Select(x=>(x.InicioEm!.Value-x.ChegadaEm!.Value).TotalMinutes).ToArray();
+  var inicio=DateTime.UtcNow.AddDays(-30);var js=await db.Jornadas.AsNoTracking().Include(x=>x.Consulta).Where(x=>x.AtualizadoEm>=inicio).ToListAsync(ct);var tempos=js.Where(x=>!x.Tele&&x.InicioEm!=null&&x.ChegadaEm!=null&&x.InicioEm>=x.ChegadaEm).Select(x=>(x.InicioEm!.Value-x.ChegadaEm!.Value).TotalMinutes).ToArray();
   return new{janela="Últimos 30 dias",confirmacoesAtivas=js.Count(x=>x.PresencaConfirmadaEm!=null),tempoMedioConfirmacaoMinutos=js.Any(x=>x.PresencaConfirmadaEm>=x.Consulta.CriadoEm)?Math.Round(js.Where(x=>x.PresencaConfirmadaEm>=x.Consulta.CriadoEm).Average(x=>(x.PresencaConfirmadaEm!.Value-x.Consulta.CriadoEm).TotalMinutes),1):(double?)null,checkins=js.Count(x=>x.CheckInEm!=null),chegadas=js.Count(x=>x.ChegadaEm!=null),concluidos=js.Count(x=>x.FimEm!=null),amostra=tempos.Length,esperaMedia=tempos.Length==0?(double?)null:Math.Round(tempos.Average(),1),ofertas=await db.Ofertas.CountAsync(x=>x.CriadoEm>=inicio,ct),aceites=await db.Ofertas.CountAsync(x=>x.CriadoEm>=inicio&&x.Estado=="Aceita",ct),medicoes=await db.MedicoesOperacionais.AsNoTracking().OrderBy(x=>x.Data).Take(200).ToListAsync(ct)};
  }
 }

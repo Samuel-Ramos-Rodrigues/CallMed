@@ -8098,3 +8098,31 @@ body.identity-body {
         flex-basis: auto;
     }
 }
+
+/* Automação V36 — apresentação limpa nas áreas operacionais e autoatendimento. */
+:root[data-theme="light"] {
+  --bg:#F7FAF9;
+  --surface:#FFFFFF;
+  --surface-2:#ECF5F1;
+  --surface-3:#DDEFE8;
+  --text:#1A2926;
+  --muted:#4B645C;
+  --line:#D3E4DC;
+  --primary:#0B6550;
+  --primary-hover:#084C3D;
+  --accent:#0B6550;
+  --accent-soft:#E1F2EB;
+  --focus:#0B6550;
+}
+:root[data-theme="light"] .app-header {background:rgba(255,255,255,.96)}
+:root[data-theme="light"] .primary-nav a.active {color:#075440;background:#E4F3EC}
+:root[data-theme="light"] .cm-nav-feature {background:#E4F3EC;color:#0B6550}
+.cm-simple-page {max-width:1100px;margin-inline:auto}
+.cm-simple-page .j-card {background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:none}
+.cm-simple-page h1 {letter-spacing:-.025em}
+.cm-simple-page .j-card h2 {font-size:1.15rem}
+.cm-qr-terminal {text-align:center;max-width:540px;margin-inline:auto}
+.cm-qr-terminal img {display:block;margin:18px auto;border:12px solid #fff;border-radius:14px;width:min(100%,320px);height:auto;aspect-ratio:1}
+.cm-simple-page .j-actions {display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.cm-simple-page .table-wrap {overflow-x:auto}
+@media(max-width:640px) {.cm-simple-page .j-actions>.btn{width:100%;text-align:center}}

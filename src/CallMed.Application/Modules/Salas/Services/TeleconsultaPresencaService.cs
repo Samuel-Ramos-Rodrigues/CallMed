@@ -13,7 +13,21 @@ public sealed class TeleconsultaPresencaService(MKSANContext db,JornadaService j
   var uid=user.FindFirstValue(ClaimTypes.NameIdentifier)!;var agora=Agora;
   foreach(var s in await db.SessoesTele.Where(x=>x.ConsultaId==id&&x.UsuarioId==uid&&x.SaidaEm==null).ToListAsync(ct)){s.SaidaEm=agora;s.MotivoSaida="Nova entrada neste atendimento";}
   var sessao=new SessaoTele{ConsultaId=id,UsuarioId=uid,Papel=a.Paciente?"Paciente":"Profissional",Snapshot=JornadaService.Snapshot(a.Consulta),EntradaEm=agora,UltimoSinalEm=agora};
-  db.SessoesTele.Add(sessao);jornada.Audit(user,"Entrar na sala online",id);await db.SaveChangesAsync(ct);
+  db.SessoesTele.Add(sessao);
+  // Um paciente que já conferiu o cadastro não precisa repetir o botão
+  // de check-in: a entrada autenticada na sala realiza a etapa digital.
+  // Não registrar chegada presencial; ela permanece um evento distinto.
+  if(a.Paciente)
+  {
+    var etapa=await db.Jornadas.SingleOrDefaultAsync(j=>j.ConsultaId==id,ct);
+    if(etapa?.CadastroEm!=null && etapa.CheckInEm==null)
+    {
+      etapa.CheckInEm=agora;
+      etapa.AtualizadoEm=agora;
+      jornada.Audit(user,"Check-in digital automático por entrada na teleconsulta",id);
+    }
+  }
+  jornada.Audit(user,"Entrar na sala online",id);await db.SaveChangesAsync(ct);
   if(tx!=null)await tx.CommitAsync(ct);return sessao.Id;
  }
  public async Task<bool> AtualizarAsync(int id,Guid sessaoId,string estado,ClaimsPrincipal user,CancellationToken ct) {

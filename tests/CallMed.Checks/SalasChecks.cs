@@ -30,6 +30,8 @@ internal static class SalasChecks {
   check(await presenca.EntrarAsync(1,patient,default)==null,"Presença exige consentimento");
   check(await j.MoverAsync(c,patient,"consentir",true,default)==null,"Paciente autoriza a consulta online");
   var session=await presenca.EntrarAsync(1,patient,default);check(session.HasValue,"Paciente autorizado registra entrada");
+  var etapa=await db.Jornadas.SingleAsync(x=>x.ConsultaId==1);
+  check(etapa.CheckInEm==null&&etapa.ChegadaEm==null,"Entrada online sem pré-cadastro não antecipa check-in nem declara chegada presencial");
   check(await presenca.EntrarAsync(1,staff,default)==null,"Recepção não participa do vídeo");
   check(await presenca.EntrarAsync(1,JornadaChecks.User("outro","Paciente"),default)==null,"Outro paciente não registra presença");
   check(!await presenca.AtualizarAsync(1,session!.Value,"conectada",doctor,default),"Participante não altera presença alheia");
@@ -39,7 +41,14 @@ internal static class SalasChecks {
   var atual=await db.SessoesTele.SingleAsync(x=>x.Id==session);check(atual.ConectadaEm.HasValue&&TeleconsultaPresencaService.Presente(atual,c,time.GetUtcNow().UtcDateTime),"Conexão e presença são registradas");
   time.Utc=time.Utc.AddSeconds(61);check(!TeleconsultaPresencaService.Presente(atual,c,time.GetUtcNow().UtcDateTime),"Presença expira após 60 segundos");
   check(!await presenca.AtualizarAsync(1,session.Value,"conectada",patient,default),"Heartbeat atrasado não ressuscita presença");
+  etapa.CadastroEm=time.GetUtcNow().UtcDateTime;
+  await db.SaveChangesAsync();
   var nova=await presenca.EntrarAsync(1,patient,default);check(nova.HasValue&&atual.SaidaEm.HasValue,"Nova entrada encerra sessão anterior");
+  check(etapa.CheckInEm.HasValue&&etapa.ChegadaEm==null,"Entrada online registra check-in digital sem depender da recepção");
+  var checkInOriginal=etapa.CheckInEm;
+  var sessaoReentrada=await presenca.EntrarAsync(1,patient,default);
+  check(sessaoReentrada.HasValue&&etapa.CheckInEm==checkInOriginal,"Nova entrada não duplica o check-in já realizado");
+  nova=sessaoReentrada;
   check(!await presenca.SairAsync(1,nova!.Value,doctor,default),"Profissional não encerra presença do paciente");
   c.Revisao++;await db.SaveChangesAsync();check(!await presenca.AtualizarAsync(1,nova.Value,"conectada",patient,default),"Alteração de agendamento invalida presença antiga");
   check(await presenca.SairAsync(1,nova.Value,patient,default),"Saída é aceita após alteração da consulta");

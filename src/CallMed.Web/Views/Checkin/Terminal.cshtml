@@ -1,0 +1,12 @@
+@{ViewData["Title"]="Check-in da clínica";}
+<section class="cm-workspace cm-simple-page" aria-labelledby="qr-titulo">
+  <header class="cm-page-intro"><div><span class="eyebrow">RECEPÇÃO · AUTOATENDIMENTO</span><h1 id="qr-titulo">Check-in sem fila</h1><p>Deixe esta tela visível na recepção para o paciente escanear com o próprio celular.</p></div></header>
+  <article class="j-card cm-qr-terminal">
+    <h2>Escaneie para confirmar sua chegada</h2>
+    <img src="/checkin/qr" alt="QR Code temporário de check-in, para leitura no local" id="checkin-qrcode" width="300" height="300" />
+    <p>O código atualiza automaticamente e expira após quatro minutos. O paciente entra na própria conta e escolhe sua consulta de hoje.</p>
+    <p role="status" id="checkin-qr-status">Código disponível para leitura.</p>
+  </article>
+  <p><strong>Precisa de ajuda?</strong> O atendente continua podendo verificar presença, cadastro e convênio pelo <a asp-controller="Jornada" asp-action="Index">painel de recepção</a>.</p>
+</section>
+@section Scripts {<script src="~/js/jornada/checkin-terminal.js" asp-append-version="true" defer></script>}
