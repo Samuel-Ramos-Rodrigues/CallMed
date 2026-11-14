@@ -10,7 +10,16 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1] / "src" / "CallMed.Web"
 views = sorted(list((ROOT / "Views").rglob("*.cshtml")) + list((ROOT / "Areas").rglob("*.cshtml")))
-controllers = {p.stem.removesuffix("Controller"): p for p in (ROOT / "Controllers").rglob("*Controller.cs")}
+# MVC partial controllers can implement actions in multiple source files.
+controllers = {}
+for source in (ROOT / "Controllers").rglob("*Controller*.cs"):
+    match = re.fullmatch(r"(.+Controller)(?:\.[^.]+)*\.cs", source.name)
+    if match:
+        controllers.setdefault(match.group(1).removesuffix("Controller"), []).append(source)
+controller_sources = {
+    name: "\n".join(p.read_text(encoding="utf-8-sig") for p in sources)
+    for name, sources in controllers.items()
+}
 asset_ext = {".js", ".css", ".svg", ".png", ".ico", ".jpg", ".jpeg", ".webp", ".json"}
 errors = []
 links_count = 0
@@ -27,10 +36,10 @@ for view in views:
         if "@" in controller or "@" in action:
             continue  # Expressão Razor dinâmica precisa de validação em execução.
         links_count += 1
-        path = controllers.get(controller)
-        if path is None:
+        source = controller_sources.get(controller)
+        if source is None:
             errors.append(f"{view.relative_to(ROOT)}: Controller {controller} não encontrado")
-        elif re.search(r"\b" + re.escape(action) + r"\s*\(", path.read_text(encoding="utf-8-sig")) is None:
+        elif re.search(r"\b" + re.escape(action) + r"\s*\(", source) is None:
             errors.append(f"{view.relative_to(ROOT)}: ação {controller}.{action} não encontrada")
 
     for match in re.finditer(r'''(?:src|href)\s*=\s*["']~?/([^"'@?#]+)["']''', content):

@@ -5,7 +5,7 @@
 
 A CallMed reúne o atendimento administrativo de clínicas multiprofissionais, o agendamento online e o acompanhamento da consulta. Pacientes acessam o site ou o aplicativo Android; profissionais, recepção e administração trabalham nas áreas correspondentes ao seu perfil.
 
-A **V35** reorganiza a solução em projetos, remove o TWA e os materiais de entregas antigas, extrai regras compartilhadas e apresenta um visual novo com **um único CSS autoral**. A integração **httpSMS permanece preservada**.
+A **V35** organiza a solução em projetos e remove o TWA. A revisão de estrutura mantém as telas de login/cadastro V34 dentro da folha única `callmed.css` e separa controllers maiores em arquivos parciais, sem alterar rotas nem APIs. A integração **httpSMS permanece preservada**.
 
 ## O que o sistema reúne
 
@@ -73,9 +73,10 @@ O modo padrão executa as rotinas dentro do site. A separação é opcional: `Do
 
 ## Interface e acessibilidade
 
-O site carrega somente `src/CallMed.Web/wwwroot/css/callmed.css`. Essa é a origem mantida, escrita para a V35; não é um bundle e não depende de CSS de versões anteriores. Faça alterações diretamente nela e execute:
+O site carrega somente `src/CallMed.Web/wwwroot/css/callmed.css`. O mesmo arquivo inclui regras de identidade V34 isoladas por escopo CSS, além da interface V35. Não há arquivo CSS adicional, importação ou bundle. Faça alterações diretamente nela e execute:
 
 ```sh
+python scripts/check-architecture.py
 python scripts/check-css.py
 python scripts/auditar-views-callmed.py
 ```

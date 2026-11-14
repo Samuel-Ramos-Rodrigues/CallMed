@@ -43,6 +43,7 @@ jobs:
           for suite in salas-pg piloto-pg psicologia-pg jornada-pg amplo-pg audit-pg; do
             dotnet tests/CallMed.Checks/bin/Release/net10.0/CallMed.Checks.dll --"$suite"
           done
+      - run: python3 scripts/check-architecture.py
       - run: python3 scripts/check-css.py
       - run: python3 scripts/auditar-views-callmed.py
       - name: NuGet vulnerability gate
@@ -82,7 +83,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
       - uses: gradle/actions/setup-gradle@v4
       - run: chmod +x mobile/android/gradlew
       - run: mobile/android/gradlew -p mobile/android --no-daemon testDebugUnitTest assembleDebug
@@ -94,6 +95,11 @@ jobs:
         shell: [powershell, pwsh]
     steps:
       - uses: actions/checkout@v4
-      - name: Certificate creation, import and safe repeat
-        shell: ${{ matrix.shell }}
+      - name: Certificate creation and import (Windows PowerShell)
+        if: matrix.shell == 'powershell'
+        shell: powershell
+        run: ./tests/check-certificado.ps1
+      - name: Certificate creation and import (PowerShell 7)
+        if: matrix.shell == 'pwsh'
+        shell: pwsh
         run: ./tests/check-certificado.ps1
