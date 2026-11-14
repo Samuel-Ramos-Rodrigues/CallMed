@@ -15,7 +15,35 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
   for(const theme of ['light','dark']){
    await who.page.evaluate(async theme=>{document.documentElement.dataset.theme=theme;document.documentElement.style.colorScheme=theme;await Promise.all(document.getAnimations({subtree:true}).filter(a=>a.constructor.name==='CSSTransition').map(a=>a.finished.catch(()=>{})));},theme);
    await who.page.addScriptTag({path:axePath});const violations=await who.page.evaluate(()=>axe.run({runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}).then(r=>r.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary,html:n.html}))}))));if(violations.length){issues.push({label,theme,violations});console.error('AXE_VIOLATIONS '+JSON.stringify({label,theme,violations}));}
-   if(['paciente-inicio','publico','login','cadastro','pep','privacidade-paciente','resultados','mensagens','jornada-detalhe','agendamento','areas','salas','configuracoes','pacientes','recepcao'].includes(label))await who.page.screenshot({path:out+'/'+label+'-'+theme+'.png',fullPage:true});
+   if(['paciente-inicio','publico','login','cadastro','pep','privacidade-paciente','resultados','mensagens','jornada-detalhe','agendamento','areas','salas','configuracoes','pacientes','recepcao','profissional'].includes(label))await who.page.screenshot({path:out+'/'+label+'-'+theme+'.png',fullPage:true});
+  }
+  if(label==='profissional'){
+   await who.page.evaluate(()=>document.documentElement.dataset.theme='light');
+   await who.page.setViewportSize({width:1440,height:900});
+   await who.page.evaluate(()=>document.fonts.ready);
+   const layout=await who.page.evaluate(()=>{
+    const root=document.querySelector('.cm-doctor-screen');
+    const cards=[...document.querySelectorAll('.cm-doctor-metrics > article')];
+    const progress=document.querySelector('.cm-doctor-progress');
+    const heading=progress?.querySelector('h2');
+    const rect=e=>e.getBoundingClientRect();
+    const separated=(a,b)=>a.right<=b.left+1||b.right<=a.left+1||a.bottom<=b.top+1||b.bottom<=a.top+1;
+    const cardContentOk=cards.every(card=>{
+      const c=rect(card);return [...card.querySelectorAll('strong,small,div > span')].every(el=>{
+        const b=rect(el);return b.left>=c.left-1&&b.right<=c.right+1&&b.top>=c.top-1&&b.bottom<=c.bottom+1;
+      });
+    });
+    const progressOk=!!progress&&!!heading&&rect(progress).height>=rect(heading).height+45&&
+       getComputedStyle(progress).overflow!=='hidden'&&
+       rect(heading).bottom<=rect(progress).bottom;
+    return {root:!!root,cards:cards.length,cardContentOk,progressOk,
+      cardGap:cards.length>1?separated(rect(cards[0]),rect(cards[1])):false,
+      scrollWidth:document.documentElement.scrollWidth,innerWidth};
+   });
+   console.log('DOCTOR_LAYOUT '+JSON.stringify(layout));
+   check(layout.root&&layout.cards===4&&layout.cardContentOk&&layout.progressOk&&layout.cardGap&&layout.scrollWidth<=layout.innerWidth+2,
+     'Painel médico: métricas e progresso sem sobreposições em 1440px');
+   await who.page.setViewportSize({width:1280,height:900});
   }
   await who.page.setViewportSize({width:390,height:844});await who.page.evaluate(()=>document.documentElement.style.fontSize='200%');
   if(!await who.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2))overflows.push({label,...await who.page.evaluate(()=>({scroll:document.documentElement.scrollWidth,elements:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+2&&e.offsetWidth>0).slice(0,15).map(e=>({tag:e.tagName,c:e.className,r:e.getBoundingClientRect().right,w:e.offsetWidth}))}))});
