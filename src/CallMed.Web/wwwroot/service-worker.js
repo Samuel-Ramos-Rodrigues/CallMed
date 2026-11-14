@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v89-journey';
+const CACHE_NAME = 'callmed-static-v90-horizon';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -21,6 +21,8 @@ const STATIC_ASSETS = [
     '/css/modules/90-internal-modules.css',
     '/css/modules/95-booking-calendar.css',
     '/css/modules/99-consultation-journey.css',
+    '/css/modules/100-horizon-core.css',
+    '/css/modules/110-horizon-surfaces.css',
     '/js/core/contingencia.js',
     '/js/atendimento/solicitacao-medico-filter.js',
     '/js/core/preferences.js',
