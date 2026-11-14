@@ -24,11 +24,12 @@ public sealed class WhatsAppPendingBackgroundService(IServiceScopeFactory scopes
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(2));
+        var proximoRegistro=DateTime.MinValue;
         try { while (await timer.WaitForNextTickAsync(ct)) {
             try { using var scope = scopes.CreateScope(); var sp = scope.ServiceProvider;
                 if (sp.GetRequiredService<IOptions<EvolutionWhatsAppOptions>>().Value.Enabled) {
                     await ProcessarAsync(sp.GetRequiredService<MKSANContext>(), sp.GetRequiredService<AtendimentoOrquestradorService>(), ct);
-                    await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(sp,"whatsapp-pendencias",true,ct);
+                    if(DateTime.UtcNow>=proximoRegistro){await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(sp,"whatsapp-pendencias",true,ct);proximoRegistro=DateTime.UtcNow.AddMinutes(1);}
                 }
             } catch (Exception ex) when (!ct.IsCancellationRequested) { logger.LogError(ex, "Falha ao retomar entradas persistidas do WhatsApp.");
                 using var scope=scopes.CreateScope();

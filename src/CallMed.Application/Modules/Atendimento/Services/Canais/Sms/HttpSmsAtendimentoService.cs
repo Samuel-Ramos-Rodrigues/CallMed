@@ -105,13 +105,14 @@ public sealed class HttpSmsAtendimentoBackgroundService(
         try
         {
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(2));
+            var proximoRegistro=DateTime.MinValue;
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
                 try
                 {
                     using var scope = scopes.CreateScope();
                     await scope.ServiceProvider.GetRequiredService<HttpSmsAtendimentoService>().ProcessarPendenciasAsync(stoppingToken);
-                    await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(scope.ServiceProvider,"httpsms-pendencias",true,stoppingToken);
+                    if(DateTime.UtcNow>=proximoRegistro){await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(scope.ServiceProvider,"httpsms-pendencias",true,stoppingToken);proximoRegistro=DateTime.UtcNow.AddMinutes(1);}
                 }
                 catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested) { break; }
                 catch (Exception ex) { logger.LogError(ex, "Falha no ciclo de atendimento automático por httpSMS."); using var scope=scopes.CreateScope(); await MKSANCrud.Services.Clinica.OperacaoService.RegistrarAsync(scope.ServiceProvider,"httpsms-pendencias",false,stoppingToken); }
