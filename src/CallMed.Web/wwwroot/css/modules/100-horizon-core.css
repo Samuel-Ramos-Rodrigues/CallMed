@@ -1,0 +1,500 @@
+/* CallMed Horizon V43 — foundations, shell, shared components.
+   Only activates on body.cm43-horizon; earlier modules remain compatible.
+   Keep clinical, authentication and accessibility behavior untouched. */
+
+body.cm43-horizon {
+  --cm43-radius: 18px;
+  --cm43-radius-lg: 24px;
+  --cm43-radius-xl: 30px;
+  --cm43-tight: -0.035em;
+  --cm43-ease: cubic-bezier(.2,.7,.2,1);
+  --cm43-ink: var(--text);
+  --cm43-secondary: var(--muted);
+  --cm43-glow: rgba(10,136,114,.14);
+  --cm43-shadow-sm: 0 3px 16px rgba(16,51,70,.045);
+  --cm43-shadow-card: 0 12px 36px rgba(16,51,70,.065), 0 1px 2px rgba(16,51,70,.03);
+  --cm43-shadow-float: 0 30px 100px rgba(4,37,56,.19), 0 8px 30px rgba(4,37,56,.09);
+  --cm43-role: #098676;
+  --cm43-role-soft: #d8f5eb;
+  --cm43-button-ink: #fff;
+  --cm43-input: var(--surface);
+  --cm43-hairline: var(--line);
+  font-feature-settings: "ss01" on, "cv11" on;
+}
+
+:root:not(.callmed-high-contrast)[data-theme="light"] body.cm43-horizon.cm39-shell {
+  --bg: #f3f7fb;
+  --surface: #fff;
+  --surface-2: #f2f7f9;
+  --surface-3: #e8f1f4;
+  --text: #132c3a;
+  --muted: #536b78;
+  --line: #dce8ed;
+  --primary: #087e74;
+  --primary-hover: #086d66;
+  --accent: #076f70;
+  --accent-soft: #e0f4ed;
+  --teal: #087e74;
+  --focus: #236aa2;
+  --cm43-glow: rgba(6,143,124,.15);
+  --cm43-shadow-card: 0 12px 34px rgba(20,56,73,.055), 0 1px 3px rgba(14,49,65,.04);
+  --cm43-shadow-float: 0 30px 100px rgba(19,56,76,.20), 0 8px 30px rgba(13,45,62,.12);
+  --cm43-button-ink: #fff;
+}
+:root:not(.callmed-high-contrast)[data-theme="dark"] body.cm43-horizon.cm39-shell {
+  --bg: #081921;
+  --surface: #122732;
+  --surface-2: #193441;
+  --surface-3: #21414d;
+  --text: #f1faf8;
+  --muted: #b4cbd3;
+  --line: #35505c;
+  --primary: #76e0c2;
+  --primary-hover: #a0efd6;
+  --accent: #8ce9ce;
+  --accent-soft: #204b46;
+  --teal: #76e0c2;
+  --focus: #b4f7e2;
+  --cm43-role: #78e1c8;
+  --cm43-role-soft: #1a4440;
+  --cm43-glow: rgba(101,226,202,.12);
+  --cm43-shadow-sm: 0 4px 22px rgba(0,0,0,.14);
+  --cm43-shadow-card: 0 14px 40px rgba(0,0,0,.16), 0 1px 2px rgba(0,0,0,.1);
+  --cm43-shadow-float: 0 30px 100px rgba(0,0,0,.42), 0 8px 30px rgba(0,0,0,.22);
+  --cm43-button-ink: #0c2924;
+  color-scheme: dark;
+}
+body.cm43-horizon.cm43-patient { --cm43-role: #098f85; --cm43-role-soft: #ddf6ee; }
+body.cm43-horizon.cm43-doctor { --cm43-role: #416bd0; --cm43-role-soft: #e8effe; }
+body.cm43-horizon.cm43-staff { --cm43-role: #1b879b; --cm43-role-soft: #e1f5f8; }
+body.cm43-horizon.cm43-admin { --cm43-role: #7259c4; --cm43-role-soft: #eee9ff; }
+:root[data-theme="dark"] body.cm43-horizon:is(.cm43-patient,.cm43-doctor,.cm43-staff,.cm43-admin) {
+  --cm43-role-soft: var(--surface-3);
+}
+body.cm43-horizon.cm39-shell {
+  background: var(--bg);
+  color: var(--text);
+  min-width: 300px;
+}
+:root:not(.callmed-high-contrast) body.cm43-horizon.cm39-shell {
+  background-image:
+    radial-gradient(closest-side at 6% 2%, var(--cm43-glow), transparent 94%),
+    radial-gradient(closest-side at 100% 35%, color-mix(in srgb, var(--cm43-role) 7%, transparent), transparent 96%);
+  background-attachment: fixed;
+}
+body.cm43-horizon :is(h1,h2,h3,h4) {
+  letter-spacing: var(--cm43-tight);
+  text-wrap: pretty;
+}
+body.cm43-horizon :is(h1,h2) { font-weight: 800; }
+body.cm43-horizon p { line-height: 1.65; }
+body.cm43-horizon :is(.eyebrow,.cm25-kicker,.cm37-eyebrow) {
+  font-size: .69rem;
+  font-weight: 850;
+  letter-spacing: .125em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+body.cm43-horizon .cm25-kicker,
+body.cm43-horizon .cm37-eyebrow { color: var(--cm43-role); }
+
+/* The navigation remains horizontal, with the existing account and search actions. */
+body.cm43-horizon.cm39-shell .app-header {
+  height: 78px;
+  background: color-mix(in srgb, var(--surface) 93%, transparent);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--surface) 60%, transparent);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+  backdrop-filter: blur(22px) saturate(145%);
+}
+body.cm43-horizon.cm39-shell .app-header-inner {
+  max-width: 1720px;
+  padding-inline: clamp(16px,2.4vw,38px);
+  gap: clamp(10px,1.7vw,26px);
+}
+body.cm43-horizon.cm39-shell .app-brand { min-width: 0; }
+body.cm43-horizon.cm39-shell .app-brand img {
+  width: clamp(124px,10.7vw,157px);
+  height: 50px;
+  max-width: 100%;
+  object-fit: contain;
+}
+body.cm43-horizon.cm39-shell .primary-nav {
+  gap: 5px;
+  min-width: 0;
+  align-items: center;
+}
+body.cm43-horizon.cm39-shell .primary-nav a {
+  position: relative;
+  min-height: 44px;
+  padding: 9px clamp(9px,1vw,16px);
+  border: 1px solid transparent;
+  border-radius: 13px;
+  background: transparent;
+  color: var(--muted);
+  font-size: .81rem;
+  font-weight: 770;
+  transition: color .18s var(--cm43-ease), background .18s var(--cm43-ease), border-color .18s var(--cm43-ease);
+}
+body.cm43-horizon.cm39-shell .primary-nav a:hover {
+  color: var(--text);
+  background: var(--surface-2);
+  border-color: var(--line);
+}
+body.cm43-horizon.cm39-shell .primary-nav a:is(.active,[aria-current="page"]) {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--primary) 22%, transparent);
+}
+body.cm43-horizon.cm39-shell .primary-nav a.cm-nav-feature {
+  border-color: color-mix(in srgb,var(--primary) 34%,var(--line));
+  background: color-mix(in srgb,var(--accent-soft) 84%,var(--surface));
+  color: var(--accent);
+}
+body.cm43-horizon.cm39-shell .primary-nav a svg { width: 18px; height: 18px; }
+body.cm43-horizon.cm39-shell .header-tools {
+  min-width: 0;
+  margin-left: auto;
+  gap: 7px;
+}
+body.cm43-horizon.cm39-shell :is(.cm-search-shortcut,.header-tools .v18-icon-button) {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--muted);
+  box-shadow: var(--cm43-shadow-sm);
+  transition: background .18s var(--cm43-ease), border-color .18s var(--cm43-ease), color .18s var(--cm43-ease);
+}
+body.cm43-horizon.cm39-shell :is(.cm-search-shortcut,.header-tools .v18-icon-button):hover {
+  background: var(--surface-2);
+  border-color: color-mix(in srgb, var(--primary) 35%, var(--line));
+  color: var(--text);
+}
+body.cm43-horizon.cm39-shell .cm-search-shortcut span {
+  display: inline;
+  font-weight: 730;
+}
+body.cm43-horizon.cm39-shell .cm-search-shortcut kbd {
+  display: inline;
+  border-color: var(--line);
+  background: var(--surface-2);
+  color: var(--muted);
+}
+body.cm43-horizon.cm39-shell .profile-trigger { border-left-color: var(--line); }
+body.cm43-horizon.cm39-shell :is(.user-avatar,.entity-avatar) {
+  border: 2px solid color-mix(in srgb,var(--cm43-role) 24%,var(--surface));
+  background: var(--cm43-role-soft);
+  color: var(--cm43-role);
+}
+body.cm43-horizon.cm39-shell .v18-popover {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--cm43-shadow-float);
+  padding: 12px;
+}
+body.cm43-horizon.cm39-shell .v18-popover > :is(a,button) { min-height: 42px; border-radius: 11px; }
+
+/* Content rhythm, breadcrumbs and panels. */
+body.cm43-horizon.cm39-shell:not(.central-context):not(.teleconsulta-foco) .app-main {
+  width: 100%;
+  max-width: 1530px;
+  padding: clamp(20px,2.6vw,40px) clamp(16px,3vw,48px) 78px;
+}
+body.cm43-horizon.cm39-shell .cm-caminho {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  font-size: .75rem;
+  font-weight: 690;
+  color: var(--muted);
+  margin-bottom: 22px;
+}
+body.cm43-horizon.cm39-shell .cm-caminho a {
+  color: var(--muted);
+  text-decoration: none;
+}
+body.cm43-horizon.cm39-shell .cm-caminho a:hover { color: var(--accent); text-decoration: underline; }
+body.cm43-horizon.cm39-shell .app-footer {
+  max-width: 1530px;
+  border-top: 1px solid color-mix(in srgb,var(--line) 70%,transparent);
+  color: var(--muted);
+}
+body.cm43-horizon.cm39-shell :is(.cm25-page-hero,.cm-page-intro,.cm-page-heading,.cm19-page-head,.workspace-heading) {
+  min-width: 0;
+}
+body.cm43-horizon.cm39-shell :is(.cm25-page-hero,.cm-page-intro) {
+  padding: clamp(22px,2.8vw,34px);
+  border: 1px solid var(--line);
+  border-radius: var(--cm43-radius-lg);
+  background:
+    linear-gradient(120deg, color-mix(in srgb,var(--surface) 98%,transparent), color-mix(in srgb,var(--cm43-role) 8%,var(--surface)));
+  box-shadow: var(--cm43-shadow-sm);
+}
+body.cm43-horizon.cm39-shell :is(.cm25-page-hero,.cm-page-intro) h1 {
+  font-size: clamp(1.55rem,2.35vw,2.35rem);
+  line-height: 1.14;
+  margin-block: 6px 9px;
+}
+body.cm43-horizon.cm39-shell :is(.cm25-page-hero,.cm-page-intro) p { max-width: 72ch; margin-bottom: 0; }
+body.cm43-horizon.cm39-shell :is(.cm25-hero-mark,.cm-intro-icon,.cm-doctor-metric-icon) {
+  border: 1px solid color-mix(in srgb, var(--cm43-role) 20%, var(--line));
+  border-radius: 15px;
+  background: var(--cm43-role-soft);
+  color: var(--cm43-role);
+}
+body.cm43-horizon.cm39-shell :is(.cm25-panel,.cm19-card,.cm25-content-card,.cm25-section-card,.cm25-form-card,
+  .cm19-integration-card,.cm19-setting-card,.cm19-data-card,.cm-account-card,.v18-card,
+  .cm37-dashboard .cm37-card,.cm37-dashboard .cm-doctor-panel) {
+  border: 1px solid var(--line);
+  border-radius: var(--cm43-radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--cm43-shadow-card);
+  min-width: 0;
+}
+body.cm43-horizon.cm39-shell :is(.cm25-panel,.cm19-card,.cm25-content-card,.cm25-section-card,.cm25-form-card,
+  .cm19-integration-card,.cm19-setting-card,.cm19-data-card,.cm-account-card,.v18-card) {
+  padding: clamp(17px,2vw,27px);
+}
+body.cm43-horizon.cm39-shell :is(.cm25-panel,.cm19-card,.v18-card,.cm19-setting-card,.cm19-integration-card) h2 {
+  font-size: clamp(1.07rem,1.5vw,1.3rem);
+  line-height: 1.3;
+}
+body.cm43-horizon.cm39-shell :is(.cm19-card,.cm25-panel,.cm25-form-card,.v18-card) :is(p,small) {
+  overflow-wrap: anywhere;
+}
+body.cm43-horizon.cm39-shell :is(.cm25-kpi-grid,.cm-kpi-grid,.cm37-metrics,.v18-report-kpis,.cm21-report-challenge) > * {
+  min-width: 0;
+}
+body.cm43-horizon.cm39-shell :is(.cm25-kpi,.cm-kpi,.cm-doctor-metric,.v18-report-kpis > article,.cm21-report-challenge > article) {
+  border: 1px solid var(--line);
+  border-radius: var(--cm43-radius);
+  background: var(--surface);
+  box-shadow: var(--cm43-shadow-card);
+  min-width: 0;
+}
+body.cm43-horizon.cm39-shell :is(.cm25-kpi,.cm-kpi,.v18-report-kpis > article,.cm21-report-challenge > article) strong {
+  font-size: clamp(1.4rem,2vw,2rem);
+  font-weight: 820;
+  letter-spacing: -.045em;
+  color: var(--text);
+  line-height: 1.14;
+}
+
+/* Shared actions and controls. Buttons remain buttons; no JS behavior changes. */
+body.cm43-horizon.cm39-shell :is(.btn,.btn-primary,.cm37-dashboard .cm37-button) {
+  min-height: 44px;
+  border-radius: 12px;
+  font-size: .86rem;
+  font-weight: 770;
+  line-height: 1.35;
+  color: var(--cm43-button-ink);
+  background: var(--primary);
+  border-color: color-mix(in srgb,var(--primary) 70%,transparent);
+  box-shadow: 0 5px 16px color-mix(in srgb, var(--primary) 15%, transparent);
+  transition: transform .16s var(--cm43-ease), background .16s var(--cm43-ease), border-color .16s var(--cm43-ease);
+}
+body.cm43-horizon.cm39-shell :is(.btn,.btn-primary,.cm37-dashboard .cm37-button):hover:not(:disabled) {
+  background: var(--primary-hover);
+  color: var(--cm43-button-ink);
+  transform: translateY(-1px);
+}
+body.cm43-horizon.cm39-shell :is(.btn.secondary,.btn.outline,.btn.ghost,.btn-secondary,.cm37-dashboard .cm37-button-secondary,.cm37-dashboard .cm37-linkbtn) {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  box-shadow: none;
+  border-radius: 12px;
+}
+body.cm43-horizon.cm39-shell :is(.btn.secondary,.btn.outline,.btn.ghost,.cm37-dashboard .cm37-button-secondary,.cm37-dashboard .cm37-linkbtn):hover {
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: color-mix(in srgb,var(--primary) 45%,var(--line));
+}
+body.cm43-horizon.cm39-shell :is(.btn.danger,.btn-danger) {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+  color: var(--danger);
+  box-shadow: none;
+}
+body.cm43-horizon.cm39-shell :is(.btn.small,.btn-sm) {
+  min-height: 36px;
+  padding: 7px 12px;
+  font-size: .77rem;
+}
+body.cm43-horizon.cm39-shell :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="range"]),
+ select,textarea) {
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  min-height: 43px;
+  line-height: 1.4;
+  box-shadow: inset 0 1px 2px rgba(5,35,50,.018);
+  transition: border-color .18s var(--cm43-ease), box-shadow .18s var(--cm43-ease);
+}
+body.cm43-horizon.cm39-shell :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),select,textarea):focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb,var(--primary) 20%,transparent);
+  outline: none;
+}
+body.cm43-horizon.cm39-shell :is(label,.form-label) { font-weight: 690; }
+body.cm43-horizon.cm39-shell :is(.input-group,.form-group,.field) { min-width: 0; }
+body.cm43-horizon.cm39-shell :is(.field-error,.validation) { line-height: 1.5; }
+body.cm43-horizon.cm39-shell :is(.table-wrap,.table-responsive,.cm37-table-scroll,.cm-consult-table-wrap,.cm19-calendar-scroll) {
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-gutter: stable;
+}
+body.cm43-horizon.cm39-shell :is(table,.cm37-table,.cm-consult-table) { border-collapse: separate; border-spacing: 0; }
+body.cm43-horizon.cm39-shell :is(table,.cm37-table,.cm-consult-table) th {
+  color: var(--muted);
+  font-size: .75rem;
+  font-weight: 820;
+  letter-spacing: .02em;
+  background: var(--surface-2);
+}
+body.cm43-horizon.cm39-shell :is(table,.cm37-table,.cm-consult-table) :is(th,td) {
+  border-bottom: 1px solid var(--line);
+  padding-block: 12px;
+  vertical-align: middle;
+}
+body.cm43-horizon.cm39-shell :is(table,.cm37-table,.cm-consult-table) tbody tr {
+  transition: background .16s var(--cm43-ease);
+}
+body.cm43-horizon.cm39-shell :is(table,.cm37-table,.cm-consult-table) tbody tr:hover {
+  background: color-mix(in srgb,var(--accent-soft) 30%,transparent);
+}
+body.cm43-horizon.cm39-shell :is(.status-pill,.soft-pill,.cm-status-pill,.mode-pill,.date-chip,.time-chip) {
+  font-size: .72rem;
+  font-weight: 780;
+  border-radius: 999px;
+  letter-spacing: .01em;
+}
+body.cm43-horizon.cm39-shell :is(.alert,.mensagem,.cm19-inline-info) {
+  border-radius: 13px;
+  border-width: 1px;
+  box-shadow: var(--cm43-shadow-sm);
+}
+body.cm43-horizon.cm39-shell :is(.v18-popover,.modules-dialog,.cm-inbox-menu) a:focus-visible {
+  outline: 3px solid var(--focus); outline-offset: 3px;
+}
+
+/* Discoverability: the existing More functions dialog becomes a command-center panel. */
+body.cm43-horizon.cm39-shell .modules-dialog {
+  width: min(1060px, calc(100vw - 28px));
+  max-height: min(85dvh,880px);
+  padding: clamp(20px,2.6vw,32px);
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--cm43-shadow-float);
+}
+body.cm43-horizon.cm39-shell .modules-dialog::backdrop {
+  background: rgba(4,22,35,.65);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+}
+body.cm43-horizon.cm39-shell .modules-dialog > header {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 19px;
+  margin-bottom: 20px;
+}
+body.cm43-horizon.cm39-shell .modules-dialog :is(.cm-modulo-grupo,.cm-area) {
+  border-color: var(--line);
+}
+body.cm43-horizon.cm39-shell .modules-dialog .module-grid a {
+  border-radius: 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  transition: border-color .16s, transform .16s;
+}
+body.cm43-horizon.cm39-shell .modules-dialog .module-grid a:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+body.cm43-horizon.cm39-shell .modules-dialog .cm-module-search input {
+  border-radius: 13px;
+  background: var(--surface-2);
+}
+body.cm43-horizon.cm39-shell :is(.cm-funcao,.cm-area-cards > a) {
+  border-radius: 18px;
+  box-shadow: var(--cm43-shadow-sm);
+  transition: transform .18s var(--cm43-ease), border-color .18s var(--cm43-ease), box-shadow .18s var(--cm43-ease);
+}
+body.cm43-horizon.cm39-shell :is(.cm-funcao,.cm-area-cards > a):hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb,var(--primary) 45%,var(--line));
+  box-shadow: var(--cm43-shadow-card);
+}
+
+@media (max-width: 1240px) {
+  body.cm43-horizon.cm39-shell .cm-search-shortcut kbd { display: none; }
+  body.cm43-horizon.cm39-shell .primary-nav a { padding-inline: 9px; }
+}
+@media (max-width: 1000px) {
+  body.cm43-horizon.cm39-shell .cm-search-shortcut span { display: none; }
+  body.cm43-horizon.cm39-shell .app-header-inner { gap: 10px; }
+}
+@media (max-width: 820px) {
+  body.cm43-horizon.cm39-shell .app-header { height: var(--header); }
+  body.cm43-horizon.cm39-shell .app-header-inner {
+    padding-inline: clamp(8px,2.6vw,15px);
+    gap: 5px;
+    min-width: 0;
+  }
+  body.cm43-horizon.cm39-shell .app-brand img { width: clamp(99px,27vw,121px); height: auto; }
+  body.cm43-horizon.cm39-shell .header-tools { gap: 4px; }
+  body.cm43-horizon.cm39-shell .cm-search-shortcut { min-width: 35px; width: 35px; padding: 6px; }
+  body.cm43-horizon.cm39-shell:not(.central-context):not(.teleconsulta-foco) .app-main {
+    padding: 18px 15px max(92px,env(safe-area-inset-bottom) + 72px);
+  }
+  body.cm43-horizon.cm39-shell .cm25-page-hero { padding: 20px; }
+  body.cm43-horizon.cm39-shell .callmed-mobile-nav {
+    background: color-mix(in srgb,var(--surface) 96%,transparent);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -8px 30px rgba(7,35,48,.09);
+    backdrop-filter: blur(16px);
+  }
+  body.cm43-horizon.cm39-shell .callmed-mobile-nav > :is(a,button) {
+    border-radius: 12px;
+    min-height: 48px;
+  }
+  body.cm43-horizon.cm39-shell .callmed-mobile-nav a:is(.active,[aria-current="page"]) {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+}
+@media (max-width: 540px) {
+  body.cm43-horizon.cm39-shell :is(.cm25-page-hero,.cm-page-intro) { padding: 18px; border-radius: 17px; }
+  body.cm43-horizon.cm39-shell :is(.cm25-panel,.cm19-card,.cm25-content-card,.cm25-section-card,.cm25-form-card,.v18-card) {
+    padding: 15px;
+    border-radius: 16px;
+  }
+  body.cm43-horizon.cm39-shell .cm37-dashboard .cm37-card { border-radius: 17px; }
+  body.cm43-horizon.cm39-shell .modules-dialog { padding: 16px; border-radius: 18px; }
+  body.cm43-horizon.cm39-shell .cm-caminho { margin-bottom: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.cm43-horizon *, body.cm43-horizon *::before, body.cm43-horizon *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+:root.callmed-high-contrast body.cm43-horizon {
+  --cm43-shadow-sm: none;
+  --cm43-shadow-card: none;
+  --cm43-shadow-float: none;
+}
+:root.callmed-high-contrast body.cm43-horizon.cm39-shell :is(.cm25-page-hero,.cm-page-intro,.cm37-dashboard .cm37-feature) {
+  background: var(--surface);
+  color: var(--text);
+  border: 2px solid var(--line);
+}
