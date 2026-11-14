@@ -13,6 +13,12 @@
         <div class="cm19-head-actions"><a class="btn secondary" asp-controller="Salas" asp-action="Index">Salas físicas e virtuais</a><a class="btn secondary" asp-controller="Disponibilidade" asp-action="Index">Exceções</a><a class="btn" asp-controller="Consulta" asp-action="Create">+ Nova consulta</a></div>
     </header>
 
+    <nav class="cm42-agenda-tasks" aria-label="Áreas da agenda inteligente">
+        <a asp-controller="Agenda" asp-action="Index" aria-current="page"><strong>Agenda e horários</strong><small>Ver vagas e consultas</small></a>
+        <a asp-controller="Confirmacoes" asp-action="Index"><strong>Confirmações</strong><small>Respostas e lembretes</small></a>
+        <a asp-controller="ListaEspera" asp-action="Index"><strong>Encaixes automáticos</strong><small>Fila e ofertas de vagas</small></a>
+        <a asp-controller="Disponibilidades" asp-action="Index"><strong>Disponibilidade</strong><small>Horários dos profissionais</small></a>
+    </nav>
     <section class="cm19-agenda-toolbar cm19-card">
         <div class="cm19-period-nav">
             <a asp-action="Index" asp-route-modo="@Model.Modo" asp-route-data="@anterior.ToString("yyyy-MM-dd")" asp-route-medicoId="@Model.MedicoId" asp-route-especialidadeId="@Model.EspecialidadeId">‹</a>
