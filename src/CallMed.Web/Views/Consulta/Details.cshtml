@@ -8,10 +8,33 @@
     var podeConfirmar = ConsultaStatus.PodeConfirmar(Model.Status);
     var podeRealizar = ConsultaStatus.PodeRealizar(Model.Status);
     var podeAusente = ConsultaStatus.PodeMarcarAusente(Model.Status) && Model.Data.Date <= hojeClinica;
+    var consultaFinalizada = Model.Status == ConsultaStatus.Realizada;
+    var consultaCancelada = Model.Status == ConsultaStatus.Cancelada;
+    var consultaAusente = Model.Status == ConsultaStatus.Ausente;
+    var consultaEncerrada = consultaFinalizada || consultaCancelada || consultaAusente;
+    var presencaConfirmada = Model.Status == ConsultaStatus.Confirmada || consultaFinalizada;
+    var proximaOrientacao = consultaFinalizada ? "Atendimento concluído. Consulte as orientações e os registros disponíveis."
+        : consultaCancelada ? "Essa consulta foi cancelada. Para um novo horário, acesse a agenda."
+        : consultaAusente ? "A ausência foi registrada. Procure a equipe se precisar de ajuda."
+        : podeConfirmar ? "Confirme sua presença e avance pelas etapas da preparação."
+        : "Acompanhe as orientações, o check-in e a sala do atendimento.";
 }
 <section class="cm25-screen cm25-page v16-page comprovante-consulta" data-cm25-view="Consulta/Details.cshtml">
     <div class="cm25-page-hero v16-page-head compact-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg></div><div><span class="cm25-kicker v16-eyebrow">CONSULTA #@Model.Id</span><h1>Detalhes da consulta</h1><p>@Model.Data.ToString("dddd, dd/MM/yyyy") às @Model.Horario.</p></div><span class="status-pill status-@Model.Status.ToLowerInvariant()">@Model.Status</span></div>
-    <a class="btn secondary" asp-controller="Jornada" asp-action="Consulta" asp-route-id="@Model.Id">Preparação e check-in</a><div class="consultation-detail-grid-v16">
+    <section class="cm42-consult-flow" aria-labelledby="cm42-flow-title">
+        <div class="cm42-flow-header">
+            <div><span class="eyebrow">JORNADA DA CONSULTA</span><h2 id="cm42-flow-title">Seu atendimento em um só lugar</h2><p>Veja o status registrado e abra as etapas de preparação, confirmação e atendimento.</p></div>
+            <a class="btn" asp-controller="Jornada" asp-action="Consulta" asp-route-id="@Model.Id">@(consultaEncerrada ? "Ver histórico da jornada" : "Acompanhar e preparar consulta")</a>
+        </div>
+        <ol class="cm42-flow-stages" aria-label="Etapas da consulta">
+            <li class="cm42-stage complete"><span class="cm42-stage-number" aria-hidden="true">1</span><div><strong>Agendamento</strong><small>@Model.Data.ToString("dd/MM/yyyy") às @Model.Horario</small></div></li>
+            <li class="cm42-stage @(presencaConfirmada ? "complete" : consultaEncerrada ? "closed" : "pending")"><span class="cm42-stage-number" aria-hidden="true">2</span><div><strong>Confirmação</strong><small>@(presencaConfirmada ? "Confirmada" : consultaEncerrada ? "Confira o histórico" : "Consulte a confirmação da presença")</small></div></li>
+            <li class="cm42-stage @(consultaEncerrada ? "closed" : "pending")"><span class="cm42-stage-number" aria-hidden="true">3</span><div><strong>Preparação e check-in</strong><small>O progresso detalhado fica na Jornada</small></div></li>
+            <li class="cm42-stage @(consultaFinalizada ? "complete" : consultaEncerrada ? "closed" : "pending")"><span class="cm42-stage-number" aria-hidden="true">4</span><div><strong>Atendimento</strong><small>@(consultaFinalizada ? "Consulta realizada" : consultaEncerrada ? Model.Status : "Acompanhe sala e horário na Jornada")</small></div></li>
+        </ol>
+        <div class="cm42-flow-next" role="status"><strong>@(consultaEncerrada ? "Situação atual" : "Próxima orientação")</strong><p>@proximaOrientacao</p></div>
+    </section>
+    <div class="consultation-detail-grid-v16">
         <section class="cm25-panel v16-card consultation-main-v16"><div class="v16-card-head"><div><h2>Atendimento</h2><p>Profissional e paciente.</p></div></div><div class="detail-info-stack"><div><span>Paciente</span><strong>@Model.Paciente?.Nome</strong></div><div><span>Profissional</span><strong>@Model.Medico?.Nome</strong></div><div><span>Área de atuação</span><strong>@Model.Medico?.Especialidade</strong></div><div><span>Data</span><strong>@Model.Data.ToString("dd/MM/yyyy")</strong></div><div><span>Horário</span><strong>@Model.Horario</strong></div></div></section>
         <section class="cm25-panel v16-card"><div class="v16-card-head"><div><h2>Financeiro e observações</h2></div></div><div class="detail-info-stack"><div><span>Pagamento</span><strong>@Model.TipoPagamento</strong></div><div><span>Convênio</span><strong>@(string.IsNullOrWhiteSpace(Model.ConvenioUsado) ? "—" : Model.ConvenioUsado)</strong></div><div><span>Observação</span><strong>@(string.IsNullOrWhiteSpace(Model.Observacao) ? "—" : Model.Observacao)</strong></div></div></section>
     </div>
@@ -52,7 +75,7 @@
     }
     <partial name="_OrientacoesConsulta" model="Model" />
     <div class="cm25-sticky-actions v16-sticky-actions">
-        <button class="btn secondary" type="button" onclick="window.print()">Imprimir comprovante</button>
+        <button class="btn secondary" type="button" data-cm-print>Imprimir comprovante</button>
         @if(podeConfirmar){<form asp-action="Confirmar" asp-route-id="@Model.Id" method="post"><button class="btn" type="submit">Confirmar presença</button></form>}
         @if(ehEquipe && podeRealizar){<form asp-action="Realizar" asp-route-id="@Model.Id" method="post"><button class="btn" type="submit">Marcar realizada</button></form>}
         @if(ehEquipe && podeAusente){<form asp-action="Ausente" asp-route-id="@Model.Id" method="post" data-cm-confirm="Confirmar ausência deste paciente?" data-cm-confirm-title="Marcar ausência" data-cm-confirm-accept="Marcar ausência" data-cm-confirm-tone="warning"><button class="btn secondary" type="submit">Marcar ausência</button></form>}

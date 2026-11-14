@@ -1,4 +1,4 @@
-const CACHE_NAME = 'callmed-static-v87-js-por-area';
+const CACHE_NAME = 'callmed-static-v89-journey';
 const OFFLINE_URL = '/offline.html';
 
 // Recursos atuais da interface. As páginas autenticadas não são persistidas.
@@ -7,8 +7,20 @@ const STATIC_ASSETS = [
     '/fonts/Manrope.ttf',
     '/js/conta/organizacao.js',
     '/contingencia.html',
-    '/css/callmed.css',
-    '/css/callmed-auth-v34.css',
+    '/css/modules/00-foundations.css',
+    '/css/modules/10-navigation.css',
+    '/css/modules/20-attendance.css',
+    '/css/modules/30-scheduling.css',
+    '/css/modules/40-public-and-components.css',
+    '/css/modules/50-senai-workflows.css',
+    '/css/modules/55-identity-public.css',
+    '/css/modules/60-doctor-ui.css',
+    '/css/modules/65-dashboards.css',
+    '/css/modules/70-clinical-theme.css',
+    '/css/modules/80-patient-and-operations.css',
+    '/css/modules/90-internal-modules.css',
+    '/css/modules/95-booking-calendar.css',
+    '/css/modules/99-consultation-journey.css',
     '/js/core/contingencia.js',
     '/js/atendimento/solicitacao-medico-filter.js',
     '/js/core/preferences.js',

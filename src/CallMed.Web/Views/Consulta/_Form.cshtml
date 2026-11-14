@@ -180,7 +180,7 @@ else
         controls.append(nav(-1,'Mês anterior com vagas',activeIndex===0),nav(1,'Próximo mês com vagas',activeIndex===months.length-1));
         toolbar.append(heading,controls);
         const week = make('div','cm-booking-calendar-weekdays');
-        ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].forEach(label=>week.append(make('span','',label)));
+        [['Seg','Segunda-feira'],['Ter','Terça-feira'],['Qua','Quarta-feira'],['Qui','Quinta-feira'],['Sex','Sexta-feira'],['Sáb','Sábado'],['Dom','Domingo']].forEach(([label,full])=>{const day=make('span','',label);day.dataset.compact=label.charAt(0);day.setAttribute('aria-label',full);week.append(day);});
         const grid = make('div','cm-booking-calendar-days');
         const offset=(first.getDay()+6)%7;
         for(let empty=0;empty<offset;empty++) grid.append(make('span','cm-calendar-spacer'));

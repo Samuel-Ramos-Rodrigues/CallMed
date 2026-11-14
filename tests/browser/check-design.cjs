@@ -160,8 +160,63 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
    check(layout.present&&layout.heading&&layout.cards>=3&&layout.metricFits&&!layout.overflow,
      'Painel '+label+' com cartões sem sobreposição em desktop');
   }
+
+  if(label==='agendamento'){
+    const calendar=await who.page.evaluate(()=>{
+      const section=document.querySelector('.cm19-booking-section[data-section="date"]');
+      const host=document.querySelector('#cm19DateChoices');
+      if(!section||!host)return {present:false};
+      section.hidden=false; // fixture: libera a etapa sem modificar a lógica da consulta
+      host.replaceChildren();
+      const root=document.createElement('div');
+      root.className='cm-booking-calendar';
+      root.innerHTML='<div class="cm-booking-calendar-toolbar"><div class="cm-booking-calendar-title"><strong>Novembro de 2026</strong><small>10 dias com vagas</small></div><div class="cm-booking-calendar-nav"><button type="button" class="cm-calendar-nav-button" aria-label="Mês anterior">‹</button><button type="button" class="cm-calendar-nav-button" aria-label="Próximo mês">›</button></div></div><div class="cm-booking-calendar-weekdays"></div><div class="cm-booking-calendar-days"></div><div class="cm-booking-calendar-legend"><span class="calendar-available">● Disponível</span><span class="calendar-selected">● Selecionado</span></div>';
+      const week=root.querySelector('.cm-booking-calendar-weekdays');
+      ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].forEach(day=>{let x=document.createElement('span');x.textContent=day;x.dataset.compact=day.charAt(0);x.setAttribute('aria-label',day);week.append(x);});
+      const days=root.querySelector('.cm-booking-calendar-days');
+      for(let i=0;i<6;i++){const el=document.createElement('span');el.className='cm-calendar-spacer';days.append(el);}
+      for(let i=1;i<=30;i++){
+        const button=document.createElement('button');button.type='button';
+        button.className='cm-calendar-date '+(i===12?'selected available':i%3===0?'available':'unavailable');
+        button.disabled=i%3!==0&&i!==12;
+        button.textContent=String(i);
+        days.append(button);
+      }
+      host.append(root);
+      const rect=el=>el.getBoundingClientRect();
+      const buttons=[...days.querySelectorAll('button')];
+      const cols=getComputedStyle(days).gridTemplateColumns.split(' ').filter(Boolean);
+      const a=rect(buttons[1]),next=rect(buttons[2]),eight=rect(buttons[8]); // dias 2 e 3: mesma semana; dia 9: próxima semana
+      return {present:true,columns:cols.length,
+        hostWidth:rect(host).width,calendarWidth:rect(root).width,
+        dayWidth:a.width,horizontal:next.left>a.left+4,
+        wraps:eight.top>a.top+4,
+        selected:getComputedStyle(days.querySelector('.selected')).backgroundColor};
+    });
+    console.log('CM41_CALENDAR_DESKTOP '+JSON.stringify(calendar));
+    check(calendar.present&&calendar.columns===7&&calendar.calendarWidth>=calendar.hostWidth*.7
+      &&calendar.dayWidth>20&&calendar.horizontal&&calendar.wraps,
+      'Agendamento mostra calendario mensal com sete colunas e largura util no desktop');
+    await who.page.screenshot({path:out+'/agendamento-calendario-desktop-fixture.png',fullPage:true});
+  }
   await who.page.setViewportSize({width:390,height:844});await who.page.evaluate(()=>document.documentElement.style.fontSize='200%');
   if(!await who.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2))overflows.push({label,...await who.page.evaluate(()=>({scroll:document.documentElement.scrollWidth,elements:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+2&&e.offsetWidth>0).slice(0,15).map(e=>({tag:e.tagName,c:e.className,r:e.getBoundingClientRect().right,w:e.offsetWidth}))}))});
+  if(label==='agendamento'){
+    const calendar=await who.page.evaluate(()=>{
+      const root=document.querySelector('.cm-booking-calendar');
+      const days=root?.querySelector('.cm-booking-calendar-days');
+      if(!root||!days)return {present:false};
+      const cells=[...days.querySelectorAll('button')];
+      return {present:true,columns:getComputedStyle(days).gridTemplateColumns.split(' ').filter(Boolean).length,
+        right:root.getBoundingClientRect().right,screen:innerWidth,
+        width:cells[0].getBoundingClientRect().width,scroll:document.documentElement.scrollWidth};
+    });
+    console.log('CM41_CALENDAR_MOBILE_200 '+JSON.stringify(calendar));
+    check(calendar.present&&calendar.columns===7&&calendar.width>=20
+      &&calendar.right<=calendar.screen+2&&calendar.scroll<=calendar.screen+2,
+      'Agendamento mantem sete colunas sem transbordamento em celular com zoom 200%');
+    await who.page.screenshot({path:out+'/agendamento-calendario-mobile-200-fixture.png',fullPage:true});
+  }
   if(label==='areas'){
     const mobileNav=await who.page.evaluate(()=>{
       const nav=document.querySelector('.callmed-mobile-nav');

@@ -41,16 +41,20 @@ require((root / "src/CallMed.Domain/Contracts/IClinicaClock.cs").exists(),
 require(not (root / "src/CallMed.Application/Services/Clinica/Contracts/IClinicaClock.cs").exists(),
         "Contrato IClinicaClock duplicado na aplicacao.")
 
-styles = sorted(p.relative_to(root).as_posix()
-                for p in (root / "src/CallMed.Web/wwwroot").rglob("*.css"))
-require(styles == ["src/CallMed.Web/wwwroot/css/callmed.css"],
-        f"Apenas um stylesheet deve existir: {styles}")
+css_root = root / "src/CallMed.Web/wwwroot/css"
+module_dir = css_root / "modules"
+styles = sorted(p.relative_to(css_root).as_posix() for p in css_root.rglob("*.css"))
+require(len(styles) == 14 and all(s.startswith("modules/") for s in styles),
+        f"Somente os 14 modulos de CSS devem existir: {styles}")
 head = read("src/CallMed.Web/Views/Shared/_DocumentHead.cshtml")
-require(head.count('href="~/css/callmed.css"') == 1, "Head deve carregar um CSS.")
-require("callmed-auth-v34.css" not in head and "CallMedAuthCssV34" not in head,
-        "Referencia ao CSS legado de autenticacao.")
-require("Identidade V34 preservada em escopo" in read("src/CallMed.Web/wwwroot/css/callmed.css"),
-        "Estilos de autenticacao nao consolidados.")
+linked = re.findall(r'href="~/css/modules/([\w-]+\.css)"', head)
+require(len(linked) == 14 and sorted("modules/" + x for x in linked) == styles,
+        "Head deve carregar todos os 14 modulos CSS na ordem declarada.")
+require("callmed.css" not in head and "callmed-auth-v34.css" not in head and "CallMedAuthCssV34" not in head,
+        "Referencia ao CSS legado.")
+css_joined = "".join((module_dir / name).read_text(encoding="utf-8") for name in linked if (module_dir / name).exists())
+require("Identidade V34 preservada em escopo" in css_joined,
+        "Estilos de autenticacao nao preservados na modularizacao.")
 
 deploy = read("src/CallMed.Application/Infrastructure/Startup/DatabaseDeployment.cs")
 version = re.search(r'public const int CurrentVersion = (\d+);', deploy)

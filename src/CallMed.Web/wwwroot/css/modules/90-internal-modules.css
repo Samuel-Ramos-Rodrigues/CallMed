@@ -1,0 +1,332 @@
+/* V40 — Configurações/integrações: linguagem visual das áreas administrativas. */
+body.cm39-shell .cm19-settings-page {min-width:0;display:grid;gap:19px;align-content:start}
+body.cm39-shell .cm19-settings-page>.cm25-page-hero {margin-bottom:0}
+body.cm39-shell .cm19-settings-page>.cm25-content-card {margin:0}
+body.cm39-shell .cm19-settings-page>.cm25-content-card,
+body.cm39-shell .cm19-settings-page>.cm25-panel.cm25-content-card {
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:15px;box-shadow:var(--shadow);
+  padding:clamp(17px,2vw,24px);
+}
+body.cm39-shell .cm19-settings-page>.cm25-content-card h2,
+body.cm39-shell .cm19-settings-page>.cm25-panel.cm25-content-card h2 {
+  font-size:1.08rem;line-height:1.35;color:var(--text);
+}
+body.cm39-shell .cm19-settings-page>.cm25-content-card p {
+  font-size:.86rem;line-height:1.65;
+}
+body.cm39-shell .cm19-integration-grid,
+body.cm39-shell .cm19-settings-grid {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:stretch;gap:16px;min-width:0;
+}
+body.cm39-shell .cm19-integration-card,
+body.cm39-shell .cm19-setting-card {
+  display:flex;flex-direction:column;gap:12px;min-width:0;
+  border:1px solid var(--line);border-radius:15px;
+  background:var(--surface);box-shadow:var(--shadow);
+  padding:clamp(17px,1.8vw,23px);
+}
+body.cm39-shell .cm19-integration-card>div,
+body.cm39-shell .cm19-setting-card>div {min-width:0}
+body.cm39-shell .cm19-integration-logo,
+body.cm39-shell .cm19-setting-icon {
+  display:grid;place-items:center;width:43px;height:43px;
+  background:var(--accent-soft);border:1px solid var(--line);
+  border-radius:12px;color:var(--primary);
+  font-size:.85rem;font-weight:850;
+}
+body.cm39-shell .cm19-integration-card h2,
+body.cm39-shell .cm19-setting-card h2 {
+  color:var(--text);font-size:1.03rem;line-height:1.35;margin:0 0 7px;
+}
+body.cm39-shell .cm19-integration-card p,
+body.cm39-shell .cm19-setting-card p {
+  color:var(--muted);line-height:1.56;font-size:.82rem;margin:0;
+}
+body.cm39-shell .cm19-integration-card>b,
+body.cm39-shell .cm19-setting-card .cm19-ok-dot {
+  display:inline-flex;align-self:flex-start;align-items:center;
+  margin-top:auto;padding:6px 10px;border-radius:9px;
+  font-size:.76rem;line-height:1.45;font-weight:800;
+  white-space:normal;overflow-wrap:anywhere;
+}
+body.cm39-shell .cm19-integration-card>b.on,
+body.cm39-shell .cm19-setting-card .cm19-ok-dot {
+  background:var(--accent-soft);color:var(--primary);
+}
+body.cm39-shell .cm19-integration-card>b.off {
+  background:var(--surface-2);color:var(--muted);
+  border:1px solid var(--line);
+}
+body.cm39-shell .cm19-setting-card dl {min-width:0;margin:0}
+body.cm39-shell .cm19-setting-card dl>div {display:grid;gap:3px;padding:9px 0;border-bottom:1px solid var(--line)}
+body.cm39-shell .cm19-setting-card dl>div:last-child {border:0}
+body.cm39-shell .cm19-setting-card dt {font-size:.73rem;margin:0}
+body.cm39-shell .cm19-setting-card dd {font-size:.85rem;font-weight:700;color:var(--text);margin:0;overflow-wrap:anywhere}
+body.cm39-shell .cm19-settings-page .cm19-security-note {
+  font-size:.78rem;line-height:1.58;color:var(--muted);
+  overflow-wrap:anywhere;
+}
+body.cm39-shell .cm19-settings-page :is(code,dd,p) {overflow-wrap:anywhere}
+
+/* Exames: padronizar registros, triagem e formulário na estética V39. */
+body.cm39-shell .cm25-exams-page {display:grid;gap:16px;min-width:0}
+body.cm39-shell .cm25-exams-page>.cm25-page-hero {margin-bottom:4px}
+body.cm39-shell .cm25-exams-page>.cm25-panel {margin:0;min-width:0}
+body.cm39-shell .cm25-exams-page .cm25-exam-record {
+  display:grid;grid-template-columns:minmax(0,1fr);gap:16px;
+  background:var(--surface);border:1px solid var(--line);
+  border-left:3px solid var(--primary);border-radius:14px;
+  box-shadow:var(--shadow);padding:clamp(17px,2.1vw,23px);
+}
+body.cm39-shell .cm25-exams-page .cm25-exam-record>div {min-width:0}
+body.cm39-shell .cm25-exams-page .cm25-exam-record h2 {
+  font-size:1.06rem;line-height:1.3;color:var(--text);margin:0 0 8px;
+}
+body.cm39-shell .cm25-exams-page .cm25-exam-record p {
+  font-size:.85rem;line-height:1.56;color:var(--muted);margin:0 0 7px;
+}
+body.cm39-shell .cm25-exams-page .cm25-exam-record .form-grid {
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;
+  min-width:0;
+}
+body.cm39-shell .cm25-exams-page .cm25-exam-record .field {
+  min-width:0;display:grid;align-content:start;gap:9px;margin:0;
+}
+body.cm39-shell .cm25-exams-page .cm25-exam-record textarea {width:100%;min-width:0;resize:vertical}
+body.cm39-shell .cm25-exams-page .cm25-exam-record form>.btn {justify-self:start}
+
+/* Ações e cartões em todas essas telas não mudam a semântica dos formulários. */
+body.cm39-shell :is(.cm-requests-screen,.cm19-settings-page,.cm25-exams-page,.jornada.cm-workspace)
+  :is(a,button,input,select,textarea,summary):focus-visible {
+  outline:3px solid var(--focus);outline-offset:3px;
+}
+@media(max-width:1000px) {
+  body.cm39-shell .cm19-integration-grid,
+  body.cm39-shell .cm19-settings-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px) {
+  body.cm39-shell .cm19-integration-grid,
+  body.cm39-shell .cm19-settings-grid {grid-template-columns:minmax(0,1fr)}
+  body.cm39-shell .cm25-exams-page .cm25-exam-record .form-grid {grid-template-columns:minmax(0,1fr)}
+}
+
+
+/* V40 — Achados das capturas reais do navegador (fixtures sintéticos).
+   Equipe/Consultas: contadores sem espaçamento e título encostado na borda. */
+body.cm39-shell .cm-consult-page {display:grid;gap:19px;min-width:0}
+body.cm39-shell .cm-consult-heading {display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:0}
+body.cm39-shell .cm-consult-heading>div:first-child {min-width:0;flex:1 1 310px}
+body.cm39-shell .cm-consult-heading>div:last-child {display:flex;gap:9px;flex-wrap:wrap}
+body.cm39-shell .cm-consult-heading h1 {margin:4px 0 6px}
+body.cm39-shell .cm-consult-heading p {color:var(--muted);line-height:1.55;margin:0}
+body.cm39-shell .cm-consult-overview {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;margin:0;min-width:0;
+}
+body.cm39-shell .cm-consult-overview>article {
+  display:flex;align-items:center;gap:13px;min-width:0;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:14px;box-shadow:var(--shadow);padding:17px;
+}
+body.cm39-shell .cm-consult-overview .cm-consult-stat-icon {
+  display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;
+  background:var(--accent-soft);color:var(--primary);border-radius:11px;
+}
+body.cm39-shell .cm-consult-overview .cm-consult-stat-icon svg {width:21px;height:21px}
+body.cm39-shell .cm-consult-overview>article>div {display:grid;gap:3px;min-width:0}
+body.cm39-shell .cm-consult-overview>article>div>span {font-size:.8rem;line-height:1.4;color:var(--muted)}
+body.cm39-shell .cm-consult-overview>article>div>strong {font-size:clamp(1.45rem,2.1vw,1.95rem);font-weight:850;line-height:1.15;color:var(--text)}
+body.cm39-shell .cm-consult-records {
+  min-width:0;padding:clamp(17px,2vw,23px);
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:16px;box-shadow:var(--shadow);
+}
+body.cm39-shell .cm-consult-records>header {display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:16px}
+body.cm39-shell .cm-consult-records>header>div {min-width:0;flex:1 1 240px}
+body.cm39-shell .cm-consult-records>header h2 {margin:0 0 5px;font-size:1.15rem;color:var(--text)}
+body.cm39-shell .cm-consult-records>header p {margin:0;color:var(--muted);font-size:.85rem}
+body.cm39-shell .cm-consult-records>header>a {font-size:.81rem}
+body.cm39-shell .cm-consult-status-filters {
+  display:flex;gap:7px;flex-wrap:wrap;align-items:center;
+  margin:0 0 14px;padding:0;
+}
+body.cm39-shell .cm-consult-status-filters>a {
+  display:inline-flex;gap:7px;align-items:center;
+  padding:9px 12px;text-decoration:none;
+  border:1px solid var(--line);border-radius:9px;
+  color:var(--muted);font-size:.8rem;
+}
+body.cm39-shell .cm-consult-status-filters>a.active {
+  background:var(--accent-soft);border-color:var(--primary);color:var(--primary);
+}
+body.cm39-shell .cm-consult-status-filters b {font-size:.76rem}
+body.cm39-shell .cm-consult-filters {
+  display:grid;grid-template-columns:minmax(185px,1.4fr) repeat(3,minmax(130px,.9fr)) auto;
+  align-items:end;gap:10px;padding:14px;
+  border:1px solid var(--line);background:var(--surface-2);
+  border-radius:12px;margin:0 0 16px;
+}
+body.cm39-shell .cm-consult-filters label {min-width:0;margin:0;display:grid;gap:6px}
+body.cm39-shell .cm-consult-filters label>span {font-size:.76rem;font-weight:750;color:var(--muted)}
+body.cm39-shell .cm-consult-filters :is(select,input) {min-width:0;width:100%;font-size:.82rem}
+body.cm39-shell .cm-consult-filters .btn {min-height:44px}
+body.cm39-shell .cm-consult-filter-note {margin:0 0 14px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+body.cm39-shell .cm-consult-filter-note p {margin:0}
+body.cm39-shell .cm-consult-table-wrap {background:var(--surface)}
+body.cm39-shell .cm-consult-table th {white-space:nowrap}
+body.cm39-shell .cm-consult-table td {vertical-align:middle}
+body.cm39-shell .cm-consult-table .cm-consult-row-actions {display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+
+/* Cadastros: título, descrição e ações da tabela mantidos dentro do cartão. */
+body.cm39-shell .crud-v16 .table-card>.v16-card-head {
+  display:flex;align-items:flex-start;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;margin:0;padding:19px 19px 5px;
+}
+body.cm39-shell .crud-v16 .table-card>.v16-card-head h2 {margin:0 0 5px;font-size:1.12rem}
+body.cm39-shell .crud-v16 .table-card>.v16-card-head p {margin:0;color:var(--muted);font-size:.86rem}
+body.cm39-shell .crud-v16 .row-actions {display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+body.cm39-shell .crud-v16 .row-action {
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:7px 9px;min-height:33px;white-space:nowrap;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:8px;font-size:.76rem;font-weight:750;
+  text-decoration:none;color:var(--primary);
+}
+body.cm39-shell .crud-v16 .row-action:hover {background:var(--accent-soft)}
+body.cm39-shell .crud-v16 .row-action.danger {color:var(--danger)}
+
+/* Agenda geral: métricas que antes apareciam visualmente coladas. */
+body.cm39-shell .cm19-agenda-page .cm19-agenda-metrics {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;margin:0 0 18px;
+}
+body.cm39-shell .cm19-agenda-page .cm19-agenda-metrics>span {
+  display:grid;gap:5px;min-width:0;
+  padding:15px 18px;border:1px solid var(--line);
+  border-radius:13px;background:var(--surface);
+  box-shadow:var(--shadow);
+}
+body.cm39-shell .cm19-agenda-page .cm19-agenda-metrics small {font-size:.77rem;color:var(--muted)}
+body.cm39-shell .cm19-agenda-page .cm19-agenda-metrics strong {
+  font-size:clamp(1.4rem,2vw,1.9rem);line-height:1.15;
+  color:var(--text);font-weight:850;
+}
+body.cm39-shell .cm19-agenda-page .cm19-calendar {min-width:0}
+body.cm39-shell .cm19-agenda-page .cm19-calendar-scroll {max-width:100%;overflow-x:auto}
+@media(max-width:1120px) {
+  body.cm39-shell .cm-consult-overview {grid-template-columns:repeat(2,minmax(0,1fr))}
+  body.cm39-shell .cm-consult-filters {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:680px) {
+  body.cm39-shell .cm-consult-overview {grid-template-columns:repeat(2,minmax(0,1fr))}
+  body.cm39-shell .cm-consult-records {padding:15px}
+  body.cm39-shell .cm-consult-filters {grid-template-columns:minmax(0,1fr)}
+  body.cm39-shell .cm19-agenda-page .cm19-agenda-metrics {grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:390px) {
+  body.cm39-shell .cm-consult-overview {grid-template-columns:minmax(0,1fr)}
+  body.cm39-shell .cm-consult-overview>article {padding:13px}
+}
+
+
+/* V40: impedir que a descrição longa de e-mail/WhatsApp seja sobreposta
+   pelo aviso de configuração e pelo indicador no cartão de Integrações. */
+body.cm39-shell .cm19-integration-card {
+  display:grid;grid-auto-rows:max-content;align-content:start;
+  min-height:max-content;
+}
+body.cm39-shell .cm19-integration-card>div {
+  display:grid;gap:6px;align-content:start;
+  min-height:max-content;
+}
+body.cm39-shell .cm19-integration-card .cm19-security-note {
+  position:static;inset:auto;transform:none;
+  display:block;max-height:none;overflow:visible;
+  margin:10px 0 0;padding:10px 12px;
+  font-size:.74rem;line-height:1.5;
+}
+body.cm39-shell .cm19-integration-card>b {margin-top:4px;align-self:start;justify-self:start;max-width:100%}
+
+
+/* V40 — Painel médico: a lista de próximos pacientes estava sem layout,
+   produzindo conteúdo estreito em um cartão quase todo vazio. */
+body.cm39-shell .cm37-doctor .cm-doctor-upcoming {
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;min-width:0;margin-top:18px;
+}
+body.cm39-shell .cm37-doctor .cm-doctor-upcoming>article {
+  display:grid;grid-template-columns:51px minmax(0,1fr) auto;
+  align-items:center;gap:12px;min-width:0;padding:14px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface-2);
+}
+body.cm39-shell .cm37-doctor .cm-doctor-date {
+  display:grid;place-items:center;gap:1px;min-width:0;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:10px;padding:7px 4px;text-align:center;
+  font-size:.76rem;
+}
+body.cm39-shell .cm37-doctor .cm-doctor-date strong {font-size:1.45rem;line-height:1.15;color:var(--text)}
+body.cm39-shell .cm37-doctor .cm-doctor-date span {font-size:.7rem;color:var(--muted);text-transform:uppercase}
+body.cm39-shell .cm37-doctor .cm-doctor-upcoming>article>div {display:grid;align-content:center;justify-items:start;gap:5px;min-width:0}
+body.cm39-shell .cm37-doctor .cm-doctor-upcoming>article h3 {margin:0;font-size:.92rem;line-height:1.35;overflow-wrap:anywhere;color:var(--text)}
+body.cm39-shell .cm37-doctor .cm-doctor-upcoming>article small {font-size:.76rem;line-height:1.4;color:var(--muted)}
+body.cm39-shell .cm37-doctor .cm-doctor-upcoming .status-pill {margin:2px 0 0;font-size:.69rem}
+body.cm39-shell .cm37-doctor .cm-doctor-exams {
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:8px 10px;white-space:nowrap;font-size:.76rem;
+  border:1px solid var(--line);border-radius:9px;
+  background:var(--surface);color:var(--primary);text-decoration:none;
+}
+body.cm39-shell .cm37-doctor .cm-doctor-exams svg {width:15px;height:15px}
+body.cm39-shell .cm37-doctor .cm-doctor-exams:hover {background:var(--accent-soft)}
+@media(max-width:950px) {
+  body.cm39-shell .cm37-doctor .cm-doctor-upcoming {grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:510px) {
+  body.cm39-shell .cm37-doctor .cm-doctor-upcoming>article {grid-template-columns:49px minmax(0,1fr)}
+  body.cm39-shell .cm37-doctor .cm-doctor-exams {grid-column:2;justify-self:start}
+}
+
+
+/* V40 — Reflow no celular com texto a 200%: impedir rótulos quebrados
+   letra por letra; nomes completos permanecem em aria-label/title. */
+@media(max-width:820px) {
+  body.cm39-shell .callmed-mobile-nav {
+    align-items:stretch;justify-content:space-between;
+    gap:4px;padding:7px 6px max(9px,env(safe-area-inset-bottom));
+    max-height:100px;overflow-x:auto;overflow-y:hidden;
+    scrollbar-width:thin;
+  }
+  body.cm39-shell .callmed-mobile-nav>a,
+  body.cm39-shell .callmed-mobile-nav>button {
+    display:flex;flex:1 0 0;flex-direction:column;
+    min-width:50px;max-width:none;min-height:52px;
+    justify-content:center;align-items:center;
+    gap:5px;padding:6px 2px;
+    overflow:hidden;white-space:nowrap;
+    font-size:.62rem;line-height:1.15;
+  }
+  body.cm39-shell .callmed-mobile-nav :is(.cm-nav-full-label,.cm-nav-short-label,button>span) {
+    display:block;max-width:100%;min-width:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    text-align:center;line-height:1.25;word-break:normal;
+  }
+  body.cm39-shell .callmed-mobile-nav .cm-nav-feature .cm-nav-full-label {display:none}
+  body.cm39-shell .callmed-mobile-nav .cm-nav-feature .cm-nav-short-label {display:block}
+  body.cm39-shell .callmed-mobile-nav svg {width:20px;height:20px;flex:0 0 20px}
+  body.cm39-shell .header-tools .v18-icon-button {
+    padding:0;white-space:nowrap;overflow:hidden;
+    flex-shrink:0;font-size:.67rem;
+  }
+  body.cm39-shell .cm-area>summary {display:flex;align-items:center;justify-content:space-between;gap:9px}
+  body.cm39-shell .cm-area>summary>strong {min-width:0;overflow-wrap:anywhere}
+  body.cm39-shell .cm-area>summary>span {flex:0 0 auto;white-space:nowrap;font-size:.7rem}
+}
+@media(max-width:380px){
+  body.cm39-shell .callmed-mobile-nav>a,
+  body.cm39-shell .callmed-mobile-nav>button {min-width:46px}
+}
+
+

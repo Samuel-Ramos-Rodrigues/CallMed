@@ -1,0 +1,56 @@
+/* V42 — somente tela de detalhe da consulta; identidade V39 preservada. */
+body.cm39-shell .cm42-consult-flow {
+  display:grid;gap:18px;min-width:0;margin:18px 0 22px;
+  padding:clamp(18px,2.4vw,27px);background:var(--surface);
+  border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+}
+body.cm39-shell .cm42-flow-header {
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  flex-wrap:wrap;min-width:0;
+}
+body.cm39-shell .cm42-flow-header>div {min-width:0;flex:1 1 290px}
+body.cm39-shell .cm42-flow-header h2 {margin:3px 0 8px;font-size:clamp(1.15rem,1.65vw,1.45rem);color:var(--text)}
+body.cm39-shell .cm42-flow-header p {margin:0;font-size:.85rem;line-height:1.55;color:var(--muted)}
+body.cm39-shell .cm42-flow-header>.btn {min-height:45px;white-space:normal;text-align:center}
+body.cm39-shell .cm42-flow-stages {
+  list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  padding:0;margin:0;gap:12px;counter-reset:none;min-width:0;
+}
+body.cm39-shell .cm42-stage {
+  display:flex;gap:12px;align-items:flex-start;min-width:0;
+  padding:15px 13px;background:var(--surface-2);
+  border:1px solid var(--line);border-radius:12px;
+}
+body.cm39-shell .cm42-stage-number {
+  display:grid;place-items:center;flex:0 0 30px;
+  width:30px;height:30px;border-radius:50%;border:1px solid var(--line);
+  color:var(--muted);font-size:.82rem;font-weight:800;background:var(--surface);
+}
+body.cm39-shell .cm42-stage.complete .cm42-stage-number {
+  color:var(--surface);background:var(--primary);border-color:var(--primary);
+}
+:root[data-theme="dark"] body.cm39-shell .cm42-stage.complete .cm42-stage-number {color:#123023}
+body.cm39-shell .cm42-stage>div {display:grid;gap:6px;min-width:0}
+body.cm39-shell .cm42-stage strong {
+  color:var(--text);font-size:.85rem;line-height:1.35;overflow-wrap:anywhere
+}
+body.cm39-shell .cm42-stage small {
+  color:var(--muted);font-size:.76rem;line-height:1.45;overflow-wrap:anywhere
+}
+body.cm39-shell .cm42-stage.closed {opacity:.75}
+body.cm39-shell .cm42-flow-next {
+  padding:15px 17px;border:1px solid var(--line);
+  border-left:4px solid var(--primary);border-radius:11px;background:var(--accent-soft);
+}
+body.cm39-shell .cm42-flow-next strong {display:block;color:var(--text);font-size:.89rem;margin-bottom:5px}
+body.cm39-shell .cm42-flow-next p {margin:0;line-height:1.6;font-size:.85rem;color:var(--muted)}
+body.cm39-shell .cm42-consult-flow :is(a,button):focus-visible {
+  outline:3px solid var(--focus);outline-offset:3px
+}
+@media(max-width:1080px) {
+  body.cm39-shell .cm42-flow-stages {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:630px) {
+  body.cm39-shell .cm42-flow-stages {grid-template-columns:minmax(0,1fr)}
+  body.cm39-shell .cm42-flow-header>.btn {width:100%}
+}
