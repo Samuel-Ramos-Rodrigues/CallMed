@@ -172,7 +172,7 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
       root.className='cm-booking-calendar';
       root.innerHTML='<div class="cm-booking-calendar-toolbar"><div class="cm-booking-calendar-title"><strong>Novembro de 2026</strong><small>10 dias com vagas</small></div><div class="cm-booking-calendar-nav"><button type="button" class="cm-calendar-nav-button" aria-label="Mês anterior">‹</button><button type="button" class="cm-calendar-nav-button" aria-label="Próximo mês">›</button></div></div><div class="cm-booking-calendar-weekdays"></div><div class="cm-booking-calendar-days"></div><div class="cm-booking-calendar-legend"><span class="calendar-available">● Disponível</span><span class="calendar-selected">● Selecionado</span></div>';
       const week=root.querySelector('.cm-booking-calendar-weekdays');
-      ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].forEach(day=>{let x=document.createElement('span');x.textContent=day;week.append(x);});
+      ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].forEach(day=>{let x=document.createElement('span');x.textContent=day;x.dataset.compact=day.charAt(0);x.setAttribute('aria-label',day);week.append(x);});
       const days=root.querySelector('.cm-booking-calendar-days');
       for(let i=0;i<6;i++){const el=document.createElement('span');el.className='cm-calendar-spacer';days.append(el);}
       for(let i=1;i<=30;i++){
