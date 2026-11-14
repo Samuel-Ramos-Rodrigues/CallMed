@@ -8,7 +8,7 @@
         <div><span class="eyebrow">JORNADA DO ATENDIMENTO</span><h1>@ViewData["Title"]</h1><p>Da preparação à consulta, acompanhe tudo por aqui.</p></div>
         @if (equipe)
         {
-            <a class="btn secondary" asp-controller="Salas" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#hospital"></use></svg>Gerenciar salas</a>
+            <a class="btn secondary" asp-controller="RecepcaoPendencias" asp-action="Index">Pendências da recepção</a><a class="btn secondary" asp-controller="Checkin" asp-action="Terminal">Exibir QR</a><a class="btn secondary" asp-controller="Salas" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#hospital"></use></svg>Gerenciar salas</a>
         }
         else
         {

@@ -5,26 +5,28 @@ public static class NavegacaoCallMed {
  public static ItemNavegacao[] Itens(ClaimsPrincipal u) {
   bool admin=u.IsInRole("Admin"),equipe=admin||u.IsInRole("Funcionario");
   if(equipe){var itens=new List<ItemNavegacao>{
-   new("Rotina","Agenda","Ver horários, marcar e remarcar consultas.","Agenda"),
-   new("Rotina","Recepção do dia","Validar chegada, conferir preparo, organizar salas e acompanhar o atendimento.","Jornada"),
-   new("Rotina","Mensagens","Conversar pelos canais e acompanhar a assistente.","Atendimento"),
-   new("Rotina","Consultas","Acompanhar agendamentos, confirmações e histórico.","Consulta"),
-   new("Rotina","Solicitações","Organizar pedidos que ainda precisam de um horário.","Solicitacoes"),
-   new("Rotina","Fila de espera","Acompanhar pacientes que aguardam uma vaga.","ListaEspera"),
-   new("Cadastros","Pacientes","Dados de identificação e contato dos pacientes.","Paciente"),
-   new("Cadastros","Profissionais","Profissão, especialidade, conselho e agenda semanal.","Medico"),
-   new("Agenda e recursos","Salas físicas e virtuais","Reservas físicas, manutenção e acompanhamento das consultas online.","Salas"),
-   new("Agenda e recursos","Disponibilidade semanal","Configurar os horários em que cada profissional atende.","Disponibilidades"),
-   new("Agenda e recursos","Bloqueios e exceções","Ajustar férias, ausências e alterações pontuais da agenda.","Disponibilidade"),
-   new("Rotina","Exames recebidos","Conferir documentos de exames enviados pelos pacientes.","HistoricoExames","Pendentes"),
-   new("Gestão","Relatórios","Consultar os resultados administrativos da clínica.","Relatorios"),
-   new("Gestão","Indicadores do atendimento","Faltas, espera, satisfação e execução das rotinas.","Operacao"),
-   new("Gestão","Comparação do piloto","Comparar faltas, ocupação e esforço antes/depois.","Piloto")};
+   new("Agenda e vagas","Agenda","Ver horários, marcar e remarcar consultas.","Agenda"),
+   new("Hoje","Pendências da recepção","Resolver exceções de check-in, pré-cadastro e teleconsultas.","RecepcaoPendencias"),
+   new("Hoje","QR Code de check-in","Exibir código temporário de autoatendimento presencial.","Checkin","Terminal"),
+   new("Hoje","Jornada das consultas","Acompanhar etapas e horários.","Jornada"),
+   new("Atendimento","Mensagens","Conversar pelos canais e acompanhar a assistente.","Atendimento"),
+   new("Agenda e vagas","Consultas","Acompanhar agendamentos, confirmações e histórico.","Consulta"),
+   new("Atendimento","Solicitações","Organizar pedidos que ainda precisam de um horário.","Solicitacoes"),
+   new("Agenda e vagas","Fila de espera","Acompanhar pacientes que aguardam uma vaga.","ListaEspera"),
+   new("Pessoas e documentos","Pacientes","Dados de identificação e contato dos pacientes.","Paciente"),
+   new("Pessoas e documentos","Profissionais","Profissão, especialidade, conselho e agenda semanal.","Medico"),
+   new("Consultas e teleconsulta","Salas físicas e virtuais","Reservas físicas, manutenção e acompanhamento das consultas online.","Salas"),
+   new("Agenda e vagas","Disponibilidade semanal","Configurar os horários em que cada profissional atende.","Disponibilidades"),
+   new("Agenda e vagas","Bloqueios e exceções","Ajustar férias, ausências e alterações pontuais da agenda.","Disponibilidade"),
+   new("Pessoas e documentos","Exames recebidos","Conferir documentos de exames enviados pelos pacientes.","HistoricoExames","Pendentes"),
+   new("Indicadores e gestão","Relatórios","Consultar os resultados administrativos da clínica.","Relatorios"),
+   new("Indicadores e gestão","Indicadores do atendimento","Faltas, espera, satisfação e execução das rotinas.","Operacao"),
+   new("Indicadores e gestão","Comparação do piloto","Comparar faltas, ocupação e esforço antes/depois.","Piloto")};
    if(admin)itens.AddRange([
-    new("Cadastros","Especialidades","Manter as áreas de atendimento da clínica.","Especialidade"),new("Cadastros","Equipe da recepção","Manter o cadastro administrativo.","Funcionario"),
-    new("Configuração","Acessos e permissões","Criar contas e definir os perfis da equipe.","Acessos"),new("Configuração","Convênios","Conferir cobertura e regras administrativas.","Convenios"),
-    new("Configuração","Canais e integrações","Configurar os provedores de comunicação.","Integracoes"),new("Configuração","Prontuário externo","Configurar o intercâmbio administrativo com o PEP.","Psicologia","Pep"),
-    new("Configuração","Preferências da clínica","Ajustar as opções do sistema.","Configuracoes"),new("Gestão","Auditoria","Consultar os eventos de acesso e alterações.","Auditoria"),new("Gestão","Pedidos de privacidade","Responder às solicitações autenticadas dos titulares.","Privacidade","Gestao")]);
+    new("Pessoas e documentos","Especialidades","Manter as áreas de atendimento da clínica.","Especialidade"),new("Pessoas e documentos","Equipe da recepção","Manter o cadastro administrativo.","Funcionario"),
+    new("Administração","Acessos e permissões","Criar contas e definir os perfis da equipe.","Acessos"),new("Administração","Convênios","Conferir cobertura e regras administrativas.","Convenios"),
+    new("Administração","Canais e integrações","Configurar os provedores de comunicação.","Integracoes"),new("Administração","Prontuário externo","Configurar o intercâmbio administrativo com o PEP.","Psicologia","Pep"),
+    new("Administração","Preferências da clínica","Ajustar as opções do sistema.","Configuracoes"),new("Indicadores e gestão","Auditoria","Consultar os eventos de acesso e alterações.","Auditoria"),new("Indicadores e gestão","Pedidos de privacidade","Responder às solicitações autenticadas dos titulares.","Privacidade","Gestao")]);
    return itens.ToArray();
   }
   if(u.IsProfissionalSaude())return [new("Meu atendimento","Minha agenda","Ver as consultas sob minha responsabilidade.","MedicoPainel"),new("Meu atendimento","Salas dos meus atendimentos","Ver minhas reservas e acompanhar consultas por vídeo.","Salas"),new("Meu atendimento","Atendimentos","Preparação, chegada, sala online e conclusão das consultas.","Jornada"),new("Minha conta","Perfil e preferências","Atualizar meus dados e opções de acessibilidade.","MinhaConta")];
@@ -32,18 +34,27 @@ public static class NavegacaoCallMed {
  }
  // Navegação objetiva: as funções especializadas continuam no diretório de áreas.
  // Destaques da demanda SENAI: até cinco destinos visíveis; demais funções no diretório.
- public static ItemNavegacao[] Principais(ClaimsPrincipal u) => u.IsInRole("Admin") || u.IsInRole("Funcionario") ?
-  [new("", "Início", "", "FuncionarioPainel"),
+ // Quatro ou cinco destinos frequentes por perfil; catalogo acessivel em "Mais funções".
+ public static ItemNavegacao[] Principais(ClaimsPrincipal u) =>
+  u.IsInRole("Admin") ?
+  [new("", "Visão geral", "", "FuncionarioPainel"),
+   new("", "Operação", "", "RecepcaoPendencias"),
+   new("", "Teleconsultas", "", "Salas"),
    new("", "Agenda", "", "Agenda"),
-   new("", "Teleconsultas", "", "Salas"),
+   new("", "Indicadores", "", "Operacao")] :
+  u.IsInRole("Funcionario") ?
+  [new("", "Hoje", "", "FuncionarioPainel"),
+   new("", "Pendências", "", "RecepcaoPendencias"),
+   new("", "Agenda", "", "Agenda"),
    new("", "Atendimento", "", "Atendimento"),
-   new("", "Check-in", "", "Jornada")] : u.IsProfissionalSaude() ?
-  [new("", "Minha agenda", "", "MedicoPainel"),
-   new("", "Teleconsultas", "", "Salas"),
-   new("", "Atendimentos", "", "Jornada"),
+   new("", "Teleconsultas", "", "Salas")] :
+  u.IsProfissionalSaude() ?
+  [new("", "Meu dia", "", "MedicoPainel"),
+   new("", "Consultas", "", "Jornada"),
+   new("", "Teleconsulta", "", "Salas"),
    new("", "Meu perfil", "", "MinhaConta")] :
   [new("", "Início", "", "Home"),
+   new("", "Consultas", "", "Consulta"),
    new("", "Agendar", "", "Consulta", "Create"),
-   new("", "Teleconsulta", "", "Jornada"),
-   new("", "Minhas consultas", "", "Consulta")];
+   new("", "Teleconsulta", "", "Jornada")];
 }

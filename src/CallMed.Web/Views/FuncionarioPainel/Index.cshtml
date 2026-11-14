@@ -30,7 +30,7 @@
             <a asp-controller="Jornada" asp-action="Index"><span class="cm-demand-step-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user-round-check"></use></svg></span><span><strong>Pré-atendimento e check-in</strong><small>Preparar a chegada com antecedência</small></span><span aria-hidden="true">↗</span></a>
         </nav>
     </section>
-    <nav class="cm-demand-utility" aria-label="Ações frequentes"><a asp-controller="Consulta" asp-action="Create">+ Agendar consulta</a><a asp-controller="Atendimento" asp-action="Index">Abrir mensagens</a><a asp-controller="Piloto" asp-action="Index">Ver indicadores da demanda</a></nav>
+    <nav class="cm-demand-utility" aria-label="Ações frequentes"><a asp-controller="Checkin" asp-action="Terminal">Exibir QR Code</a><a asp-controller="RecepcaoPendencias" asp-action="Index">Pendências de hoje</a><a asp-controller="Consulta" asp-action="Create">+ Agendar consulta</a><a asp-controller="Atendimento" asp-action="Index">Abrir mensagens</a><a asp-controller="Piloto" asp-action="Index">Ver indicadores da demanda</a></nav>
 
     <div class="senai-home-numbers" role="group" aria-label="Situação da clínica">
         <a asp-controller="Agenda" asp-action="Index"><span>Consultas hoje</span><strong>@Model.ConsultasHoje</strong><small>@Model.ConfirmadasHoje confirmadas</small></a>
@@ -62,9 +62,9 @@
         <aside class="senai-home-priorities" aria-labelledby="senai-priorities">
             <div class="senai-card-title"><div><span class="eyebrow">AGORA</span><h2 id="senai-priorities">O que precisa de atenção</h2></div></div>
             <a asp-controller="Solicitacoes" asp-action="Index"><span><strong>Responder solicitações</strong><small>@Model.SolicitacoesPendentes pedido(s) aguardando resolução</small></span><b>@Model.SolicitacoesPendentes</b></a>
-            <a asp-controller="Consulta" asp-action="Index"><span><strong>Confirmar consultas</strong><small>@Model.AguardandoHoje aguardando confirmação hoje</small></span><b>@Model.AguardandoHoje</b></a>
+            <a asp-controller="Confirmacoes" asp-action="Index"><span><strong>Conferir confirmações pendentes</strong><small>@Model.AguardandoHoje aguardando confirmação hoje</small></span><b>@Model.AguardandoHoje</b></a>
             <a asp-controller="ListaEspera" asp-action="Index"><span><strong>Acompanhar encaixes</strong><small>Ofertas, prioridade e prazo de aceite</small></span><b aria-hidden="true">↗</b></a>
-            <a asp-controller="Jornada" asp-action="Index"><span><strong>Preparar chegadas</strong><small>Cadastro, formulários, convênio e check-in</small></span><b aria-hidden="true">↗</b></a>
+            <a asp-controller="RecepcaoPendencias" asp-action="Index"><span><strong>Resolver pendências</strong><small>Cadastro e chegada: somente exceções</small></span><b aria-hidden="true">↗</b></a>
         </aside>
     </div>
 
