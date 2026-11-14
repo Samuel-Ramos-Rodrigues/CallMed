@@ -88,7 +88,7 @@ let browser;
         await go(who,target);await who.page.locator('[data-header-avatar]').waitFor();
         check(await who.page.locator('[data-header-avatar]').getAttribute('src')===src,'Foto do perfil continua visível ao navegar para outra página');
         await who.page.locator('.profile-trigger').click();
-        check(await who.page.getByRole('link',{name:'Meu perfil',exact:true}).isVisible(),'Menu da conta abre com as ações do próprio usuário');
+        check(await who.page.locator('.cm-account-menu').getByRole('link',{name:'Meu perfil',exact:true}).isVisible(),'Menu da conta abre com as ações do próprio usuário');
         await who.page.keyboard.press('Escape');
     }
     check(new Set(photos).size===4,'Os quatro perfis possuem URLs de foto independentes');

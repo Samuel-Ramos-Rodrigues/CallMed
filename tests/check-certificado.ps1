@@ -12,8 +12,10 @@ try {
     if (!(Test-Path $pfxPath) -or !(Test-Path $envPath)) { throw "Missing certificate or environment file." }
     $values = @{}
     foreach ($line in [IO.File]::ReadAllLines($envPath)) {
-        $pair = $line.Split(@('='), 2)
-        if ($pair.Length -eq 2) { $values[$pair[0]] = $pair[1] }
+        $separator = $line.IndexOf('=')
+        if ($separator -ge 0) {
+            $values[$line.Substring(0, $separator)] = $line.Substring($separator + 1)
+        }
     }
     $bytes = [IO.File]::ReadAllBytes($pfxPath)
     if ([Convert]::ToBase64String($bytes) -cne $values['DataProtection__CertificateBase64']) { throw "PFX and environment do not match." }
