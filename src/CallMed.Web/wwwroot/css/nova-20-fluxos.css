@@ -369,3 +369,6 @@ body.central-context .app-main{max-width:1840px;padding:21px clamp(10px,1.8vw,30
  .atendimento-compose>.cm-composer-field{flex:1 1 150px}
 }
 
+
+/* Summary cards separate caption and number. */
+.cm19-agenda-metrics>span{display:grid;gap:5px;align-content:start;padding:19px}
