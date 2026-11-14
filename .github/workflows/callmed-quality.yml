@@ -61,6 +61,7 @@ jobs:
         suite: [design, avatar-consultas, amplo, premium, refinamento, salas, psicologia, piloto]
     env:
       CALLMED_CHECKS_CONFIGURATION: Release
+      CALLMED_BROWSER_OUTPUT: ${{ runner.temp }}/callmed-browser-${{ matrix.suite }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -75,6 +76,14 @@ jobs:
       - run: npm ci --prefix tests/browser
       - run: npx --prefix tests/browser playwright install --with-deps chromium
       - run: node tests/browser/check-${{ matrix.suite }}.cjs
+      - name: Capture visual audit screenshots (synthetic fixtures only)
+        if: ${{ always() && matrix.suite == 'design' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: callmed-v40-visual-review
+          path: ${{ runner.temp }}/callmed-browser-design
+          if-no-files-found: warn
+          retention-days: 7
   android:
     runs-on: ubuntu-latest
     steps:
