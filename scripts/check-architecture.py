@@ -43,13 +43,13 @@ require(not (root / "src/CallMed.Application/Services/Clinica/Contracts/IClinica
 
 styles = sorted(p.relative_to(root).as_posix()
                 for p in (root / "src/CallMed.Web/wwwroot").rglob("*.css"))
-require(styles == ["src/CallMed.Web/wwwroot/css/callmed.css"],
-        f"Apenas um stylesheet deve existir: {styles}")
+expected_styles = sorted(["src/CallMed.Web/wwwroot/css/modulos/" + n for n in ["00-fundamentos.css","10-componentes.css","20-portal.css","30-agenda-atendimento.css","40-navegacao.css","50-identidade-tokens.css","51-identidade-publico.css","60-jornada.css","61-operacao.css","70-paineis.css","80-tema-v39.css","90-modulos-internos.css","95-jornada-unificada.css"]])
+require(styles == expected_styles, f"CSS modular inesperado: {styles}")
 head = read("src/CallMed.Web/Views/Shared/_DocumentHead.cshtml")
-require(head.count('href="~/css/callmed.css"') == 1, "Head deve carregar um CSS.")
+require(head.count('href="~/css/modulos/') == len(expected_styles), "Head deve carregar os modulos de CSS.")
 require("callmed-auth-v34.css" not in head and "CallMedAuthCssV34" not in head,
         "Referencia ao CSS legado de autenticacao.")
-require("Identidade V34 preservada em escopo" in read("src/CallMed.Web/wwwroot/css/callmed.css"),
+require("Identidade V34 preservada em escopo" in read("src/CallMed.Web/wwwroot/css/modulos/50-identidade-tokens.css"),
         "Estilos de autenticacao nao consolidados.")
 
 deploy = read("src/CallMed.Application/Infrastructure/Startup/DatabaseDeployment.cs")
