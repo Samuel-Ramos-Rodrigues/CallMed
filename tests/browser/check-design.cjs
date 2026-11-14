@@ -60,6 +60,36 @@ const dotnet=spawn((process.env.CALLMED_DOTNET_HOST||'dotnet'),[`tests/CallMed.C
     check(layout.root&&layout.table&&layout.minWidth>=(label==='consultas-equipe'?740:730),
       'Lista '+label+' permite tabela legível mesmo quando o filtro está vazio');
   }
+  if(label==='consultas-equipe'){
+    const spacing=await who.page.evaluate(()=>{
+      const overview=document.querySelector('.cm-consult-overview');
+      const stat=overview?.querySelector('article');
+      const record=document.querySelector('.cm-consult-records');
+      return {grid:overview?getComputedStyle(overview).display:'',
+        statCard:stat?getComputedStyle(stat).display:'',
+        padding:record?parseFloat(getComputedStyle(record).paddingLeft):0};
+    });
+    check(spacing.grid==='grid'&&spacing.statCard==='flex'&&spacing.padding>=14,
+      'Consultas da equipe exibem indicadores separados e lista com respiro');
+  }
+  if(label==='agenda'){
+    const metrics=await who.page.evaluate(()=>{
+      const wrapper=document.querySelector('.cm19-agenda-metrics');
+      const card=wrapper?.querySelector('span');
+      return {grid:wrapper?getComputedStyle(wrapper).display:'',
+        item:card?getComputedStyle(card).display:'',
+        padding:card?parseFloat(getComputedStyle(card).paddingLeft):0};
+    });
+    check(metrics.grid==='grid'&&metrics.item==='grid'&&metrics.padding>=14,
+      'Agenda mantém métricas com títulos e números separados');
+  }
+  if(label==='pacientes'){
+    const spacing=await who.page.evaluate(()=>{
+      const el=document.querySelector('.crud-v16 .table-card>.v16-card-head');
+      return el?parseFloat(getComputedStyle(el).paddingLeft):0;
+    });
+    check(spacing>=16,'Cabeçalho da tabela de pacientes não fica encostado na borda');
+  }
   if(label==='profissional'){
    await who.page.evaluate(()=>document.documentElement.dataset.theme='light');
    await who.page.setViewportSize({width:1440,height:900});
