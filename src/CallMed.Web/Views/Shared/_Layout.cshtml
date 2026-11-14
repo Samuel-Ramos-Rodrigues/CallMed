@@ -12,21 +12,27 @@
     var loginUrl = MKSANCrud.Services.Usuarios.PortaisAcesso.DoUsuario(User).UrlLogin;
 }
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="@(autenticado ? "cm38-ui" : "")">
 <head>
     <partial name="_DocumentHead" />
 </head>
-<body class="callmed-app @(paciente ? "patient-context" : "staff-context") @(controller == "Atendimento" && action == "Index" ? "central-context" : "") @(focoConsultaOnline ? "teleconsulta-foco" : "") @(focoClinico ? "clinico-foco" : "")">
+<body class="callmed-app @(autenticado ? "cm38-shell" : "") @(paciente ? "patient-context" : "staff-context") @(controller == "Atendimento" && action == "Index" ? "central-context" : "") @(focoConsultaOnline ? "teleconsulta-foco" : "") @(focoClinico ? "clinico-foco" : "")">
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 @if (autenticado)
 {
     <header class="app-header">
         <div class="app-header-inner">
-            <a class="app-brand" asp-controller="Home" asp-action="Index" aria-label="CallMed, início"><img src="~/images/logo-callmed-horizontal.png" alt="CallMed" width="260" height="82" /></a>
+            <div class="cm38-brand-group"><a class="app-brand" asp-controller="Home" asp-action="Index" aria-label="CallMed, início"><img src="~/images/logo-callmed-horizontal.png" alt="CallMed" width="260" height="82" /></a><span class="cm38-role">@papel</span></div>
             <nav class="primary-nav" aria-label="Navegação principal">
                 <partial name="_NavegacaoTopo" />
             </nav>
             <div class="header-tools">
+                <div class="cm38-access-controls" role="group" aria-label="Acessibilidade rápida">
+                    <button type="button" data-cm38-font-adjust="down" aria-label="Diminuir tamanho do texto">A−</button>
+                    <button type="button" data-cm38-font-adjust="up" aria-label="Aumentar tamanho do texto">A+</button>
+                    <button type="button" data-a11y-toggle="contrast" aria-pressed="false">Alto contraste</button>
+                    <button type="button" data-a11y-toggle="simple" aria-pressed="false">Modo simples</button>
+                </div>
                 <button type="button" class="cm-search-shortcut" data-modules-open aria-controls="modulesDialog" aria-expanded="false" aria-label="Buscar em todas as funções do sistema, Control K"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#search"></use></svg><span>Mais funções</span><kbd aria-hidden="true">Ctrl K</kbd></button>
                 @if (!User.IsProfissionalSaude())
                 {
@@ -86,6 +92,7 @@ else
 <script src="~/js/core/file-controls.js" asp-append-version="true"></script>
 <script src="~/js/core/date-select.js" asp-append-version="true"></script>
 <script src="~/js/core/accessibility.js" asp-append-version="true"></script>
+<script src="~/js/core/reference-experience.js" asp-append-version="true"></script>
 <script src="~/js/core/mobile-final.js" asp-append-version="true"></script>
 <script src="~/js/core/theme.js" asp-append-version="true"></script>
 <script src="~/js/core/pwa.js" asp-append-version="true"></script>
