@@ -74,6 +74,7 @@
         document.querySelectorAll('[data-popover-trigger]').forEach(b => b.setAttribute('aria-expanded', 'false'));
     };
     document.addEventListener('click', event => {
+        if (event.target.closest('[data-cm-print]')) window.print();
         const trigger = event.target.closest('[data-popover-trigger]');
         if (trigger) {
             const popover = document.querySelector(`[data-popover="${trigger.dataset.popoverTrigger}"]`);
