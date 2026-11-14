@@ -497,6 +497,18 @@ body.cm43-horizon.identity-body .identity-showcase::after {
     0 0 0 110px rgba(124,243,215,.026),
     0 0 0 190px rgba(124,243,215,.014);
 }
+body.cm43-horizon.identity-body .identity-showcase :is(.app-brand,.identity-brand,.identity-brand-horizontal) {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  width: max-content;
+  max-width: 100%;
+  padding: 8px 15px;
+  border: 1px solid rgba(255,255,255,.84);
+  border-radius: 16px;
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 14px 35px rgba(2,17,27,.13);
+}
 body.cm43-horizon.identity-body .identity-showcase .app-brand img,
 body.cm43-horizon.identity-body .identity-showcase .identity-brand img {
   width: min(230px,70%);
@@ -610,6 +622,24 @@ body.cm43-horizon.identity-body .btn-secundario {
   border-color: var(--cm-border);
   background: var(--cm-surface-muted);
   color: var(--cm-ink);
+}
+body.cm43-horizon.identity-body .identity-divider span {
+  padding-inline: 10px;
+  background: var(--cm-surface);
+  color: var(--cm-muted);
+}
+body.cm43-horizon.identity-body .password-wrap { min-width: 0; }
+body.cm43-horizon.identity-body .password-wrap input {
+  min-width: 0;
+  padding-inline-end: max(110px, 7.4rem);
+}
+body.cm43-horizon.identity-body .password-wrap .password-toggle {
+  right: 8px;
+  max-width: 42%;
+  font-size: .75rem;
+  line-height: 1.2;
+  padding: 7px 8px;
+  white-space: nowrap;
 }
 body.cm43-horizon.identity-body .identity-back {
   font-size: .78rem;
