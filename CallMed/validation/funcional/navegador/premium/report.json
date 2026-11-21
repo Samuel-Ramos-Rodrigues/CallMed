@@ -1,0 +1,1070 @@
+{
+  "checks": [
+    {
+      "label": "central abre",
+      "ok": true
+    },
+    {
+      "label": "Central mantém três colunas em 1440 / dark",
+      "ok": true
+    },
+    {
+      "label": "Central mantém três colunas em 1440 / light",
+      "ok": true
+    },
+    {
+      "label": "Central mantém três colunas em 1920 / dark",
+      "ok": true
+    },
+    {
+      "label": "Central mantém três colunas em 1920 / light",
+      "ok": true
+    },
+    {
+      "label": "rascunho abre",
+      "ok": true
+    },
+    {
+      "label": "falha abre",
+      "ok": true
+    },
+    {
+      "label": "recepcao abre",
+      "ok": true
+    },
+    {
+      "label": "agenda abre",
+      "ok": true
+    },
+    {
+      "label": "pacientes abre",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes abre",
+      "ok": true
+    },
+    {
+      "label": "salas abre",
+      "ok": true
+    },
+    {
+      "label": "salas-online abre",
+      "ok": true
+    },
+    {
+      "label": "admin abre",
+      "ok": true
+    },
+    {
+      "label": "profissional abre",
+      "ok": true
+    },
+    {
+      "label": "paciente abre",
+      "ok": true
+    },
+    {
+      "label": "agendamento abre",
+      "ok": true
+    },
+    {
+      "label": "conta abre",
+      "ok": true
+    },
+    {
+      "label": "168 composições sem transbordamento horizontal",
+      "ok": true
+    },
+    {
+      "label": "Ctrl K abre a busca com foco no campo",
+      "ok": true
+    },
+    {
+      "label": "Busca filtra funções e expande os grupos correspondentes",
+      "ok": true
+    },
+    {
+      "label": "Menu apresenta estado vazio útil",
+      "ok": true
+    },
+    {
+      "label": "Escape fecha a busca",
+      "ok": true
+    },
+    {
+      "label": "Busca da caixa de entrada filtra as conversas carregadas",
+      "ok": true
+    },
+    {
+      "label": "Caixa de entrada informa quando não há resultado",
+      "ok": true
+    },
+    {
+      "label": "Filtro por canal usa o formulário GET real",
+      "ok": true
+    },
+    {
+      "label": "Rascunho pendente mostra o estado real de revisão",
+      "ok": true
+    },
+    {
+      "label": "Aprovar e descartar rascunho continuam disponíveis",
+      "ok": true
+    },
+    {
+      "label": "Revisar rascunho leva ao formulário real de aprovação",
+      "ok": true
+    },
+    {
+      "label": "Central: atendimento, revisão e falha passam na verificação axe",
+      "ok": true
+    },
+    {
+      "label": "Celular abre inbox sem perder a conversa",
+      "ok": true
+    },
+    {
+      "label": "Celular abre context sem perder a conversa",
+      "ok": true
+    },
+    {
+      "label": "Celular abre chat sem perder a conversa",
+      "ok": true
+    },
+    {
+      "label": "Aba de consultas exibe registros administrativos reais da fixture",
+      "ok": true
+    },
+    {
+      "label": "Abas do paciente funcionam com setas e atualizam o painel acessível",
+      "ok": true
+    },
+    {
+      "label": "Home retorna à aba Paciente",
+      "ok": true
+    },
+    {
+      "label": "Opções da caixa de entrada mantêm canais e avaliações acessíveis",
+      "ok": true
+    },
+    {
+      "label": "Seletor insere emoji no campo sem enviar a mensagem",
+      "ok": true
+    },
+    {
+      "label": "Shift Enter permite escrever em mais de uma linha",
+      "ok": true
+    },
+    {
+      "label": "Central sem transbordamento em 360px e texto a 200%",
+      "ok": true
+    },
+    {
+      "label": "Assumir usa o POST real com antiforgery",
+      "ok": true
+    },
+    {
+      "label": "Atendente assumiu e pode devolver para IA",
+      "ok": true
+    },
+    {
+      "label": "Devolver para IA retoma o agente fictício e atualiza o histórico real",
+      "ok": true
+    },
+    {
+      "label": "Enter envia a mensagem Web pelo formulário real",
+      "ok": true
+    },
+    {
+      "label": "Mensagem enviada aparece no histórico persistido da fixture",
+      "ok": true
+    },
+    {
+      "label": "Encerrar preserva o comando existente",
+      "ok": true
+    },
+    {
+      "label": "Conversa encerrada substitui o compositor pela orientação correta",
+      "ok": true
+    },
+    {
+      "label": "Reabrir e assumir funciona depois do encerramento",
+      "ok": true
+    },
+    {
+      "label": "Compositor retorna após reabrir",
+      "ok": true
+    },
+    {
+      "label": "Menu do paciente não oferece controles administrativos",
+      "ok": true
+    },
+    {
+      "label": "Salas da equipe não aparecem para pacientes",
+      "ok": true
+    },
+    {
+      "label": "Nenhum erro JavaScript durante a regressão V31",
+      "ok": true
+    }
+  ],
+  "matrix": [
+    {
+      "label": "central",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "central",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "central",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "central",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "central",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "central",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "central",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "central",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "central",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "central",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "central",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "central",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "rascunho",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "rascunho",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "rascunho",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "rascunho",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "rascunho",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "rascunho",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "rascunho",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "rascunho",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "rascunho",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "rascunho",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "rascunho",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "rascunho",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "falha",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "falha",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "falha",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "falha",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "falha",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "falha",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "falha",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "falha",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "falha",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "falha",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "falha",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "falha",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "recepcao",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "recepcao",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "recepcao",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "recepcao",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "recepcao",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "recepcao",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "recepcao",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "recepcao",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "recepcao",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "recepcao",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "recepcao",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "recepcao",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "agenda",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "agenda",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "agenda",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "agenda",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "agenda",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "agenda",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "agenda",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "agenda",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "agenda",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "agenda",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "agenda",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "agenda",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "pacientes",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "pacientes",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "pacientes",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "pacientes",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "pacientes",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "pacientes",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "pacientes",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "pacientes",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "pacientes",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "pacientes",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "pacientes",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "pacientes",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "solicitacoes",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "solicitacoes",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "solicitacoes",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "solicitacoes",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "solicitacoes",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "solicitacoes",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "solicitacoes",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "solicitacoes",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "solicitacoes",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "solicitacoes",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "solicitacoes",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "solicitacoes",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "salas",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "salas",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "salas",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "salas",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "salas",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "salas",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "salas",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "salas",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "salas",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "salas",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "salas",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "salas",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "salas-online",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "salas-online",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "salas-online",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "salas-online",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "salas-online",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "salas-online",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "salas-online",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "salas-online",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "salas-online",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "salas-online",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "salas-online",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "salas-online",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "admin",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "admin",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "admin",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "admin",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "admin",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "admin",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "admin",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "admin",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "admin",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "admin",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "admin",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "admin",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "profissional",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "profissional",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "profissional",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "profissional",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "profissional",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "profissional",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "profissional",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "profissional",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "profissional",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "profissional",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "profissional",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "profissional",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "paciente",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "paciente",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "paciente",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "paciente",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "paciente",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "paciente",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "paciente",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "paciente",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "paciente",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "paciente",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "paciente",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "paciente",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "agendamento",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "agendamento",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "agendamento",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "agendamento",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "agendamento",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "agendamento",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "agendamento",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "agendamento",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "agendamento",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "agendamento",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "agendamento",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "agendamento",
+      "width": 1920,
+      "theme": "light"
+    },
+    {
+      "label": "conta",
+      "width": 360,
+      "theme": "dark"
+    },
+    {
+      "label": "conta",
+      "width": 360,
+      "theme": "light"
+    },
+    {
+      "label": "conta",
+      "width": 390,
+      "theme": "dark"
+    },
+    {
+      "label": "conta",
+      "width": 390,
+      "theme": "light"
+    },
+    {
+      "label": "conta",
+      "width": 768,
+      "theme": "dark"
+    },
+    {
+      "label": "conta",
+      "width": 768,
+      "theme": "light"
+    },
+    {
+      "label": "conta",
+      "width": 1024,
+      "theme": "dark"
+    },
+    {
+      "label": "conta",
+      "width": 1024,
+      "theme": "light"
+    },
+    {
+      "label": "conta",
+      "width": 1440,
+      "theme": "dark"
+    },
+    {
+      "label": "conta",
+      "width": 1440,
+      "theme": "light"
+    },
+    {
+      "label": "conta",
+      "width": 1920,
+      "theme": "dark"
+    },
+    {
+      "label": "conta",
+      "width": 1920,
+      "theme": "light"
+    }
+  ],
+  "overflows": [],
+  "errors": [],
+  "accessibility": [
+    {
+      "id": 100,
+      "violations": []
+    },
+    {
+      "id": 101,
+      "violations": []
+    },
+    {
+      "id": 103,
+      "violations": []
+    }
+  ]
+}

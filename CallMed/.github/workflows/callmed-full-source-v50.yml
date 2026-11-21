@@ -1,0 +1,31 @@
+name: CallMed V50 - export full repository
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/callmed-full-source-v50.yml'
+      - 'mobile/android/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Export full checked-out source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          git archive --format=zip --prefix=CallMed/ HEAD > dist/CallMed-Fonte-GitHub-V50.zip
+          sha256sum dist/CallMed-Fonte-GitHub-V50.zip > dist/SHA256SUMS.txt
+          unzip -l dist/CallMed-Fonte-GitHub-V50.zip | tail -n 2
+      - name: Upload full source ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: CallMed-Fonte-GitHub-V50
+          path: dist/
+          retention-days: 7
+          if-no-files-found: error

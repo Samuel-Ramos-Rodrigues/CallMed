@@ -1,0 +1,1120 @@
+[
+  {
+    "page": "login",
+    "width": 1440,
+    "theme": "light",
+    "scrollWidth": 1440,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Criar conta de paciente",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgba(0, 0, 0, 0)",
+        "width": 422,
+        "height": 47.5
+      }
+    ]
+  },
+  {
+    "page": "login",
+    "width": 1440,
+    "theme": "dark",
+    "scrollWidth": 1440,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Criar conta de paciente",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgba(0, 0, 0, 0)",
+        "width": 422,
+        "height": 47.5
+      }
+    ]
+  },
+  {
+    "page": "login",
+    "width": 390,
+    "theme": "light",
+    "scrollWidth": 390,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Criar conta de paciente",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgba(0, 0, 0, 0)",
+        "width": 320,
+        "height": 47.5
+      }
+    ]
+  },
+  {
+    "page": "login",
+    "width": 390,
+    "theme": "dark",
+    "scrollWidth": 390,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Criar conta de paciente",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgba(0, 0, 0, 0)",
+        "width": 320,
+        "height": 47.5
+      }
+    ]
+  },
+  {
+    "page": "login",
+    "width": 320,
+    "theme": "light",
+    "scrollWidth": 320,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Criar conta de paciente",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgba(0, 0, 0, 0)",
+        "width": 250,
+        "height": 47.5
+      }
+    ]
+  },
+  {
+    "page": "login",
+    "width": 320,
+    "theme": "dark",
+    "scrollWidth": 320,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Criar conta de paciente",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgba(0, 0, 0, 0)",
+        "width": 250,
+        "height": 47.5
+      }
+    ]
+  },
+  {
+    "page": "cadastro",
+    "width": 1440,
+    "theme": "light",
+    "scrollWidth": 1440,
+    "scrollY": 0,
+    "buttons": []
+  },
+  {
+    "page": "cadastro",
+    "width": 1440,
+    "theme": "dark",
+    "scrollWidth": 1440,
+    "scrollY": 0,
+    "buttons": []
+  },
+  {
+    "page": "cadastro",
+    "width": 390,
+    "theme": "light",
+    "scrollWidth": 390,
+    "scrollY": 0,
+    "buttons": []
+  },
+  {
+    "page": "cadastro",
+    "width": 390,
+    "theme": "dark",
+    "scrollWidth": 390,
+    "scrollY": 0,
+    "buttons": []
+  },
+  {
+    "page": "cadastro",
+    "width": 320,
+    "theme": "light",
+    "scrollWidth": 320,
+    "scrollY": 0,
+    "buttons": []
+  },
+  {
+    "page": "cadastro",
+    "width": 320,
+    "theme": "dark",
+    "scrollWidth": 320,
+    "scrollY": 0,
+    "buttons": []
+  },
+  {
+    "page": "android",
+    "width": 1440,
+    "theme": "light",
+    "scrollWidth": 1440,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Criar conta",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 140,
+        "height": 46
+      },
+      {
+        "text": "Baixar para Android",
+        "display": "inline-flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 508.5,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "android",
+    "width": 1440,
+    "theme": "dark",
+    "scrollWidth": 1440,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Criar conta",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 140,
+        "height": 46
+      },
+      {
+        "text": "Baixar para Android",
+        "display": "inline-flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 508.5,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "android",
+    "width": 390,
+    "theme": "light",
+    "scrollWidth": 390,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Criar conta",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 135,
+        "height": 46
+      },
+      {
+        "text": "Baixar para Android",
+        "display": "inline-flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 270,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "android",
+    "width": 390,
+    "theme": "dark",
+    "scrollWidth": 390,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Criar conta",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 135,
+        "height": 46
+      },
+      {
+        "text": "Baixar para Android",
+        "display": "inline-flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 270,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "android",
+    "width": 320,
+    "theme": "light",
+    "scrollWidth": 320,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Criar conta",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 135,
+        "height": 46
+      },
+      {
+        "text": "Baixar para Android",
+        "display": "inline-flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 200,
+        "height": 61.15625
+      }
+    ]
+  },
+  {
+    "page": "android",
+    "width": 320,
+    "theme": "dark",
+    "scrollWidth": 320,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Criar conta",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 135,
+        "height": 46
+      },
+      {
+        "text": "Baixar para Android",
+        "display": "inline-flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 200,
+        "height": 61.15625
+      }
+    ]
+  },
+  {
+    "page": "solicitacoes",
+    "width": 1440,
+    "theme": "light",
+    "scrollWidth": 1440,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Nova solicitação",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 183,
+        "height": 46
+      },
+      {
+        "text": "Ver ligações (0)",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 146,
+        "height": 46
+      },
+      {
+        "text": "Buscar",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 87,
+        "height": 46
+      },
+      {
+        "text": "Ver consultas\n→",
+        "display": "inline-flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 155,
+        "height": 46
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 167,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "solicitacoes",
+    "width": 1440,
+    "theme": "dark",
+    "scrollWidth": 1440,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Nova solicitação",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 183,
+        "height": 46
+      },
+      {
+        "text": "Ver ligações (0)",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 146,
+        "height": 46
+      },
+      {
+        "text": "Buscar",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 87,
+        "height": 46
+      },
+      {
+        "text": "Ver consultas\n→",
+        "display": "inline-flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 155,
+        "height": 46
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 167,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "solicitacoes",
+    "width": 390,
+    "theme": "light",
+    "scrollWidth": 390,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Nova solicitação",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 183,
+        "height": 46
+      },
+      {
+        "text": "Ver ligações (0)",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 320,
+        "height": 46
+      },
+      {
+        "text": "Buscar",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 328,
+        "height": 46
+      },
+      {
+        "text": "Ver consultas\n→",
+        "display": "inline-flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 155,
+        "height": 46
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 167,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "solicitacoes",
+    "width": 390,
+    "theme": "dark",
+    "scrollWidth": 390,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Nova solicitação",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 183,
+        "height": 46
+      },
+      {
+        "text": "Ver ligações (0)",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 320,
+        "height": 46
+      },
+      {
+        "text": "Buscar",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 328,
+        "height": 46
+      },
+      {
+        "text": "Ver consultas\n→",
+        "display": "inline-flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 155,
+        "height": 46
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 167,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "solicitacoes",
+    "width": 320,
+    "theme": "light",
+    "scrollWidth": 320,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Nova solicitação",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 183,
+        "height": 46
+      },
+      {
+        "text": "Ver ligações (0)",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 250,
+        "height": 46
+      },
+      {
+        "text": "Buscar",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 258,
+        "height": 46
+      },
+      {
+        "text": "Ver consultas\n→",
+        "display": "inline-flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 155,
+        "height": 46
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 167,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "solicitacoes",
+    "width": 320,
+    "theme": "dark",
+    "scrollWidth": 320,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Nova solicitação",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 183,
+        "height": 46
+      },
+      {
+        "text": "Ver ligações (0)",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 250,
+        "height": 46
+      },
+      {
+        "text": "Buscar",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 258,
+        "height": 46
+      },
+      {
+        "text": "Ver consultas\n→",
+        "display": "inline-flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 155,
+        "height": 46
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 167,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "agenda",
+    "width": 1440,
+    "theme": "light",
+    "scrollWidth": 1440,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Salas físicas e virtuais",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 188,
+        "height": 46
+      },
+      {
+        "text": "Exceções",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 104,
+        "height": 46
+      },
+      {
+        "text": "+ Nova consulta",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 149,
+        "height": 46
+      },
+      {
+        "text": "Filtrar",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 81,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "agenda",
+    "width": 1440,
+    "theme": "dark",
+    "scrollWidth": 1440,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Salas físicas e virtuais",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 188,
+        "height": 46
+      },
+      {
+        "text": "Exceções",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 104,
+        "height": 46
+      },
+      {
+        "text": "+ Nova consulta",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 149,
+        "height": 46
+      },
+      {
+        "text": "Filtrar",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 81,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "agenda",
+    "width": 390,
+    "theme": "light",
+    "scrollWidth": 390,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Salas físicas e virtuais",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 188,
+        "height": 46
+      },
+      {
+        "text": "Exceções",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 104,
+        "height": 46
+      },
+      {
+        "text": "+ Nova consulta",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 149,
+        "height": 46
+      },
+      {
+        "text": "Filtrar",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 81,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "agenda",
+    "width": 390,
+    "theme": "dark",
+    "scrollWidth": 390,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Salas físicas e virtuais",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 188,
+        "height": 46
+      },
+      {
+        "text": "Exceções",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 104,
+        "height": 46
+      },
+      {
+        "text": "+ Nova consulta",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 149,
+        "height": 46
+      },
+      {
+        "text": "Filtrar",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 81,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "agenda",
+    "width": 320,
+    "theme": "light",
+    "scrollWidth": 320,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Salas físicas e virtuais",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 188,
+        "height": 46
+      },
+      {
+        "text": "Exceções",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 104,
+        "height": 46
+      },
+      {
+        "text": "+ Nova consulta",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 149,
+        "height": 46
+      },
+      {
+        "text": "Filtrar",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 81,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "agenda",
+    "width": 320,
+    "theme": "dark",
+    "scrollWidth": 320,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "Salas físicas e virtuais",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 188,
+        "height": 46
+      },
+      {
+        "text": "Exceções",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 104,
+        "height": 46
+      },
+      {
+        "text": "+ Nova consulta",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 149,
+        "height": 46
+      },
+      {
+        "text": "Filtrar",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 81,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "atendimento",
+    "width": 1440,
+    "theme": "light",
+    "scrollWidth": 1440,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "",
+        "display": "inline-flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 88,
+        "height": 46
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 101,
+        "height": 61.15625
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 101,
+        "height": 46
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 101,
+        "height": 302.671875
+      },
+      {
+        "text": "Devolver para IA",
+        "display": "inline-flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 153,
+        "height": 39
+      },
+      {
+        "text": "Encerrar",
+        "display": "inline-flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 107,
+        "height": 39
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 44,
+        "height": 46
+      },
+      {
+        "text": "Devolver para IA",
+        "display": "inline-flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 397.46875,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "atendimento",
+    "width": 1440,
+    "theme": "dark",
+    "scrollWidth": 1440,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "",
+        "display": "inline-flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 88,
+        "height": 46
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 101,
+        "height": 61.15625
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 101,
+        "height": 46
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 101,
+        "height": 302.671875
+      },
+      {
+        "text": "Devolver para IA",
+        "display": "inline-flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 153,
+        "height": 39
+      },
+      {
+        "text": "Encerrar",
+        "display": "inline-flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 107,
+        "height": 39
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 44,
+        "height": 46
+      },
+      {
+        "text": "Devolver para IA",
+        "display": "inline-flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 397.46875,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "atendimento",
+    "width": 390,
+    "theme": "light",
+    "scrollWidth": 390,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "",
+        "display": "inline-flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 41,
+        "height": 37
+      },
+      {
+        "text": "Encerrar",
+        "display": "inline-flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 92,
+        "height": 37
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 44,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "atendimento",
+    "width": 390,
+    "theme": "dark",
+    "scrollWidth": 390,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "",
+        "display": "inline-flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 41,
+        "height": 37
+      },
+      {
+        "text": "Encerrar",
+        "display": "inline-flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 92,
+        "height": 37
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 44,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "atendimento",
+    "width": 320,
+    "theme": "light",
+    "scrollWidth": 320,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "",
+        "display": "inline-flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 41,
+        "height": 37
+      },
+      {
+        "text": "Encerrar",
+        "display": "inline-flex",
+        "color": "rgb(22, 32, 42)",
+        "background": "rgb(255, 255, 255)",
+        "width": 92,
+        "height": 37
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 44,
+        "height": 46
+      }
+    ]
+  },
+  {
+    "page": "atendimento",
+    "width": 320,
+    "theme": "dark",
+    "scrollWidth": 320,
+    "scrollY": 0,
+    "buttons": [
+      {
+        "text": "",
+        "display": "inline-flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 41,
+        "height": 37
+      },
+      {
+        "text": "Encerrar",
+        "display": "inline-flex",
+        "color": "rgb(245, 250, 247)",
+        "background": "rgb(21, 42, 35)",
+        "width": 92,
+        "height": 37
+      },
+      {
+        "text": "",
+        "display": "flex",
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(11, 94, 79)",
+        "width": 44,
+        "height": 46
+      }
+    ]
+  }
+]

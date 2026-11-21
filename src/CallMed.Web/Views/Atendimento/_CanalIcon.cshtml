@@ -1,0 +1,38 @@
+@model MKSANCrud.Models.Atendimento.CanalAtendimento
+@{
+    var (classe, nome) = Model switch
+    {
+        MKSANCrud.Models.Atendimento.CanalAtendimento.Email => ("email", "E-mail"),
+        MKSANCrud.Models.Atendimento.CanalAtendimento.WhatsApp => ("whatsapp", "WhatsApp"),
+        MKSANCrud.Models.Atendimento.CanalAtendimento.Sms => ("sms", "SMS"),
+        MKSANCrud.Models.Atendimento.CanalAtendimento.Telefone => ("telefone", "Telefone"),
+        MKSANCrud.Models.Atendimento.CanalAtendimento.Presencial => ("presencial", "Presencial"),
+        _ => ("site", "Site")
+    };
+}
+<span class="cm-channel cm-channel-@classe" role="img" aria-label="@nome" title="Canal: @nome">
+    @if (classe == "email")
+    {
+        <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+    }
+    else if (classe == "whatsapp")
+    {
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11.7a8 8 0 0 1-11.8 7.1L4 20l1.3-4.2A8 8 0 1 1 20 11.7Z"/><path d="M9 8.8c-.3.5-.2 1.2.2 2 1 2 2.6 3.4 4.5 4.3.7.3 1.4.2 1.9-.2l.5-.7-2.1-1.1-.8 1c-1.2-.5-2.5-1.7-3-3l1-.8-1.1-2.1Z"/></svg>
+    }
+    else if (classe == "sms")
+    {
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 3V5Z"/><path d="M8 10h8M8 13h5"/></svg>
+    }
+    else if (classe == "telefone")
+    {
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 3h4l1 5-2 2a14 14 0 0 0 5 5l2-2 5 1v4a3 3 0 0 1-3 3A15 15 0 0 1 3 6a3 3 0 0 1 3-3Z"/></svg>
+    }
+    else if (classe == "presencial")
+    {
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 20V4h16v16M8 20v-7h8v7M8 8h2M14 8h2M2 20h20"/></svg>
+    }
+    else
+    {
+        <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-5 4.6-5 13.4 0 18M12 3c5 4.6 5 13.4 0 18"/></svg>
+    }
+</span>

@@ -1,0 +1,252 @@
+[
+  {
+    "arquivo": "tests/contingencia-dom.mjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/aplicativo-browser.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/generate-clinical-vectors.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/feedback-browser.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/check-fhir-clinico.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/minha-conta-browser.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/atendimento-ia-browser.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/contingencia-browser.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/check-clinical-jvm-webcrypto.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/ux-contract.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/atendimento-envio-browser.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/css-integrity.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/check-psychology-pwa.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/next/check-transport-state.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/browser/check-psicologia.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/browser/check-premium.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/browser/check-amplo.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/browser/check-salas.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/browser/check-piloto.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/browser/check-refinamento.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/browser/check-design.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/browser/check-avatar-consultas.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "tests/browser/capture-reference.cjs",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/service-worker.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/atendimento/atendimento.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/atendimento/assistente-flutuante.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/atendimento/confirmacoes.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/atendimento/solicitacao-medico-filter.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/jornada/consulta-acao.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/jornada/teleconsulta.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/jornada/checkin-terminal.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/jornada/jornada.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/jornada/salas.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/auth/login.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/auth/identity-register.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/feedback.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/theme.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/file-controls.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/date-select.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/contingencia.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/mobile-final.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/reference-experience.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/preferences.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/shell.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/accessibility.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/pwa.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/clinico/clinico.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/clinico/fhir-clinico.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/conta/organizacao.js",
+    "exit_code": 0,
+    "erro": ""
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/conta/minha-conta.js",
+    "exit_code": 0,
+    "erro": ""
+  }
+]

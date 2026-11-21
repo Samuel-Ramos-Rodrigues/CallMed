@@ -1,0 +1,93 @@
+/* V35 — entrada, área pública e cadastro (adaptadores para as views recentes). */
+body.public-body{background:var(--bg);color:var(--text);min-height:100dvh;font-size:15px}
+body.public-body .public-header{border-bottom:1px solid var(--line);background:var(--surface)}
+body.public-body .public-nav{max-width:1440px;min-height:75px;margin:auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+body.public-body .public-links{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+body.public-body .public-links a:not(.btn){color:var(--muted);font-size:13px}
+body.public-body .app-brand img{width:clamp(140px,15vw,185px);max-height:56px}
+body.public-body #conteudo{width:min(100% - 42px,1350px);margin:auto}
+body.public-body .public-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,70px);padding:clamp(40px,5vw,75px) 0;min-width:0;align-items:center}
+body.public-body .public-hero-copy h1{font:800 clamp(34px,4.2vw,65px)/1.12 Manrope,system-ui,sans-serif;color:var(--text);letter-spacing:-.055em}
+body.public-body .public-hero-copy h1 em{font-style:normal;color:var(--accent)}
+body.public-body .public-hero-copy p{font-size:16px;line-height:1.8;max-width:58ch;color:var(--muted)}
+body.public-body .public-actions{display:flex;gap:15px;align-items:center;flex-wrap:wrap;margin-top:24px}
+body.public-body .care-illustration{min-width:0;min-height:460px;display:grid;place-items:center;position:relative;border-radius:24px;background:linear-gradient(135deg,var(--surface-2),var(--accent-soft));border:1px solid var(--line);overflow:hidden;padding:26px}
+body.public-body .care-ticket{position:relative;z-index:1;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);padding:27px;width:min(100%,425px);max-width:100%;border-radius:19px;color:var(--text)}
+body.public-body .care-ticket h2{font-size:clamp(24px,2.6vw,35px);line-height:1.24;color:var(--text)}
+body.public-body .care-ticket-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+body.public-body .care-ticket-art img{width:85px;height:85px;object-fit:contain}
+body.public-body .care-step{display:grid;grid-template-columns:28px minmax(0,1fr) 22px;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px;color:var(--text)}
+body.public-body .care-step>span{color:var(--accent);font-weight:800}
+body.public-body .care-step svg{color:var(--success);width:18px;height:18px}
+body.public-body .care-ticket :is(.eyebrow,small){color:var(--muted)}
+body.public-body .care-ticket .care-ticket-subtitle{color:var(--muted);font-size:12px}
+body.public-body .care-caption{color:var(--muted);font-size:10px;letter-spacing:.13em}
+body.public-body .care-plus{position:absolute;right:13%;top:8%;color:var(--accent);font-size:34px}
+body.public-body .public-how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:0 0 55px;align-items:stretch}
+body.public-body .public-how>header{grid-column:1/-1;margin-bottom:4px}
+body.public-body .public-how>header h2{font-size:clamp(27px,2.8vw,39px)}
+body.public-body .public-how-item{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:25px;border:1px solid var(--line);border-radius:17px;background:var(--surface)}
+body.public-body .public-how-item h3{font-size:19px;color:var(--text)}
+body.public-body .public-how-item p{font-size:14px;color:var(--muted)}
+body.public-body .public-how-item>a{margin-top:auto;font-size:13px;font-weight:800}
+body.public-body .public-how-item .public-feature-icon{display:grid;place-items:center;width:48px;height:48px;background:var(--accent-soft);color:var(--accent);border-radius:12px}
+body.public-body .public-install{margin:0 0 60px;padding:clamp(24px,3.5vw,46px);display:flex;justify-content:space-between;align-items:center;gap:20px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}
+body.public-body .public-install h2{font-size:clamp(22px,2.6vw,35px);color:var(--text)}
+body.public-body .public-install p{font-size:14px;color:var(--muted)}
+body.public-body .cm-public-install-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+body.public-body .cm-install-web{padding:11px 15px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--text)}
+body.public-body .public-footer{max-width:1440px;margin:auto;padding:23px 22px;display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+body.public-body .public-footer nav{display:flex;gap:14px;flex-wrap:wrap}
+body.public-body .public-footer a{color:var(--muted)}
+body.identity-body{display:flex;flex-direction:column;margin:0;min-height:100dvh;background:var(--bg);color:var(--text)}
+body.identity-body .identity-shell{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:calc(100dvh - 85px);width:100%;align-items:stretch}
+body.identity-body .identity-showcase{display:flex;flex-direction:column;justify-content:space-between;min-height:0;gap:40px;padding:clamp(25px,4vw,66px);background:radial-gradient(circle at 88% 85%,#0B5E4F38,transparent 65%),var(--surface);border-right:1px solid var(--line);color:var(--text)}
+body.identity-body .identity-showcase :is(h1,h2){color:var(--text)}
+body.identity-body .identity-showcase .identity-copy h1{font:800 clamp(32px,3.8vw,58px)/1.14 Manrope,system-ui,sans-serif;letter-spacing:-.052em}
+body.identity-body .identity-showcase .identity-copy h1 em{font-style:normal;color:var(--accent)}
+body.identity-body .identity-showcase .identity-copy p{color:var(--muted);font-size:16px;line-height:1.75}
+body.identity-body .identity-showcase .app-brand img{width:200px;max-height:70px;filter:none}
+body.identity-body .identity-note-line{display:flex;align-items:center;gap:10px;padding:13px 15px;border-radius:12px;background:var(--accent-soft);border:1px solid var(--line);color:var(--text);font-size:13px}
+body.identity-body .identity-panel{display:flex;flex:1;align-items:center;justify-content:center;min-width:0;padding:clamp(22px,4vw,65px);background:var(--bg)}
+body.identity-body .identity-card{width:min(100%,500px);max-width:100%;padding:clamp(22px,3vw,38px);border:1px solid var(--line);border-radius:20px;background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+body.identity-body .identity-back{color:var(--muted);font-size:13px}
+body.identity-body .identity-card-header h1,body.identity-body .identity-card-header h2{font:800 clamp(26px,2.4vw,35px)/1.18 Manrope,system-ui,sans-serif;color:var(--text);margin:10px 0}
+body.identity-body .identity-card-header p{font-size:14px;color:var(--muted)}
+body.identity-body .identity-form{display:grid;gap:17px;margin-top:23px}
+body.identity-body .identity-form .input-group{display:grid;gap:8px;margin:0}
+body.identity-body .identity-form .identity-options{margin:0}
+body.identity-body .identity-form .identity-submit{margin:0}
+body.identity-body .identity-showcase .app-brand{align-self:flex-start;position:static;transform:none}
+body.identity-body .identity-form label{font-size:13px;font-weight:700;color:var(--text)}
+body.identity-body .identity-form :where(input:not([type=checkbox]),select){width:100%;min-height:46px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--text);font-size:14px}
+body.identity-body .password-wrap{position:relative;display:flex;align-items:center}
+body.identity-body .identity-form .password-wrap>input{padding-right:100px}
+body.identity-body .password-toggle{position:absolute;right:5px;top:50%;transform:translateY(-50%);height:35px;padding:5px 11px;border:1px solid var(--line);border-radius:8px;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:800}
+body.identity-body .identity-options{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
+body.identity-body .identity-submit{width:100%;min-height:46px;background:var(--primary);color:#fff;border:0;border-radius:11px;font-weight:800}
+body.identity-body .identity-divider{display:flex;gap:15px;align-items:center;justify-content:center;color:var(--muted);font-size:12px;margin:17px 0}
+body.identity-body .identity-secondary{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;min-height:46px;text-align:center}
+body.identity-body .identity-secondary>span{display:inline-flex;align-items:center;flex-shrink:0}
+body.identity-body .identity-secondary>a{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);color:var(--text);font-size:13px;font-weight:750}
+body.identity-body>.auth-legal-footer{margin-top:auto;min-height:75px;padding:18px 25px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;width:100%;border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:12px}
+body.identity-body .auth-legal-footer nav{display:flex;gap:15px;flex-wrap:wrap}
+body.identity-body .auth-legal-footer a{color:var(--muted)}
+body.identity-body .identity-note,body.identity-body .identity-footnote{font-size:12px;color:var(--muted)}
+.cm-brand-plate{max-width:100%}.identity-note{overflow-wrap:anywhere}
+/* O cadastro deve exibir somente a etapa ativa; o JS já controla .ativa. */
+.register-shell .form-etapa{display:none}
+.register-shell .form-etapa.ativa{display:grid;gap:16px}
+.register-shell .steps{display:flex;align-items:center;gap:10px;margin:24px 0 8px}
+.register-shell .step{display:grid;justify-items:center;gap:5px;min-width:0;color:var(--muted);font-size:.75rem;flex:0 1 90px}
+.register-shell .step>span{display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--line);border-radius:50%;background:var(--surface-2);font-weight:750}
+.register-shell .step p{margin:0}
+.register-shell .step.ativo{color:var(--accent)}
+.register-shell .step.ativo>span{background:var(--accent-soft);border-color:var(--accent)}
+.register-shell .linha{height:1px;flex:1;min-width:8px;background:var(--line)}
+.campos-convenio.ativo{display:grid}
+.campos-convenio:not(.ativo){display:none}
+@media(max-width:900px){body.public-body .public-hero{grid-template-columns:1fr;gap:25px}body.public-body .care-illustration{min-height:360px}body.public-body .public-how{grid-template-columns:1fr 1fr}body.public-body .public-install{flex-direction:column;align-items:flex-start}body.identity-body .identity-shell{grid-template-columns:1fr 1.3fr}}
+@media(max-width:650px){body.public-body #conteudo{width:min(100% - 28px,1350px)}body.public-body .public-nav{padding:10px 14px;flex-wrap:wrap}body.public-body .public-links{gap:8px}body.public-body .public-links a{font-size:12px}body.public-body .public-hero{padding:28px 0;gap:20px}body.public-body .public-hero-copy h1{font-size:36px}body.public-body .care-illustration{min-height:300px;padding:17px}body.public-body .care-ticket{padding:19px}body.public-body .public-how{grid-template-columns:1fr;gap:11px}body.public-body .public-how>header{grid-column:auto}body.public-body .public-install{margin-bottom:22px;padding:25px}body.identity-body .identity-shell{display:flex;flex-direction:column;min-height:0}body.identity-body .identity-showcase{padding:24px 21px;min-height:190px;gap:14px}body.identity-body .identity-showcase .identity-copy h1{font-size:30px}body.identity-body .identity-showcase .identity-copy p{font-size:13px}body.identity-body .identity-note-line{display:none}body.identity-body .identity-panel{padding:18px 14px}body.identity-body .identity-card{padding:24px 20px}body.identity-body>.auth-legal-footer{justify-content:center;text-align:center}}
+/* Fix verified at 390px: the password button must never wrap letter-by-letter. */
+body.identity-body .password-wrap button.password-toggle{width:auto;min-width:81px;max-width:90px;white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;font-size:12px;line-height:1.2}
+@media(max-width:650px){body.identity-body .identity-showcase{min-height:122px;max-height:160px;padding:18px 22px}body.identity-body .identity-showcase>small{display:none}}

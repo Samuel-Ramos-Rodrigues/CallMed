@@ -1,0 +1,26 @@
+{
+  "pages": 2,
+  "checks": [
+    "Agendamento: botão gerado para escolher profissional tem estilo próprio",
+    "Agendamento mostra calendario mensal com sete colunas e largura util no desktop",
+    "Agendamento mantem sete colunas sem transbordamento em celular com zoom 200%",
+    "Busca de funções continua filtrando os cartões",
+    "Busca sem resultado apresenta orientação",
+    "Pedido de privacidade é aceito pelo formulário agrupado",
+    "Solicitação registrada aparece com protocolo",
+    "Paciente: modo padrão não duplica modo fácil",
+    "Paciente: ativar modo fácil oculta painel padrão",
+    "Paciente: sair do modo fácil restaura painel padrão",
+    "Layout autenticado mantém identidade CallMed V39",
+    "Navegação por perfil permanece conectada às rotas",
+    "Cabeçalho não duplica controles de acessibilidade",
+    "Acessibilidade mantém acesso no menu contextual",
+    "Logo original preservada",
+    "Layout principal aproveita espaço de desktop",
+    "Menu de áreas abre pelo teclado e clique",
+    "Escape fecha o diálogo de navegação"
+  ],
+  "errors": [],
+  "issues": [],
+  "overflows": []
+}

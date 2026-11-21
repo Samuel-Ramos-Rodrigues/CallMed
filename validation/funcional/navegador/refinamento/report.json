@@ -1,0 +1,581 @@
+{
+  "checks": [
+    {
+      "label": "WhatsApp: um clique aplica o filtro",
+      "ok": true
+    },
+    {
+      "label": "WhatsApp: filtros avançados permanecem fechados",
+      "ok": true
+    },
+    {
+      "label": "WhatsApp: seleção identificada",
+      "ok": true
+    },
+    {
+      "label": "WhatsApp: lista contém somente o canal selecionado",
+      "ok": true
+    },
+    {
+      "label": "SMS: um clique aplica o filtro",
+      "ok": true
+    },
+    {
+      "label": "SMS: filtros avançados permanecem fechados",
+      "ok": true
+    },
+    {
+      "label": "SMS: seleção identificada",
+      "ok": true
+    },
+    {
+      "label": "SMS: lista contém somente o canal selecionado",
+      "ok": true
+    },
+    {
+      "label": "E-mail: um clique aplica o filtro",
+      "ok": true
+    },
+    {
+      "label": "E-mail: filtros avançados permanecem fechados",
+      "ok": true
+    },
+    {
+      "label": "E-mail: seleção identificada",
+      "ok": true
+    },
+    {
+      "label": "E-mail: lista contém somente o canal selecionado",
+      "ok": true
+    },
+    {
+      "label": "Site: um clique aplica o filtro",
+      "ok": true
+    },
+    {
+      "label": "Site: filtros avançados permanecem fechados",
+      "ok": true
+    },
+    {
+      "label": "Site: seleção identificada",
+      "ok": true
+    },
+    {
+      "label": "Site: lista contém somente o canal selecionado",
+      "ok": true
+    },
+    {
+      "label": "Todas remove a seleção de canal",
+      "ok": true
+    },
+    {
+      "label": "Filtros abrem somente por solicitação",
+      "ok": true
+    },
+    {
+      "label": "Escape fecha o filtro sem precisar selecionar Todas",
+      "ok": true
+    },
+    {
+      "label": "Botão fechar encerra o painel",
+      "ok": true
+    },
+    {
+      "label": "Clique fora fecha o painel",
+      "ok": true
+    },
+    {
+      "label": "Aplicar fecha o painel e mantém o filtro efetivo",
+      "ok": true
+    },
+    {
+      "label": "Filtros ativos têm uma ação de limpeza acessível",
+      "ok": true
+    },
+    {
+      "label": "Limpar restaura a lista",
+      "ok": true
+    },
+    {
+      "label": "Conta apresenta título e identificação separados",
+      "ok": true
+    },
+    {
+      "label": "Segurança abre a troca de senha real",
+      "ok": true
+    },
+    {
+      "label": "Abas da conta navegam com o teclado",
+      "ok": true
+    },
+    {
+      "label": "Foto escolhida mostra uma prévia antes de salvar",
+      "ok": true
+    },
+    {
+      "label": "Prévia informa que o envio ainda precisa ser confirmado",
+      "ok": true
+    },
+    {
+      "label": "Foto inválida bloqueia o envio",
+      "ok": true
+    },
+    {
+      "label": "Jornada agrupa consultas e etapas",
+      "ok": true
+    },
+    {
+      "label": "Cabeçalho da jornada usa o layout do próprio módulo",
+      "ok": true
+    },
+    {
+      "label": "Indicadores apresentam quatro métricas com dados da API",
+      "ok": true
+    },
+    {
+      "label": "Indicadores não exibem valores de renderização inválidos",
+      "ok": true
+    },
+    {
+      "label": "central: 390px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "central: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "central: 390px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "central: 390px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "central: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "central: 390px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "central: 768px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "central: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "central: 768px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "central: 768px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "central: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "central: 768px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "central: 1440px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "central: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "central: 1440px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "central: 1440px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "central: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "central: 1440px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "central: 1920px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "central: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "central: 1920px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "central: 1920px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "central: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "central: 1920px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 390px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "conta: 390px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 390px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "conta: 390px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 768px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "conta: 768px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 768px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "conta: 768px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 1440px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "conta: 1440px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 1440px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "conta: 1440px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 1920px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "conta: 1920px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 1920px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "conta: 1920px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "jornada: 390px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "jornada: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "jornada: 390px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "jornada: 390px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "jornada: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "jornada: 390px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "jornada: 768px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "jornada: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "jornada: 768px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "jornada: 768px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "jornada: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "jornada: 768px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "jornada: 1440px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "jornada: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "jornada: 1440px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "jornada: 1440px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "jornada: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "jornada: 1440px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "jornada: 1920px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "jornada: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "jornada: 1920px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "jornada: 1920px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "jornada: 5 folhas NOVA carregadas na ordem declarada",
+      "ok": true
+    },
+    {
+      "label": "jornada: 1920px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "Navegação sem erros JavaScript ou de roteamento",
+      "ok": true
+    }
+  ],
+  "matrix": [],
+  "overflows": [],
+  "errors": [],
+  "accessibility": [
+    {
+      "label": "central",
+      "width": 390,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "central",
+      "width": 390,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "central",
+      "width": 768,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "central",
+      "width": 768,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "central",
+      "width": 1440,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "central",
+      "width": 1440,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "central",
+      "width": 1920,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "central",
+      "width": 1920,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 390,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 390,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 768,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 768,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 1440,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 1440,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 1920,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 1920,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "jornada",
+      "width": 390,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "jornada",
+      "width": 390,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "jornada",
+      "width": 768,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "jornada",
+      "width": 768,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "jornada",
+      "width": 1440,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "jornada",
+      "width": 1440,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "jornada",
+      "width": 1920,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "jornada",
+      "width": 1920,
+      "theme": "dark",
+      "violations": []
+    }
+  ]
+}

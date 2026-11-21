@@ -1,0 +1,9 @@
+@{ ViewData["Title"] = "Informações do sistema"; }
+<section class="cm25-screen cm19-settings-page" data-cm25-view="Configuracoes/Index.cshtml">
+    <header class="cm25-page-hero cm19-page-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#settings"></use></svg></div><div><span>CALLMED</span><h1>Informações do sistema</h1><p>Identidade da clínica, instalação e acesso. Suas preferências ficam em Minha conta.</p></div></header>
+    <div class="cm19-settings-grid">
+        <section class="cm25-panel cm19-card cm19-setting-card"><span class="cm19-setting-icon"><svg><use href="/icons/callmed-ui.svg#home"></use></svg></span><div><h2>Clínica</h2><p>Identidade utilizada na experiência do sistema.</p><dl><div><dt>Nome</dt><dd>@ViewBag.NomeClinica</dd></div><div><dt>Fuso horário</dt><dd>@ViewBag.TimeZone</dd></div></dl></div></section>
+        <section class="cm25-panel cm19-card cm19-setting-card"><span class="cm19-setting-icon"><svg><use href="/icons/callmed-ui.svg#download"></use></svg></span><div><h2>PWA</h2><p>A CallMed está preparada para instalação em celulares e computadores.</p><dl><div><dt>Status</dt><dd><span class="cm19-ok-dot">Ativo</span></dd></div><div><dt>Aplicativo</dt><dd>CallMed</dd></div></dl><button type="button" class="btn secondary" id="pwa-install-button-settings" data-pwa-install>Instalar aplicativo</button></div></section>
+        <section class="cm25-panel cm19-card cm19-setting-card"><span class="cm19-setting-icon"><svg><use href="/icons/callmed-ui.svg#shield"></use></svg></span><div><h2>Segurança</h2><p>Cada pessoa acessa as funções permitidas para seu perfil.</p><dl><div><dt>Perfis</dt><dd>Admin · Funcionário · Profissional de saúde · Paciente</dd></div><div><dt>Sessão</dt><dd>Acesso autenticado</dd></div></dl></div></section>
+    </div>
+</section>

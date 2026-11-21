@@ -1,0 +1,205 @@
+/* CallMed: adaptação das telas criadas após V35 ao tema CLÁSSICO V35.
+   Este arquivo não reutiliza os temas Prisma/Nexo/Arco/MODO. */
+body.callmed-app{min-height:100dvh;background:var(--bg);font:500 15px/1.6 Manrope,system-ui,sans-serif}
+body.callmed-app .app-header{min-height:76px;height:auto;background:var(--surface);border-bottom:1px solid var(--line)}
+body.callmed-app .app-header-inner{width:100%;min-height:76px;max-width:1540px;padding:10px clamp(15px,2.5vw,35px);gap:clamp(8px,1.5vw,22px);flex-wrap:nowrap}
+body.callmed-app .app-brand img{width:clamp(122px,11vw,170px);max-height:54px;object-fit:contain}
+body.callmed-app .primary-nav{display:flex;gap:4px;min-width:0;flex:1;overflow:visible;align-items:center}
+body.callmed-app .primary-nav>a{display:inline-flex;min-height:43px;gap:8px;align-items:center;justify-content:center;border:1px solid transparent;border-radius:12px;padding:9px 13px;white-space:nowrap;font-size:13px;font-weight:750;color:var(--muted);text-decoration:none}
+body.callmed-app .primary-nav>a svg{width:18px;height:18px}
+body.callmed-app .primary-nav>a:is(.active,:hover){color:var(--text);background:var(--surface-2);border-color:var(--line)}
+body.callmed-app .primary-nav>a:nth-child(n+5){min-width:0;flex:0 1 auto}
+body.callmed-app .cm-nav-short-label{display:none}
+body.callmed-app .header-tools{display:flex;align-items:center;gap:8px;min-width:0;flex-shrink:0}
+body.callmed-app .cm-search-shortcut{min-width:0;display:inline-flex;align-items:center;gap:8px;min-height:41px;padding:7px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);color:var(--text)}
+body.callmed-app .cm-search-shortcut span{white-space:nowrap;font-size:12px}
+body.callmed-app .cm-search-shortcut kbd{font-size:10px}
+body.callmed-app .v18-icon-button{min-width:41px;min-height:41px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);color:var(--text)}
+body.callmed-app .app-main{width:min(100%,calc(1440px + 2 * 24px));max-width:100%;padding:clamp(18px,2.6vw,35px) clamp(16px,2vw,25px) 55px;margin:0 auto;min-height:calc(100dvh - 175px)}
+body.callmed-app .app-footer{max-width:1440px;padding:22px;margin:30px auto 0;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+body.callmed-app .app-footer nav{display:flex;gap:15px;flex-wrap:wrap}
+body.callmed-app .cm-caminho{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 22px;color:var(--muted);font-size:12px}
+body.callmed-app .modules-dialog{width:min(690px,calc(100vw - 28px));max-height:min(85dvh,760px);padding:0;border:1px solid var(--line);border-radius:20px;background:var(--surface);color:var(--text);box-shadow:var(--shadow-raised);overflow:auto}
+body.callmed-app .modules-dialog::backdrop{background:#030615bf}
+body.callmed-app .modules-dialog>header{display:flex;align-items:center;justify-content:space-between;padding:23px 27px;border-bottom:1px solid var(--line)}
+body.callmed-app .modules-dialog .cm-menu-conteudo{padding:18px 26px 26px;display:grid;gap:14px}
+body.callmed-app .cm-module-search{display:grid;gap:8px;padding:16px 26px}
+body.callmed-app .cm-module-search input{min-height:45px}
+body.callmed-app .cm-module-status{padding:0 26px;margin:0}
+.cm-modulo-grupo{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface-2)}
+.cm-modulo-grupo>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px;font-weight:750;cursor:pointer}
+.cm-modulo-grupo>summary::after{content:"+";color:var(--accent)}
+.cm-modulo-grupo[open]>summary::after{content:"−"}
+.cm-modulo-grupo[open]>summary{background:var(--accent-soft);color:var(--accent);border-bottom:1px solid var(--line)}
+.cm-modulo-grupo .module-grid{padding:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.cm-organizacao details.cm-area>summary{min-height:48px;padding:15px 18px;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:12px}
+.cm37-patient .cm37-columns .cm37-listrow>a{position:relative;z-index:1}
+:root:not(.callmed-simple-mode) .cm21-simple-home{display:none!important}
+:root.callmed-simple-mode .cm37-patient .patient-standard,
+:root.callmed-simple-mode .cm50-patient .patient-standard{display:none!important}
+:root.callmed-simple-mode .cm50-patient .cm21-simple-home{display:block!important}
+.cm21-simple-home{padding:clamp(24px,4vw,52px);border:1px solid var(--line);border-radius:22px;background:var(--surface)}
+.cm21-simple-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:26px 0}
+.cm21-simple-actions>a,.cm21-simple-actions>button{min-height:70px;padding:18px;color:var(--text);border:1px solid var(--line);border-radius:14px;background:var(--surface-2);font-weight:750;text-align:left}
+/* V50 Razor dashboard presentation in V35 visual language. */
+.cm50-screen{width:min(100%,1390px);margin-inline:auto;display:grid;gap:25px;min-width:0}
+.cm50-screen>:where(header,section,aside,div,nav){min-width:0}
+.cm50-overline{display:block;font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.cm50-intro{display:flex;align-items:center;justify-content:space-between;gap:22px 30px;min-width:0;padding:13px 0 9px}
+.cm50-intro>div:first-child{min-width:0;flex:1}
+.cm50-intro h1{font:800 clamp(29px,3.1vw,44px)/1.18 Manrope,system-ui,sans-serif;letter-spacing:-.045em;color:var(--text);max-width:850px;margin:0 0 12px}
+.cm50-intro h1 em{color:var(--accent);font-style:normal}
+.cm50-intro p{font-size:15px;line-height:1.7;max-width:68ch}
+.cm50-intro-tools{display:flex;flex-direction:column;align-items:flex-end;gap:12px;max-width:300px;text-align:right;color:var(--muted)}
+.cm50-intro-tools time{font-size:13px;text-transform:capitalize}
+.cm50-btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:43px;padding:10px 18px;border-radius:11px;border:1px solid var(--primary);background:var(--primary);color:#fff!important;font-weight:800;font-size:13px;text-decoration:none;cursor:pointer;white-space:normal;text-align:center}
+.cm50-btn:hover{background:var(--primary-hover);border-color:var(--primary-hover);color:#fff;text-decoration:none}
+.cm50-btn-mint{background:#B8EBD5;border-color:#B8EBD5;color:#0E2A23!important}
+.cm50-btn-mint:hover{background:#9DDBC0;border-color:#9DDBC0;color:#0E2A23!important}
+.cm50-minilink,.cm50-inline-link{display:inline-flex;align-items:center;gap:5px;color:var(--accent);font-weight:800;font-size:13px;text-decoration:none;cursor:pointer}
+button.cm50-minilink{border:0;background:transparent;padding:0;min-height:32px;text-align:inherit}
+.cm50-minilink:hover,.cm50-inline-link:hover{color:var(--text)}
+.cm50-sheet,.cm50-compact,.cm50-patient-choices,.cm50-patient-extra{border:1px solid var(--line);border-radius:18px;background:var(--surface);padding:clamp(18px,2.1vw,29px);min-width:0;box-shadow:var(--shadow)}
+.cm50-sheet-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:19px}
+.cm50-sheet-heading h2,.cm50-sheet>h2{font-size:20px;font-weight:800;margin:0}
+.cm50-empty{padding:23px;border:1px dashed var(--line);border-radius:13px;color:var(--muted);background:var(--surface-2)}
+.cm50-pill{display:inline-flex;align-items:center;width:max-content;max-width:100%;padding:6px 11px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:800}
+.cm50-ops-grid{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(280px,.95fr);gap:19px;align-items:start}
+.cm50-ops-side,.cm50-doctor-sidebar{display:grid;gap:16px;min-width:0}
+.cm50-statline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.cm50-statline>a{display:grid;gap:3px;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;color:var(--text);text-decoration:none}
+.cm50-statline>a:hover{border-color:var(--accent)}
+.cm50-statline small{font-size:12px;color:var(--muted)}
+.cm50-statline strong{font-size:clamp(28px,3vw,40px);font-weight:850;line-height:1.2;color:var(--text)}
+.cm50-statline span{font-size:12px;color:var(--muted)}
+.cm50-row-header,.cm50-agenda-line{display:grid;grid-template-columns:minmax(65px,.48fr) minmax(150px,2fr) minmax(100px,.8fr) minmax(50px,.5fr);align-items:center;column-gap:13px}
+.cm50-row-header{color:var(--muted);font-size:11px;font-weight:800;padding:0 8px 9px;border-bottom:1px solid var(--line)}
+.cm50-agenda-line{padding:14px 8px;gap:12px;border-bottom:1px solid var(--line);min-height:71px}
+.cm50-agenda-line>div{min-width:0}
+.cm50-agenda-line time{display:grid;font-size:16px;color:var(--text)}
+.cm50-agenda-line time small,.cm50-agenda-line>div small{display:block;font-size:12px;color:var(--muted);font-weight:500}
+.cm50-agenda-line .status-pill{font-size:12px;width:max-content;max-width:100%}
+.cm50-sheet-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px;color:var(--muted);font-size:12px}
+.cm50-feature,.cm50-callout{padding:clamp(20px,2.6vw,32px);background:var(--accent-soft);border:1px solid var(--line);border-radius:18px;min-width:0}
+.cm50-feature h2,.cm50-callout h2{font-size:clamp(21px,2.3vw,29px);margin:0 0 13px}
+.cm50-feature p,.cm50-callout p{font-size:14px;line-height:1.65;margin-bottom:19px}
+.cm50-feature-metric{display:flex;align-items:center;gap:12px;margin:15px 0}
+.cm50-feature-metric strong{font-size:38px;color:var(--accent)}
+.cm50-feature-metric span{font-size:13px;color:var(--muted)}
+.cm50-alert-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-top:1px solid var(--line);color:var(--text);text-decoration:none}
+.cm50-alert-row strong,.cm50-alert-row small{display:block}
+.cm50-alert-row small{color:var(--muted);font-size:12px}
+.cm50-alert-row>b{color:var(--accent);font-size:18px}
+.cm50-shortcuts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.cm50-shortcuts>a{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:3px 10px;padding:20px;background:var(--surface);border:1px solid var(--line);border-radius:14px;color:var(--text);text-decoration:none}
+.cm50-shortcuts strong{font-size:14px}.cm50-shortcuts small{grid-column:1;font-size:12px;color:var(--muted)}
+.cm50-shortcuts span{grid-column:2;grid-row:1/3;color:var(--accent)}
+.cm50-doctor-hero{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(175px,.7fr);gap:18px;padding:clamp(24px,3.6vw,44px);border:1px solid #3C7D66;border-radius:20px;background:linear-gradient(125deg,#0B5E4F,#184D40 85%);color:#fff}
+.cm50-doctor-hero h2{font-size:clamp(25px,2.8vw,38px);color:#fff}.cm50-doctor-hero p{color:#E3F4EB}
+.cm50-doctor-hero .cm50-overline{color:#BAF1D9}
+.cm50-doctor-hero aside{display:grid;align-content:center;justify-items:center;border-left:1px solid #ffffff36;padding-left:15px;text-align:center}
+.cm50-doctor-hero aside small{font-size:12px;color:#DAF3E8}.cm50-doctor-hero aside strong{font-size:clamp(40px,5vw,68px);color:#fff}
+.cm50-hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:18px}
+.cm50-link-light{color:#E2F6ED}
+.cm50-doctor-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(275px,.85fr);gap:18px;align-items:start}
+.cm50-medical-row{grid-template-columns:80px minmax(150px,1.8fr) minmax(95px,.9fr) minmax(95px,.8fr)}
+.cm50-medical-actions{display:flex;flex-wrap:wrap;gap:8px}
+.cm50-progress-count{font-size:35px;color:var(--accent);font-weight:800;margin:10px 0}
+.cm50-progress-count small{font-size:14px;color:var(--muted)}
+.cm50-week{display:grid;gap:8px}.cm50-week>div{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px;border:1px solid var(--line);border-radius:8px}
+.cm50-upcoming-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:10px}
+.cm50-upcoming-grid>a{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:5px 12px;align-items:center;min-width:0;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);text-decoration:none;color:var(--text);overflow-wrap:anywhere}
+.cm50-upcoming-grid time{grid-row:1/3;font-size:.75rem;color:var(--accent)}.cm50-upcoming-grid strong{font-size:.85rem;min-width:0}.cm50-upcoming-grid small{grid-column:2;font-size:.75rem;color:var(--muted)}.cm50-upcoming-grid>a>span{grid-column:3;grid-row:1/3;color:var(--accent)}
+.cm50-doctor-sidebar progress{width:100%;height:10px;accent-color:var(--primary)}
+.cm50-availability{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:0 22px}
+.cm50-availability summary{display:flex;justify-content:space-between;align-items:center;gap:15px;cursor:pointer;padding:20px 0;font-weight:800}
+.cm50-availability-grid{display:grid;grid-template-columns:1fr 1fr;gap:17px;padding:16px 0 23px}
+.cm50-availability-grid form{display:flex;align-items:center;gap:8px;justify-content:space-between;padding:12px;border-bottom:1px solid var(--line)}
+.cm50-patient-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(290px,.95fr);gap:18px;align-items:stretch}
+.cm50-patient-ticket{display:grid;align-content:start;min-width:0;gap:16px;padding:clamp(24px,3vw,40px);background:linear-gradient(130deg,#0B5E4F,#1B5647);border:1px solid #39826A;border-radius:20px;color:#fff}
+.cm50-patient-ticket .cm50-overline{color:#C3F3DF}.cm50-patient-ticket h2{font-size:clamp(27px,3vw,42px);color:#fff;margin:0}
+.cm50-patient-ticket p{color:#E0F3E9}
+.cm50-ticket-meta{display:flex;gap:20px;flex-wrap:wrap;margin-top:9px}
+.cm50-ticket-meta>div{display:grid;min-width:115px;gap:4px}
+.cm50-ticket-meta small{font-size:10px;letter-spacing:.1em;color:#C3E5D7}
+.cm50-ticket-meta strong{font-size:14px;color:#fff}
+.cm50-patient-ticket .cm50-minilink{color:#C6F2E0}
+.cm50-patient-choices{display:grid;align-content:start;gap:0}
+.cm50-patient-choices>a,.cm50-patient-choices>button{display:grid;grid-template-columns:36px minmax(0,1fr) 20px;align-items:center;gap:12px;width:100%;min-height:74px;background:transparent;border:0;border-top:1px solid var(--line);text-align:left;color:var(--text);text-decoration:none;padding:13px 4px;font:inherit;cursor:pointer}
+.cm50-patient-choices>a>span,.cm50-patient-choices>button>span{color:var(--accent);font-weight:800}
+.cm50-patient-choices strong{font-size:14px}.cm50-patient-choices strong small{display:block;font-size:12px;color:var(--muted);font-weight:500}
+.cm50-patient-choices b{font-size:19px;color:var(--accent)}
+.cm50-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.cm50-steps>a{display:grid;grid-template-columns:35px minmax(0,1fr);gap:4px 8px;padding:17px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--text);text-decoration:none}
+.cm50-steps>a>span{grid-row:1/3;width:33px;height:33px;display:grid;place-items:center;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:800}
+.cm50-steps strong{font-size:13px}.cm50-steps small{font-size:12px;color:var(--muted)}
+.cm50-patient-lower{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(270px,.8fr);gap:18px}
+.cm50-request-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0;border-top:1px solid var(--line)}
+.cm50-request-row strong,.cm50-request-row small{display:block}.cm50-request-row small{font-size:12px;color:var(--muted)}
+.cm50-patient-extra{display:flex;flex-direction:column;gap:0}
+.cm50-patient-extra>a{padding:13px 0;border-top:1px solid var(--line);color:var(--text);text-decoration:none;font-weight:750}
+.cm50-patient-extra>a:hover{color:var(--accent)}
+@media(max-width:1220px){body.callmed-app .app-header-inner{flex-wrap:wrap;gap:9px 14px;padding-block:9px}body.callmed-app .primary-nav{order:3;flex-basis:100%;overflow-x:auto;padding-bottom:3px}body.callmed-app .primary-nav>a{flex:none}body.callmed-app .header-tools{margin-left:auto}body.callmed-app .app-header{position:relative}.cm50-intro h1{font-size:clamp(27px,3.3vw,42px)}}
+@media(max-width:900px){.cm50-ops-grid,.cm50-doctor-grid,.cm50-patient-grid,.cm50-patient-lower{grid-template-columns:1fr}.cm50-statline,.cm50-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}.cm50-doctor-hero{grid-template-columns:1fr 160px}.cm50-intro{align-items:flex-start}.cm50-intro-tools{min-width:0}}
+@media(max-width:650px){body.callmed-app .app-header-inner{min-height:64px;padding:8px 14px}body.callmed-app .primary-nav{display:none}body.callmed-app .app-main{padding:18px 14px 90px}body.callmed-app .app-footer{padding:16px;margin:0 auto 75px}body.callmed-app .cm-search-shortcut kbd,body.callmed-app .cm-search-shortcut span{display:none}body.callmed-app .cm-search-shortcut{min-width:40px;justify-content:center}.cm50-intro{flex-direction:column;gap:17px}.cm50-intro-tools{align-items:flex-start;text-align:left;max-width:100%}.cm50-intro h1{font-size:30px}.cm50-screen{gap:17px}.cm50-statline,.cm50-shortcuts,.cm50-steps,.cm50-availability-grid{grid-template-columns:1fr}.cm50-doctor-hero{grid-template-columns:1fr}.cm50-doctor-hero aside{border-left:0;border-top:1px solid #ffffff36;padding:16px 0 0}.cm50-row-header{display:none}.cm50-agenda-line,.cm50-medical-row{grid-template-columns:65px minmax(0,1fr);gap:9px 11px}.cm50-agenda-line>.status-pill{grid-column:2}.cm50-agenda-line>a,.cm50-medical-actions{grid-column:2}.cm50-ticket-meta{gap:14px}.cm50-sheet,.cm50-patient-choices,.cm50-patient-ticket{padding:20px}.cm50-sheet-heading{align-items:flex-start}}
+
+
+/* V54 — navegação progressiva. Não modifica URLs, ações de formulário nem os perfis. */
+:root { --cm-navigation-ease: cubic-bezier(.2,.75,.25,1); }
+:where(.primary-nav a,.callmed-mobile-nav a,.callmed-mobile-nav button,
+       .cm-search-shortcut,.cm-modulo-grupo > summary,.cm-organizacao .cm-area > summary,
+       .cm-menu-conteudo .module-grid > a,.cm-caminho a) {
+    transition: background-color .18s var(--cm-navigation-ease), color .18s var(--cm-navigation-ease),
+                border-color .18s var(--cm-navigation-ease), box-shadow .18s var(--cm-navigation-ease);
+}
+body.callmed-app .primary-nav>a.active,
+body.callmed-app .primary-nav>a[aria-current="page"] {
+    background: var(--accent-soft);
+    color: var(--accent);
+    box-shadow: inset 0 -3px 0 var(--primary);
+}
+body.callmed-app .primary-nav>a:hover,
+body.callmed-app .cm-search-shortcut:hover,
+.callmed-mobile-nav>a:hover,
+.callmed-mobile-nav>button:hover { background: var(--accent-soft); color: var(--accent); }
+body.callmed-app .primary-nav>a:focus-visible,
+body.callmed-app .cm-search-shortcut:focus-visible,
+body.callmed-app .modules-dialog a:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+body.callmed-app .modules-dialog .module-grid > a:hover,
+body.callmed-app .modules-dialog .module-grid > a:focus-visible {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: var(--primary);
+}
+body.callmed-app .modules-dialog .module-grid > a[hidden] { display: none!important; }
+.cm-caminho a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+:where(#conteudo,section[id],article[id],h2[id],h3[id]) { scroll-margin-top: calc(var(--cm-header-height, 78px) + 22px); }
+@media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root) { animation: .11s ease-in both cm54-leave; }
+    ::view-transition-new(root) { animation: .18s ease-out both cm54-enter; }
+    @keyframes cm54-leave { from {opacity:1} to {opacity:.94} }
+    @keyframes cm54-enter { from {opacity:.94} to {opacity:1} }
+}
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto!important; }
+    :where(.primary-nav a,.callmed-mobile-nav a,.callmed-mobile-nav button,.cm-search-shortcut,
+          .cm-modulo-grupo > summary,.cm-menu-conteudo .module-grid > a) { transition: none!important; }
+}
+
+/* Em alto contraste escuro, amarelo requer texto preto sobre ações primárias. */
+:root.callmed-high-contrast[data-theme="dark"] {
+    --primary-ink: #000;
+    --ink-on-primary: #000;
+    --cm-primary-ink: #000;
+}
+/* Texto ampliado não quebra os nomes da navegação letra a letra. */
+@media(max-width:650px){
+ .callmed-mobile-nav{justify-content:flex-start;overflow-x:auto;overscroll-behavior-x:contain}
+ .callmed-mobile-nav>a,.callmed-mobile-nav>button{flex:1 0 auto;min-width:52px;padding-inline:3px}
+ .callmed-mobile-nav :is(.cm-nav-full-label,.cm-nav-short-label,button>span){white-space:nowrap;word-break:normal;overflow-wrap:normal}
+}
+
+/* Reserva de espaço para o assistente na lateral do cartão de dados do paciente. */
+.cm50-patient .cm50-patient-extra{padding-inline-end:88px}

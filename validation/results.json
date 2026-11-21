@@ -1,0 +1,77 @@
+[
+  {
+    "suite": "default",
+    "exit": 0,
+    "pass": 585
+  },
+  {
+    "suite": "conta",
+    "exit": 0,
+    "pass": 48
+  },
+  {
+    "suite": "mobile",
+    "exit": 0,
+    "pass": 125
+  },
+  {
+    "suite": "apk",
+    "exit": 0,
+    "pass": 13
+  },
+  {
+    "suite": "salas",
+    "exit": 0,
+    "pass": 40
+  },
+  {
+    "suite": "piloto",
+    "exit": 0,
+    "pass": 46
+  },
+  {
+    "suite": "operacao",
+    "exit": 0,
+    "pass": 11
+  },
+  {
+    "suite": "psicologia",
+    "exit": 0,
+    "pass": 26
+  },
+  {
+    "suite": "turn",
+    "exit": 0,
+    "pass": 11
+  },
+  {
+    "suite": "teleconsulta",
+    "exit": 0,
+    "pass": 21
+  },
+  {
+    "suite": "jornada",
+    "exit": 0,
+    "pass": 37
+  },
+  {
+    "suite": "amplo",
+    "exit": 0,
+    "pass": 34
+  },
+  {
+    "suite": "audit-fixes",
+    "exit": 0,
+    "pass": 30
+  },
+  {
+    "suite": "architecture",
+    "exit": 0,
+    "pass": 14
+  },
+  {
+    "suite": "encaixe-fixes",
+    "exit": 0,
+    "pass": 6
+  }
+]

@@ -1,0 +1,14 @@
+CALLMED V54.1 — BOTÃO TELECONSULTA NEUTRO
+
+Para o CallMed V54: descompacte os arquivos sobre a raiz do repositório CallMed,
+substituindo apenas os quatro arquivos correspondentes. Faça backup antes.
+
+Alterações:
+- Removido o fundo e a borda verde exclusivos do item Teleconsulta do menu principal.
+- Removida a cor de destaque exclusiva do ícone e da navegação móvel.
+- O link, a rota, o ícone, o nome e o rótulo curto no celular foram preservados.
+- Cache do service worker: v105 (impede a aparência antiga após atualização).
+- Teste de integridade: cache atualizado.
+
+Não modifica controllers, views Razor, fluxos clínicos, autenticação nem o APK.
+Não inclui merge/deploy. Após publicar: Ctrl+Shift+R no navegador.

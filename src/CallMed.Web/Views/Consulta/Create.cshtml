@@ -1,0 +1,12 @@
+@model Consulta
+@{ ViewData["Title"] = "Marcar consulta"; }
+<section class="cm25-screen cm19-booking-page cm50-booking" data-cm25-view="Consulta/Create.cshtml">
+    <header class="cm50-booking-heading"><span class="cm50-overline">AGENDAMENTO DESCOMPLICADO</span><h1>Seu próximo cuidado,<br /><em>do seu jeito.</em></h1><p>Escolha a especialidade, o profissional, a modalidade e um horário disponível. Depois do agendamento, acompanhe a confirmação de presença em Minhas consultas.</p></header>
+    <div class="cm50-booking-layout"><aside class="cm50-booking-guide"><span class="cm50-overline">SEU CAMINHO</span><h2>Uma escolha<br />de cada vez.</h2><p>As opções seguintes aparecem conforme você avança.</p><ol><li>Especialidade</li><li>Profissional</li><li>Data disponível</li><li>Horário</li><li>Confirmar</li></ol><a class="cm-booking-waitlist-link" asp-controller="ListaEspera" asp-action="Index">Quer uma vaga mais cedo? <strong>Ver lista de espera →</strong></a></aside>
+        <form asp-action="Create" method="post" class="cm19-booking-card cm19-card cm50-booking-form" id="cm19BookingForm">
+            @if (ViewBag.SolicitacaoId is int solicitacaoId) { <input type="hidden" name="solicitacaoId" value="@solicitacaoId" /><div class="cm21-linked-request">Agendamento vinculado à solicitação <strong>#@solicitacaoId</strong>.</div> }
+            <partial name="_Form" model="Model" />
+            <div class="cm19-booking-actions">@if (User.IsInRole("Paciente")) { <a class="btn secondary" asp-controller="Jornada" asp-action="Index">Voltar às minhas consultas</a> } else { <a class="btn secondary" asp-controller="Agenda" asp-action="Index">Voltar à agenda</a> }<button class="btn" type="submit">Confirmar agendamento ↗</button></div>
+        </form>
+    </div>
+</section>

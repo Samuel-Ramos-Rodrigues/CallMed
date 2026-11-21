@@ -1,0 +1,93 @@
+[
+  {
+    "id": "CMF-001",
+    "categoria": "compilacao/backend",
+    "severidade": "P1 - alta",
+    "status": "corrigido no fonte; build .NET ainda nao executado",
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha_original": 474,
+    "evidencia": "EnviarRespostaIaAsync chamado sem capturar resultado; chamada seguinte acessa saida.Status; log Render confirma CS0103.",
+    "causa": "Variavel nao declarada no escopo do recebimento de novas mensagens, embora os outros caminhos capturem o resultado.",
+    "impacto": "Docker publish falha; novo deploy impossibilitado.",
+    "correcao": "var saida = await _envio.EnviarRespostaIaAsync(...);",
+    "validacao": "Novo teste estrutural falhou antes e passou depois; dotnet publish pendente."
+  },
+  {
+    "id": "CMF-002",
+    "categoria": "testes/CI",
+    "severidade": "P1 - alta",
+    "status": "corrigido com teste especifico; comportamento de compilacao pendente",
+    "arquivo": "tests/next/check-transport-state.cjs",
+    "linha_original": 9,
+    "evidencia": "Teste antigo procura 3 chamadas Persistir(...) mas nao valida se saida foi declarada; passava apesar de CS0103.",
+    "causa": "Assercao textual insuficiente para checar escopo; nao equivale a compilacao C#.",
+    "impacto": "Falsa sensacao de seguranca antes da publicacao.",
+    "correcao": "Teste adicional confere captura explicita da mensagem no caminho de entrada nova; manutencao do dotnet build na CI.",
+    "validacao": "Teste novo reproduziu erro na base e passou apos patch."
+  },
+  {
+    "id": "CMF-003",
+    "categoria": "funcionalidade/UX",
+    "severidade": "P3 - baixa",
+    "status": "corrigido no fonte; interface nao testada autenticamente",
+    "arquivo": "src/CallMed.Application/Modules/Agenda/Services/AgendamentoService.cs",
+    "linha_original": 280,
+    "evidencia": "Duas validacoes de profissional apresentam mensagem Psicólogo inválido para qualquer profissional de saude.",
+    "causa": "Texto especifico herdado em servico multiprofissional.",
+    "impacto": "Mensagem enganosa para medico ou outro profissional.",
+    "correcao": "Mensagem Profissional inválido ou inativo nos dois caminhos.",
+    "validacao": "Duas ocorrencias substituidas; testes de interface permanecem pendentes."
+  },
+  {
+    "id": "CMF-004",
+    "categoria": "android/distribuicao",
+    "severidade": "P1 - alta",
+    "status": "investigacao necessaria; sem alteracao de APK",
+    "arquivo": "mobile/android/app/src/main/java/com/callmed/app/SessionErrorPolicy.kt",
+    "linha_original": 4,
+    "evidencia": "Codigo-fonte possui regra 401 != 403; metadata do APK distribuido ainda indica versao 50.0.0 e nao comprova inclusion de alteracao posterior.",
+    "causa": "Sem pipeline de release assinado com proveniencia reproduzivel do mesmo commit.",
+    "impacto": "Aplicativo instalado pode continuar com regra antiga apesar de fonte atualizada.",
+    "correcao": "Comparar bytecode ou compilar release com chave privada local, aumentar versionCode, validar 401/403 no dispositivo.",
+    "validacao": "Teste Kotlin local passou; APK release nao reconstruido."
+  },
+  {
+    "id": "CMF-005",
+    "categoria": "qualidade/escopo",
+    "severidade": "P1 - alta",
+    "status": "aberto/bloqueado",
+    "arquivo": "Dockerfile",
+    "linha_original": 9,
+    "evidencia": "Imagem Render exige dotnet publish .NET 10; SDK dotnet nao instalado no ambiente de auditoria; log anterior de falha de compilacao fornecido pelo usuario.",
+    "causa": "Ausencia de SDK e teste integrado executavel localmente; validacoes estaticas nao suprem compilacao.",
+    "impacto": "Risco de deploy bloqueado por novos erros de C# ou testes nao realizados.",
+    "correcao": "Rodar dotnet restore, build, test e publish em CI/ambiente de homologacao antes de promover release.",
+    "validacao": "Nao executado localmente."
+  },
+  {
+    "id": "CMF-006",
+    "categoria": "frontend/manutenibilidade",
+    "severidade": "P2 - media",
+    "status": "candidato a revisao visual; nao corrigido",
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha_original": 1,
+    "evidencia": "A folha nova-00-design.css concentra >140KB; regras de seletores repetidas entre modulos; pode afetar especificidade e manutencao.",
+    "causa": "Acumulo historico de versoes e adaptadores CSS.",
+    "impacto": "Ajustes podem ser sobrescritos; nao prova quebra visual sem pagina renderizada.",
+    "correcao": "Mapear especificidade por componente e fazer refatoracao incremental com telas reais, sem empilhar overrides.",
+    "validacao": "Sintaxe CSS aprovada; inspeção visual real nao executada."
+  },
+  {
+    "id": "CMF-007",
+    "categoria": "integracao/worker",
+    "severidade": "P2 - media",
+    "status": "hipotese operacional a validar",
+    "arquivo": "src/CallMed.Application/Composition/CallMedJobMode.cs",
+    "linha_original": 11,
+    "evidencia": "Modo embedded por padrao; worker externo exige Jobs:Mode=external em ambos os processos.",
+    "causa": "Duas topologias distintas precisam ser configuradas de modo coerente em Render.",
+    "impacto": "Configuração incorreta pode interromper rotinas ou executar mais de um produtor.",
+    "correcao": "Smoke test Render Web/Worker, comparar Jobs__Mode de ambos, health checks e logs.",
+    "validacao": "Inspecao de configuracao apenas; ambientes Render nao acessados."
+  }
+]

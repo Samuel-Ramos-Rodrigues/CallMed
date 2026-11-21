@@ -1,0 +1,69 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    Layout = "_PublicLayout";
+    var contato = Configuration["PlayStore:SupportEmail"]?.Trim();
+    if (string.IsNullOrWhiteSpace(contato))
+        contato = Configuration["Clinica:Email"]?.Trim();
+    var possuiContato = !string.IsNullOrWhiteSpace(contato);
+}
+<section class="privacy-shell cm25-privacy-shell"><header class="cm25-privacy-head">
+        <a class="privacy-brand cm-brand-plate" href="/"><img src="~/images/logo-callmed-horizontal.png" alt="CallMed" width="260" height="82" /></a>
+        <p class="privacy-meta">Última atualização: 07/11/2026</p><span class="cm25-kicker">PRIVACIDADE E LGPD</span><h1>Política de Privacidade</h1></header>
+        <p>Esta política explica como o CallMed trata informações necessárias ao cadastro, agendamento de consultas, atendimento e recursos digitais da clínica. A organização que opera o CallMed é responsável por usar o sistema de acordo com a LGPD e demais normas aplicáveis.</p>
+
+        <h2>1. Informações tratadas</h2>
+        <ul>
+            <li>Dados de cadastro e contato, como nome, CPF, e-mail, telefone e data de nascimento.</li>
+            <li>Dados de convênio, quando informados, incluindo operadora, carteirinha e validade.</li>
+            <li>Dados de agendamento, como especialidade, profissional, data, horário, situação da consulta, confirmações e lista de espera.</li>
+            <li>Mensagens enviadas ao Assistente CallMed ou pelos canais de atendimento integrados, quando o usuário utiliza esses recursos.</li>
+            <li>Dados técnicos essenciais de autenticação, sessão, segurança e funcionamento do aplicativo.</li>
+        </ul>
+
+        <h2>2. Finalidades</h2>
+        <p>Os dados são usados para criar e proteger a conta, localizar horários, agendar, remarcar, cancelar e confirmar consultas, manter histórico operacional, processar lista de espera e lembretes, oferecer atendimento, prevenir uso indevido e manter o serviço funcionando.</p>
+
+        <h2>3. Serviços integrados</h2>
+        <p>O CallMed pode utilizar provedores necessários à operação, como hospedagem no Render, banco PostgreSQL/Neon, Google Gemini para funções do assistente de IA e Evolution/WhatsApp quando o atendimento por WhatsApp estiver habilitado. Ao conversar com o assistente, o conteúdo necessário à resposta pode ser processado pelo provedor de IA configurado.</p>
+
+        <h2>Preparação e registros de psicologia</h2><p>Os registros elaborados pelo profissional são separados das respostas de preparação e do chat. O prontuário psicológico é cifrado para o paciente e o profissional; o material técnico reservado recebe somente as chaves do profissional. A administração e a recepção não recebem esses envelopes. Correções são publicadas por retificação, preservando o registro anterior. O profissional pode compartilhar chaves com o responsável técnico designado para continuidade da guarda; essa ação é auditada e não torna o conteúdo acessível a administradores.</p><p>O paciente pode baixar uma cópia sigilosa dos registros acessíveis de cada sessão. Guarde o arquivo com segurança: a cópia baixada no seu dispositivo fica legível. Pedidos formais de prontuário, acesso por responsáveis e entrega a terceiros são tratados pela clínica após verificação de identidade e legitimidade.</p>
+        <p>Os formulários são definidos pelo profissional responsável. As respostas são criptografadas no navegador para as chaves do paciente e do profissional da consulta. A recepção acessa os estados administrativos. A chave privada fica no dispositivo, com cópia de recuperação protegida por senha escolhida por você. Guarde essa cópia: o servidor não consegue recuperar respostas quando todas as chaves e cópias são perdidas.</p>
+        <p>A consulta por vídeo exige identificação e consentimento. Áudio e vídeo são cifrados entre os participantes, sem gravação pelo sistema. Um servidor TURN pode retransmitir a mídia cifrada para conectar redes diferentes. São mantidos registros administrativos de acesso, consentimento e etapas do atendimento.</p>
+        <p>A proteção dos formulários e da mídia não significa que cadastro, metadados da agenda, SMS, e-mail ou o assistente tenham criptografia de ponta a ponta. Não envie informações clínicas ao assistente administrativo. Os provedores configurados para envio de e-mail e SMS podem incluir Brevo e httpSMS.</p>
+        <p>Uma integração com prontuário externo só é habilitada pela organização responsável e pode compartilhar dados cadastrais mínimos e eventos de agenda com o fornecedor autorizado, com autenticação e auditoria. Respostas clínicas cifradas não são exportadas automaticamente.</p>
+        <h2>4. Integração com Gmail e dados do Google</h2>
+        <p>Quando a organização responsável habilita a integração de atendimento, o CallMed acessa uma caixa Gmail dedicada e autorizada pela própria organização. A integração consulta mensagens recebidas após a data inicial de ativação e utiliza dados estritamente necessários ao atendimento, como remetente, assunto, data, identificadores da mensagem e conteúdo textual. O sistema pode aplicar uma etiqueta de processamento e marcar a mensagem como lida para evitar duplicidade.</p>
+        <p>O conteúdo recebido é usado para registrar a solicitação na Central de Atendimento. Em mensagens administrativas elegíveis, parte do conteúdo pode ser processada pelo provedor de inteligência artificial configurado para preparar respostas administrativas, que podem ser enviadas automaticamente conforme a configuração da clínica. Solicitações que exigem intervenção humana são encaminhadas à equipe. Mensagens clínicas ou sensíveis devem ser encaminhadas à equipe, sem resposta automática da IA.</p>
+        <p>Os dados do Gmail não são usados para publicidade nem vendidos. O acesso é limitado à caixa autorizada e às finalidades descritas nesta política, com processamento por fornecedores técnicos essenciais ao serviço. A organização pode desativar a integração e revogar o acesso OAuth na Conta Google. O tratamento de dados do Google deve respeitar a Política de Dados do Usuário dos Serviços de API do Google, incluindo os requisitos de uso limitado.</p>
+
+        <h2>5. Compartilhamento e venda</h2>
+        <p>O software não foi projetado para vender dados pessoais. Informações podem ser processadas por fornecedores técnicos essenciais ao serviço, pela clínica e por profissionais autorizados conforme suas funções, ou compartilhadas quando houver obrigação legal.</p>
+
+        <h2>6. Segurança e acesso</h2>
+        <p>O CallMed utiliza autenticação, perfis de acesso e comunicação HTTPS. Cada perfil recebe somente as funções previstas para paciente, profissional, funcionário ou administrador. Nenhum sistema elimina totalmente riscos, por isso credenciais devem ser mantidas em sigilo.</p>
+
+        <h2>7. Retenção e direitos</h2>
+        <p>Os registros são mantidos pelo período necessário às finalidades do serviço e às obrigações da clínica. O titular pode solicitar acesso, correção e, quando juridicamente aplicável, eliminação ou outras medidas previstas na LGPD. Alguns registros podem precisar ser preservados por obrigação legal ou para manter a integridade do histórico de atendimento.</p>
+
+        <h2>8. Assistente de IA e saúde</h2>
+        <div class="privacy-note">O Assistente CallMed é um recurso de apoio para navegação, atendimento e agendamento. Ele não substitui avaliação de profissional de saúde, não deve ser usado para diagnóstico e não é um canal de emergência. Em situação urgente, procure o serviço de emergência adequado.</div>
+
+        <h2>9. Contato</h2>
+        @if (possuiContato)
+        {
+            <p>Para dúvidas sobre privacidade ou tratamento de dados, entre em contato pelo e-mail <a href="@("mailto:" + contato)">@contato</a>.</p>
+        }
+        else
+        {
+            <p>O canal de contato de privacidade deve ser informado pela clínica responsável na configuração do CallMed.</p>
+        }
+
+        <div class="privacy-actions">
+            <a class="btn" href="/">Voltar ao CallMed</a>
+            <a class="btn secondary" href="/termos-de-uso">Termos de Serviço</a>
+            @if (possuiContato)
+            {
+                <a class="btn secondary" href="@("mailto:" + contato)">Falar com o suporte</a>
+            }
+        </div>
+    </section>

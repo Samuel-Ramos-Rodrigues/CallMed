@@ -1,0 +1,929 @@
+{
+  "checks": [
+    {
+      "label": "Agendamento inicia pela área, sem exibir indisponibilidade das etapas futuras",
+      "ok": true
+    },
+    {
+      "label": "Selecionar área libera apenas a próxima escolha de profissional",
+      "ok": true
+    },
+    {
+      "label": "Escolhas completas mostram resumo e habilitam confirmação",
+      "ok": true
+    },
+    {
+      "label": "Cancelar e confirmar têm espaçamento independente",
+      "ok": true
+    },
+    {
+      "label": "Recepção apresenta um único rodapé geral",
+      "ok": true
+    },
+    {
+      "label": "Fila de ligações possui página própria e acessível à recepção",
+      "ok": true
+    },
+    {
+      "label": "Salvar foto é habilitado depois de escolher uma imagem válida",
+      "ok": true
+    },
+    {
+      "label": "Cabeçalho e perfil utilizam a mesma foto e versão",
+      "ok": true
+    },
+    {
+      "label": "A foto substitui as iniciais no cabeçalho",
+      "ok": true
+    },
+    {
+      "label": "Salvar fica desativado quando não há outra imagem para enviar",
+      "ok": true
+    },
+    {
+      "label": "Foto do perfil continua visível ao navegar para outra página",
+      "ok": true
+    },
+    {
+      "label": "Menu da conta abre com as ações do próprio usuário",
+      "ok": true
+    },
+    {
+      "label": "Salvar foto é habilitado depois de escolher uma imagem válida",
+      "ok": true
+    },
+    {
+      "label": "Cabeçalho e perfil utilizam a mesma foto e versão",
+      "ok": true
+    },
+    {
+      "label": "A foto substitui as iniciais no cabeçalho",
+      "ok": true
+    },
+    {
+      "label": "Salvar fica desativado quando não há outra imagem para enviar",
+      "ok": true
+    },
+    {
+      "label": "Foto do perfil continua visível ao navegar para outra página",
+      "ok": true
+    },
+    {
+      "label": "Menu da conta abre com as ações do próprio usuário",
+      "ok": true
+    },
+    {
+      "label": "Salvar foto é habilitado depois de escolher uma imagem válida",
+      "ok": true
+    },
+    {
+      "label": "Cabeçalho e perfil utilizam a mesma foto e versão",
+      "ok": true
+    },
+    {
+      "label": "A foto substitui as iniciais no cabeçalho",
+      "ok": true
+    },
+    {
+      "label": "Salvar fica desativado quando não há outra imagem para enviar",
+      "ok": true
+    },
+    {
+      "label": "Foto do perfil continua visível ao navegar para outra página",
+      "ok": true
+    },
+    {
+      "label": "Menu da conta abre com as ações do próprio usuário",
+      "ok": true
+    },
+    {
+      "label": "Salvar foto é habilitado depois de escolher uma imagem válida",
+      "ok": true
+    },
+    {
+      "label": "Cabeçalho e perfil utilizam a mesma foto e versão",
+      "ok": true
+    },
+    {
+      "label": "A foto substitui as iniciais no cabeçalho",
+      "ok": true
+    },
+    {
+      "label": "Salvar fica desativado quando não há outra imagem para enviar",
+      "ok": true
+    },
+    {
+      "label": "Foto do perfil continua visível ao navegar para outra página",
+      "ok": true
+    },
+    {
+      "label": "Menu da conta abre com as ações do próprio usuário",
+      "ok": true
+    },
+    {
+      "label": "Os quatro perfis possuem URLs de foto independentes",
+      "ok": true
+    },
+    {
+      "label": "Uma conta sem foto não recebe a imagem de outro usuário",
+      "ok": true
+    },
+    {
+      "label": "Conta sem foto mantém as iniciais visíveis",
+      "ok": true
+    },
+    {
+      "label": "Parâmetro de outro usuário não permite obter a foto alheia",
+      "ok": true
+    },
+    {
+      "label": "Salvar foto é habilitado depois de escolher uma imagem válida",
+      "ok": true
+    },
+    {
+      "label": "Cabeçalho e perfil utilizam a mesma foto e versão",
+      "ok": true
+    },
+    {
+      "label": "A foto substitui as iniciais no cabeçalho",
+      "ok": true
+    },
+    {
+      "label": "Salvar fica desativado quando não há outra imagem para enviar",
+      "ok": true
+    },
+    {
+      "label": "Trocar a foto atualiza a versão também no cabeçalho",
+      "ok": true
+    },
+    {
+      "label": "Imagem do cabeçalho continua protegida e sem cache público",
+      "ok": true
+    },
+    {
+      "label": "Remover a foto restaura as iniciais no perfil superior",
+      "ok": true
+    },
+    {
+      "label": "Falha ao carregar imagem apresenta iniciais no lugar de ícone quebrado",
+      "ok": true
+    },
+    {
+      "label": "Solicitações possui uma finalidade própria no título",
+      "ok": true
+    },
+    {
+      "label": "Solicitações não contém outra aba ou lista de consultas",
+      "ok": true
+    },
+    {
+      "label": "Pedido ainda sem horário permanece em Solicitações",
+      "ok": true
+    },
+    {
+      "label": "Pedidos já agendados não voltam ao quadro de solicitações",
+      "ok": true
+    },
+    {
+      "label": "Consultas abre na rota canônica da navegação superior",
+      "ok": true
+    },
+    {
+      "label": "Consulta com múltiplos vínculos aparece uma única vez",
+      "ok": true
+    },
+    {
+      "label": "Origem exibida utiliza o primeiro pedido vinculado",
+      "ok": true
+    },
+    {
+      "label": "Filtro por WhatsApp encontra a consulta de origem correspondente",
+      "ok": true
+    },
+    {
+      "label": "Vínculo posterior não altera a origem usada pelo filtro",
+      "ok": true
+    },
+    {
+      "label": "Consulta direta sem solicitação continua disponível",
+      "ok": true
+    },
+    {
+      "label": "Link antigo redireciona para Consultas preservando filtros",
+      "ok": true
+    },
+    {
+      "label": "Histórico de consultas realizadas continua acessível",
+      "ok": true
+    },
+    {
+      "label": "Filtro específico por situação continua funcionando",
+      "ok": true
+    },
+    {
+      "label": "Filtro administrativo de convênio foi preservado",
+      "ok": true
+    },
+    {
+      "label": "Parâmetros de equipe não ampliam o acesso do paciente a consultas alheias",
+      "ok": true
+    },
+    {
+      "label": "Confirmar retorna para a lista e preserva a situação selecionada",
+      "ok": true
+    },
+    {
+      "label": "Consulta confirmada sai da lista de pendências",
+      "ok": true
+    },
+    {
+      "label": "Confirmação atualiza o agendamento real",
+      "ok": true
+    },
+    {
+      "label": "Ação preservada: Preparação e check-in",
+      "ok": true
+    },
+    {
+      "label": "Ação preservada: Remarcar",
+      "ok": true
+    },
+    {
+      "label": "Ação preservada: Editar consulta",
+      "ok": true
+    },
+    {
+      "label": "Vínculo do agendamento abre a solicitação de origem",
+      "ok": true
+    },
+    {
+      "label": "consultas: 360px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "consultas: 360px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "consultas: 360px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "consultas: 360px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "consultas: 360px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "consultas: 360px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "consultas: 390px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "consultas: 390px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "consultas: 390px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "consultas: 390px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "consultas: 390px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "consultas: 390px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "consultas: 768px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "consultas: 768px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "consultas: 768px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "consultas: 768px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "consultas: 768px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "consultas: 768px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1024px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1024px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1024px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1024px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1024px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1024px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1440px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1440px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1440px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1440px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1440px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1440px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1920px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1920px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1920px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1920px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1920px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "consultas: 1920px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "consultas: texto a 200% sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 360px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 360px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 360px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 360px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 360px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 360px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 390px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 390px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 390px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 390px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 390px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 390px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 768px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 768px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 768px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 768px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 768px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 768px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1024px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1024px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1024px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1024px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1024px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1024px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1440px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1440px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1440px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1440px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1440px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1440px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1920px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1920px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1920px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1920px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1920px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: 1920px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "solicitacoes: texto a 200% sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 360px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 360px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "conta: 360px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 360px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 360px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "conta: 360px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 390px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 390px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "conta: 390px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 390px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 390px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "conta: 390px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 768px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 768px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "conta: 768px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 768px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 768px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "conta: 768px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 1024px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 1024px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "conta: 1024px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 1024px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 1024px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "conta: 1024px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 1440px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 1440px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "conta: 1440px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 1440px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 1440px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "conta: 1440px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 1920px / light sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 1920px / light ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "conta: 1920px / light sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: 1920px / dark sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "conta: 1920px / dark ícones de navegação sem compressão",
+      "ok": true
+    },
+    {
+      "label": "conta: 1920px / dark sem violações axe verificadas",
+      "ok": true
+    },
+    {
+      "label": "conta: texto a 200% sem transbordamento",
+      "ok": true
+    },
+    {
+      "label": "Regressão sem erros JavaScript ou de transporte",
+      "ok": true
+    }
+  ],
+  "matrix": [],
+  "overflows": [],
+  "errors": [],
+  "accessibility": [
+    {
+      "label": "consultas",
+      "width": 360,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "consultas",
+      "width": 360,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "consultas",
+      "width": 390,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "consultas",
+      "width": 390,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "consultas",
+      "width": 768,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "consultas",
+      "width": 768,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "consultas",
+      "width": 1024,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "consultas",
+      "width": 1024,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "consultas",
+      "width": 1440,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "consultas",
+      "width": 1440,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "consultas",
+      "width": 1920,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "consultas",
+      "width": 1920,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "solicitacoes",
+      "width": 360,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "solicitacoes",
+      "width": 360,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "solicitacoes",
+      "width": 390,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "solicitacoes",
+      "width": 390,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "solicitacoes",
+      "width": 768,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "solicitacoes",
+      "width": 768,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "solicitacoes",
+      "width": 1024,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "solicitacoes",
+      "width": 1024,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "solicitacoes",
+      "width": 1440,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "solicitacoes",
+      "width": 1440,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "solicitacoes",
+      "width": 1920,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "solicitacoes",
+      "width": 1920,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 360,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 360,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 390,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 390,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 768,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 768,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 1024,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 1024,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 1440,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 1440,
+      "theme": "dark",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 1920,
+      "theme": "light",
+      "violations": []
+    },
+    {
+      "label": "conta",
+      "width": 1920,
+      "theme": "dark",
+      "violations": []
+    }
+  ]
+}

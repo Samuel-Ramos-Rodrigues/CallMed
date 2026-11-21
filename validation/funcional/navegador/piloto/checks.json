@@ -1,0 +1,53 @@
+{
+  "checks": [
+    "Comparação exige autenticação",
+    "Paciente ou profissional clínico não acessa dados operacionais da equipe",
+    "Paciente ou profissional clínico não acessa dados operacionais da equipe",
+    "Paciente ou profissional clínico não acessa dados operacionais da equipe",
+    "Primeira comparação apresenta ausência de dados reais",
+    "Registro sem antifalsificação é recusado",
+    "Campos preenchidos atendem à validação nativa do formulário",
+    "Equipe registra linha de base conferida pelo formulário",
+    "Registro exibe histórico e revisão atual",
+    "Formulário antigo recebe conflito e instrução de recarregar",
+    "Equipe corrige a contagem por nova revisão",
+    "Correção mantém duas revisões visíveis",
+    "Prévia do piloto usa consultas e durações reais da agenda da fixture",
+    "Fotografia do piloto e medições da equipe são registradas",
+    "Comparação apresenta faltas, ocupação, esforço e custo por agendamento",
+    "Exportação considera somente a última revisão de cada dia",
+    "Número decimal HTML mantém R$ 30,50 com aplicação em pt-BR",
+    "Relatório usa ocupação por minutos e guarda impressão da fotografia",
+    "Exportação agregada não contém pacientes nem identificadores de operadores e impede cache",
+    "Equipe desconsidera dia sem apagar o histórico",
+    "Dia desconsiderado sai da amostra e não vira resultado zero",
+    "Nova revisão restaura dia conferido mantendo a retirada no histórico",
+    "Períodos sobrepostos apresentam orientação na própria tela",
+    "Tela de medicao sem violações na checagem automatizada WCAG",
+    "Tela de medicao mantém acessibilidade automatizada no tema escuro",
+    "Tela de medicao mantém leitura a 200% em celular sem transbordamento da página",
+    "Teclado alcança controles da tela de medicao",
+    "Tela de comparacao sem violações na checagem automatizada WCAG",
+    "Tela de comparacao mantém acessibilidade automatizada no tema escuro",
+    "Tela de comparacao mantém leitura a 200% em celular sem transbordamento da página",
+    "Teclado alcança controles da tela de comparacao"
+  ],
+  "axeReports": [
+    {
+      "name": "medicao",
+      "violations": []
+    },
+    {
+      "name": "medicao-dark",
+      "violations": []
+    },
+    {
+      "name": "comparacao",
+      "violations": []
+    },
+    {
+      "name": "comparacao-dark",
+      "violations": []
+    }
+  ]
+}

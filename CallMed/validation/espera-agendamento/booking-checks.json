@@ -1,0 +1,24 @@
+{
+  "checks": [
+    "Calendário real com sete colunas e datas legíveis: 1713 / fonte 100%",
+    "Calendário real com sete colunas e datas legíveis: 1713 / fonte 200%",
+    "Calendário real com sete colunas e datas legíveis: 1280 / fonte 100%",
+    "Calendário real com sete colunas e datas legíveis: 1280 / fonte 200%",
+    "Calendário real com sete colunas e datas legíveis: 768 / fonte 100%",
+    "Calendário real com sete colunas e datas legíveis: 768 / fonte 200%",
+    "Calendário real com sete colunas e datas legíveis: 390 / fonte 100%",
+    "Calendário real com sete colunas e datas legíveis: 390 / fonte 200%",
+    "Calendário real com sete colunas e datas legíveis: 320 / fonte 100%",
+    "Calendário real com sete colunas e datas legíveis: 320 / fonte 200%",
+    "Paciente pode confirmar após selecionar todas as opções",
+    "Agendamento completo cria consulta com o horário escolhido",
+    "Remarcação salva usando o formulário real",
+    "Confirmação de cancelamento efetiva a operação",
+    "Fixture tem dois profissionais para testar troca durante carregamento",
+    "Resposta antiga não substitui datas do novo profissional",
+    "Equipe não confirma consulta sem selecionar o paciente",
+    "Seleção do paciente libera a confirmação pela equipe",
+    "Atualizar jornada exibe o horário alterado sem recarregar a página",
+    "Fluxos de agendamento sem erros JavaScript"
+  ]
+}

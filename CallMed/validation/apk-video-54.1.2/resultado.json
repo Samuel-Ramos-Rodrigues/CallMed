@@ -1,0 +1,151 @@
+{
+  "test_suites": [
+    {
+      "name": "com.callmed.app.JourneyUiTest",
+      "tests": "3",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:31:06.073Z",
+      "hostname": "157152efb91c",
+      "time": "0.317"
+    },
+    {
+      "name": "com.callmed.app.ClinicalUiTest",
+      "tests": "4",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:31:02.779Z",
+      "hostname": "157152efb91c",
+      "time": "3.29"
+    },
+    {
+      "name": "com.callmed.app.ClinicalSessionTest",
+      "tests": "3",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:31:02.661Z",
+      "hostname": "157152efb91c",
+      "time": "0.083"
+    },
+    {
+      "name": "com.callmed.app.ClinicalPreparationTest",
+      "tests": "11",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:31:00.458Z",
+      "hostname": "157152efb91c",
+      "time": "2.198"
+    },
+    {
+      "name": "com.callmed.app.NativeTeleStartupTest",
+      "tests": "3",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:31:06.435Z",
+      "hostname": "157152efb91c",
+      "time": "0.146"
+    },
+    {
+      "name": "com.callmed.app.ChatRefreshTest",
+      "tests": "2",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:30:59.037Z",
+      "hostname": "157152efb91c",
+      "time": "0.199"
+    },
+    {
+      "name": "com.callmed.app.CallMedApiTest",
+      "tests": "24",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:30:58.987Z",
+      "hostname": "157152efb91c",
+      "time": "0.04"
+    },
+    {
+      "name": "com.callmed.app.ClinicalCryptoTest",
+      "tests": "9",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:30:59.238Z",
+      "hostname": "157152efb91c",
+      "time": "1.219"
+    },
+    {
+      "name": "com.callmed.app.NativeTeleRaceTest",
+      "tests": "2",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:31:06.394Z",
+      "hostname": "157152efb91c",
+      "time": "0.038"
+    },
+    {
+      "name": "com.callmed.app.ProfessionModelTest",
+      "tests": "3",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:31:08.297Z",
+      "hostname": "157152efb91c",
+      "time": "0.001"
+    },
+    {
+      "name": "com.callmed.app.CallAttemptTest",
+      "tests": "4",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:30:56.269Z",
+      "hostname": "157152efb91c",
+      "time": "0.003"
+    },
+    {
+      "name": "com.callmed.app.NativeUiTest",
+      "tests": "13",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:31:06.590Z",
+      "hostname": "157152efb91c",
+      "time": "1.706"
+    },
+    {
+      "name": "com.callmed.app.CallAudioTest",
+      "tests": "5",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:30:56.493Z",
+      "hostname": "157152efb91c",
+      "time": "2.491"
+    },
+    {
+      "name": "com.callmed.app.SessionErrorPolicyTest",
+      "tests": "2",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-11-16T11:31:08.298Z",
+      "hostname": "157152efb91c",
+      "time": "0.001"
+    }
+  ],
+  "tests": 88,
+  "failures": 0,
+  "same_signer_as_54_1_1": true,
+  "signature_verified": true,
+  "apk_alignment_16kb": true,
+  "physical_device_test": false,
+  "apk_sha256": "3a8f34cd23a7258a51e1297c90e982a071b8e01eaf718d6a181733e23026d207"
+}

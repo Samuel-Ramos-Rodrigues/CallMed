@@ -1,0 +1,22 @@
+{
+  "version": "54.1.1-debug",
+  "package": "com.callmed.app.debug",
+  "build": "SUCCESSFUL",
+  "initial_full_suite": {
+    "tests": 85,
+    "failures": 0,
+    "errors": 0
+  },
+  "after_small_screen_refinement": [
+    {
+      "name": "com.callmed.app.NativeUiTest",
+      "tests": "13",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ],
+  "apk_sha256": "4e5e0f19f452176ea4436494c47da2cbde29e5dbe89faf194121a2c6d096739d",
+  "logo_unchanged": true,
+  "physical_device_test": false
+}

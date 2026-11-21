@@ -1,0 +1,57 @@
+[
+  {
+    "suite": "design",
+    "exit": 0,
+    "pass": 56
+  },
+  {
+    "suite": "booking-flow",
+    "exit": 0,
+    "pass": 20
+  },
+  {
+    "suite": "avatar-consultas",
+    "exit": 0,
+    "pass": 176
+  },
+  {
+    "suite": "amplo",
+    "exit": 0,
+    "pass": 30
+  },
+  {
+    "suite": "refinamento",
+    "exit": 0,
+    "pass": 107
+  },
+  {
+    "suite": "piloto",
+    "exit": 0,
+    "pass": 31
+  },
+  {
+    "suite": "psicologia",
+    "exit": 0,
+    "pass": 23
+  },
+  {
+    "suite": "salas",
+    "exit": 0,
+    "pass": 64
+  },
+  {
+    "suite": "premium",
+    "exit": 0,
+    "pass": 52
+  },
+  {
+    "suite": "tele-video",
+    "exit": 0,
+    "pass": 41
+  },
+  {
+    "suite": "style-audit",
+    "exit": 0,
+    "pass": 0
+  }
+]

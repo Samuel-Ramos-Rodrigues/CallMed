@@ -1,0 +1,18 @@
+{
+  "paginas": 48,
+  "temas": [
+    "light",
+    "dark"
+  ],
+  "falhas_acessibilidade_detectadas": 0,
+  "transbordamentos_390px_fontes_100_e_200": 0,
+  "testes_video": 41,
+  "larguras_video": [
+    1280,
+    768,
+    390,
+    320
+  ],
+  "css_sintaxe": "aprovada",
+  "compilacao": "Release: 0 erros, 0 avisos"
+}

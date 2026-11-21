@@ -1,0 +1,37 @@
+PASS Jornada isola consultas por paciente e profissional responsável
+PASS Outro paciente não confirma pré-cadastro alheio
+PASS Check-in exige pré-cadastro conferido
+PASS Confirmação ativa é separada da reserva do horário
+PASS Pré-cadastro reaproveita os dados existentes
+PASS Check-in funciona dentro da janela da consulta
+PASS Check-in remoto não confirma chegada presencial
+PASS Paciente não valida a própria chegada
+PASS QR exige pré-cadastro confirmado antes da chegada
+PASS Outro paciente não confirma chegada de consulta alheia
+PASS QR do paciente autorizado registra chegada sem recepção
+PASS QR registra check-in digital e chegada como etapas distintas
+PASS Leitura repetida não duplica chegada
+PASS Atendimento aguarda validação da recepção
+PASS Recepção reserva sala por intervalo
+PASS Sala rejeita sobreposição entre profissionais
+PASS Paciente não controla salas da clínica
+PASS Recepção valida chegada sem permitir atendimento por outro médico
+PASS Profissional responsável inicia atendimento validado
+PASS Profissional não inicia dois atendimentos simultâneos
+PASS Cancelamento nos canais existentes respeita atendimento iniciado
+PASS Conclusão sincroniza jornada e consulta legada
+PASS Alterações de consulta geram eventos PEP junto à persistência
+PASS Motor faz uma reserva exclusiva por vaga
+PASS Prioridade e prazo determinam a oferta
+PASS Reserva bloqueia agendamento comum do horário
+PASS Horários exibidos também excluem reservas temporárias
+PASS Outro paciente não utiliza oferta alheia
+PASS Recusa passa a oferta ao próximo paciente compatível
+PASS Aceite cria consulta e consome oferta na mesma operação
+PASS Oferta aceita não duplica consulta nem aceita recusa atrasada
+PASS Fila respeita interesse por período
+PASS Link antigo não cancela uma consulta com snapshot diferente
+PASS Espera média é acompanhada do tamanho da amostra
+PASS Oferta expirada libera reserva e chama o próximo candidato
+PASS PEP simulado recebe eventos com assinatura HMAC válida
+PASS Eventos PEP entregues não são reenviados sem necessidade

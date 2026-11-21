@@ -1,0 +1,84 @@
+@model MKSANCrud.ViewModels.FuncionarioPainelViewModel
+@using System.Globalization
+@{
+    var admin = User.IsInRole("Admin");
+    ViewData["Title"] = admin ? "Centro de decisões" : "Estação da recepção";
+    var nome = Model.NomeUsuario.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "equipe";
+    var pt = CultureInfo.GetCultureInfo("pt-BR");
+    var proximas = Model.ProximasConsultas.OrderBy(x => x.Data).ThenBy(x => x.Horario).Take(7).ToList();
+}
+<section class="cm50-screen @(admin ? "cm50-admin" : "cm50-reception")" aria-labelledby="cm50-ops-title">
+    <header class="cm50-intro">
+        <div>
+            <span class="cm50-overline">@(admin ? "GESTÃO / O QUE IMPORTA HOJE" : "ESTAÇÃO / RECEPÇÃO DE HOJE")</span>
+            @if (admin) { <h1 id="cm50-ops-title">Uma clínica em ritmo.<br /><em>Sem perder o cuidado.</em></h1> }
+            else { <h1 id="cm50-ops-title">A próxima pessoa<br /><em>é a prioridade.</em></h1> }
+            <p>@(admin ? "Acompanhe a operação, encontre gargalos e tome decisões sobre confirmações, presença e encaixes." : "Uma fila objetiva para conferir chegadas, resolver exceções e dar continuidade aos atendimentos.")</p>
+        </div>
+        <div class="cm50-intro-tools">
+            <time>@Model.Hoje.ToString("dddd, dd 'de' MMMM", pt)</time>
+            <a class="cm50-btn" asp-controller="Consulta" asp-action="Create">+ Novo agendamento <span aria-hidden="true">↗</span></a>
+        </div>
+    </header>
+    @if (admin)
+    {
+        <div class="cm50-overline cm50-stat-overline">PANORAMA DA CLÍNICA</div>
+        <section class="cm50-statline" aria-label="Resumo da operação">
+            <a asp-controller="Agenda" asp-action="Index"><small>Consultas hoje</small><strong>@Model.ConsultasHoje</strong><span>@Model.ConfirmadasHoje confirmadas</span></a>
+            <a asp-controller="Confirmacoes" asp-action="Index"><small>Confirmações pendentes</small><strong>@Model.AguardandoHoje</strong><span>Precisam de resposta</span></a>
+            <a asp-controller="ListaEspera" asp-action="Index"><small>Vagas recuperadas</small><strong>@Model.VagasRecuperadasListaEspera</strong><span>Via lista inteligente</span></a>
+            <a asp-controller="Solicitacoes" asp-action="Index"><small>Demandas da equipe</small><strong>@Model.SolicitacoesPendentes</strong><span>@Model.SolicitacoesAtrasadas atrasadas</span></a>
+        </section>
+    }
+    @if (!admin)
+    {
+    <nav class="cm-flow-priorities" aria-label="Próximas ações da equipe">
+        <a asp-controller="RecepcaoPendencias" asp-action="Index"><span>01 · Presença e check-in</span><strong>Resolver exceções de hoje</strong><small>Não repita manualmente o check-in que já foi registrado.</small></a>
+        <a asp-controller="Confirmacoes" asp-action="Index"><span>02 · Respostas</span><strong>Conferir confirmações pendentes</strong><small>Consultas já marcadas que precisam de resposta.</small></a>
+        <a asp-controller="Solicitacoes" asp-action="Index"><span>03 · Novos atendimentos</span><strong>Organizar solicitações</strong><small>Pedidos que ainda não têm horário confirmado.</small></a>
+        <a asp-controller="ListaEspera" asp-action="Index"><span>04 · Vagas liberadas</span><strong>Acompanhar encaixes</strong><small>Preenchimento de horários disponíveis.</small></a>
+    </nav>
+    }
+    <div class="cm50-ops-grid">
+        <section class="cm50-sheet" aria-labelledby="cm50-agenda-title">
+            <div class="cm50-sheet-heading"><div><span class="cm50-overline">@(admin ? "AGENDA EM MOVIMENTO" : "FLUXO DO DIA")</span><h2 id="cm50-agenda-title">@(admin ? "O que vem a seguir" : "Agora na recepção")</h2></div><a class="cm50-minilink" asp-controller="Agenda" asp-action="Index">Abrir agenda ↗</a></div>
+            @if (proximas.Count == 0) { <p class="cm50-empty">Nenhuma consulta prevista nesta lista.</p> }
+            else
+            {
+                <div class="cm50-row-header" aria-hidden="true"><span>Hora</span><span>Paciente / especialidade</span><span>Situação</span><span></span></div>
+                <div class="cm50-agenda-lines">
+                    @foreach (var consulta in proximas)
+                    {
+                        var paciente = consulta.Paciente?.Nome ?? "Paciente";
+                        <div class="cm50-agenda-line">
+                            <time><strong>@consulta.Horario</strong><small>@consulta.Data.ToString("dd/MM")</small></time>
+                            <div><strong>@paciente</strong><small>@(consulta.Medico?.Nome ?? "Profissional a definir")</small></div>
+                            <span class="status-pill status-@consulta.Status.ToString().ToLowerInvariant()">@consulta.Status</span>
+                            <a class="cm50-minilink" asp-controller="Jornada" asp-action="Consulta" asp-route-id="@consulta.Id" aria-label="Acompanhar atendimento de @paciente">Acompanhar ↗</a>
+                        </div>
+                    }
+                </div>
+            }
+            <div class="cm50-sheet-foot"><span>Agenda conectada à clínica</span><a asp-controller="Agenda" asp-action="Index">Ver todas as consultas →</a></div>
+        </section>
+        <aside class="cm50-ops-side">
+            @if (admin)
+            {
+                <section class="cm50-feature" aria-labelledby="cm50-intelligent-title"><span class="cm50-overline">INTELIGÊNCIA DA AGENDA</span><h2 id="cm50-intelligent-title">Mais consultas.<br />Menos espaços vazios.</h2><p>Quando surge uma vaga, a fila inteligente ajuda a preenchê-la.</p><div class="cm50-feature-metric"><strong>@Model.VagasRecuperadasListaEspera</strong><span>vagas recuperadas por encaixe</span></div><a class="cm50-btn cm50-btn-mint" asp-controller="ListaEspera" asp-action="Index">Ver ofertas ↗</a></section>
+                <section class="cm50-sheet cm50-compact"><div class="cm50-sheet-heading"><h2>Precisam de atenção</h2><span class="cm50-pill">@Model.SolicitacoesPendentes pendentes</span></div><a class="cm50-alert-row" asp-controller="Atendimento" asp-action="Index"><span><strong>Conversas abertas</strong><small>@Model.ConversasHumano com a equipe</small></span><b>@Model.ConversasAbertas</b></a><a class="cm50-alert-row" asp-controller="RecepcaoPendencias" asp-action="Index"><span><strong>Pendências de recepção</strong><small>Conferir os casos excepcionais</small></span><b>↗</b></a></section>
+            }
+            else
+            {
+                <section class="cm50-callout"><span class="cm50-overline">RESOLVA PRIMEIRO</span><h2>O que não pode esperar?</h2><p>@Model.SolicitacoesPendentes pedidos aguardam atendimento. @Model.ConversasHumano conversas estão com a equipe.</p><a class="cm50-btn" asp-controller="RecepcaoPendencias" asp-action="Index">Resolver pendências →</a></section>
+                <section class="cm50-feature"><span class="cm50-overline">CHECK-IN E CONFIRMAÇÕES</span><h2>@Model.AguardandoHoje aguardando confirmação.</h2><p>Conduza as exceções e mantenha o atendimento fluindo.</p><a class="cm50-btn" asp-controller="RecepcaoPendencias" asp-action="Index">Ver exceções de check-in ↗</a><a class="cm50-minilink" asp-controller="Checkin" asp-action="Terminal">Exibir QR de chegada →</a></section>
+            }
+        </aside>
+    </div>
+    <nav class="cm50-shortcuts" aria-label="Ações frequentes">
+        <a asp-controller="Atendimento" asp-action="Index"><strong>Mensagens e IA</strong><small>Conversas e revisão humana</small><span>↗</span></a>
+        <a asp-controller="Salas" asp-action="Index" asp-route-aba="online"><strong>Teleconsultas</strong><small>Salas e presença online</small><span>↗</span></a>
+        <a asp-controller="ListaEspera" asp-action="Index"><strong>Fila inteligente</strong><small>Ofertas e encaixes automáticos</small><span>↗</span></a>
+        @if(admin) { <a asp-controller="Organizacao" asp-action="Index"><strong>Gestão da clínica</strong><small>Equipe, integrações e indicadores</small><span>↗</span></a> }
+        else { <a asp-controller="Confirmacoes" asp-action="Index"><strong>Confirmações</strong><small>Respostas e pendências</small><span>↗</span></a> }
+    </nav>
+</section>

@@ -1,0 +1,40 @@
+@model MKSANCrud.ViewModels.MedicoPainelViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Meu dia clínico";
+    var proximaHoje = Model.AgendaHoje.FirstOrDefault(c => c.Status is ConsultaStatus.Pendente or ConsultaStatus.Confirmada or ConsultaStatus.Remarcada);
+    var concluidasHoje = Model.AgendaHoje.Count(c => c.Status == ConsultaStatus.Realizada);
+    var progresso = Model.ConsultasHoje == 0 ? 0 : Math.Clamp(concluidasHoje * 100 / Model.ConsultasHoje, 0, 100);
+    var cultura = CultureInfo.GetCultureInfo("pt-BR");
+    var nomes = new[] { "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb" };
+}
+<section class="cm50-screen cm50-doctor" aria-labelledby="cm50-doctor-title">
+    <header class="cm50-intro"><div><span class="cm50-overline">ÁREA DO PROFISSIONAL</span><h1 id="cm50-doctor-title">Seu tempo, dedicado<br /><em>ao paciente.</em></h1><p>Abra a consulta do próximo paciente, confira a preparação, inicie o atendimento e conclua na mesma tela.</p></div><div class="cm50-intro-tools"><span>@Model.Medico.Especialidade · @Model.Medico.RegistroExibicao</span><a class="cm50-btn" asp-controller="Salas" asp-action="Index" asp-route-aba="online">Teleconsultas ↗</a></div></header>
+    <section class="cm50-doctor-hero" aria-labelledby="cm50-next-title">
+        <div><span class="cm50-overline">PRÓXIMO ATENDIMENTO</span>
+        @if (proximaHoje is not null)
+        {
+            <h2 id="cm50-next-title">@(proximaHoje.Paciente?.Nome ?? "Paciente")</h2><p>Hoje às @proximaHoje.Horario · @proximaHoje.Status</p>
+            <div class="cm50-hero-actions">
+                <a class="cm50-btn cm50-btn-mint" asp-controller="Jornada" asp-action="Consulta" asp-route-id="@proximaHoje.Id">Abrir atendimento e próximos passos ↗</a>
+                <a class="cm50-link-light" asp-controller="HistoricoExames" asp-action="Index" asp-route-pacienteId="@proximaHoje.PacienteId">Histórico de exames (opcional) →</a>
+            </div>
+        }
+        else { <h2 id="cm50-next-title">Tudo em dia por aqui.</h2><p>Nenhum atendimento pendente ou confirmado aguardando hoje.</p><a class="cm50-btn cm50-btn-mint" href="#cm50-timeline">Ver agenda ↓</a> }
+        </div><aside><small>CONSULTAS HOJE</small><strong>@Model.ConsultasHoje</strong><span>@concluidasHoje concluídas</span></aside>
+    </section>
+    <div class="cm50-doctor-grid">
+        <section class="cm50-sheet cm50-timeline" id="cm50-timeline" aria-labelledby="cm50-agenda-heading"><div class="cm50-sheet-heading"><div><span class="cm50-overline">AGENDA DE HOJE</span><h2 id="cm50-agenda-heading">Em sequência</h2></div><span class="cm50-pill">@Model.AgendaHoje.Count atendimentos</span></div>
+            @if (!Model.AgendaHoje.Any()) { <p class="cm50-empty">Nenhuma consulta para hoje.</p> }
+            else
+            { <div class="cm50-agenda-lines">@foreach (var c in Model.AgendaHoje) { <article class="cm50-agenda-line cm50-medical-row"><time><strong>@c.Horario</strong></time><div><strong>@(c.Paciente?.Nome ?? "Paciente")</strong><small>@c.Status</small><a class="cm50-inline-link" asp-controller="HistoricoExames" asp-action="Index" asp-route-pacienteId="@c.PacienteId">Histórico de exames ↗</a></div><span class="status-pill status-@c.Status.ToLowerInvariant()">@c.Status</span><div class="cm50-medical-actions"><a class="cm50-minilink" asp-controller="Jornada" asp-action="Consulta" asp-route-id="@c.Id">@(c.Status == ConsultaStatus.Realizada ? "Ver histórico" : "Abrir atendimento") ↗</a></div></article> }</div> }
+        </section>
+        <aside class="cm50-doctor-sidebar"><section class="cm50-sheet cm50-compact"><span class="cm50-overline">EVOLUÇÃO DO DIA</span><h2>Consultas concluídas</h2><div class="cm50-progress-count">@concluidasHoje <small>de @Model.ConsultasHoje</small></div><progress max="100" value="@progresso" aria-label="Percentual concluído">@progresso%</progress><p>Ao concluir uma consulta, este indicador é atualizado.</p></section><section class="cm50-sheet cm50-compact"><span class="cm50-overline">DISPONIBILIDADE</span><h2>Minha semana padrão</h2>@if (!Model.AgendaSemanal.Any()) { <p>Sem horários padrão cadastrados.</p> } else { <div class="cm50-week">@foreach (var g in Model.AgendaSemanal.GroupBy(x=>x.DiaSemana).OrderBy(x=>x.Key==0?7:x.Key)){ <div><strong>@nomes[g.Key]</strong><small>@g.Count() horários</small></div> }</div> }<a class="cm50-minilink" href="#meus-horarios" data-expand-target="meus-horarios">Gerenciar disponibilidade ↗</a></section></aside>
+    </div>
+    <section class="cm50-sheet cm50-upcoming" aria-labelledby="cm50-upcoming-title"><div class="cm50-sheet-heading"><div><span class="cm50-overline">CONTINUIDADE DO CUIDADO</span><h2 id="cm50-upcoming-title">Próximos pacientes</h2></div></div>
+    @if (!Model.ProximasConsultas.Any()) { <p class="cm50-empty">Nenhum atendimento futuro encontrado.</p> }
+    else { <div class="cm50-upcoming-grid">@foreach(var c in Model.ProximasConsultas.Take(8)){<a asp-controller="Jornada" asp-action="Consulta" asp-route-id="@c.Id" aria-label="Abrir consulta de @(c.Paciente?.Nome ?? "paciente") em @c.Data.ToString("dd/MM")"><time>@c.Data.ToString("dd MMM",cultura)</time><strong>@(c.Paciente?.Nome??"Paciente")</strong><small>@c.Horario · @c.Status</small><span aria-hidden="true">Abrir atendimento ↗</span></a>}</div> }
+    </section>
+    <details class="cm50-availability" id="meus-horarios"><summary>Gerenciar horários e bloqueios <span>⌄</span></summary><div class="cm50-availability-grid"><section><h2>Vagas disponíveis (@Model.ProximasVagasLivres.Count)</h2>@if (!Model.ProximasVagasLivres.Any()) { <p>Nenhuma vaga livre para os próximos 14 dias.</p> } else { @foreach(var vaga in Model.ProximasVagasLivres){<form asp-action="BloquearHorario" method="post"><input type="hidden" name="disponibilidadeId" value="@vaga.Id" /><span>@vaga.Data!.Value.ToString("dd/MM") · @vaga.Horario</span><button type="submit" class="cm50-minilink" aria-label="@($"Bloquear o horário de {vaga.Data!.Value:dd/MM} às {vaga.Horario}")">Bloquear</button></form>} }</section><section><h2>Meus bloqueios (@Model.BloqueiosManuais.Count)</h2>@if (!Model.BloqueiosManuais.Any()) { <p>Nenhum bloqueio manual ativo.</p> } else { @foreach(var vaga in Model.BloqueiosManuais){<form asp-action="DesbloquearHorario" method="post"><input type="hidden" name="disponibilidadeId" value="@vaga.Id" /><span>@vaga.Data!.Value.ToString("dd/MM") · @vaga.Horario</span><button type="submit" class="cm50-minilink" aria-label="@($"Desbloquear o horário de {vaga.Data!.Value:dd/MM} às {vaga.Horario}")">Desbloquear</button></form>} }</section></div></details>
+    @if(Model.Medico.HabilitadoPsicologia && Model.Medico.ResponsavelTecnico){ <a class="cm50-minilink" asp-controller="Psicologia" asp-action="Acervo">Acervo de Psicologia sob guarda técnica ↗</a> }
+</section>

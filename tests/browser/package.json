@@ -1,0 +1,16 @@
+{
+  "name": "callmed-psicologia-browser-checks",
+  "private": true,
+  "scripts": {
+    "test": "node check-psicologia.cjs",
+    "test:salas": "node check-salas.cjs",
+    "test:waitlist-flow": "node check-waitlist-flow.cjs",
+    "test:booking-flow": "node check-booking-flow.cjs",
+    "test:tele-video": "node check-tele-video.cjs",
+    "audit:styles": "node check-style-audit.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "axe-core": "4.10.3"
+  }
+}

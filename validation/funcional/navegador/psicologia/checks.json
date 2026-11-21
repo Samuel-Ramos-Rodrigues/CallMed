@@ -1,0 +1,28 @@
+{
+  "checks": [
+    "Paciente, psicólogo e responsável técnico criam chaves e cópias protegidas",
+    "Formulário cifrado pelo paciente é aberto somente pelo profissional vinculado",
+    "Paciente lê prontuário e não recebe material reservado",
+    "Exportação FHIR do navegador inclui somente o prontuário",
+    "Importação exige correspondência do paciente e permanece em revisão até publicar",
+    "Servidor armazena e entrega envelope cifrado sem texto do registro",
+    "Recepção acompanha estados sem formulário e sem prontuário",
+    "Administração não recebe conteúdo psicológico",
+    "Outro paciente não acessa consulta alheia",
+    "API não entrega envelopes à recepção",
+    "Guarda técnica transfere chaves no navegador e permite continuidade de leitura",
+    "Pedido de privacidade recebe resposta e permanece visível apenas ao titular",
+    "Painel de indicadores mantém resultados sem amostra quando não existem desfechos medidos",
+    "Restauração em outro navegador rejeita senha errada e recupera leitura com a cópia correta",
+    "Chave privada instalada permanece não exportável no navegador",
+    "Fluxo do paciente sem falhas graves ou críticas na checagem automatizada de acessibilidade",
+    "Leitura ampliada a 200% mantém o fluxo sem rolagem horizontal",
+    "App recebe ticket de uso único sem bearer no link",
+    "Ticket do app abre sessão clínica de seis horas",
+    "Sessão clínica fica restrita à consulta escolhida",
+    "Ticket usado não pode abrir outra sessão",
+    "Paciente encerra o acesso temporário no navegador",
+    "Revogação da conta invalida imediatamente a sessão clínica prolongada"
+  ],
+  "axeViolations": 0
+}

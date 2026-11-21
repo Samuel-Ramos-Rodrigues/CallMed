@@ -1,0 +1,126 @@
+PASS Configuração pública identifica API nativa
+PASS API móvel exige bearer para perfil
+PASS API móvel exige bearer para consultas
+PASS API móvel exige bearer para atendimento/historico
+PASS Cookie web não autentica API móvel
+PASS Login nativo recusa acesso inativo
+PASS Login nativo recusa acesso medico
+PASS Login nativo recusa acesso funcionario
+PASS Login nativo recusa acesso admin
+PASS Login nativo recusa acesso misto
+PASS Login nativo recusa acesso doisfatores
+PASS Login nativo emite tokens sem criar cookie do site
+PASS Login nativo emite tokens sem criar cookie do site
+PASS Login nativo emite tokens sem criar cookie do site
+PASS Cookie do site não autentica preparação clínica nativa
+PASS Preparação nativa não revela consulta de outro paciente
+PASS Sala nativa não revela consulta alheia
+PASS Pedido de privacidade exige confirmação expressa
+PASS Pedido de privacidade pendente reaproveita protocolo
+PASS Pedidos e respostas de privacidade pertencem somente ao titular autenticado
+PASS Privacidade móvel recusa cookies web
+PASS Perfil ignora identificador de outro usuário
+PASS Atualização móvel protege CPF, e-mail, papel e vínculo
+PASS Perfil recusa nascimento futuro
+PASS Preferências recusam tema inválido
+PASS Preferências móveis persistem na conta compartilhada
+PASS Leitura acessível é persistida nos mesmos campos do site
+PASS Salvar leitura não altera tema ou avisos omitidos no pedido
+PASS Aplicativo antigo e avisos preservam preferências de acessibilidade
+PASS Tema vazio é recusado sem sobrescrever a preferência válida
+PASS Exames móveis mostram apenas próprios, ativos e aprovados
+PASS Outro paciente recebe somente o próprio histórico de exames
+PASS ID no caminho não expõe exame de outro paciente
+PASS Upload nativo aceita foto válida
+PASS Foto móvel é restrita à própria conta
+PASS Catálogo nativo omite médico inativo
+PASS Disponibilidade não permite ignorar consulta alheia
+PASS Datas móveis vêm da agenda real
+PASS Calendário móvel usa as datas do site sem corte próprio de 90 dias
+PASS Primeira vaga reaproveita a busca de especialidade do site
+PASS Especialidade sem vaga não gera horário fictício
+PASS Revisão do pagamento consulta a elegibilidade administrativa do titular
+PASS Agendamento exige confirmação explícita
+PASS Agendamento não aceita convênio inexistente
+PASS Agendamento móvel persiste a modalidade online escolhida pelo paciente
+PASS App lê perguntas reais e identifica a própria chave clínica
+PASS App consulta registros disponíveis do próprio prontuário
+PASS Sala nativa explica necessidade de consentimento
+PASS Bloqueio de horário ou consentimento não expulsa o paciente da conta
+PASS Sala nativa recusa aceite de termo antigo
+PASS Consentimento nativo usa o mesmo termo auditado do site
+PASS Consentimento não contorna janela de entrada na chamada
+PASS Sinalização nativa permanece bloqueada fora da janela
+PASS Repetição do mesmo agendamento não duplica consulta
+PASS Agendamento nativo vincula uma solicitação confirmada como o site
+PASS Repetição não duplica auditoria de agendamento nem perde autoria
+PASS Outro paciente não ocupa horário já reservado
+PASS Paciente não pode cancelar consulta alheia
+PASS Paciente não pode confirmar consulta alheia
+PASS Paciente não pode remarcar consulta alheia
+PASS Confirmação nativa usa serviço clínico
+PASS Remarcação nativa usa disponibilidade real
+PASS Cancelamento nativo libera consulta própria
+PASS Lista móvel não expõe consulta do outro paciente
+PASS Cancelamento nativo sincroniza a solicitação existente
+PASS Remarcação nativa mantém o registro de auditoria
+PASS Histórico distingue data passada da permissão de remarcação do site
+PASS Remarcação de pendência passada segue a mesma regra do serviço web
+PASS Login nativo emite tokens sem criar cookie do site
+PASS Sessões nativas mostram os acessos ativos do titular
+PASS Gerenciamento não permite revogar acesso alheio
+PASS Encerramento individual protege o acesso atual
+PASS Encerrar outros acessos exige confirmação explícita
+PASS Revogação mantém o dispositivo atual e invalida os demais
+PASS Login nativo emite tokens sem criar cookie do site
+PASS Troca de e-mail exige senha atual
+PASS Troca de e-mail recusa conta já cadastrada
+PASS Troca de e-mail valida formato antes de gravar
+PASS Troca de e-mail renova a identidade móvel sem cookie web
+PASS Stamp antigo deixa de autorizar após alterar e-mail
+PASS Novo token mantém acesso ao perfil após alterar e-mail
+PASS Alterar e-mail encerra os outros dispositivos
+PASS Renovação da identidade mantém a sessão atual em vez de criar outro dispositivo
+PASS Identity, login e cadastro clínico mantêm o mesmo e-mail
+PASS Login nativo emite tokens sem criar cookie do site
+PASS Chat nativo usa fluxo existente com IA simulada
+PASS Histórico do chat permanece isolado por paciente
+PASS Atendimento humano pausa respostas automáticas no app
+PASS Histórico mostra encerramento e avaliação pendente sem reabrir a conversa
+PASS Atendimento encerrado sai da conversa atual e fica disponível em Anteriores
+PASS Histórico lista os atendimentos encerrados do titular
+PASS Conversa arquivada mantém as mensagens anteriores consultáveis
+PASS Detalhe de atendimento anterior não pode ser lido por outra conta
+PASS Cursor de paginação de outra conta é rejeitado
+PASS Feedback alheio não pode ser respondido
+PASS Feedback nativo é registrado ao encerrar
+PASS Nova saudação é aceita após avaliar um atendimento encerrado
+PASS Nova mensagem reabre o atendimento, preserva o histórico e remove o encerramento antigo
+PASS Novo atendimento mostra somente suas mensagens, sem misturar a conversa encerrada
+PASS Entrada posterior ao último encerramento não recebe aviso antigo mesmo com flag legada desatualizada
+PASS Um novo atendimento encerrado tem sua própria avaliação
+PASS Avaliação pendente não bloqueia uma nova pergunta
+PASS Ao retomar sem avaliar, o histórico não oferece a avaliação do atendimento anterior
+PASS Arquivo do primeiro atendimento não incorpora mensagens de atendimentos posteriores
+PASS Começar outro atendimento exige confirmar o encerramento do atual
+PASS Iniciar novo atendimento arquiva o atual e abre conversa vazia
+PASS Abrir novamente uma conversa vazia não cria arquivo ou pesquisa duplicada
+PASS Resposta comum da IA concluída após encerramento não reabre nem mistura o atendimento finalizado
+PASS Fechamento legado é arquivado sem solicitar avaliação retroativa
+PASS Mensagens de um arquivo longo são paginadas sem repetição
+PASS Novas mensagens Web/app não apagam o histórico arquivado ao ultrapassar 250 mensagens
+PASS Refresh expirado é recusado mesmo com proteção válida
+PASS Refresh adulterado é recusado
+PASS Refresh válido renova tokens
+PASS Logout móvel revoga sessão no servidor
+PASS Logout revoga apenas o dispositivo escolhido
+PASS Sessão revogada não pode renovar token
+PASS Login nativo emite tokens sem criar cookie do site
+PASS A06: reutilizar refresh anterior é recusado por HTTP
+PASS A06: reutilização revoga também o refresh sucessor
+PASS Troca de senha exige senha atual
+PASS Nova senha é persistida pelo Identity
+PASS Troca de senha mantém o acesso atual com tokens renovados
+PASS Troca de senha invalida o acesso móvel anterior
+PASS Login nativo emite tokens sem criar cookie do site
+PASS Desativação do paciente corta acesso imediatamente

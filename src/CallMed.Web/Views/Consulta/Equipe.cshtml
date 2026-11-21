@@ -1,0 +1,47 @@
+@model MKSANCrud.ViewModels.SolicitacoesPainelViewModel
+@using MKSANCrud.Models
+@using MKSANCrud.Models.Atendimento
+@{
+    ViewData["Title"] = "Consultas";
+    var estado = ViewBag.Status as string ?? "";
+    var convenio = ViewBag.StatusConvenio as string ?? "";
+    var filtros = new[] {
+        ("todas", "Todas", Model.ContagemConsulta("todas")), ("pendentes", "A confirmar", Model.ContagemConsulta("pendentes")),
+        ("agendadas", "Agendadas", Model.ContagemConsulta("agendadas")), ("realizadas", "Realizadas", Model.ContagemConsulta("realizadas")),
+        ("historico", "Outros registros", Model.ContagemConsulta("historico"))
+    };
+    string CanalNome(CanalAtendimento c) => c switch { CanalAtendimento.WhatsApp => "WhatsApp", CanalAtendimento.Sms => "SMS", CanalAtendimento.Email => "E-mail", CanalAtendimento.Telefone => "Telefone", CanalAtendimento.Presencial => "Presencial", _ => "Site" };
+    var filtrado = !string.IsNullOrWhiteSpace(Model.Busca) || !string.IsNullOrWhiteSpace(Model.Canal) || estado.Length > 0 || convenio.Length > 0 || Model.SituacaoConsulta != "todas";
+}
+<section class="cm-consult-page" data-cm25-view="Consulta/Equipe.cshtml">
+    <header class="cm-consult-heading">
+        <div><span class="eyebrow">AGENDA E ATENDIMENTOS</span><h1>Consultas</h1><p>Agendamentos, confirmações e histórico em um único lugar.</p></div>
+        <div><a class="btn secondary" asp-controller="Agenda" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg>Abrir agenda</a><a class="btn" asp-action="Create"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#plus"></use></svg>Nova consulta</a></div>
+    </header>
+    <div class="cm-consult-overview" aria-label="Resumo das consultas no filtro atual">
+        <article><span class="cm-consult-stat-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg></span><div><span>Consultas</span><strong>@Model.ContagemConsulta("todas")</strong></div></article>
+        <article><span class="cm-consult-stat-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#clock"></use></svg></span><div><span>A confirmar</span><strong>@Model.ContagemConsulta("pendentes")</strong></div></article>
+        <article><span class="cm-consult-stat-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar-check"></use></svg></span><div><span>Agendadas</span><strong>@Model.ContagemConsulta("agendadas")</strong></div></article>
+        <article><span class="cm-consult-stat-icon"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg></span><div><span>Realizadas</span><strong>@Model.ContagemConsulta("realizadas")</strong></div></article>
+    </div>
+    <section class="cm-consult-records" aria-labelledby="consultas-lista-title">
+        <header><div><h2 id="consultas-lista-title">Agendamentos registrados</h2><p>Os pedidos que ainda precisam de horário ficam em <a asp-controller="Solicitacoes" asp-action="Index">Solicitações</a>.</p></div><a asp-controller="Confirmacoes" asp-action="Index">Central de confirmações <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></a></header>
+        <nav class="cm-consult-status-filters" aria-label="Filtrar consultas por situação">
+            @foreach (var (valor, rotulo, total) in filtros)
+            { <a class="@(Model.SituacaoConsulta == valor ? "active" : "")" aria-current="@(Model.SituacaoConsulta == valor ? "page" : null)" asp-action="Index" asp-route-situacao="@valor" asp-route-busca="@Model.Busca" asp-route-canal="@Model.Canal" asp-route-statusConvenio="@convenio">@rotulo <b>@total</b></a> }
+        </nav>
+        <form method="get" class="cm-consult-filters">
+            <input type="hidden" name="situacao" value="@Model.SituacaoConsulta" />
+            <label class="cm-consult-search"><span>Paciente ou profissional</span><input type="search" name="busca" value="@Model.Busca" placeholder="Nome, CPF, telefone ou e-mail" /></label>
+            <label><span>Situação específica</span><select name="status"><option value="">Todas as situações</option>@foreach (var s in ConsultaStatus.Todos) { <option value="@s" selected="@(s == estado ? "selected" : null)">@s</option> }</select></label>
+            <label><span>Canal de origem</span><select name="canal"><option value="">Todos os canais</option>@foreach (var c in Enum.GetValues<CanalAtendimento>()) { <option value="@c" selected="@(Model.Canal == c.ToString() ? "selected" : null)">@CanalNome(c)</option> }<option value="SemCanal" selected="@(Model.Canal == "SemCanal" ? "selected" : null)">Canal não informado</option></select></label>
+            <label><span>Validação do convênio</span><select name="statusConvenio"><option value="">Todos os estados</option>@foreach (var e in ElegibilidadeConvenioStatus.Todos) { <option value="@e" selected="@(e == convenio ? "selected" : null)">@ElegibilidadeConvenioStatus.Rotulo(e)</option> }</select></label>
+            <button class="btn secondary" type="submit"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#search"></use></svg>Buscar</button>
+        </form>
+        @if (filtrado)
+        { <div class="cm-consult-filter-note"><p>Mostrando as consultas que correspondem aos filtros selecionados.</p><a asp-action="Index">Limpar filtros</a></div> }
+        @if (Model.SituacaoConsulta == "pendentes")
+        { <p class="cm-consult-context">Consultas pendentes ou remarcadas de hoje em diante. Confirme diretamente na lista.</p> }
+        <partial name="_ListaEquipe" model="Model" />
+    </section>
+</section>

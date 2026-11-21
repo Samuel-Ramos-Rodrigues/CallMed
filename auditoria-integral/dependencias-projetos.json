@@ -1,0 +1,70 @@
+[
+  {
+    "arquivo": "src/CallMed.Application/CallMed.Application.csproj",
+    "framework": [
+      "net10.0"
+    ],
+    "dependencias_projeto": [
+      "../CallMed.Persistence/CallMed.Persistence.csproj"
+    ],
+    "dependencias_pacote": [
+      "System.IdentityModel.Tokens.Jwt 8.23.0"
+    ]
+  },
+  {
+    "arquivo": "src/CallMed.Domain/CallMed.Domain.csproj",
+    "framework": [
+      "net10.0"
+    ],
+    "dependencias_projeto": [],
+    "dependencias_pacote": []
+  },
+  {
+    "arquivo": "src/CallMed.Persistence/CallMed.Persistence.csproj",
+    "framework": [
+      "net10.0"
+    ],
+    "dependencias_projeto": [
+      "../CallMed.Domain/CallMed.Domain.csproj"
+    ],
+    "dependencias_pacote": [
+      "Microsoft.AspNetCore.Identity.EntityFrameworkCore 10.0.15",
+      "Microsoft.AspNetCore.DataProtection.EntityFrameworkCore 10.0.15",
+      "Npgsql.EntityFrameworkCore.PostgreSQL 10.0.3"
+    ]
+  },
+  {
+    "arquivo": "src/CallMed.Web/CallMed.Web.csproj",
+    "framework": [
+      "net10.0"
+    ],
+    "dependencias_projeto": [
+      "../CallMed.Application/CallMed.Application.csproj"
+    ],
+    "dependencias_pacote": [
+      "QRCoder 1.8.1"
+    ]
+  },
+  {
+    "arquivo": "src/CallMed.Worker/CallMed.Worker.csproj",
+    "framework": [
+      "net10.0"
+    ],
+    "dependencias_projeto": [
+      "../CallMed.Application/CallMed.Application.csproj"
+    ],
+    "dependencias_pacote": []
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/CallMed.Checks.csproj",
+    "framework": [
+      "net10.0"
+    ],
+    "dependencias_projeto": [
+      "../../src/CallMed.Web/CallMed.Web.csproj"
+    ],
+    "dependencias_pacote": [
+      "Microsoft.EntityFrameworkCore.InMemory 10.0.15"
+    ]
+  }
+]

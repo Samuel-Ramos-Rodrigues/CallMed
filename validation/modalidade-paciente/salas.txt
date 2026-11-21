@@ -1,0 +1,51 @@
+PASS Equipe cadastra sala com localização e recursos
+PASS Informações do espaço são preservadas
+PASS Nomes duplicados de salas são recusados
+PASS Paciente não cadastra sala
+PASS Profissional não altera recursos administrativos
+PASS Manutenção bloqueia o intervalo
+PASS Bloqueios sobrepostos são recusados
+PASS Paciente não escolhe modalidade de consulta alheia
+PASS Recepção não usa ação exclusiva do paciente
+PASS Modalidade inválida é recusada
+PASS Paciente escolhe consulta online antes do horário
+PASS Paciente escolhe consulta presencial
+PASS Troca de modalidade limpa consentimento anterior
+PASS Escolhas do paciente ficam auditadas
+PASS Atendimento iniciado não muda modalidade
+PASS Consulta não ocupa sala bloqueada
+PASS Liberação preserva histórico do bloqueio
+PASS Consulta reserva sala após liberação
+PASS Manutenção não atropela uma consulta reservada
+PASS Sala com reservas futuras não pode ser desativada
+PASS Intervalos adjacentes são permitidos
+PASS Recepção não muda modalidade sem concordância do paciente
+PASS Tentativa recusada preserva a modalidade presencial
+PASS Modalidade online combinada com paciente libera a sala física
+PASS Orientações online não mandam o paciente comparecer à clínica
+PASS Sala sem reservas pode ser desativada
+PASS Sala inativa rejeita nova reserva
+PASS Presença exige consentimento
+PASS Paciente autoriza a consulta online
+PASS Paciente autorizado registra entrada
+PASS Entrada online sem pré-cadastro não antecipa check-in nem declara chegada presencial
+PASS Recepção não participa do vídeo
+PASS Outro paciente não registra presença
+PASS Participante não altera presença alheia
+PASS Sessão não pode ser usada em outra consulta
+PASS Estado desconhecido é recusado
+PASS Dispositivo autorizado atualiza conexão
+PASS Conexão e presença são registradas
+PASS Presença expira após 60 segundos
+PASS Heartbeat atrasado não ressuscita presença
+PASS Nova entrada encerra sessão anterior
+PASS Entrada online registra check-in digital sem depender da recepção
+PASS Nova entrada não duplica o check-in já realizado
+PASS Profissional não encerra presença do paciente
+PASS Alteração de agendamento invalida presença antiga
+PASS Saída é aceita após alteração da consulta
+PASS Saída repetida é idempotente
+PASS Consulta cancelada não admite presença
+PASS Reserva física pode atravessar a meia-noite
+PASS Sala não aceita conflito com reserva iniciada no dia anterior
+PASS Sala aceita horário adjacente após a meia-noite

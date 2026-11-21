@@ -1,0 +1,71 @@
+@model MKSANCrud.ViewModels.ListaEsperaFormViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = "Entrar na lista de espera";
+    var paciente = User.IsInRole("Paciente");
+    var especialidades = (ViewBag.Especialidades as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>()).ToList();
+    var profissionais = (ViewBag.ProfissionaisEspera as IEnumerable<ProfissionalSaude> ?? Enumerable.Empty<ProfissionalSaude>()).ToList();
+    var especialidadeAtual = Model.EspecialidadeId ?? profissionais.FirstOrDefault(x => x.Id == Model.MedicoId)?.EspecialidadeId;
+    var preferencia = Model.PreferenciaProfissional ?? (Model.MedicoId.HasValue ? "especifico" : "qualquer");
+}
+<section class="cm25-screen cm-wait-create" data-cm25-view="ListaEspera/Create.cshtml">
+    <header class="cm-wait-heading">
+        <div><span class="cm50-overline">LISTA DE ESPERA</span><h1>@(paciente ? "Uma vaga que combina com você." : "Encontre uma vaga para o paciente.")</h1><p>Escolha o atendimento e suas preferências. A CallMed procura uma vaga compatível e avisa quando surgir uma oferta.</p></div>
+        <a class="btn secondary" asp-action="Index">Voltar</a>
+    </header>
+    <form asp-action="Create" method="post" id="waitlist-form" class="cm-wait-form">
+        <div asp-validation-summary="All" class="validation" role="alert"></div>
+        @if (!paciente)
+        {
+            <div class="field cm-wait-patient"><label asp-for="PacienteId">Paciente</label><select asp-for="PacienteId" asp-items="ViewBag.Pacientes" required><option value="">Selecione o paciente</option></select></div>
+        }
+        <fieldset class="cm-wait-step">
+            <legend><span class="cm-wait-number" aria-hidden="true">1</span> Qual especialidade você procura?</legend>
+            <p class="cm-wait-help">Comece pelo tipo de atendimento. Depois você poderá escolher um profissional.</p>
+            <div class="cm-wait-choices cm-wait-specialties">
+                @foreach (var item in especialidades)
+                {
+                    <label class="cm-wait-choice"><input type="radio" name="EspecialidadeId" value="@item.Value" checked="@(item.Value == especialidadeAtual?.ToString())" required /><span class="cm-wait-choice-copy"><strong>@item.Text</strong></span></label>
+                }
+            </div>
+            @if (especialidades.Count == 0) { <p class="cm-wait-empty" role="status">Nenhuma especialidade disponível para a lista de espera. Entre em contato com a clínica.</p> }
+            <span asp-validation-for="EspecialidadeId" class="validation"></span>
+        </fieldset>
+        <fieldset class="cm-wait-step">
+            <legend><span class="cm-wait-number" aria-hidden="true">2</span> Tem preferência de profissional?</legend>
+            <p class="cm-wait-help" id="waitlist-professional-hint">Escolha uma especialidade para continuar.</p>
+            <div class="cm-wait-choices cm-wait-preferences">
+                <label class="cm-wait-choice"><input type="radio" name="PreferenciaProfissional" value="qualquer" checked="@(preferencia == "qualquer")" required /><span class="cm-wait-choice-copy"><strong>Qualquer profissional da especialidade</strong><small>Considere todas as vagas compatíveis com as suas preferências.</small></span></label>
+                <label class="cm-wait-choice"><input type="radio" name="PreferenciaProfissional" value="especifico" checked="@(preferencia == "especifico")" /><span class="cm-wait-choice-copy"><strong>Quero um profissional específico</strong><small>Aguarde uma vaga somente com a pessoa que você escolher.</small></span></label>
+            </div>
+            <div id="waitlist-professionals" class="cm-wait-professionals" hidden>
+                <p class="cm-wait-help">Selecione um dos profissionais desta especialidade.</p>
+                <div class="cm-wait-choices">
+                    @foreach (var profissional in profissionais)
+                    {
+                        <label class="cm-wait-choice" data-wait-specialty="@profissional.EspecialidadeId"><input type="radio" name="MedicoId" value="@profissional.Id" checked="@(Model.MedicoId == profissional.Id)" /><span class="cm-wait-choice-copy"><strong>@profissional.Nome</strong><small>@profissional.RegistroExibicao</small></span></label>
+                    }
+                </div>
+                <p class="cm-wait-empty" id="waitlist-no-professionals" hidden>Nenhum profissional disponível nesta especialidade. Escolha outra opção ou fale com a clínica.</p>
+            </div>
+            <span asp-validation-for="MedicoId" class="validation"></span>
+        </fieldset>
+        <fieldset class="cm-wait-step">
+            <legend><span class="cm-wait-number" aria-hidden="true">3</span> Quando você pode ser atendido?</legend>
+            <div class="field cm-wait-date"><label asp-for="DataPreferida">Data preferida <small>(opcional)</small></label><input asp-for="DataPreferida" type="date" min="@ClinicaClock.Hoje.ToString("yyyy-MM-dd")" aria-describedby="waitlist-date-help" /><small class="field-help" id="waitlist-date-help">Sem uma data específica, procuramos nos próximos 90 dias.</small></div>
+            <fieldset class="cm-wait-period"><legend>Período do dia</legend><div class="cm-wait-choices">
+                @foreach (var periodo in new[] { "Qualquer", "Manhã", "Tarde", "Noite" })
+                {
+                    <label class="cm-wait-choice"><input type="radio" name="Periodo" value="@periodo" checked="@(Model.Periodo == periodo)" required /><span class="cm-wait-choice-copy"><strong>@periodo</strong></span></label>
+                }
+            </div></fieldset>
+            <div class="field cm-wait-observation"><label asp-for="Observacao">Algo que a equipe precisa saber? <small>(opcional)</small></label><textarea asp-for="Observacao" rows="3" maxlength="500" placeholder="Deixe uma orientação adicional para a equipe." aria-describedby="waitlist-note-help"></textarea><small class="field-help" id="waitlist-note-help">A busca usa a especialidade, o profissional, a data e o período escolhidos. As observações ficam para a equipe.</small></div>
+        </fieldset>
+        <footer class="cm-wait-footer">
+            <div><strong>Confira suas preferências</strong><p id="waitlist-summary" role="status" aria-live="polite">Escolha uma especialidade para começar.</p><small>Entrar na lista não confirma uma consulta. Quando receber uma oferta, você poderá aceitar ou recusar.</small></div>
+            <div class="cm-wait-actions"><a class="btn secondary" asp-action="Index">Cancelar</a><button class="btn" type="submit" id="waitlist-submit" disabled="@(especialidades.Count == 0)">Entrar na lista de espera</button></div>
+        </footer>
+        <noscript><p class="alert warning">Ative o JavaScript para selecionar um profissional específico ou fale com a clínica para registrar seu pedido.</p></noscript>
+    </form>
+</section>
+@section Scripts { <script src="~/js/jornada/lista-espera.js" asp-append-version="true" defer></script> }

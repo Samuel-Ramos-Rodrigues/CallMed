@@ -1,0 +1,21 @@
+{
+  "base_724_arquivos": 724,
+  "alteracoes": [
+    {
+      "arquivo": "src/CallMed.Application/Modules/Agenda/Services/AgendamentoService.cs",
+      "sha_original": "17d2dd8f042759cb93a8d4188b66b399a47d1533c3b27c46406de5c60b6304aa",
+      "sha_corrigido": "249ce060875010993a1c1979ba78ca286f9c9ef936b6722994983486117e5b47"
+    },
+    {
+      "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+      "sha_original": "3a07cfe8def552116581f3205e71ceec36b9c222d72e39f7427e3ebea9233cad",
+      "sha_corrigido": "e5eb77db6e6c3f734e29bf5ef44c174683e95a41e694de3ec9df6d6a8c75071f"
+    },
+    {
+      "arquivo": "tests/next/check-transport-state.cjs",
+      "sha_original": "b3124e87f658799c24ff7dd4e91a7096d89e99d3c9d940b22c6c63f816efc99d",
+      "sha_corrigido": "1111314a270ad930a1803655fafbf32aad23d0f8f858af581a556501e7a85d1a"
+    }
+  ],
+  "removidos": 0
+}

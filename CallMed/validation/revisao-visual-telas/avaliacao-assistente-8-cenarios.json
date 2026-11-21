@@ -1,0 +1,247 @@
+{
+  "cases": [
+    {
+      "width": 1440,
+      "height": 900,
+      "theme": "light",
+      "metrics": {
+        "widget": {
+          "top": 207,
+          "bottom": 807,
+          "height": 600
+        },
+        "messages": {
+          "top": 293.09375,
+          "bottom": 700.40625,
+          "height": 407.3125
+        },
+        "composer": {
+          "top": 735,
+          "bottom": 806,
+          "height": 71
+        },
+        "card": {
+          "top": 318,
+          "bottom": 683.59375,
+          "height": 365.59375
+        },
+        "cardClient": 364,
+        "cardScroll": 364,
+        "overflow": false
+      }
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "theme": "dark",
+      "metrics": {
+        "widget": {
+          "top": 207,
+          "bottom": 807,
+          "height": 600
+        },
+        "messages": {
+          "top": 293.09375,
+          "bottom": 700.40625,
+          "height": 407.3125
+        },
+        "composer": {
+          "top": 735,
+          "bottom": 806,
+          "height": 71
+        },
+        "card": {
+          "top": 318,
+          "bottom": 683.59375,
+          "height": 365.59375
+        },
+        "cardClient": 364,
+        "cardScroll": 364,
+        "overflow": false
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "metrics": {
+        "widget": {
+          "top": 133,
+          "bottom": 693,
+          "height": 560
+        },
+        "messages": {
+          "top": 219.09375,
+          "bottom": 568.8125,
+          "height": 349.71875
+        },
+        "composer": {
+          "top": 621,
+          "bottom": 692,
+          "height": 71
+        },
+        "card": {
+          "top": 187,
+          "bottom": 553.1875,
+          "height": 366.1875
+        },
+        "cardClient": 364,
+        "cardScroll": 364,
+        "overflow": false
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "metrics": {
+        "widget": {
+          "top": 133,
+          "bottom": 693,
+          "height": 560
+        },
+        "messages": {
+          "top": 219.09375,
+          "bottom": 568.8125,
+          "height": 349.71875
+        },
+        "composer": {
+          "top": 621,
+          "bottom": 692,
+          "height": 71
+        },
+        "card": {
+          "top": 187,
+          "bottom": 553.1875,
+          "height": 366.1875
+        },
+        "cardClient": 364,
+        "cardScroll": 364,
+        "overflow": false
+      }
+    },
+    {
+      "width": 320,
+      "height": 640,
+      "theme": "light",
+      "metrics": {
+        "widget": {
+          "top": 29,
+          "bottom": 489,
+          "height": 460
+        },
+        "messages": {
+          "top": 115.09375,
+          "bottom": 364.8125,
+          "height": 249.71875
+        },
+        "composer": {
+          "top": 417,
+          "bottom": 488,
+          "height": 71
+        },
+        "card": {
+          "top": -48.09375,
+          "bottom": 349.421875,
+          "height": 397.515625
+        },
+        "cardClient": 396,
+        "cardScroll": 396,
+        "overflow": false
+      }
+    },
+    {
+      "width": 320,
+      "height": 640,
+      "theme": "dark",
+      "metrics": {
+        "widget": {
+          "top": 29,
+          "bottom": 489,
+          "height": 460
+        },
+        "messages": {
+          "top": 115.09375,
+          "bottom": 364.8125,
+          "height": 249.71875
+        },
+        "composer": {
+          "top": 417,
+          "bottom": 488,
+          "height": 71
+        },
+        "card": {
+          "top": -48.09375,
+          "bottom": 349.421875,
+          "height": 397.515625
+        },
+        "cardClient": 396,
+        "cardScroll": 396,
+        "overflow": false
+      }
+    },
+    {
+      "width": 390,
+      "height": 480,
+      "theme": "light",
+      "metrics": {
+        "widget": {
+          "top": 29,
+          "bottom": 329,
+          "height": 300
+        },
+        "messages": {
+          "top": 115.09375,
+          "bottom": 204.8125,
+          "height": 89.71875
+        },
+        "composer": {
+          "top": 257,
+          "bottom": 328,
+          "height": 71
+        },
+        "card": {
+          "top": -177,
+          "bottom": 189.1875,
+          "height": 366.1875
+        },
+        "cardClient": 364,
+        "cardScroll": 364,
+        "overflow": false
+      }
+    },
+    {
+      "width": 390,
+      "height": 480,
+      "theme": "dark",
+      "metrics": {
+        "widget": {
+          "top": 29,
+          "bottom": 329,
+          "height": 300
+        },
+        "messages": {
+          "top": 115.09375,
+          "bottom": 204.8125,
+          "height": 89.71875
+        },
+        "composer": {
+          "top": 257,
+          "bottom": 328,
+          "height": 71
+        },
+        "card": {
+          "top": -177,
+          "bottom": 189.1875,
+          "height": 366.1875
+        },
+        "cardClient": 364,
+        "cardScroll": 364,
+        "overflow": false
+      }
+    }
+  ],
+  "ratings_sent": 8,
+  "new_messages": 8,
+  "failures": []
+}

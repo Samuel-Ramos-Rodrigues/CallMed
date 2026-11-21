@@ -1,0 +1,10 @@
+{
+  "suites": 22,
+  "checks": 1112,
+  "build": "Release: zero erros e avisos",
+  "postgres": "16.2 local isolado",
+  "publish": {
+    "web": "CallMed.Web -> /tmp/callmed-publish-web/",
+    "worker": "CallMed.Worker -> /tmp/callmed-publish-worker/"
+  }
+}

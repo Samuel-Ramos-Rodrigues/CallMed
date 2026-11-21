@@ -1,0 +1,31 @@
+{
+  "data": "2026-11-16",
+  "dotnet": {
+    "suites": 15,
+    "verificacoes": 1047,
+    "falhas": 0
+  },
+  "postgres": {
+    "suites": 7,
+    "verificacoes": 65,
+    "falhas": 0,
+    "versao": "16.2 local isolado"
+  },
+  "navegador": {
+    "suites": 11,
+    "verificacoes": 600,
+    "falhas": 0,
+    "paginas_auditoria": 48,
+    "composicoes_premium": 168
+  },
+  "adicionais": {
+    "suites": 7,
+    "verificacoes": 65,
+    "falhas": 0
+  },
+  "total_verificacoes": 1777,
+  "compilacao": "Release, zero erros e avisos",
+  "publicacao": "Web e Worker: validada localmente",
+  "integracoes_producao": "nao testadas",
+  "dispositivo_android_real": "nao testado"
+}

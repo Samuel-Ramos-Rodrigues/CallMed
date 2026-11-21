@@ -1,0 +1,2006 @@
+[
+  {
+    "arquivo": "mobile/android/app/src/main/java/com/callmed/app/AccountScreens.kt",
+    "linha": 6,
+    "regra": "bloqueio-async",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "mobile/android/app/src/main/java/com/callmed/app/ClinicalScreens.kt",
+    "linha": 8,
+    "regra": "bloqueio-async",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "mobile/android/app/src/main/java/com/callmed/app/NativeTele.kt",
+    "linha": 10,
+    "regra": "bloqueio-async",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "mobile/android/app/src/test/java/com/callmed/app/CallMedApiTest.kt",
+    "linha": 43,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "mobile/android/app/src/test/java/com/callmed/app/CallMedApiTest.kt",
+    "linha": 44,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "mobile/android/app/src/test/java/com/callmed/app/CallMedApiTest.kt",
+    "linha": 74,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "mobile/android/app/src/test/java/com/callmed/app/CallMedApiTest.kt",
+    "linha": 78,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "mobile/android/app/src/test/java/com/callmed/app/CallMedApiTest.kt",
+    "linha": 79,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "mobile/android/app/src/test/java/com/callmed/app/CallMedApiTest.kt",
+    "linha": 83,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "mobile/android/app/src/test/java/com/callmed/app/CallMedApiTest.kt",
+    "linha": 110,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "mobile/android/app/src/test/java/com/callmed/app/CallMedApiTest.kt",
+    "linha": 121,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Binding/PilotoCustoBinder.cs",
+    "linha": 17,
+    "regra": "bloqueio-async",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Infrastructure/Database/Initializers/DatabaseSchemaV12Initializer.cs",
+    "linha": 205,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Infrastructure/Database/Initializers/DatabaseSchemaV13Initializer.cs",
+    "linha": 162,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Infrastructure/Database/Initializers/DatabaseSchemaV14Initializer.cs",
+    "linha": 65,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Infrastructure/Email/Contracts/IEmailService.cs",
+    "linha": 7,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Infrastructure/Email/SmtpEmailService.cs",
+    "linha": 29,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Infrastructure/Email/SmtpEmailService.cs",
+    "linha": 109,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Infrastructure/Startup/DatabaseReadinessCheck.cs",
+    "linha": 10,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Jobs/AgendaRenovacaoBackgroundService.cs",
+    "linha": 51,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Jobs/EphemeralCleanupBackgroundService.cs",
+    "linha": 24,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Jobs/LembreteConsultaBackgroundService.cs",
+    "linha": 118,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Jobs/ListaEsperaBackgroundService.cs",
+    "linha": 13,
+    "regra": "sensitive-logger-keywords",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Jobs/ListaEsperaBackgroundService.cs",
+    "linha": 15,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Jobs/ListaEsperaBackgroundService.cs",
+    "linha": 15,
+    "regra": "sensitive-logger-keywords",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Agenda/Services/AgendamentoService.cs",
+    "linha": 562,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Agenda/Services/ConsultaLinkService.cs",
+    "linha": 8,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Assistente/Services/AgenteClinicaService.cs",
+    "linha": 50,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Assistente/Services/AgenteToolsService.cs",
+    "linha": 114,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Assistente/Services/Contracts/IAgenteClinicaService.cs",
+    "linha": 7,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoEmailAutomaticoService.cs",
+    "linha": 60,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoEmailAutomaticoService.cs",
+    "linha": 84,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoEmailAutomaticoService.cs",
+    "linha": 84,
+    "regra": "sensitive-logger-keywords",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoEmailDecisaoService.cs",
+    "linha": 111,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoEnvioService.cs",
+    "linha": 27,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoEnvioService.cs",
+    "linha": 42,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoEnvioService.cs",
+    "linha": 133,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoEnvioService.cs",
+    "linha": 180,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoEnvioService.cs",
+    "linha": 188,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoFeedbackService.cs",
+    "linha": 215,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 93,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 106,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 107,
+    "regra": "cs-ambiguous-assignment",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 111,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 285,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 312,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 334,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 443,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 462,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 473,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 474,
+    "regra": "cs-ambiguous-assignment",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 481,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+    "linha": 490,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Email/GmailApiClient.cs",
+    "linha": 38,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Email/GmailApiClient.cs",
+    "linha": 229,
+    "regra": "sensitive-logger-keywords",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Email/GmailApiClient.cs",
+    "linha": 379,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Email/GmailInboxPollingService.cs",
+    "linha": 58,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Email/GmailInboxPollingService.cs",
+    "linha": 128,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Email/SmtpAtendimentoSender.cs",
+    "linha": 25,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Email/SmtpAtendimentoSender.cs",
+    "linha": 56,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Sms/HttpSmsAtendimentoService.cs",
+    "linha": 54,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Sms/HttpSmsAtendimentoService.cs",
+    "linha": 118,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Sms/HttpSmsAtendimentoService.cs",
+    "linha": 118,
+    "regra": "sensitive-logger-keywords",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Sms/HttpSmsWebhookValidator.cs",
+    "linha": 33,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Sms/SmsHttpSender.cs",
+    "linha": 33,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/Sms/SmsHttpSender.cs",
+    "linha": 96,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/WhatsApp/EvolutionWhatsAppSender.cs",
+    "linha": 85,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/WhatsApp/EvolutionWhatsAppSender.cs",
+    "linha": 120,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/WhatsApp/EvolutionWhatsAppSender.cs",
+    "linha": 241,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Canais/WhatsApp/WhatsAppPendingBackgroundService.cs",
+    "linha": 34,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Atendimento/Services/Contracts/ICanalAtendimentoSender.cs",
+    "linha": 11,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Gestao/Services/OperacaoService.cs",
+    "linha": 31,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/IntegracaoPEP/Services/PepEntregaService.cs",
+    "linha": 7,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/IntegracaoPEP/Services/PepEntregaService.cs",
+    "linha": 9,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/IntegracaoPEP/Services/PepEntregaService.cs",
+    "linha": 14,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Psicologia/Services/FhirPsicologiaService.cs",
+    "linha": 11,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Psicologia/Services/FhirPsicologiaService.cs",
+    "linha": 19,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Psicologia/Services/FhirPsicologiaService.cs",
+    "linha": 31,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Psicologia/Services/FhirPsicologiaService.cs",
+    "linha": 31,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Psicologia/Services/FhirPsicologiaService.cs",
+    "linha": 32,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Psicologia/Services/PreparacaoLinkService.cs",
+    "linha": 8,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Psicologia/Services/PsicologiaService.cs",
+    "linha": 35,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Application/Modules/Shared/Services/AuditoriaService.cs",
+    "linha": 50,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Areas/Identity/Pages/Account/ForgotPassword.cshtml.cs",
+    "linha": 20,
+    "regra": "permissao-anonima",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Areas/Identity/Pages/Account/ForgotPassword.cshtml.cs",
+    "linha": 138,
+    "regra": "sensitive-logger-keywords",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Areas/Identity/Pages/Account/ForgotPassword.cshtml.cs",
+    "linha": 156,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Areas/Identity/Pages/Account/ForgotPassword.cshtml.cs",
+    "linha": 164,
+    "regra": "sensitive-logger-keywords",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Areas/Identity/Pages/Account/ForgotPassword.cshtml.cs",
+    "linha": 240,
+    "regra": "sensitive-logger-keywords",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Areas/Identity/Pages/Account/ForgotPassword.cshtml.cs",
+    "linha": 246,
+    "regra": "sensitive-logger-keywords",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Areas/Identity/Pages/Account/Login.cshtml.cs",
+    "linha": 91,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Areas/Identity/Pages/Account/Logout.cshtml.cs",
+    "linha": 34,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Areas/Identity/Pages/Account/ResetPasswordConfirmation.cshtml.cs",
+    "linha": 7,
+    "regra": "permissao-anonima",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Admin/IntegracoesController.cs",
+    "linha": 58,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Admin/IntegracoesController.cs",
+    "linha": 83,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Admin/MedicoAcessoController.cs",
+    "linha": 38,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Agenda/ConsultaController.Acoes.cs",
+    "linha": 20,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Agenda/ConsultaController.Acoes.cs",
+    "linha": 43,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Agenda/ConsultaController.Acoes.cs",
+    "linha": 53,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Agenda/ConsultaController.Acoes.cs",
+    "linha": 63,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Agenda/ConsultaController.Acoes.cs",
+    "linha": 190,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Agenda/ConsultaController.cs",
+    "linha": 123,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Agenda/ConsultaController.cs",
+    "linha": 256,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Agenda/ConsultaController.cs",
+    "linha": 319,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Agenda/DisponibilidadeController.cs",
+    "linha": 72,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Agenda/DisponibilidadeController.cs",
+    "linha": 113,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Agenda/DisponibilidadeController.cs",
+    "linha": 164,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Api/AtendimentoWebhookController.EvolutionParsing.cs",
+    "linha": 304,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Api/AtendimentoWebhookController.EvolutionParsing.cs",
+    "linha": 394,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Api/AtendimentoWebhookController.EvolutionParsing.cs",
+    "linha": 482,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Api/AtendimentoWebhookController.cs",
+    "linha": 135,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Api/AtendimentoWebhookController.cs",
+    "linha": 197,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Api/AtendimentoWebhookController.cs",
+    "linha": 258,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Api/PepController.cs",
+    "linha": 14,
+    "regra": "bloqueio-async",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AgenteController.cs",
+    "linha": 50,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AgenteController.cs",
+    "linha": 228,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AgenteController.cs",
+    "linha": 274,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AgenteController.cs",
+    "linha": 338,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AgenteController.cs",
+    "linha": 404,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AgenteController.cs",
+    "linha": 420,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.Acoes.cs",
+    "linha": 18,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.Acoes.cs",
+    "linha": 46,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.Acoes.cs",
+    "linha": 70,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.Acoes.cs",
+    "linha": 136,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.Acoes.cs",
+    "linha": 158,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.Acoes.cs",
+    "linha": 187,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.Acoes.cs",
+    "linha": 214,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.Acoes.cs",
+    "linha": 236,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.Acoes.cs",
+    "linha": 255,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.Acoes.cs",
+    "linha": 273,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.Acoes.cs",
+    "linha": 358,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.Acoes.cs",
+    "linha": 403,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.cs",
+    "linha": 233,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/AtendimentoController.cs",
+    "linha": 323,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/ListaEsperaController.cs",
+    "linha": 79,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/ListaEsperaController.cs",
+    "linha": 93,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/ListaEsperaController.cs",
+    "linha": 161,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/SolicitacoesController.cs",
+    "linha": 128,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/SolicitacoesController.cs",
+    "linha": 179,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/SolicitacoesController.cs",
+    "linha": 243,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/SolicitacoesController.cs",
+    "linha": 284,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/SolicitacoesController.cs",
+    "linha": 301,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Atendimento/SolicitacoesController.cs",
+    "linha": 318,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/ConveniosController.cs",
+    "linha": 43,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/ConveniosController.cs",
+    "linha": 61,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/EspecialidadeController.cs",
+    "linha": 41,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/EspecialidadeController.cs",
+    "linha": 55,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/FuncionarioController.cs",
+    "linha": 47,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/FuncionarioController.cs",
+    "linha": 126,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/FuncionarioController.cs",
+    "linha": 298,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/HistoricoExamesController.cs",
+    "linha": 49,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/HistoricoExamesController.cs",
+    "linha": 96,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/HistoricoExamesController.cs",
+    "linha": 121,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/HistoricoExamesController.cs",
+    "linha": 151,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/MedicoController.cs",
+    "linha": 64,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/MedicoController.cs",
+    "linha": 150,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/MedicoController.cs",
+    "linha": 266,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/PacienteController.cs",
+    "linha": 67,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/PacienteController.cs",
+    "linha": 144,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/PacienteController.cs",
+    "linha": 272,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Cadastros/PacienteController.cs",
+    "linha": 377,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Jornada/ClinicalHandoffController.cs",
+    "linha": 14,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Jornada/JornadaController.cs",
+    "linha": 31,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Jornada/JornadaController.cs",
+    "linha": 34,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Jornada/JornadaController.cs",
+    "linha": 49,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Jornada/TeleconsultaController.cs",
+    "linha": 84,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Paineis/MedicoPainelController.cs",
+    "linha": 66,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Paineis/MedicoPainelController.cs",
+    "linha": 77,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Paineis/MedicoPainelController.cs",
+    "linha": 88,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Paineis/MedicoPainelController.cs",
+    "linha": 102,
+    "regra": "protecao-antiforgery",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Publico/AplicativoController.cs",
+    "linha": 9,
+    "regra": "permissao-anonima",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Controllers/Publico/AplicativoController.cs",
+    "linha": 43,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/Views/Integracoes/Index.cshtml",
+    "linha": 103,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 206,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 234,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 235,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 236,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 237,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 238,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 239,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 242,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 619,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 739,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 1586,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 1587,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 1588,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 1676,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 3105,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 4543,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 4544,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 4545,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 4557,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 4558,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 4559,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 4588,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 5074,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 5104,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 6118,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 6131,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 6161,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "linha": 6277,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-10-shell.css",
+    "linha": 35,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-10-shell.css",
+    "linha": 37,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-10-shell.css",
+    "linha": 38,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-10-shell.css",
+    "linha": 53,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-10-shell.css",
+    "linha": 55,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-10-shell.css",
+    "linha": 167,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-10-shell.css",
+    "linha": 179,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-10-shell.css",
+    "linha": 181,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-20-fluxos.css",
+    "linha": 16,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-20-fluxos.css",
+    "linha": 19,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-20-fluxos.css",
+    "linha": 27,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-20-fluxos.css",
+    "linha": 76,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-20-fluxos.css",
+    "linha": 77,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-20-fluxos.css",
+    "linha": 78,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-20-fluxos.css",
+    "linha": 79,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-20-fluxos.css",
+    "linha": 80,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/css/nova-30-acesso.css",
+    "linha": 78,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/atendimento/assistente-flutuante.js",
+    "linha": 553,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/atendimento/confirmacoes.js",
+    "linha": 6,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/atendimento/confirmacoes.js",
+    "linha": 14,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/atendimento/confirmacoes.js",
+    "linha": 57,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/atendimento/confirmacoes.js",
+    "linha": 73,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/clinico/clinico.js",
+    "linha": 4,
+    "regra": "bloqueio-async",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/clinico/clinico.js",
+    "linha": 9,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/clinico/clinico.js",
+    "linha": 11,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/clinico/clinico.js",
+    "linha": 28,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/clinico/clinico.js",
+    "linha": 33,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/clinico/clinico.js",
+    "linha": 42,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/clinico/clinico.js",
+    "linha": 70,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/conta/minha-conta.js",
+    "linha": 44,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/conta/minha-conta.js",
+    "linha": 46,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/accessibility.js",
+    "linha": 14,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/accessibility.js",
+    "linha": 49,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/contingencia.js",
+    "linha": 114,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/feedback.js",
+    "linha": 132,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/preferences.js",
+    "linha": 26,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/pwa.js",
+    "linha": 13,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/pwa.js",
+    "linha": 135,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/shell.js",
+    "linha": 123,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/core/theme.js",
+    "linha": 60,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/jornada/teleconsulta.js",
+    "linha": 35,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "src/CallMed.Web/wwwroot/js/jornada/teleconsulta.js",
+    "linha": 36,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AgenteLatenciaChecks.cs",
+    "linha": 31,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AgenteLatenciaChecks.cs",
+    "linha": 37,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AgenteLatenciaChecks.cs",
+    "linha": 41,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AgenteLatenciaChecks.cs",
+    "linha": 48,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AgenteLatenciaChecks.cs",
+    "linha": 51,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AgenteLatenciaChecks.cs",
+    "linha": 53,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AplicativoDownloadChecks.cs",
+    "linha": 34,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AplicativoDownloadChecks.cs",
+    "linha": 40,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AtendimentoRetomadaChecks.cs",
+    "linha": 46,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AtendimentoRetomadaChecks.cs",
+    "linha": 260,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AtendimentoRetomadaChecks.cs",
+    "linha": 442,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AtendimentoRetomadaChecks.cs",
+    "linha": 482,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AtendimentoRetomadaChecks.cs",
+    "linha": 485,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AtendimentoRetomadaChecks.cs",
+    "linha": 495,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AtendimentoRetomadaChecks.cs",
+    "linha": 515,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AtendimentoRetomadaChecks.cs",
+    "linha": 517,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AtendimentoRetomadaChecks.cs",
+    "linha": 578,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AtendimentoRetomadaChecks.cs",
+    "linha": 596,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AtendimentoRetomadaChecks.cs",
+    "linha": 605,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/AuditFixesChecks.cs",
+    "linha": 133,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/ContaPerfilChecks.cs",
+    "linha": 28,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/ContaPerfilChecks.cs",
+    "linha": 50,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/ContaPerfilChecks.cs",
+    "linha": 133,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EncerramentoIaChecks.cs",
+    "linha": 32,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EncerramentoIaChecks.cs",
+    "linha": 33,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EncerramentoIaChecks.cs",
+    "linha": 36,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EncerramentoIaChecks.cs",
+    "linha": 95,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EncerramentoIaChecks.cs",
+    "linha": 101,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionDiagnosticoChecks.cs",
+    "linha": 24,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionDiagnosticoChecks.cs",
+    "linha": 34,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionDiagnosticoChecks.cs",
+    "linha": 45,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionDiagnosticoChecks.cs",
+    "linha": 73,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionDiagnosticoChecks.cs",
+    "linha": 85,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 30,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 31,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 34,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 35,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 38,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 44,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 48,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 53,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 59,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 64,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 70,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 72,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 75,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 78,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 90,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 94,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 96,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 106,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 107,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 110,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 115,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 119,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/EvolutionEnvioChecks.cs",
+    "linha": 209,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/FeedbackChecks.cs",
+    "linha": 198,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/FeedbackChecks.cs",
+    "linha": 204,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/HttpSmsChecks.cs",
+    "linha": 52,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/HttpSmsChecks.cs",
+    "linha": 53,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/HttpSmsChecks.cs",
+    "linha": 60,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/HttpSmsChecks.cs",
+    "linha": 63,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/HttpSmsChecks.cs",
+    "linha": 66,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/HttpSmsChecks.cs",
+    "linha": 69,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/HttpSmsChecks.cs",
+    "linha": 71,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/HttpSmsChecks.cs",
+    "linha": 73,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/HttpSmsChecks.cs",
+    "linha": 75,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/HttpSmsChecks.cs",
+    "linha": 77,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/HttpSmsChecks.cs",
+    "linha": 142,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/HttpSmsChecks.cs",
+    "linha": 221,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/JornadaChecks.cs",
+    "linha": 58,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/JornadaFixture.cs",
+    "linha": 65,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/JornadaFixture.cs",
+    "linha": 130,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/JornadaFixture.cs",
+    "linha": 133,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/MobileApiChecks.cs",
+    "linha": 53,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/MobileApiChecks.cs",
+    "linha": 293,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/PasswordResetChecks.cs",
+    "linha": 196,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/PasswordResetChecks.cs",
+    "linha": 211,
+    "regra": "catch-geral",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/PasswordResetChecks.cs",
+    "linha": 225,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/PilotoChecks.cs",
+    "linha": 61,
+    "regra": "fixme",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/Program.cs",
+    "linha": 135,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/PsicologiaChecks.cs",
+    "linha": 37,
+    "regra": "envio-canal",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/PsicologiaChecks.cs",
+    "linha": 41,
+    "regra": "httpcall",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/CallMed.Checks/SolicitacoesPainelChecks.cs",
+    "linha": 44,
+    "regra": "fixme",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/atendimento-ia-browser.cjs",
+    "linha": 77,
+    "regra": "JS-alert",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/browser/check-amplo.cjs",
+    "linha": 23,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/browser/check-design.cjs",
+    "linha": 232,
+    "regra": "fixme",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/browser/check-design.cjs",
+    "linha": 493,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/browser/check-psicologia.cjs",
+    "linha": 27,
+    "regra": "bloqueio-async",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/browser/check-psicologia.cjs",
+    "linha": 37,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/browser/check-salas.cjs",
+    "linha": 49,
+    "regra": "catch-vazio",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  },
+  {
+    "arquivo": "tests/css-integrity.cjs",
+    "linha": 35,
+    "regra": "CSS-important",
+    "evidencia": "ocorrencia localizada por padrao; exige exame contextual"
+  }
+]

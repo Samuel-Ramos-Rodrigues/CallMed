@@ -1,0 +1,38 @@
+[
+  {
+    "check": "tests/css-integrity.cjs",
+    "exit": 0
+  },
+  {
+    "check": "tests/ux-contract.cjs",
+    "exit": 0
+  },
+  {
+    "check": "tests/next/check-transport-state.cjs",
+    "exit": 0
+  },
+  {
+    "check": "scripts/check-css.py",
+    "exit": 0
+  },
+  {
+    "check": "scripts/check-architecture.py",
+    "exit": 0
+  },
+  {
+    "check": "scripts/check-v35-classic-visual-contracts.py",
+    "exit": 0
+  },
+  {
+    "check": "scripts/auditar-views-callmed.py",
+    "exit": 0
+  },
+  {
+    "check": "tests/check-fhir-clinico.cjs",
+    "exit": 0
+  },
+  {
+    "check": "tests/check-psychology-pwa.cjs",
+    "exit": 0
+  }
+]

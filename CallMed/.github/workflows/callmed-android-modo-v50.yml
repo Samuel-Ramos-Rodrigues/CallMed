@@ -1,0 +1,33 @@
+name: CallMed Android MODO V50 APK
+on:
+  pull_request:
+    paths:
+      - 'mobile/android/**'
+      - '.github/workflows/callmed-android-modo-v50.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v4
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Permitir wrapper
+        run: chmod +x mobile/android/gradlew
+      - name: Compilar APK de teste
+        run: mobile/android/gradlew -p mobile/android --no-daemon assembleDebug
+      - name: Publicar APK de teste
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CallMed-MODO-V50-Android-debug
+          path: mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14

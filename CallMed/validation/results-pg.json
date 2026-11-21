@@ -1,0 +1,37 @@
+[
+  {
+    "suite": "salas-pg",
+    "exit": 0,
+    "pass": 7
+  },
+  {
+    "suite": "piloto-pg",
+    "exit": 0,
+    "pass": 10
+  },
+  {
+    "suite": "psicologia-pg",
+    "exit": 0,
+    "pass": 8
+  },
+  {
+    "suite": "jornada-pg",
+    "exit": 0,
+    "pass": 7
+  },
+  {
+    "suite": "amplo-pg",
+    "exit": 0,
+    "pass": 5
+  },
+  {
+    "suite": "audit-pg",
+    "exit": 0,
+    "pass": 14
+  },
+  {
+    "suite": "encaixe-pg",
+    "exit": 0,
+    "pass": 14
+  }
+]
