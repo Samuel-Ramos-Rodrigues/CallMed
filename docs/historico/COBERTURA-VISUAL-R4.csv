@@ -1,0 +1,105 @@
+﻿View Razor,Tipo de cobertura
+Acessos/Index.cshtml,Razor alterado diretamente + CSS R4
+Agenda/Index.cshtml,Razor alterado diretamente + CSS R4
+Aplicativo/Index.cshtml,Estilos/componentes globais R4 (view preservada)
+Atendimento/Index.cshtml,Razor alterado diretamente + CSS R4
+Atendimento/Nova.cshtml,Estilos/componentes globais R4 (view preservada)
+Atendimento/_CanalIcon.cshtml,Estilos/componentes globais R4 (view preservada)
+Auditoria/Index.cshtml,Razor alterado diretamente + CSS R4
+Avaliacoes/Index.cshtml,Estilos/componentes globais R4 (view preservada)
+Checkin/Abrir.cshtml,Estilos/componentes globais R4 (view preservada)
+Checkin/Terminal.cshtml,Razor alterado diretamente + CSS R4
+Configuracoes/Index.cshtml,Razor alterado diretamente + CSS R4
+Confirmacoes/Index.cshtml,Razor alterado diretamente + CSS R4
+Consulta/Create.cshtml,Razor alterado diretamente + CSS R4
+Consulta/Details.cshtml,Razor alterado diretamente + CSS R4
+Consulta/Edit.cshtml,Estilos/componentes globais R4 (view preservada)
+Consulta/Equipe.cshtml,Estilos/componentes globais R4 (view preservada)
+Consulta/Index.cshtml,Razor alterado diretamente + CSS R4
+Consulta/Remarcar.cshtml,Estilos/componentes globais R4 (view preservada)
+Consulta/_Form.cshtml,Estilos/componentes globais R4 (view preservada)
+Consulta/_ListaEquipe.cshtml,Estilos/componentes globais R4 (view preservada)
+Convenios/Index.cshtml,Razor alterado diretamente + CSS R4
+Disponibilidade/Create.cshtml,Estilos/componentes globais R4 (view preservada)
+Disponibilidade/Delete.cshtml,Estilos/componentes globais R4 (view preservada)
+Disponibilidade/Details.cshtml,Estilos/componentes globais R4 (view preservada)
+Disponibilidade/Edit.cshtml,Estilos/componentes globais R4 (view preservada)
+Disponibilidade/Index.cshtml,Razor alterado diretamente + CSS R4
+Disponibilidade/_Form.cshtml,Estilos/componentes globais R4 (view preservada)
+Disponibilidades/Index.cshtml,Razor alterado diretamente + CSS R4
+Especialidade/Create.cshtml,Estilos/componentes globais R4 (view preservada)
+Especialidade/Edit.cshtml,Estilos/componentes globais R4 (view preservada)
+Especialidade/Index.cshtml,Razor alterado diretamente + CSS R4
+Especialidade/_Form.cshtml,Estilos/componentes globais R4 (view preservada)
+Funcionario/Create.cshtml,Estilos/componentes globais R4 (view preservada)
+Funcionario/Delete.cshtml,Estilos/componentes globais R4 (view preservada)
+Funcionario/Details.cshtml,Estilos/componentes globais R4 (view preservada)
+Funcionario/Edit.cshtml,Estilos/componentes globais R4 (view preservada)
+Funcionario/Index.cshtml,Razor alterado diretamente + CSS R4
+Funcionario/_Form.cshtml,Estilos/componentes globais R4 (view preservada)
+FuncionarioPainel/Index.cshtml,Razor alterado diretamente + CSS R4
+HistoricoExames/Index.cshtml,Razor alterado diretamente + CSS R4
+HistoricoExames/Pendentes.cshtml,Estilos/componentes globais R4 (view preservada)
+Home/Error.cshtml,Estilos/componentes globais R4 (view preservada)
+Home/Index.cshtml,Razor alterado diretamente + CSS R4
+Home/Privacidade.cshtml,Estilos/componentes globais R4 (view preservada)
+Home/TermosDeUso.cshtml,Estilos/componentes globais R4 (view preservada)
+Integracoes/Index.cshtml,Razor alterado diretamente + CSS R4
+Jornada/Acao.cshtml,Estilos/componentes globais R4 (view preservada)
+Jornada/Consulta.cshtml,Razor alterado diretamente + CSS R4
+Jornada/Index.cshtml,Razor alterado diretamente + CSS R4
+Jornada/LinkIndisponivel.cshtml,Estilos/componentes globais R4 (view preservada)
+Jornada/Tele.cshtml,Razor alterado diretamente + CSS R4
+Jornada/TeleNaoEncontrada.cshtml,Estilos/componentes globais R4 (view preservada)
+ListaEspera/Create.cshtml,Razor alterado diretamente + CSS R4
+ListaEspera/Index.cshtml,Razor alterado diretamente + CSS R4
+Medico/Create.cshtml,Estilos/componentes globais R4 (view preservada)
+Medico/Delete.cshtml,Estilos/componentes globais R4 (view preservada)
+Medico/Details.cshtml,Estilos/componentes globais R4 (view preservada)
+Medico/Edit.cshtml,Estilos/componentes globais R4 (view preservada)
+Medico/Index.cshtml,Razor alterado diretamente + CSS R4
+Medico/_Form.cshtml,Estilos/componentes globais R4 (view preservada)
+MedicoAcesso/Gerenciar.cshtml,Estilos/componentes globais R4 (view preservada)
+MedicoPainel/Index.cshtml,Razor alterado diretamente + CSS R4
+MinhaConta/Edit.cshtml,Estilos/componentes globais R4 (view preservada)
+MinhaConta/Index.cshtml,Razor alterado diretamente + CSS R4
+Operacao/Index.cshtml,Razor alterado diretamente + CSS R4
+Organizacao/Index.cshtml,Razor alterado diretamente + CSS R4
+Paciente/Create.cshtml,Estilos/componentes globais R4 (view preservada)
+Paciente/Delete.cshtml,Estilos/componentes globais R4 (view preservada)
+Paciente/Details.cshtml,Estilos/componentes globais R4 (view preservada)
+Paciente/Edit.cshtml,Estilos/componentes globais R4 (view preservada)
+Paciente/Index.cshtml,Razor alterado diretamente + CSS R4
+Paciente/_Form.cshtml,Estilos/componentes globais R4 (view preservada)
+Piloto/Index.cshtml,Razor alterado diretamente + CSS R4
+Piloto/Medicao.cshtml,Estilos/componentes globais R4 (view preservada)
+Privacidade/Gestao.cshtml,Estilos/componentes globais R4 (view preservada)
+Privacidade/Index.cshtml,Estilos/componentes globais R4 (view preservada)
+Psicologia/Acervo.cshtml,Estilos/componentes globais R4 (view preservada)
+Psicologia/Pep.cshtml,Estilos/componentes globais R4 (view preservada)
+RecepcaoPendencias/Index.cshtml,Razor alterado diretamente + CSS R4
+Relatorios/Index.cshtml,Razor alterado diretamente + CSS R4
+Salas/Index.cshtml,Razor alterado diretamente + CSS R4
+Shared/Components/Confirmacoes/Default.cshtml,Estilos/componentes globais R4 (view preservada)
+Shared/Components/MenuConta/Default.cshtml,Estilos/componentes globais R4 (view preservada)
+Shared/_AssistenteFlutuante.cshtml,Estilos/componentes globais R4 (view preservada)
+Shared/_AuthLayout.cshtml,Razor alterado diretamente + CSS R4
+Shared/_DocumentHead.cshtml,Razor alterado diretamente + CSS R4
+Shared/_FluxoContextual.cshtml,Estilos/componentes globais R4 (view preservada)
+Shared/_Layout.cshtml,Razor alterado diretamente + CSS R4
+Shared/_LoginPartial.cshtml,Estilos/componentes globais R4 (view preservada)
+Shared/_MenuModulos.cshtml,Estilos/componentes globais R4 (view preservada)
+Shared/_NavegacaoPrincipal.cshtml,Estilos/componentes globais R4 (view preservada)
+Shared/_NavegacaoTopo.cshtml,Estilos/componentes globais R4 (view preservada)
+Shared/_OrientacoesConsulta.cshtml,Estilos/componentes globais R4 (view preservada)
+Shared/_PublicLayout.cshtml,Razor alterado diretamente + CSS R4
+Shared/_R3FormGuide.cshtml,Razor alterado diretamente + CSS R4
+Shared/_ValidationScriptsPartial.cshtml,Estilos/componentes globais R4 (view preservada)
+Solicitacoes/Contingencia.cshtml,Estilos/componentes globais R4 (view preservada)
+Solicitacoes/Create.cshtml,Razor alterado diretamente + CSS R4
+Solicitacoes/Detalhes.cshtml,Estilos/componentes globais R4 (view preservada)
+Solicitacoes/Index.cshtml,Razor alterado diretamente + CSS R4
+Solicitacoes/Tarefas.cshtml,Razor alterado diretamente + CSS R4
+Solicitacoes/_Card.cshtml,Estilos/componentes globais R4 (view preservada)
+_ViewImports.cshtml,Estilos/componentes globais R4 (view preservada)
+_ViewStart.cshtml,Estilos/componentes globais R4 (view preservada)

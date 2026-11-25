@@ -1,0 +1,14 @@
+Remover se aplicar o PATCH sobre R9.1:
+src/CallMed.Web/wwwroot/css/callmed-studio-r7.css
+src/CallMed.Web/wwwroot/css/callmed-revolution-r8.css
+src/CallMed.Web/wwwroot/css/callmed-clinic-r9.css
+src/CallMed.Web/wwwroot/css/callmed-clinic-r9-controls.css
+src/CallMed.Web/wwwroot/css/callmed-clinic-r9-overlays.css
+src/CallMed.Web/wwwroot/css/nova-100-studio-r7.css
+src/CallMed.Web/wwwroot/css/nova-50-refino-seguro.css
+src/CallMed.Web/wwwroot/css/nova-60-evolucao-modular-r2.css
+src/CallMed.Web/wwwroot/css/nova-70-evolution-r3.css
+src/CallMed.Web/wwwroot/css/nova-80-evolution-r4.css
+src/CallMed.Web/wwwroot/css/nova-90-workspace-r5.css
+src/CallMed.Web/wwwroot/css/nova-95-workspace-r6.css
+src/CallMed.Web/Views/Shared/_R8Context.cshtml

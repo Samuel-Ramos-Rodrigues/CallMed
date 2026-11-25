@@ -1,0 +1,19 @@
+@model Consulta
+@{ ViewData["Title"] = "Marcar consulta"; }
+<section class="r5-booking-page cm25-screen cm19-booking-page cm50-booking" data-cm25-view="Consulta/Create.cshtml">
+    @* Atalhos do paciente removidos da barra duplicada: Fila de espera já aparece
+       no guia e Minhas consultas na navegação principal e no rodapé do formulário. *@
+    @if (!User.IsInRole("Paciente"))
+    {
+        <section class="r3-module-bar r4-command-strip r5-module-brief" aria-label="Ações relacionadas"><nav aria-label="Ações relacionadas"><a asp-controller="ListaEspera" asp-action="Index">Fila de espera ↗</a><a asp-controller="Agenda" asp-action="Index">Abrir agenda ↗</a></nav></section>
+    }
+
+    <header class="cm50-booking-heading"><span class="cm50-overline">AGENDAMENTO DESCOMPLICADO</span><h1>Agende de um jeito simples.</h1><p>Escolha a especialidade, o profissional, a modalidade e um horário disponível. Depois do agendamento, acompanhe a confirmação de presença em Minhas consultas.</p></header>
+    <div class="cm50-booking-layout"><aside class="cm50-booking-guide" aria-label="Orientação para agendar"><div class="cm-booking-guide-copy"><span class="cm50-overline">PASSO A PASSO</span><h2>Seu caminho em 5 passos</h2><p>Escolha a modalidade e avance no formulário abaixo. As próximas etapas aparecerão conforme suas escolhas.</p></div><a class="cm-booking-waitlist-link" asp-controller="ListaEspera" asp-action="Index">Quer uma vaga mais cedo? <strong>Ver lista de espera →</strong></a></aside>
+        <form asp-action="Create" method="post" class="cm19-booking-card cm19-card cm50-booking-form" id="cm19BookingForm">
+            @if (ViewBag.SolicitacaoId is int solicitacaoId) { <input type="hidden" name="solicitacaoId" value="@solicitacaoId" /><div class="cm21-linked-request">Agendamento vinculado à solicitação <strong>#@solicitacaoId</strong>.</div> }
+            <partial name="_Form" model="Model" />
+            <div class="cm19-booking-actions">@if (User.IsInRole("Paciente")) { <a class="btn secondary" asp-controller="Jornada" asp-action="Index">Voltar às minhas consultas</a> } else { <a class="btn secondary" asp-controller="Agenda" asp-action="Index">Voltar à agenda</a> }<button class="btn" type="submit">Confirmar agendamento ↗</button></div>
+        </form>
+    </div>
+</section>

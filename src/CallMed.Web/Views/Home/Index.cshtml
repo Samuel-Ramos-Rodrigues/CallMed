@@ -1,0 +1,67 @@
+@model MKSANCrud.ViewModels.HomeViewModel
+@{
+    Layout = Model.Autenticado ? "_Layout" : "_PublicLayout";
+    ViewData["Title"] = Model.Autenticado ? "Meu início" : "Sua saúde, mais perto";
+    var proxima = Model.ProximasConsultas.FirstOrDefault();
+    var culturaPt = System.Globalization.CultureInfo.GetCultureInfo("pt-BR");
+    string StatusPedido(MKSANCrud.Models.StatusSolicitacaoAtendimento status) => status switch
+    {
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.Nova => "Aguardando agendamento",
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.EmTriagem => "Solicitação recebida",
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.BuscandoHorario => "Buscando horário",
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.AguardandoPaciente => "Aguardando sua resposta",
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.Confirmada => "Consulta marcada",
+        MKSANCrud.Models.StatusSolicitacaoAtendimento.Cancelada => "Cancelada",
+        _ => "Encerrada"
+    };
+}
+@if (Model.Autenticado)
+{
+<section class="cm9 cm9-patient" aria-labelledby="cm9-patient-title">
+  <section class="cm21-simple-home" aria-label="Modo simplificado">
+    <h1>Olá, @Model.NomePaciente!</h1><p>O que deseja fazer?</p>
+    <div class="cm21-simple-actions"><a asp-controller="Consulta" asp-action="Create">Marcar consulta</a><a asp-controller="Jornada" asp-action="Index">Minhas consultas</a><a asp-controller="Consulta" asp-action="Index">Histórico e remarcações</a><button type="button" data-open-callmed-ai>Falar com atendimento</button><a asp-controller="ListaEspera" asp-action="Index">Lista de espera</a></div>
+    <button type="button" class="btn secondary" data-a11y-toggle="simple">Sair do modo fácil</button>
+  </section>
+  <div class="patient-standard cm9-patient-standard">
+    <header class="cm9-page-heading"><div><span class="cm9-overline">ÁREA DO PACIENTE</span><h1 id="cm9-patient-title">Meu cuidado<span class="cm9-title-dot">.</span></h1><p>Acompanhe suas consultas e descubra o próximo passo.</p></div><a class="cm9-subtle-link" asp-controller="MinhaConta" asp-action="Index">Minha conta <span aria-hidden="true">↗</span></a></header>
+    <section class="cm9-patient-hero" aria-label="Próxima consulta">
+      <div class="cm9-patient-hero-copy"><span class="cm9-hero-eyebrow"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#calendar"></use></svg> SEU PRÓXIMO COMPROMISSO</span>
+      @if (proxima is not null)
+      {
+        <h2>@(proxima.Medico?.Especialidade ?? "Consulta médica")</h2>
+        <p class="cm9-patient-doc">@(proxima.Medico?.Nome ?? "Profissional de saúde")</p>
+        <div class="cm9-hero-facts"><span><strong>@proxima.Data.ToString("dd 'de' MMMM", culturaPt)</strong><small>@proxima.Data.ToString("dddd", culturaPt)</small></span><span><strong>@proxima.Horario</strong><small>Horário marcado</small></span></div>
+        <div class="cm9-hero-buttons"><a class="cm9-primary-btn" asp-controller="Jornada" asp-action="Consulta" asp-route-id="@proxima.Id">Preparar consulta <span aria-hidden="true">↗</span></a><a class="cm9-outline-btn" asp-controller="Consulta" asp-action="Details" asp-route-id="@proxima.Id">Ver detalhes</a></div>
+      }
+      else
+      {
+        <h2>Seu cuidado começa aqui.</h2><p class="cm9-patient-doc">Você ainda não tem consultas futuras agendadas.</p>
+        <div class="cm9-hero-buttons"><a class="cm9-primary-btn" asp-controller="Consulta" asp-action="Create">Agendar consulta <span aria-hidden="true">↗</span></a><a class="cm9-outline-btn" asp-controller="ListaEspera" asp-action="Index">Lista de espera</a></div>
+      }
+      </div>
+      <div class="cm9-patient-hero-media" aria-hidden="true"><img src="~/images/callmed-clinic-patient-hero.webp" alt="" loading="eager" /></div>
+    </section>
+    <div class="cm9-patient-lower">
+      <section class="cm9-journey" aria-labelledby="cm9-journey-title"><div class="cm9-section-top"><div><span class="cm9-overline">ACOMPANHAMENTO</span><h2 id="cm9-journey-title">Sua jornada de cuidado</h2><p>Cada etapa organizada em um só lugar.</p></div><a asp-controller="Jornada" asp-action="Index">Ver consultas ↗</a></div>
+        <ol class="cm9-journey-list"><li class="@(proxima is null ? "cm9-step-active" : "cm9-step-complete")"><span class="cm9-step-icon">1</span><div><strong>Agendamento</strong><small>Escolha profissional, modalidade e horário</small></div></li><li class="@(proxima is not null ? "cm9-step-active" : "")"><span class="cm9-step-icon">2</span><div><strong>Confirmação e preparo</strong><small>Acompanhe as orientações da sua consulta</small></div></li><li><span class="cm9-step-icon">3</span><div><strong>Check-in</strong><small>Registro de presença quando disponível</small></div></li><li><span class="cm9-step-icon">4</span><div><strong>Atendimento</strong><small>Na clínica ou por teleconsulta</small></div></li></ol>
+      </section>
+      <aside class="cm9-action-panel" aria-labelledby="cm9-action-title"><div class="cm9-section-top"><div><span class="cm9-overline">ACESSO RÁPIDO</span><h2 id="cm9-action-title">O que deseja fazer?</h2><p>Seus serviços a um toque.</p></div></div>
+        <nav class="cm9-action-list" aria-label="Ações do paciente"><a asp-controller="Consulta" asp-action="Create"><span class="cm9-action-icon">✚</span><span><strong>Agendar consulta</strong><small>Escolha especialidade, data e horário</small></span><b aria-hidden="true">›</b></a><a asp-controller="HistoricoExames" asp-action="Index"><span class="cm9-action-icon">▤</span><span><strong>Documentos e exames</strong><small>Acesse seu histórico disponível</small></span><b aria-hidden="true">›</b></a><a asp-controller="Jornada" asp-action="Index" asp-route-modo="online"><span class="cm9-action-icon">▣</span><span><strong>Teleconsulta</strong><small>Entre no atendimento quando liberado</small></span><b aria-hidden="true">›</b></a><button type="button" data-open-callmed-ai><span class="cm9-action-icon">✦</span><span><strong>Falar com a IA</strong><small>Assistente virtual CallMed</small></span><b aria-hidden="true">›</b></button></nav>
+      </aside>
+    </div>
+    <section class="cm9-recent" aria-labelledby="cm9-recent-title"><div class="cm9-section-top"><div><span class="cm9-overline">SEU HISTÓRICO</span><h2 id="cm9-recent-title">Pedidos recentes</h2></div><a asp-controller="Solicitacoes" asp-action="Index">Ver todos ↗</a></div>
+      @if (Model.SolicitacoesRecentes.Any()) { <div class="cm9-recent-grid">@foreach (var pedido in Model.SolicitacoesRecentes.Take(3)) { <a asp-controller="Solicitacoes" asp-action="Index" class="cm9-recent-item"><strong>@(pedido.Especialidade?.Nome ?? "Solicitação")</strong><small>@ClinicaClock.ConverterUtc(pedido.CriadoEm).ToString("dd/MM · HH:mm")</small><em>@StatusPedido(pedido.Status)</em></a> }</div> }
+      else { <p class="cm9-empty">Ainda não há solicitações recentes para mostrar.</p> }
+    </section>
+  </div>
+</section>
+}
+
+else
+{
+    <section class="public-hero"><div class="public-hero-copy"><span class="eyebrow">MENOS DISTÂNCIA. MAIS CUIDADO.</span><h1>Sua saúde,<br /><em>mais perto.</em></h1><p>Marcar uma consulta pode ser simples. Encontre um horário, acompanhe sua agenda e conte com a clínica em cada etapa.</p><div class="public-actions"><a class="btn" href="/acesso?returnUrl=%2FConsulta%2FCreate">Quero marcar uma consulta <span aria-hidden="true"><svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></span></a><a class="text-link" href="#como-funciona">Conhecer a CallMed ↓</a></div><div class="public-channel-note"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#chat"></use></svg><span>No site, pelo telefone ou na recepção.<br /><strong>O atendimento continua perto de você.</strong></span></div></div>
+    <div class="care-illustration" aria-label="Da escolha do horário ao atendimento"><div class="care-orbit orbit-one"></div><div class="care-orbit orbit-two"></div><span class="care-plus" aria-hidden="true">+</span><div class="care-ticket"><div class="care-ticket-top"><div><span class="eyebrow">CADA ETAPA CONTA</span><p class="care-ticket-subtitle">Acompanhamento simples e acolhedor</p></div><div class="care-ticket-art"><img src="~/images/ilustracao-cuidado-clinico.svg" asp-append-version="true" alt="" aria-hidden="true" /></div></div><h2>Um tempo<br />para você.</h2><div class="care-step"><span>01</span><strong>Escolha a especialidade</strong><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg></div><div class="care-step"><span>02</span><strong>Encontre seu horário</strong><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg></div><div class="care-step"><span>03</span><strong>Acompanhe sua consulta</strong><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#check"></use></svg></div><small>CallMed · cuidado em conexão</small></div><span class="care-caption">SIMPLES PARA AGENDAR.<br />PRÓXIMO PARA CUIDAR.</span></div></section>
+    <section class="public-how" id="como-funciona"><header><span class="eyebrow">COMECE POR AQUI</span><h2>Mais clareza.<br />Em cada passo.</h2></header><div class="public-how-item"><div class="public-feature-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#user-round-check"></use></svg></div><span>01 / ACESSO</span><h3>Seu espaço, sempre à mão.</h3><p>Crie sua conta de paciente e reúna seus dados e consultas em um só lugar.</p><a asp-area="Identity" asp-page="/Account/Register">Criar minha conta <svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></a></div><div class="public-how-item"><div class="public-feature-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar-check"></use></svg></div><span>02 / AGENDA</span><h3>Um horário que funciona.</h3><p>Escolha entre as datas e os horários disponíveis para a especialidade desejada.</p><a href="/acesso?returnUrl=%2FConsulta%2FCreate">Encontrar um horário <svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></a></div><div class="public-how-item"><div class="public-feature-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#heart-pulse"></use></svg></div><span>03 / ACOMPANHAMENTO</span><h3>Saiba o que vem depois.</h3><p>Veja as orientações, confirme sua presença e acompanhe o atendimento.</p><a href="/acesso?returnUrl=%2FConsulta">Ver minhas consultas <svg class="cm-direction-icon" aria-hidden="true"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></a></div></section>
+    <section class="public-install"><div><span class="eyebrow">CALLMED NO SEU DIA</span><h2>Um toque.<br />E você já está perto.</h2><p>Baixe o aplicativo para Android e tenha a CallMed sempre à mão.</p></div><div class="cm-public-install-actions"><a class="btn light" asp-controller="Aplicativo" asp-action="Index">Baixar para Android <svg aria-hidden="true"><use href="/icons/callmed-ui.svg#download"></use></svg></a><button type="button" class="cm-install-web" data-pwa-install>Adicionar à tela inicial</button></div></section>
+}

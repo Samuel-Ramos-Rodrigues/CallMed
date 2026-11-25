@@ -1,0 +1,114 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.security.MessageDigest
+
+// Prepara os dois arquivos que entram juntos no próximo deploy do site.
+tasks.register('prepararApkSite') {
+    group = 'distribution'
+    description = 'Prepara o APK assinado e seu manifesto de download para o site.'
+    def usarPrecompilado = project.hasProperty('callmedUsarPrecompilado')
+    if (!usarPrecompilado) dependsOn 'assembleRelease'
+    doLast {
+        def output = project.layout.buildDirectory.dir('outputs/apk/release').get().asFile
+        def json = new JsonSlurper()
+        def item = [versionCode: android.defaultConfig.versionCode, versionName: android.defaultConfig.versionName]
+        File pacote
+        if (!usarPrecompilado) {
+            def metadata = json.parse(new File(output, 'output-metadata.json'))
+            if (metadata.elements.size() != 1) throw new GradleException('O site requer um único APK universal.')
+            def gerado = metadata.elements.first()
+            if (metadata.applicationId != android.defaultConfig.applicationId || metadata.variantName != 'release' ||
+                gerado.versionCode != item.versionCode || gerado.versionName != item.versionName) {
+                throw new GradleException('A identificação do APK difere da configuração de release.')
+            }
+            pacote = new File(output, gerado.outputFile)
+        }
+        def destino = rootProject.file('../../src/CallMed.Web/App_Data/Aplicativo')
+        def apk = new File(destino, 'CallMed.apk')
+        def manifesto = new File(destino, 'release.json')
+        def anterior = json.parse(manifesto)
+        def assinador = new File(android.sdkDirectory, "build-tools/${android.buildToolsVersion}/lib/apksigner.jar")
+        def java = new File(System.getProperty('java.home'), 'bin/' + (File.separator == '\\' ? 'java.exe' : 'java'))
+        if (usarPrecompilado) pacote = assinarPrecompilado(temporaryDir, android.sdkDirectory, java)
+        def assinaturas = { File arquivo ->
+            def processo = new ProcessBuilder(java.path, '-jar', assinador.path, 'verify', '--print-certs',
+                    arquivo.absolutePath).redirectErrorStream(true).start()
+            def resposta = processo.inputStream.getText('UTF-8')
+            def digests = resposta.readLines().findResults { linha ->
+                def match = linha =~ /^Signer #\d+ certificate SHA-256 digest: ([0-9a-fA-F]+)$/
+                match.matches() ? match.group(1).toLowerCase(Locale.ROOT) : null
+            }.sort()
+            if (processo.waitFor() != 0 || digests.isEmpty()) {
+                throw new GradleException("Falha ao verificar a assinatura de ${arquivo.name}.")
+            }
+            digests
+        }
+        def instalados = assinaturas(apk)
+        def novos = assinaturas(pacote)
+        def certificadoLocal = project.findProperty('callmedCertificadoLocal')
+        if (certificadoLocal != null && novos != [certificadoLocal]) {
+            throw new GradleException('O certificado assinado difere da chave local selecionada.')
+        }
+        // A reinstalação foi autorizada apenas para o par oficial 50.0.0 -> 54.1.4.
+        def migrando = instalados != novos
+        if (migrando) {
+            def origemOficial = anterior.versionCode == 5000 && anterior.versao == '50.0.0' &&
+                anterior.sha256 == '47a71fd059483e3d78c8c2901eb696e9b24d0d663e7b28c67d3c1dd14b7d8051' &&
+                instalados == ['6956047a37a106c8ba2e357baf6f82fe25ea4a1e901a903e4f551adb853d6d30']
+            if (!usarPrecompilado || !certificadoLocal || !origemOficial || item.versionCode != 5414 || item.versionName != '54.1.4') {
+                throw new GradleException('Use a mesma chave do APK que os pacientes já instalaram.')
+            }
+        }
+        def calcularHash = { File arquivo ->
+            def digest = MessageDigest.getInstance('SHA-256')
+            arquivo.withInputStream { it.eachByte(65536) { buffer, n -> digest.update(buffer, 0, n) } }
+            digest.digest().encodeHex().toString()
+        }
+        def hash = calcularHash(pacote)
+        if (calcularHash(apk) != anterior.sha256 || anterior.tamanhoBytes != apk.length()) {
+            throw new GradleException('O APK atual e o manifesto divergem. Restaure o par antes de preparar a atualização.')
+        }
+        if (certificadoLocal && !migrando && usarPrecompilado && anterior.reinstalarAteVersionCode == 5000 &&
+                anterior.versionCode == item.versionCode && anterior.versao == item.versionName &&
+                anterior.sha256Candidato == calcularHash(rootProject.file("precompilado/CallMed-${item.versionName}-sem-assinatura.apk"))) {
+            logger.lifecycle("O APK ${item.versionName} já está preparado com esta chave.")
+            return
+        }
+        if (item.versionCode < anterior.versionCode || (item.versionCode == anterior.versionCode && hash != anterior.sha256)) {
+            throw new GradleException('Incremente versionCode para distribuir um APK diferente.')
+        }
+        def dados = [versao: item.versionName, versionCode: item.versionCode, androidMinimo: '8.0',
+                     tamanhoBytes: pacote.length(), sha256: hash]
+        if (migrando || anterior.reinstalarAteVersionCode == 5000) {
+            dados.reinstalarAteVersionCode = 5000
+            if (usarPrecompilado) dados.sha256Candidato = calcularHash(rootProject.file("precompilado/CallMed-${item.versionName}-sem-assinatura.apk"))
+        }
+        if (android.defaultConfig.minSdk != 26) {
+            throw new GradleException('Atualize o Android mínimo exibido ao paciente para corresponder ao minSdk.')
+        }
+        def provisoria = Files.createTempDirectory(destino.toPath(), '.preparar-').toFile()
+        try {
+            def novoApk = new File(provisoria, 'novo.apk')
+            def novoJson = new File(provisoria, 'novo.json')
+            def backup = new File(provisoria, 'anterior.apk')
+            Files.copy(apk.toPath(), backup.toPath())
+            Files.copy(pacote.toPath(), novoApk.toPath())
+            novoJson.setText(JsonOutput.prettyPrint(JsonOutput.toJson(dados)) + '\n', 'UTF-8')
+            def substituir = { File origem, File alvo ->
+                Files.move(origem.toPath(), alvo.toPath(), StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
+            }
+            substituir(novoApk, apk)
+            try {
+                substituir(novoJson, manifesto)
+            } catch (Exception ex) {
+                substituir(backup, apk)
+                throw ex
+            }
+            logger.lifecycle("APK ${item.versionName} e release.json preparados em ${destino}.")
+        } finally {
+            provisoria.deleteDir()
+        }
+    }
+}

@@ -1,0 +1,38 @@
+import java.security.MessageDigest
+
+// Assina os bytes já compilados usando a chave que fica no computador da clínica.
+ext.assinarPrecompilado = { File temporaria, File sdk, File java ->
+    def entrada = rootProject.file("precompilado/CallMed-${android.defaultConfig.versionName}-sem-assinatura.apk")
+    if (!entrada.isFile()) throw new GradleException('O APK pré-compilado está ausente. Use GERAR-APK-NATIVO para recompilar.')
+    def checksum = new File(entrada.parentFile, entrada.name.replaceFirst(/\.apk$/, '.sha256'))
+    def digest = MessageDigest.getInstance('SHA-256')
+    entrada.withInputStream { it.eachByte(65536) { buffer, n -> digest.update(buffer, 0, n) } }
+    if (!checksum.isFile() || checksum.text.trim() != digest.digest().encodeHex().toString()) {
+        throw new GradleException('O APK pré-compilado diverge do pacote entregue. Extraia novamente ou use GERAR-APK-NATIVO.')
+    }
+    def ferramentas = new File(sdk, "build-tools/${android.buildToolsVersion}")
+    def aapt = new File(ferramentas, File.separator == '\\' ? 'aapt.exe' : 'aapt')
+    def info = new ProcessBuilder(aapt.path, 'dump', 'badging', entrada.absolutePath).redirectErrorStream(true).start()
+    def cabecalho = info.inputStream.getText('UTF-8').readLines().find { it.startsWith('package: ') } ?: ''
+    def atributo = { String nome ->
+        def resultado = cabecalho =~ /(?:^| )${nome}='([^']*)'/
+        resultado.find() ? resultado.group(1) : null
+    }
+    if (info.waitFor() != 0 || atributo('name') != android.defaultConfig.applicationId ||
+        atributo('versionCode') != android.defaultConfig.versionCode.toString() ||
+        atributo('versionName') != android.defaultConfig.versionName) {
+        throw new GradleException('O APK pré-compilado não corresponde ao pacote e à versão do projeto.')
+    }
+    def chave = android.signingConfigs.release
+    def saida = new File(temporaria, 'release-assinado.apk')
+    def processo = new ProcessBuilder(java.path, '-jar', new File(ferramentas,'lib/apksigner.jar').path,
+        'sign', '--ks', chave.storeFile.absolutePath, '--ks-key-alias', chave.keyAlias,
+        '--ks-pass', 'env:CALLMED_TEMP_STORE_PASS', '--key-pass', 'env:CALLMED_TEMP_KEY_PASS',
+        '--out', saida.absolutePath, entrada.absolutePath).redirectErrorStream(true)
+    processo.environment().put('CALLMED_TEMP_STORE_PASS', chave.storePassword)
+    processo.environment().put('CALLMED_TEMP_KEY_PASS', chave.keyPassword)
+    def assinatura = processo.start()
+    assinatura.inputStream.getText('UTF-8')
+    if (assinatura.waitFor() != 0) throw new GradleException('Falha ao assinar o APK. Confira a chave, o alias e as senhas em keystore.properties.')
+    saida
+}

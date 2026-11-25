@@ -1,0 +1,27 @@
+@model MKSANCrud.Services.Usuarios.ItemNavegacao[]
+@{ViewData["Title"]="Áreas do sistema";}
+
+<section class="cm-organizacao r5-directory" id="cm-organizacao">
+    <section class="r3-module-bar r4-command-strip r5-module-brief" aria-label="Orientações e ações desta página"><div class="r4-command-title"><span class="r4-command-breadcrumb">ESPAÇO DE TRABALHO / AÇÃO</span><span class="r3-overline">MAPA DA CLÍNICA</span><p>Encontre a área de gestão que precisa sem percorrer todo o menu.</p></div><nav aria-label="Ações relacionadas">
+    @if (User.IsInRole("Admin") || User.IsInRole("Funcionario"))
+    {
+        <a asp-controller="Operacao" asp-action="Index">Indicadores <span aria-hidden="true">↗</span></a>
+    }
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-controller="Integracoes" asp-action="Index">Integrações <span aria-hidden="true">↗</span></a>
+    }
+    @if (User.IsProfissionalSaude())
+    {
+        <a asp-controller="MedicoPainel" asp-action="Index">Minha agenda <span aria-hidden="true">↗</span></a>
+    }
+    @if (User.IsInRole("Paciente"))
+    {
+        <a asp-controller="Consulta" asp-action="Create">Agendar consulta <span aria-hidden="true">↗</span></a>
+    }
+</nav></section>
+<header class="cm-page-intro"><span class="cm-intro-icon" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#menu"></use></svg></span><div><span class="eyebrow">ÁREAS DO SISTEMA</span><h1>O que você precisa fazer?</h1><p>As funções estão organizadas por objetivo. A rotina diária fica no menu principal; as demais áreas ficam aqui.</p></div></header>
+<div class="cm-directory-search"><label for="cm-buscar-funcao">Buscar uma função<input id="cm-buscar-funcao" type="search" placeholder="Ex.: remarcar, convênio, profissional" autocomplete="off"/></label></div><p id="cm-busca-status" role="status" aria-live="polite"></p>
+@foreach(var grupo in Model.OrderBy(x=>MKSANCrud.Services.Usuarios.NavegacaoCallMed.OrdemGrupo(x.Grupo)).GroupBy(x=>x.Grupo)){<details class="cm-area" open="@(grupo.Key is "Hoje" or "Meu cuidado" or "Meu atendimento")"><summary><strong>@grupo.Key</strong><span>@grupo.Count() funções</span></summary><div class="cm-area-cards">@foreach(var i in grupo){<a class="cm-funcao" href="@Url.Action(i.Action,i.Controller)"><span class="cm-function-top"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#@(i.Grupo.Contains("Gest")?"chart":i.Grupo.Contains("Cadastro")?"team":i.Grupo.Contains("cuidado")?"heart-pulse":"clipboard-check")"></use></svg><span aria-hidden="true"><svg class="cm-direction-icon"><use href="/icons/callmed-ui.svg#arrow-up-right"></use></svg></span></span><strong>@i.Titulo</strong><span>@i.Descricao</span></a>}</div></details>}
+<p id="cm-busca-vazia" hidden>Nenhuma função encontrada. Tente outro termo ou abra uma das áreas.</p>
+</section><script src="~/js/conta/organizacao.js" asp-append-version="true" defer></script>

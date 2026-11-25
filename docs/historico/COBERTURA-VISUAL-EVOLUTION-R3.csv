@@ -1,0 +1,113 @@
+﻿View;Módulo;Cobertura da R3;Validação funcional
+Acessos/Index.cshtml;Acessos;R3 direta em HTML/Razor;Visita autenticada pendente
+Agenda/Index.cshtml;Agenda;R3 direta em HTML/Razor;Visita autenticada pendente
+Aplicativo/Index.cshtml;Aplicativo;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Atendimento/Index.cshtml;Atendimento;R3 direta em HTML/Razor;Visita autenticada pendente
+Atendimento/Nova.cshtml;Atendimento;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Atendimento/_CanalIcon.cshtml;Atendimento;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Auditoria/Index.cshtml;Auditoria;R3 direta em HTML/Razor;Visita autenticada pendente
+Avaliacoes/Index.cshtml;Avaliacoes;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Checkin/Abrir.cshtml;Checkin;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Checkin/Terminal.cshtml;Checkin;R3 direta em HTML/Razor;Visita autenticada pendente
+Configuracoes/Index.cshtml;Configuracoes;R3 direta em HTML/Razor;Visita autenticada pendente
+Confirmacoes/Index.cshtml;Confirmacoes;R3 direta em HTML/Razor;Visita autenticada pendente
+Consulta/Create.cshtml;Consulta;R3 direta em HTML/Razor;Visita autenticada pendente
+Consulta/Details.cshtml;Consulta;R3 direta em HTML/Razor;Visita autenticada pendente
+Consulta/Edit.cshtml;Consulta;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Consulta/Equipe.cshtml;Consulta;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Consulta/Index.cshtml;Consulta;R3 direta em HTML/Razor;Visita autenticada pendente
+Consulta/Remarcar.cshtml;Consulta;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Consulta/_Form.cshtml;Consulta;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Consulta/_ListaEquipe.cshtml;Consulta;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Convenios/Index.cshtml;Convenios;R3 direta em HTML/Razor;Visita autenticada pendente
+Disponibilidade/Create.cshtml;Disponibilidade;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Disponibilidade/Delete.cshtml;Disponibilidade;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Disponibilidade/Details.cshtml;Disponibilidade;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Disponibilidade/Edit.cshtml;Disponibilidade;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Disponibilidade/Index.cshtml;Disponibilidade;R3 direta em HTML/Razor;Visita autenticada pendente
+Disponibilidade/_Form.cshtml;Disponibilidade;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Disponibilidades/Index.cshtml;Disponibilidades;R3 direta em HTML/Razor;Visita autenticada pendente
+Especialidade/Create.cshtml;Especialidade;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Especialidade/Edit.cshtml;Especialidade;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Especialidade/Index.cshtml;Especialidade;R3 direta em HTML/Razor;Visita autenticada pendente
+Especialidade/_Form.cshtml;Especialidade;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Funcionario/Create.cshtml;Funcionario;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Funcionario/Delete.cshtml;Funcionario;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Funcionario/Details.cshtml;Funcionario;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Funcionario/Edit.cshtml;Funcionario;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Funcionario/Index.cshtml;Funcionario;R3 direta em HTML/Razor;Visita autenticada pendente
+Funcionario/_Form.cshtml;Funcionario;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+FuncionarioPainel/Index.cshtml;FuncionarioPainel;R3 direta em HTML/Razor;Visita autenticada pendente
+HistoricoExames/Index.cshtml;HistoricoExames;R3 direta em HTML/Razor;Visita autenticada pendente
+HistoricoExames/Pendentes.cshtml;HistoricoExames;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Home/Error.cshtml;Home;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Home/Index.cshtml;Home;R3 direta em HTML/Razor;Visita autenticada pendente
+Home/Privacidade.cshtml;Home;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Home/TermosDeUso.cshtml;Home;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Integracoes/Index.cshtml;Integracoes;R3 direta em HTML/Razor;Visita autenticada pendente
+Jornada/Acao.cshtml;Jornada;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Jornada/Consulta.cshtml;Jornada;R3 direta em HTML/Razor;Visita autenticada pendente
+Jornada/Index.cshtml;Jornada;R3 direta em HTML/Razor;Visita autenticada pendente
+Jornada/LinkIndisponivel.cshtml;Jornada;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Jornada/Tele.cshtml;Jornada;R3 direta em HTML/Razor;Visita autenticada pendente
+Jornada/TeleNaoEncontrada.cshtml;Jornada;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+ListaEspera/Create.cshtml;ListaEspera;R3 direta em HTML/Razor;Visita autenticada pendente
+ListaEspera/Index.cshtml;ListaEspera;R3 direta em HTML/Razor;Visita autenticada pendente
+Medico/Create.cshtml;Medico;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Medico/Delete.cshtml;Medico;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Medico/Details.cshtml;Medico;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Medico/Edit.cshtml;Medico;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Medico/Index.cshtml;Medico;R3 direta em HTML/Razor;Visita autenticada pendente
+Medico/_Form.cshtml;Medico;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+MedicoAcesso/Gerenciar.cshtml;MedicoAcesso;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+MedicoPainel/Index.cshtml;MedicoPainel;R3 direta em HTML/Razor;Visita autenticada pendente
+MinhaConta/Edit.cshtml;MinhaConta;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+MinhaConta/Index.cshtml;MinhaConta;R3 direta em HTML/Razor;Visita autenticada pendente
+Operacao/Index.cshtml;Operacao;R3 direta em HTML/Razor;Visita autenticada pendente
+Organizacao/Index.cshtml;Organizacao;R3 direta em HTML/Razor;Visita autenticada pendente
+Paciente/Create.cshtml;Paciente;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Paciente/Delete.cshtml;Paciente;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Paciente/Details.cshtml;Paciente;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Paciente/Edit.cshtml;Paciente;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Paciente/Index.cshtml;Paciente;R3 direta em HTML/Razor;Visita autenticada pendente
+Paciente/_Form.cshtml;Paciente;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Piloto/Index.cshtml;Piloto;R3 direta em HTML/Razor;Visita autenticada pendente
+Piloto/Medicao.cshtml;Piloto;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Privacidade/Gestao.cshtml;Privacidade;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Privacidade/Index.cshtml;Privacidade;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Psicologia/Acervo.cshtml;Psicologia;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Psicologia/Pep.cshtml;Psicologia;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+RecepcaoPendencias/Index.cshtml;RecepcaoPendencias;R3 direta em HTML/Razor;Visita autenticada pendente
+Relatorios/Index.cshtml;Relatorios;R3 direta em HTML/Razor;Visita autenticada pendente
+Salas/Index.cshtml;Salas;R3 direta em HTML/Razor;Visita autenticada pendente
+Shared/Components/Confirmacoes/Default.cshtml;Shared;Compartilhado preservado;Visita autenticada pendente
+Shared/Components/MenuConta/Default.cshtml;Shared;Compartilhado preservado;Visita autenticada pendente
+Shared/_AssistenteFlutuante.cshtml;Shared;Compartilhado preservado;Visita autenticada pendente
+Shared/_AuthLayout.cshtml;Shared;Compartilhado preservado;Visita autenticada pendente
+Shared/_DocumentHead.cshtml;Shared;Componente compartilhado;Visita autenticada pendente
+Shared/_FluxoContextual.cshtml;Shared;Componente compartilhado;Visita autenticada pendente
+Shared/_Layout.cshtml;Shared;Componente compartilhado;Visita autenticada pendente
+Shared/_LoginPartial.cshtml;Shared;Compartilhado preservado;Visita autenticada pendente
+Shared/_MenuModulos.cshtml;Shared;Compartilhado preservado;Visita autenticada pendente
+Shared/_NavegacaoPrincipal.cshtml;Shared;Compartilhado preservado;Visita autenticada pendente
+Shared/_NavegacaoTopo.cshtml;Shared;Compartilhado preservado;Visita autenticada pendente
+Shared/_OrientacoesConsulta.cshtml;Shared;Compartilhado preservado;Visita autenticada pendente
+Shared/_PublicLayout.cshtml;Shared;Compartilhado preservado;Visita autenticada pendente
+Shared/_R3FormGuide.cshtml;Shared;Componente compartilhado;Visita autenticada pendente
+Shared/_ValidationScriptsPartial.cshtml;Shared;Compartilhado preservado;Visita autenticada pendente
+Solicitacoes/Contingencia.cshtml;Solicitacoes;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Solicitacoes/Create.cshtml;Solicitacoes;R3 direta em HTML/Razor;Visita autenticada pendente
+Solicitacoes/Detalhes.cshtml;Solicitacoes;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Solicitacoes/Index.cshtml;Solicitacoes;R3 direta em HTML/Razor;Visita autenticada pendente
+Solicitacoes/Tarefas.cshtml;Solicitacoes;R3 direta em HTML/Razor;Visita autenticada pendente
+Solicitacoes/_Card.cshtml;Solicitacoes;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+_ViewImports.cshtml;_ViewImports.cshtml;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+_ViewStart.cshtml;_ViewStart.cshtml;Melhoria via layout + CSS compartilhado;Visita autenticada pendente
+Areas/Identity/Pages/Account/AccessDenied.cshtml;Identity;Estilo de autenticação original preservado;Não alterada diretamente
+Areas/Identity/Pages/Account/ForgotPassword.cshtml;Identity;Estilo de autenticação original preservado;Não alterada diretamente
+Areas/Identity/Pages/Account/Login.cshtml;Identity;Estilo de autenticação original preservado;Não alterada diretamente
+Areas/Identity/Pages/Account/Logout.cshtml;Identity;Estilo de autenticação original preservado;Não alterada diretamente
+Areas/Identity/Pages/Account/Register.cshtml;Identity;Estilo de autenticação original preservado;Não alterada diretamente
+Areas/Identity/Pages/Account/ResetPasswordConfirmation.cshtml;Identity;Estilo de autenticação original preservado;Não alterada diretamente
+Areas/Identity/Pages/_ViewImports.cshtml;Identity;Estilo de autenticação original preservado;Não alterada diretamente
+Areas/Identity/Pages/_ViewStart.cshtml;Identity;Estilo de autenticação original preservado;Não alterada diretamente

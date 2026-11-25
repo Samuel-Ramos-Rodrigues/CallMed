@@ -1,0 +1,138 @@
+@model MKSANCrud.ViewModels.AgendaViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Agenda geral";
+    var anterior = Model.Modo == "dia" ? Model.DataReferencia.AddDays(-1) : Model.Modo == "semana" ? Model.DataReferencia.AddDays(-7) : Model.DataReferencia.AddDays(-14);
+    var proximo = Model.Modo == "dia" ? Model.DataReferencia.AddDays(1) : Model.Modo == "semana" ? Model.DataReferencia.AddDays(7) : Model.DataReferencia.AddDays(14);
+    var pt = new CultureInfo("pt-BR");
+    var hojeClinica = ViewBag.HojeClinica is DateTime h ? h.Date : DateTime.Today;
+    var medicosVisiveis = Model.Medicos.Where(m => (!Model.MedicoId.HasValue || m.Id == Model.MedicoId.Value) && (!Model.EspecialidadeId.HasValue || m.EspecialidadeId == Model.EspecialidadeId.Value)).ToList();
+}
+<section class="r5-agenda-page cm25-screen cm19-agenda-page" data-cm25-view="Agenda/Index.cshtml">
+    <header class="cm25-page-hero cm19-page-head agenda-head"><div class="cm25-hero-mark" aria-hidden="true"><svg><use href="/icons/callmed-ui.svg#calendar"></use></svg></div>
+        <div><span>AGENDA CLÍNICA</span><h1>Agenda geral</h1><p>Consultas, vagas e bloqueios em uma única visão.</p></div>
+        <div class="cm19-head-actions"><a class="btn secondary" asp-controller="Salas" asp-action="Index">Salas físicas e virtuais</a><a class="btn secondary" asp-controller="Disponibilidade" asp-action="Index">Exceções</a><a class="btn" asp-controller="Consulta" asp-action="Create">+ Nova consulta</a></div>
+    </header>
+
+    <section class="cm19-agenda-toolbar cm19-card">
+        <div class="cm19-period-nav">
+            <a asp-action="Index" asp-route-modo="@Model.Modo" asp-route-data="@anterior.ToString("yyyy-MM-dd")" asp-route-medicoId="@Model.MedicoId" asp-route-especialidadeId="@Model.EspecialidadeId">‹</a>
+            <strong>@(Model.Modo == "dia" ? Model.DataReferencia.ToString("dd 'de' MMMM", pt) : $"{Model.InicioPeriodo:dd MMM} - {Model.FimPeriodo:dd MMM yyyy}")</strong>
+            <a asp-action="Index" asp-route-modo="@Model.Modo" asp-route-data="@proximo.ToString("yyyy-MM-dd")" asp-route-medicoId="@Model.MedicoId" asp-route-especialidadeId="@Model.EspecialidadeId">›</a>
+            <a class="today" asp-action="Index" asp-route-modo="@Model.Modo" asp-route-medicoId="@Model.MedicoId" asp-route-especialidadeId="@Model.EspecialidadeId">Hoje</a>
+        </div>
+        <form method="get" class="cm19-agenda-filters">
+            <input type="hidden" name="modo" value="@Model.Modo" />
+            <input type="hidden" name="data" value="@Model.DataReferencia.ToString("yyyy-MM-dd")" />
+            <select name="medicoId" aria-label="Filtrar por profissional"><option value="">Todos os profissionais</option>@foreach(var m in Model.Medicos){<option value="@m.Id" selected="@(Model.MedicoId == m.Id ? "selected" : null)">@m.Nome</option>}</select>
+            <select name="especialidadeId" aria-label="Filtrar por especialidade"><option value="">Todas as especialidades</option>@foreach(var e in Model.Especialidades){<option value="@e.Id" selected="@(Model.EspecialidadeId == e.Id ? "selected" : null)">@e.Nome</option>}</select>
+            <button type="submit" class="btn secondary">Filtrar</button>
+        </form>
+        <nav class="cm19-view-switch"><a class="@(Model.Modo == "dia" ? "active" : "")" asp-action="Index" asp-route-modo="dia" asp-route-data="@Model.DataReferencia.ToString("yyyy-MM-dd")" asp-route-medicoId="@Model.MedicoId" asp-route-especialidadeId="@Model.EspecialidadeId">Dia</a><a class="@(Model.Modo == "semana" ? "active" : "")" asp-action="Index" asp-route-modo="semana" asp-route-data="@Model.DataReferencia.ToString("yyyy-MM-dd")" asp-route-medicoId="@Model.MedicoId" asp-route-especialidadeId="@Model.EspecialidadeId">Semana</a><a class="@(Model.Modo == "lista" ? "active" : "")" asp-action="Index" asp-route-modo="lista" asp-route-data="@Model.DataReferencia.ToString("yyyy-MM-dd")" asp-route-medicoId="@Model.MedicoId" asp-route-especialidadeId="@Model.EspecialidadeId">14 dias</a></nav>
+    </section>
+
+    <div class="cm19-agenda-metrics"><span><small>Consultas</small><strong>@Model.TotalConsultas</strong></span><span><small>Vagas livres</small><strong>@Model.TotalLivres</strong></span><span><small>Bloqueios</small><strong>@Model.TotalBloqueados</strong></span></div>
+
+    <section class="cm19-calendar cm19-card @(Model.Modo == "lista" ? "is-fortnight" : "")" style="--day-count:@Math.Max(1, Model.Dias.Count)" aria-label="Agenda e disponibilidade">
+        @if (!medicosVisiveis.Any())
+        {
+            <div class="cm-agenda-empty" role="status">Nenhum profissional ativo corresponde aos filtros selecionados. <a asp-action="Index" asp-route-modo="@Model.Modo" asp-route-data="@Model.DataReferencia.ToString("yyyy-MM-dd")">Limpar filtros</a></div>
+        }
+        else if (Model.Modo == "lista")
+        {
+            <div class="cm-agenda-fortnight" role="list" aria-label="Agenda dos próximos 14 dias">
+                @foreach (var dia in Model.Dias)
+                {
+                    <article class="cm-agenda-day-card @(dia.Data.Date == hojeClinica ? "today" : "")" role="listitem">
+                        <header><span>@dia.Data.ToString("dddd", pt)</span><strong>@dia.Data.ToString("dd/MM/yyyy")</strong></header>
+                        @if (!dia.Slots.Any())
+                        {
+                            <p class="cm-agenda-day-empty">Sem horários cadastrados.</p>
+                        }
+                        else
+                        {
+                            <div class="cm-agenda-day-slots">
+                            @foreach (var slot in dia.Slots.OrderBy(s => s.Horario).ThenBy(s => s.MedicoNome))
+                            {
+                                var css = slot.ConsultaId.HasValue ? "busy" : slot.Ativo ? "free" : "blocked";
+                                @if (slot.ConsultaId.HasValue)
+                                {
+                                    <a class="cm19-cal-event @css" asp-controller="Consulta" asp-action="Details" asp-route-id="@slot.ConsultaId"><strong>@slot.Horario · @slot.MedicoNome</strong><span>@slot.PacienteNome</span><small>@slot.StatusConsulta</small></a>
+                                }
+                                else if (slot.Ativo)
+                                {
+                                    <a class="cm19-cal-event @css" asp-controller="Consulta" asp-action="Create" asp-route-medicoId="@slot.MedicoId" asp-route-data="@dia.Data.ToString("yyyy-MM-dd")" asp-route-horario="@slot.Horario"><strong>@slot.Horario · @slot.MedicoNome</strong><span>Vaga livre</span><small>@(slot.Encaixe ? "Encaixe" : "Disponível")</small></a>
+                                }
+                                else
+                                {
+                                    <span class="cm19-cal-event @css"><strong>@slot.Horario · @slot.MedicoNome</strong><span>Bloqueado</span></span>
+                                }
+                            }
+                            </div>
+                        }
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="cm-agenda-scroll-hint" id="cm-agenda-instrucoes">Navegue pelos dias deslizando a agenda para os lados. A lista de horários tem rolagem própria; use Tab para acessar cada consulta ou vaga.</p>
+            <div class="cm-agenda-week-scroll" tabindex="0" role="region" aria-label="Agenda por dia e por profissional" aria-describedby="cm-agenda-instrucoes">
+                <div class="cm-agenda-week-board @(Model.Modo == "dia" ? "is-single-day" : "")" style="--day-count:@Math.Max(1, Model.Dias.Count)">
+                    @foreach (var dia in Model.Dias)
+                    {
+                        var gruposDia = medicosVisiveis.Select(m => new {
+                            Medico = m,
+                            Slots = dia.Slots.Where(s => s.MedicoId == m.Id).OrderBy(s => s.Horario).ToList()
+                        }).Where(g => g.Slots.Count > 0).ToList();
+                        var tituloDia = $"agenda-dia-{dia.Data:yyyyMMdd}";
+                        <article class="cm-agenda-week-day @(dia.Data.Date == hojeClinica ? "today" : "")" aria-labelledby="@tituloDia">
+                            <header class="cm-agenda-week-day-header" id="@tituloDia">
+                                <span>@dia.Data.ToString("dddd", pt)</span>
+                                <strong>@dia.Data.ToString("dd/MM/yyyy")</strong>
+                                @if (dia.Data.Date == hojeClinica) { <em>Hoje</em> }
+                            </header>
+                            <div class="cm-agenda-week-day-body">
+                                @if (!gruposDia.Any())
+                                {
+                                    <p class="cm-agenda-week-empty">Nenhum horário disponível neste dia para os filtros selecionados.</p>
+                                }
+                                else
+                                {
+                                    @foreach (var grupo in gruposDia)
+                                    {
+                                        <section class="cm-agenda-week-doctor" aria-label="Agenda de @grupo.Medico.Nome">
+                                            <h3 class="cm-agenda-week-doctor-name">
+                                                <span>@grupo.Medico.Nome</span>
+                                                <small>@(grupo.Medico.EspecialidadeCadastro?.Nome ?? grupo.Medico.Especialidade)</small>
+                                            </h3>
+                                            <div class="cm-agenda-week-slots">
+                                                @foreach (var slot in grupo.Slots)
+                                                {
+                                                    var css = slot.ConsultaId.HasValue ? "busy" : slot.Ativo ? "free" : "blocked";
+                                                    @if (slot.ConsultaId.HasValue)
+                                                    {
+                                                        <a class="cm-agenda-event cm19-cal-event @css" asp-controller="Consulta" asp-action="Details" asp-route-id="@slot.ConsultaId"><strong>@slot.Horario</strong><span>@slot.PacienteNome</span><small>@slot.StatusConsulta</small></a>
+                                                    }
+                                                    else if (slot.Ativo)
+                                                    {
+                                                        <a class="cm-agenda-event cm19-cal-event @css" asp-controller="Consulta" asp-action="Create" asp-route-medicoId="@slot.MedicoId" asp-route-data="@dia.Data.ToString("yyyy-MM-dd")" asp-route-horario="@slot.Horario"><strong>@slot.Horario</strong><span>Vaga livre</span><small>@(slot.Encaixe ? "Encaixe" : "Disponível")</small></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="cm-agenda-event cm19-cal-event @css"><strong>@slot.Horario</strong><span>Bloqueado</span><small>Horário indisponível</small></span>
+                                                    }
+                                                }
+                                            </div>
+                                        </section>
+                                    }
+                                }
+                            </div>
+                        </article>
+                    }
+                </div>
+            </div>
+        }
+        <footer class="cm19-calendar-legend"><span><i class="free"></i>Disponível</span><span><i class="busy"></i>Consulta</span><span><i class="blocked"></i>Bloqueado</span></footer>
+    </section>
+</section>

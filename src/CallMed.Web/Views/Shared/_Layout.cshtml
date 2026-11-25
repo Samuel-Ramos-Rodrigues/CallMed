@@ -1,0 +1,105 @@
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    var autenticado = User.Identity?.IsAuthenticated == true;
+    var focoConsultaOnline = string.Equals(controller, "Teleconsulta", StringComparison.OrdinalIgnoreCase);
+    var focoClinico = focoConsultaOnline || (controller == "Jornada" && action == "Consulta") || (controller == "Psicologia" && action == "Acervo");
+    var usuarioNome = User.Identity?.Name ?? "Usuário";
+    var inicial = string.IsNullOrWhiteSpace(usuarioNome) ? "U" : usuarioNome[..1].ToUpperInvariant();
+    var equipe = User.IsInRole("Funcionario") || User.IsInRole("Admin");
+    var paciente = User.IsInRole("Paciente");
+    var papel = paciente ? "Paciente" : User.IsProfissionalSaude() ? "Profissional de saúde" : User.IsInRole("Admin") ? "Administrador" : "Atendente";
+    var loginUrl = MKSANCrud.Services.Usuarios.PortaisAcesso.DoUsuario(User).UrlLogin;
+    var raizNavegacao = User.IsInRole("Admin") ? "Organizacao" : paciente ? "Home" : User.IsProfissionalSaude() ? "MedicoPainel" : "FuncionarioPainel";
+    var textoRaizNavegacao = User.IsInRole("Admin") ? "Todas as áreas" : paciente ? "Meu início" : User.IsProfissionalSaude() ? "Meu dia" : "Estação da recepção";
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <partial name="_DocumentHead" />
+</head>
+<body data-cm-module="@controller" data-cm-action="@action" class="callmed-app cm50-app cm-r3-shell cm-r4-shell cm-r5-shell cm-r6-shell cm-r7-shell cm-r8-shell cm9-shell @(paciente ? "nova-patient" : User.IsProfissionalSaude() ? "nova-doctor" : User.IsInRole("Admin") ? "nova-admin" : User.IsInRole("Funcionario") ? "nova-staff" : "nova-guest") @(autenticado ? "cm39-shell" : "") @(paciente ? "patient-context" : "staff-context") @(controller == "Atendimento" && action == "Index" ? "central-context" : "") @(focoConsultaOnline ? "teleconsulta-foco" : "") @(focoClinico ? "clinico-foco" : "")">
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+@if (autenticado)
+{
+    <header class="app-header">
+        <div class="app-header-inner">
+            <a class="app-brand" asp-controller="Home" asp-action="Index" aria-label="CallMed, início"><img src="~/images/logo-callmed-horizontal.png" alt="CallMed" width="260" height="82" /></a>
+            <nav class="primary-nav" aria-label="Navegação principal">
+                <partial name="_NavegacaoTopo" />
+            </nav>
+            <div class="header-tools">
+                <button type="button" class="cm-search-shortcut" data-modules-open aria-controls="modulesDialog" aria-expanded="false" aria-label="Buscar em todas as funções do sistema, Control K"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#search"></use></svg><span>Mais funções</span><kbd aria-hidden="true">Ctrl K</kbd></button>
+                @if (!User.IsProfissionalSaude())
+                {
+                    @await Component.InvokeAsync("Confirmacoes")
+                }
+                <div class="v18-tool-wrap cm-a11y-wrap cm91-a11y-wrap">
+                    <button type="button" class="v18-icon-button cm91-a11y-trigger" data-popover-trigger="accessibility" aria-expanded="false" aria-controls="cm91-a11y-panel" aria-label="Abrir opções de acessibilidade" title="Acessibilidade"><strong>Aa</strong></button>
+                    <div id="cm91-a11y-panel" class="v18-popover cm21-a11y-popover cm91-a11y-popover" data-popover="accessibility" aria-label="Opções de acessibilidade" hidden>
+                        <header class="cm91-popover-intro"><span class="cm91-panel-kicker">PERSONALIZE A LEITURA</span><h2>Acessibilidade</h2><p>Adapte o CallMed para sua forma de navegar.</p></header>
+                        <div class="cm91-a11y-list" role="group" aria-label="Preferências rápidas de acessibilidade">
+                            <button type="button" class="cm91-a11y-option" data-a11y-toggle="large" aria-pressed="false"><span class="cm91-a11y-option-icon" aria-hidden="true">A+</span><span class="cm91-a11y-option-copy"><strong>Texto maior</strong><small>Melhora a leitura</small></span><span class="cm91-a11y-status" data-a11y-status>Desativado</span></button>
+                            <button type="button" class="cm91-a11y-option" data-a11y-toggle="contrast" aria-pressed="false"><span class="cm91-a11y-option-icon" aria-hidden="true">◐</span><span class="cm91-a11y-option-copy"><strong>Alto contraste</strong><small>Reforça cores e contornos</small></span><span class="cm91-a11y-status" data-a11y-status>Desativado</span></button>
+                            <button type="button" class="cm91-a11y-option" data-a11y-toggle="motion" aria-pressed="false"><span class="cm91-a11y-option-icon" aria-hidden="true">◌</span><span class="cm91-a11y-option-copy"><strong>Reduzir animações</strong><small>Menos movimento na tela</small></span><span class="cm91-a11y-status" data-a11y-status>Desativado</span></button>
+                            <button type="button" class="cm91-a11y-option" data-a11y-toggle="simple" aria-pressed="false"><span class="cm91-a11y-option-icon" aria-hidden="true">▦</span><span class="cm91-a11y-option-copy"><strong>Modo simplificado</strong><small>Prioriza ações essenciais</small></span><span class="cm91-a11y-status" data-a11y-status>Desativado</span></button>
+                        </div>
+                        <div class="cm91-a11y-tools"><button type="button" data-a11y-read><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#speaker"></use></svg> Ouvir a página</button><button type="button" data-a11y-stop-read>Parar leitura</button></div>
+                        <footer class="cm91-a11y-footer"><button type="button" data-a11y-reset>Restaurar ajustes rápidos</button><a asp-controller="MinhaConta" asp-action="Index" asp-route-aba="preferencias">Todas as preferências <span aria-hidden="true">↗</span></a></footer>
+                    </div>
+                </div>
+
+                <div class="v18-tool-wrap">
+                    <button type="button" class="v18-icon-button" data-theme-toggle data-popover-trigger="theme" aria-expanded="false" aria-label="Alterar aparência"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#spark"></use></svg></button>
+                    <div class="v18-popover" data-popover="theme" hidden>
+                        <strong>Aparência</strong>
+                        <button type="button" data-theme-choice="light" aria-pressed="false">Claro</button>
+                        <button type="button" data-theme-choice="dark" aria-pressed="false">Escuro</button>
+                        <button type="button" data-theme-choice="system" aria-pressed="false">Acompanhar o dispositivo</button>
+                    </div>
+                </div>
+                @await Component.InvokeAsync("MenuConta")
+            </div>
+        </div>
+    </header>
+    <dialog class="modules-dialog" id="modulesDialog" aria-labelledby="modulesTitle">
+        <header><div><span class="eyebrow">TODAS AS FUNÇÕES</span><h2 id="modulesTitle">Para onde você quer ir?</h2><p>Encontre agenda, confirmações, fila de espera, check-in e administração.</p></div><button type="button" class="icon-button" data-modules-close aria-label="Fechar menu">×</button></header>
+        <label class="cm-module-search" for="cmModuleSearch"><span>Buscar nas funções da sua conta</span><input id="cmModuleSearch" type="search" autocomplete="off" placeholder="Ex.: agenda, salas, pacientes…" /></label>
+        <p class="cm-module-status" id="cmModuleSearchStatus" role="status" aria-live="polite"></p>
+        <div class="cm-menu-conteudo"><partial name="_MenuModulos" /></div>
+    </dialog>
+    <main class="app-main" id="conteudo" tabindex="-1">
+        @if(controller != raizNavegacao && !(controller == "Atendimento" && action == "Index"))
+        {
+            <nav class="cm-caminho" aria-label="Caminho da página"><a asp-controller="@raizNavegacao" asp-action="Index">@textoRaizNavegacao</a><span aria-hidden="true"> / </span><span aria-current="page">@ViewData["Title"]</span></nav>
+        }
+        <partial name="_R3FormGuide" />
+        @if (TempData["Erro"] != null) { <div class="alert error" role="alert">@TempData["Erro"]</div> }
+        @if (TempData["Aviso"] != null) { <div class="alert warning" role="status">@TempData["Aviso"]</div> }
+        @if (TempData["Sucesso"] != null) { <div class="alert success" role="status">@TempData["Sucesso"]</div> }
+        @RenderBody()
+    </main>
+    <footer class="app-footer"><span>CallMed · cuidado em conexão</span><nav aria-label="Informações legais"><a asp-controller="Aplicativo" asp-action="Index">Aplicativo Android</a><a href="/privacidade">Privacidade</a><a href="/termos-de-uso">Termos de Serviço</a></nav></footer>
+    <nav class="callmed-mobile-nav" aria-label="Navegação no celular">
+        <partial name="_NavegacaoPrincipal" />
+        <button type="button" data-mobile-more aria-label="Abrir áreas do sistema"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#menu"></use></svg><span>Menu</span></button>
+    </nav>
+}
+else
+{
+    <header class="guest-header"><a class="app-brand" asp-controller="Home" asp-action="Index"><img src="~/images/logo-callmed-horizontal.png" alt="CallMed" width="260" height="82" /></a><partial name="_LoginPartial" /></header>
+    <main class="app-main" id="conteudo">@RenderBody()</main>
+}
+@if (!focoClinico) { <partial name="_AssistenteFlutuante" /> }
+<script src="~/js/core/shell.js" asp-append-version="true"></script>
+<script src="~/js/core/file-controls.js" asp-append-version="true"></script>
+<script src="~/js/core/date-select.js" asp-append-version="true"></script>
+<script src="~/js/core/accessibility.js" asp-append-version="true"></script>
+<script src="~/js/core/mobile-final.js" asp-append-version="true"></script>
+<script src="~/js/core/theme.js" asp-append-version="true"></script>
+<script src="~/js/core/pwa.js" asp-append-version="true"></script>
+<script src="~/js/atendimento/confirmacoes.js" asp-append-version="true"></script>
+<script src="~/js/atendimento/assistente-flutuante.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

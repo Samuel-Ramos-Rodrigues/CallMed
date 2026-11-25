@@ -1,0 +1,46 @@
+using Microsoft.EntityFrameworkCore;
+using MKSANCrud.Data;
+using MKSANCrud.Models;
+using MKSANCrud.Models.Atendimento;
+using MKSANCrud.Services.Atendimento;
+namespace MKSANCrud.Services.Clinica;
+public sealed partial class EncaixeService(MKSANContext db,IClinicaClock clock,ConvenioElegibilidadeService elegibilidade,AtendimentoConversaService conversas,AtendimentoEnvioService envio,IConfiguration config) {
+ public static bool Periodo(string h,string p){if(!TimeSpan.TryParse(h,out var t))return false;return p.ToLowerInvariant() switch{"manhã" or "manha"=>t.Hours<12,"tarde"=>t.Hours>=12&&t.Hours<18,"noite"=>t.Hours>=18,_=>true};}
+ private async Task LockAsync(Oferta o,CancellationToken ct){if(db.Database.IsRelational()){var day=$"mksan-dia:{o.MedicoId}:{o.Data:yyyy-MM-dd}";await db.Database.ExecuteSqlInterpolatedAsync($"SELECT pg_advisory_xact_lock(hashtextextended({day},0));",ct);var key=$"mksan:{o.MedicoId}:{o.Data:yyyy-MM-dd}:{o.Horario.Trim()}";await db.Database.ExecuteSqlInterpolatedAsync($"SELECT pg_advisory_xact_lock(hashtextextended({key},0));",ct);await db.Entry(o).ReloadAsync(ct);}}
+ public async Task<bool> RecusarAsync(Guid id,int pid,CancellationToken ct){await using var tx=db.Database.IsRelational()?await db.Database.BeginTransactionAsync(ct):null;var o=await db.Ofertas.Include(x=>x.ListaEspera).SingleOrDefaultAsync(x=>x.Id==id&&x.ListaEspera.PacienteId==pid,ct);if(o==null)return false;await LockAsync(o,ct);if(o.Estado!="Aberta"||o.ExpiraEm<=DateTime.UtcNow)return false;o.Estado="Recusada";await db.SaveChangesAsync(ct);if(tx!=null)await tx.CommitAsync(ct);return true;}
+ public async Task<int> ReservarAsync(CancellationToken ct=default,int? medico=null,DateTime? data=null,string? horario=null) {
+  var now=DateTime.UtcNow;var expired=await db.Ofertas.Include(x=>x.ListaEspera).ThenInclude(x=>x.Paciente).Where(x=>x.Estado=="Aberta"&&(x.ExpiraEm<=now||!x.ListaEspera.Ativa||!x.ListaEspera.Paciente!.Ativo)).ToListAsync(ct);
+  foreach(var o in expired){await using var tx=db.Database.IsRelational()?await db.Database.BeginTransactionAsync(ct):null;await LockAsync(o,ct);if(db.Database.IsRelational()){await db.Entry(o.ListaEspera).ReloadAsync(ct);if(o.ListaEspera.Paciente!=null)await db.Entry(o.ListaEspera.Paciente).ReloadAsync(ct);}if(o.Estado=="Aberta"&&(o.ExpiraEm<=DateTime.UtcNow||!o.ListaEspera.Ativa||o.ListaEspera.Paciente?.Ativo!=true)){o.Estado=o.ExpiraEm<=DateTime.UtcNow?"Expirada":"Revogada";await db.SaveChangesAsync(ct);}if(tx!=null)await tx.CommitAsync(ct);}
+  var aptos=await db.ListasEspera.AsNoTracking().Where(x=>x.Ativa&&x.Paciente!.Ativo&&!db.Ofertas.Any(o=>o.ListaEsperaId==x.Id&&o.Estado=="Aberta"&&o.ExpiraEm>DateTime.UtcNow)).OrderByDescending(x=>x.Prioridade).ThenBy(x=>x.CriadoEm).Take(1000).ToListAsync(ct);
+  if(aptos.Count==0)return 0;
+  var medicosPedidos=aptos.Where(x=>x.MedicoId.HasValue).Select(x=>x.MedicoId!.Value).Distinct().ToArray();var especialidadesPedidas=aptos.Where(x=>x.EspecialidadeId.HasValue).Select(x=>x.EspecialidadeId!.Value).Distinct().ToArray();var qualquerDia=aptos.Any(x=>!x.DataPreferida.HasValue);var diasPedidos=aptos.Where(x=>x.DataPreferida.HasValue).Select(x=>x.DataPreferida!.Value.Date).Distinct().ToArray();
+  var slots=await db.Disponibilidades.AsNoTracking().Include(x=>x.Medico).Where(x=>x.Ativo&&x.Data!=null&&(medicosPedidos.Contains(x.MedicoId)||(x.Medico!.EspecialidadeId.HasValue&&especialidadesPedidas.Contains(x.Medico.EspecialidadeId.Value)))&&(qualquerDia||diasPedidos.Contains(x.Data.Value.Date))&&!db.Consultas.Any(c=>c.MedicoId==x.MedicoId&&c.Data.Date==x.Data.Value.Date&&c.Horario==x.Horario&&c.Status!=ConsultaStatus.Cancelada)&&!db.Ofertas.Any(o=>o.MedicoId==x.MedicoId&&o.Data==x.Data.Value.Date&&o.Horario==x.Horario&&o.Estado=="Aberta")&&x.Data.Value.Date>=clock.Hoje&&x.Data.Value.Date<=clock.Hoje.AddDays(90)&&(!medico.HasValue||x.MedicoId==medico)&&(!data.HasValue||x.Data.Value.Date==data.Value.Date)&&(horario==null||x.Horario==horario)).OrderBy(x=>x.Data).ThenBy(x=>x.Horario).Take(500).ToListAsync(ct);var n=0;
+  foreach(var s in slots){if(aptos.Count==0)break;if(!aptos.Any(x=>(x.MedicoId==s.MedicoId||(x.MedicoId==null&&x.EspecialidadeId==s.Medico?.EspecialidadeId))&&(!x.DataPreferida.HasValue||x.DataPreferida.Value.Date==s.Data!.Value.Date)&&Periodo(s.Horario,x.Periodo)))continue;if(s.Medico?.Ativo!=true||!TimeSpan.TryParse(s.Horario,out var h)||s.Data!.Value.Date.Add(h)<=clock.Agora)continue;await using var tx=db.Database.IsRelational()?await db.Database.BeginTransactionAsync(ct):null;
+   if(db.Database.IsRelational()){var day=$"mksan-dia:{s.MedicoId}:{s.Data:yyyy-MM-dd}";await db.Database.ExecuteSqlInterpolatedAsync($"SELECT pg_advisory_xact_lock(hashtextextended({day},0));",ct);var key=$"mksan:{s.MedicoId}:{s.Data:yyyy-MM-dd}:{s.Horario.Trim()}";await db.Database.ExecuteSqlInterpolatedAsync($"SELECT pg_advisory_xact_lock(hashtextextended({key},0));",ct);}
+   if(await db.Consultas.AnyAsync(c=>c.MedicoId==s.MedicoId&&c.Data.Date==s.Data.Value.Date&&c.Horario==s.Horario&&c.Status!=ConsultaStatus.Cancelada,ct)||await db.Ofertas.AnyAsync(o=>o.MedicoId==s.MedicoId&&o.Data==s.Data.Value.Date&&o.Horario==s.Horario&&o.Estado=="Aberta",ct))continue;
+   // A disponibilidade pode ter sido desativada enquanto aguardávamos o lock.
+   if(!await db.Disponibilidades.AsNoTracking().AnyAsync(x=>x.Id==s.Id&&x.Ativo&&x.Medico!.Ativo&&x.Data==s.Data&&x.Horario==s.Horario,ct))continue;
+   var duracao=Math.Clamp(s.Medico!.DuracaoPadraoMinutos,5,240);
+   var ocupados=await db.Consultas.AsNoTracking().Where(c=>c.MedicoId==s.MedicoId&&c.Data==s.Data!.Value.Date&&c.Status!=ConsultaStatus.Cancelada).Select(c=>new{c.Horario,Duracao=db.Jornadas.Where(j=>j.ConsultaId==c.Id).Select(j=>(int?)j.Duracao).FirstOrDefault()??c.DuracaoMinutos}).ToListAsync(ct);
+   var holds=await db.Ofertas.AsNoTracking().Where(o=>o.MedicoId==s.MedicoId&&o.Data==s.Data!.Value.Date&&o.Estado=="Aberta"&&o.ExpiraEm>DateTime.UtcNow).Select(o=>o.Horario).ToListAsync(ct);
+   if(h.Add(TimeSpan.FromMinutes(duracao))>TimeSpan.FromDays(1)||ocupados.Any(c=>MKSANCrud.Services.Agendamento.AgendamentoService.Sobrepoe(s.Horario,duracao,c.Horario,c.Duracao))||holds.Any(t=>MKSANCrud.Services.Agendamento.AgendamentoService.Sobrepoe(s.Horario,duracao,t,duracao)))continue;
+   var aptosIds=aptos.Select(x=>x.Id).ToArray();var candidates=await db.ListasEspera.Include(x=>x.Paciente).Where(x=>x.Ativa&&aptosIds.Contains(x.Id)&&(x.MedicoId==s.MedicoId||(x.MedicoId==null&&x.EspecialidadeId==s.Medico.EspecialidadeId))&&(x.DataPreferida==null||x.DataPreferida.Value.Date==s.Data.Value.Date)).OrderByDescending(x=>x.Prioridade).ThenBy(x=>x.CriadoEm).ThenBy(x=>x.Id).Take(100).ToListAsync(ct);
+   foreach(var i in candidates){
+    // Slots de profissionais diferentes não compartilham o lock diário.
+    // Serialize a seleção do mesmo pedido e releia o estado após a espera.
+    if(db.Database.IsRelational()){
+     var esperaKey=$"mksan-espera:{i.Id}";
+     await db.Database.ExecuteSqlInterpolatedAsync($"SELECT pg_advisory_xact_lock(hashtextextended({esperaKey},0));",ct);
+     await db.Entry(i).ReloadAsync(ct);
+     if(i.Paciente!=null)await db.Entry(i.Paciente).ReloadAsync(ct);
+    }
+    if(!i.Ativa||i.Paciente?.Ativo!=true||!Periodo(s.Horario,i.Periodo)||
+       !(i.MedicoId==s.MedicoId||(i.MedicoId==null&&i.EspecialidadeId==s.Medico.EspecialidadeId))||
+       (i.DataPreferida.HasValue&&i.DataPreferida.Value.Date!=s.Data.Value.Date))continue;
+    if(await db.Ofertas.AnyAsync(o=>o.ListaEsperaId==i.Id&&(o.Estado=="Aberta"||(o.MedicoId==s.MedicoId&&o.Data==s.Data.Value.Date&&o.Horario==s.Horario)),ct)||await MKSANCrud.Services.Agendamento.AgendaPaciente.TemConflitoAsync(db, i.PacienteId, s.Data.Value, s.Horario, duracao, null, ct))continue;
+    var e=await elegibilidade.AvaliarAsync(i.Paciente,s.Medico.EspecialidadeId,ct);if(i.Paciente.TemConvenio&&(!e.PossuiConvenioValido||!e.RegrasConfiguradas||!e.Elegivel||e.StatusConsulta!=ElegibilidadeConvenioStatus.CoberturaNaMatriz)){aptos.RemoveAll(x=>x.Id==i.Id);continue;}
+    db.Ofertas.Add(new(){ListaEsperaId=i.Id,MedicoId=s.MedicoId,Data=s.Data.Value.Date,Horario=s.Horario,ExpiraEm=DateTime.UtcNow.AddMinutes(Math.Clamp(config.GetValue("Clinica:Encaixe:PrazoMinutos",15),2,60))});i.UltimaDisponibilidadeId=s.Id;i.AtualizadoEm=DateTime.UtcNow;await db.SaveChangesAsync(ct);aptos.RemoveAll(x=>x.Id==i.Id);n++;break;
+   }if(tx!=null)await tx.CommitAsync(ct);
+  }return n;
+ }
+}

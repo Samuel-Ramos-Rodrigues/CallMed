@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "base": "V54.1 (V54 + fix do item Teleconsulta)",
+  "natureza": "Inventário estático, não homologação operacional",
+  "counts": {
+    "razor_views": 109,
+    "identity_razor_pages": 8,
+    "controllers_source_files": 54,
+    "service_files": 46,
+    "js_files": 26,
+    "css_files": 5,
+    "kotlin_files": 19,
+    "dbset_declarations": 46,
+    "has_index_declarations": 91,
+    "web_api_controller_files": 12
+  },
+  "view_areas": {
+    "Acessos": 1,
+    "Agenda": 1,
+    "Aplicativo": 1,
+    "Atendimento": 3,
+    "Auditoria": 1,
+    "Avaliacoes": 1,
+    "Checkin": 2,
+    "Configuracoes": 1,
+    "Confirmacoes": 1,
+    "Consulta": 8,
+    "Convenios": 1,
+    "Disponibilidade": 6,
+    "Disponibilidades": 1,
+    "Especialidade": 4,
+    "Funcionario": 6,
+    "FuncionarioPainel": 1,
+    "HistoricoExames": 2,
+    "Home": 4,
+    "Identity": 8,
+    "Integracoes": 1,
+    "Jornada": 5,
+    "ListaEspera": 2,
+    "Medico": 6,
+    "MedicoAcesso": 1,
+    "MedicoPainel": 1,
+    "MinhaConta": 2,
+    "Operacao": 1,
+    "Organizacao": 1,
+    "Paciente": 6,
+    "Piloto": 2,
+    "Privacidade": 2,
+    "Psicologia": 2,
+    "RecepcaoPendencias": 1,
+    "Relatorios": 1,
+    "Salas": 1,
+    "Shared": 13,
+    "Solicitacoes": 6,
+    "_ViewImports.cshtml": 1,
+    "_ViewStart.cshtml": 1
+  },
+  "modules": {
+    "Identidade/Acesso": {
+      "state": "Presente no código; funcionamento em ambiente real não comprovado por esta auditoria",
+      "files": [
+        "src/CallMed.Web/Views/MinhaConta/Index.cshtml",
+        "src/CallMed.Web/Views/MinhaConta/Edit.cshtml",
+        "src/CallMed.Web/Views/Acessos/Index.cshtml",
+        "src/CallMed.Web/Controllers/Conta/MinhaContaController.cs",
+        "src/CallMed.Web/Controllers/Conta/PrivacidadeController.cs"
+      ]
+    },
+    "Agenda/Consultas": {
+      "state": "Presente no código; funcionamento em ambiente real não comprovado por esta auditoria",
+      "files": [
+        "src/CallMed.Application/Modules/Agenda/Services/AgendamentoService.cs",
+        "src/CallMed.Web/Views/Disponibilidades/Index.cshtml",
+        "src/CallMed.Web/Views/Consulta/Equipe.cshtml",
+        "src/CallMed.Web/Views/Consulta/_Form.cshtml",
+        "src/CallMed.Web/Views/Consulta/Index.cshtml",
+        "src/CallMed.Web/Views/Consulta/Create.cshtml",
+        "src/CallMed.Web/Views/Consulta/Details.cshtml",
+        "src/CallMed.Web/Views/Consulta/_ListaEquipe.cshtml",
+        "src/CallMed.Web/Views/Consulta/Edit.cshtml",
+        "src/CallMed.Web/Views/Consulta/Remarcar.cshtml",
+        "src/CallMed.Web/Views/Disponibilidade/_Form.cshtml",
+        "src/CallMed.Web/Views/Disponibilidade/Index.cshtml",
+        "src/CallMed.Web/Views/Disponibilidade/Create.cshtml",
+        "src/CallMed.Web/Views/Disponibilidade/Details.cshtml",
+        "src/CallMed.Web/Views/Disponibilidade/Delete.cshtml",
+        "src/CallMed.Web/Views/Disponibilidade/Edit.cshtml"
+      ]
+    },
+    "Otimização/Fila": {
+      "state": "Presente no código; funcionamento em ambiente real não comprovado por esta auditoria",
+      "files": [
+        "src/CallMed.Application/Modules/Agenda/Services/EncaixeService.cs",
+        "src/CallMed.Application/Modules/Agenda/Services/ListaEsperaService.cs",
+        "src/CallMed.Web/Views/ListaEspera/Index.cshtml",
+        "src/CallMed.Web/Views/ListaEspera/Create.cshtml"
+      ]
+    },
+    "Paciente/Jornada": {
+      "state": "Presente no código; funcionamento em ambiente real não comprovado por esta auditoria",
+      "files": [
+        "src/CallMed.Web/Views/Jornada/Acao.cshtml",
+        "src/CallMed.Web/Views/Jornada/Consulta.cshtml",
+        "src/CallMed.Web/Views/Jornada/TeleNaoEncontrada.cshtml",
+        "src/CallMed.Web/Views/Jornada/Index.cshtml",
+        "src/CallMed.Web/Views/Jornada/Tele.cshtml",
+        "src/CallMed.Web/Views/Checkin/Abrir.cshtml",
+        "src/CallMed.Web/Views/Checkin/Terminal.cshtml",
+        "src/CallMed.Web/Views/Paciente/_Form.cshtml",
+        "src/CallMed.Web/Views/Paciente/Index.cshtml",
+        "src/CallMed.Web/Views/Paciente/Create.cshtml",
+        "src/CallMed.Web/Views/Paciente/Details.cshtml",
+        "src/CallMed.Web/Views/Paciente/Delete.cshtml",
+        "src/CallMed.Web/Views/Paciente/Edit.cshtml"
+      ]
+    },
+    "Atendimento/Multicanal": {
+      "state": "Presente no código; funcionamento em ambiente real não comprovado por esta auditoria",
+      "files": [
+        "src/CallMed.Application/Modules/Atendimento/Services/AtendimentoOrquestradorService.cs",
+        "src/CallMed.Web/Views/Atendimento/Nova.cshtml",
+        "src/CallMed.Web/Views/Atendimento/Index.cshtml",
+        "src/CallMed.Web/Views/Atendimento/_CanalIcon.cshtml"
+      ]
+    },
+    "Automação/IA": {
+      "state": "Presente no código; funcionamento em ambiente real não comprovado por esta auditoria",
+      "files": [
+        "src/CallMed.Application/Modules/Assistente/Services/AgenteClinicaService.cs",
+        "src/CallMed.Web/Views/Atendimento/Nova.cshtml",
+        "src/CallMed.Web/Views/Atendimento/Index.cshtml",
+        "src/CallMed.Web/Views/Atendimento/_CanalIcon.cshtml"
+      ]
+    },
+    "Teleconsulta": {
+      "state": "Presente no código; funcionamento em ambiente real não comprovado por esta auditoria",
+      "files": [
+        "src/CallMed.Web/Views/Jornada/Tele.cshtml",
+        "src/CallMed.Web/Views/Salas/Index.cshtml"
+      ]
+    },
+    "Gestão clínica/Psicologia": {
+      "state": "Presente no código; funcionamento em ambiente real não comprovado por esta auditoria",
+      "files": [
+        "src/CallMed.Web/Views/Psicologia/Acervo.cshtml",
+        "src/CallMed.Web/Views/Psicologia/Pep.cshtml",
+        "src/CallMed.Web/Views/Convenios/Index.cshtml",
+        "src/CallMed.Web/Views/MedicoAcesso/Gerenciar.cshtml",
+        "src/CallMed.Web/Views/MedicoPainel/Index.cshtml",
+        "src/CallMed.Web/Views/Medico/_Form.cshtml",
+        "src/CallMed.Web/Views/Medico/Index.cshtml",
+        "src/CallMed.Web/Views/Medico/Create.cshtml",
+        "src/CallMed.Web/Views/Medico/Details.cshtml",
+        "src/CallMed.Web/Views/Medico/Delete.cshtml",
+        "src/CallMed.Web/Views/Medico/Edit.cshtml"
+      ]
+    },
+    "Integrações/PEP": {
+      "state": "Presente no código; funcionamento em ambiente real não comprovado por esta auditoria",
+      "files": [
+        "src/CallMed.Web/Views/Integracoes/Index.cshtml"
+      ]
+    },
+    "Indicadores/Auditoria": {
+      "state": "Presente no código; funcionamento em ambiente real não comprovado por esta auditoria",
+      "files": [
+        "src/CallMed.Web/Views/Relatorios/Index.cshtml",
+        "src/CallMed.Web/Views/Auditoria/Index.cshtml",
+        "src/CallMed.Web/Views/Operacao/Index.cshtml"
+      ]
+    },
+    "Android Kotlin": {
+      "state": "Presente no código; funcionamento em ambiente real não comprovado por esta auditoria",
+      "files": [
+        "mobile/android/app/src/test/resources/clinical-interop.json",
+        "mobile/android/app/src/test/java/com/callmed/app/NativeTeleRaceTest.kt",
+        "mobile/android/app/src/test/java/com/callmed/app/CallReliabilityTest.kt",
+        "mobile/android/app/src/test/java/com/callmed/app/ClinicalSessionTest.kt",
+        "mobile/android/app/src/test/java/com/callmed/app/CallMedApiTest.kt",
+        "mobile/android/app/src/test/java/com/callmed/app/NativeUiTest.kt",
+        "mobile/android/app/src/test/java/com/callmed/app/ChatRefreshTest.kt",
+        "mobile/android/app/src/test/java/com/callmed/app/SessionErrorPolicyTest.kt",
+        "mobile/android/app/src/test/java/com/callmed/app/JourneyUiTest.kt",
+        "mobile/android/app/src/test/java/com/callmed/app/ProfessionModelTest.kt",
+        "mobile/android/app/src/test/java/com/callmed/app/ClinicalPreparationTest.kt",
+        "mobile/android/app/src/test/java/com/callmed/app/ClinicalUiTest.kt",
+        "mobile/android/app/src/test/java/com/callmed/app/ClinicalCryptoTest.kt",
+        "mobile/android/app/src/main/java/com/callmed/app/CallMedApi.kt",
+        "mobile/android/app/src/main/java/com/callmed/app/CallMedViewModel.kt",
+        "mobile/android/app/src/main/java/com/callmed/app/SessionStore.kt"
+      ]
+    }
+  },
+  "android_release": {
+    "version": "50.0.0",
+    "version_code": 5000,
+    "apk_size_matches_metadata": true,
+    "apk_sha256_matches_metadata": true
+  },
+  "stylesheet_paths": [
+    "src/CallMed.Web/wwwroot/css/nova-00-design.css",
+    "src/CallMed.Web/wwwroot/css/nova-10-shell.css",
+    "src/CallMed.Web/wwwroot/css/nova-20-fluxos.css",
+    "src/CallMed.Web/wwwroot/css/nova-30-acesso.css",
+    "src/CallMed.Web/wwwroot/css/nova-40-modulos.css"
+  ],
+  "sensitive_material": "Assinatura APK e configurações de produção não incluídas no inventário; verificar backup fora do repositório"
+}

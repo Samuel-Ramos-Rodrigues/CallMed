@@ -1,0 +1,4491 @@
+{
+  "summary": {
+    "razor_files": 109,
+    "controllers": 51,
+    "css_files": 5,
+    "unique_css_selectors": 1096,
+    "total_template_classes": 904,
+    "no_css_class_tokens": 74,
+    "form_templates": 64,
+    "inline_styles": 3
+  },
+  "modules": {
+    "Acessos": {
+      "screens": 1,
+      "forms": 0,
+      "inputs": 0,
+      "buttons": 0,
+      "unmatched_classes": [],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Agenda": {
+      "screens": 1,
+      "forms": 1,
+      "inputs": 3,
+      "buttons": 1,
+      "unmatched_classes": [
+        [
+          "free",
+          1
+        ],
+        [
+          "hojeClinica",
+          1
+        ]
+      ],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Aplicativo": {
+      "screens": 1,
+      "forms": 0,
+      "inputs": 0,
+      "buttons": 0,
+      "unmatched_classes": [],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Atendimento": {
+      "screens": 3,
+      "forms": 18,
+      "inputs": 25,
+      "buttons": 35,
+      "unmatched_classes": [
+        [
+          "channel-status-close",
+          1
+        ],
+        [
+          "cm25-atendimento-shell",
+          1
+        ],
+        [
+          "cm50-central",
+          1
+        ],
+        [
+          "context-avatar",
+          1
+        ],
+        [
+          "context-unlink",
+          1
+        ],
+        [
+          "is",
+          1
+        ],
+        [
+          "null",
+          1
+        ],
+        [
+          "v16-atendimento-filters",
+          1
+        ],
+        [
+          "v16-atendimento-shell",
+          1
+        ],
+        [
+          "v16-chat",
+          1
+        ],
+        [
+          "v16-chat-header",
+          1
+        ],
+        [
+          "v16-compose",
+          1
+        ],
+        [
+          "v16-inbox",
+          1
+        ],
+        [
+          "cm25-new-attendance",
+          1
+        ],
+        [
+          "second",
+          1
+        ],
+        [
+          "cm-channel-",
+          1
+        ]
+      ],
+      "filenames": [
+        "Index.cshtml",
+        "Nova.cshtml",
+        "_CanalIcon.cshtml"
+      ]
+    },
+    "Auditoria": {
+      "screens": 1,
+      "forms": 1,
+      "inputs": 2,
+      "buttons": 1,
+      "unmatched_classes": [],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Avaliacoes": {
+      "screens": 1,
+      "forms": 1,
+      "inputs": 2,
+      "buttons": 1,
+      "unmatched_classes": [],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Checkin": {
+      "screens": 2,
+      "forms": 1,
+      "inputs": 2,
+      "buttons": 1,
+      "unmatched_classes": [],
+      "filenames": [
+        "Abrir.cshtml",
+        "Terminal.cshtml"
+      ]
+    },
+    "Configuracoes": {
+      "screens": 1,
+      "forms": 0,
+      "inputs": 0,
+      "buttons": 1,
+      "unmatched_classes": [],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Confirmacoes": {
+      "screens": 1,
+      "forms": 4,
+      "inputs": 8,
+      "buttons": 5,
+      "unmatched_classes": [
+        [
+          "cm-confirm-page",
+          1
+        ],
+        [
+          "cm-enable-device-alerts",
+          1
+        ]
+      ],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Consulta": {
+      "screens": 8,
+      "forms": 11,
+      "inputs": 27,
+      "buttons": 14,
+      "unmatched_classes": [
+        [
+          "doctor",
+          2
+        ],
+        [
+          "cm21-linked-request",
+          1
+        ],
+        [
+          "cm42-flow-header",
+          1
+        ],
+        [
+          "comprovante-consulta",
+          1
+        ],
+        [
+          "consultation-main-v16",
+          1
+        ],
+        [
+          "valor",
+          1
+        ],
+        [
+          "consultation-summary-v16",
+          1
+        ],
+        [
+          "cm25-readonly-card",
+          1
+        ],
+        [
+          "second",
+          1
+        ],
+        [
+          "staff-patient",
+          1
+        ]
+      ],
+      "filenames": [
+        "Create.cshtml",
+        "Details.cshtml",
+        "Edit.cshtml",
+        "Equipe.cshtml",
+        "Index.cshtml",
+        "Remarcar.cshtml",
+        "_Form.cshtml",
+        "_ListaEquipe.cshtml"
+      ]
+    },
+    "Convenios": {
+      "screens": 1,
+      "forms": 2,
+      "inputs": 6,
+      "buttons": 2,
+      "unmatched_classes": [
+        [
+          "cm21-rules-page",
+          1
+        ]
+      ],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Disponibilidade": {
+      "screens": 6,
+      "forms": 5,
+      "inputs": 16,
+      "buttons": 5,
+      "unmatched_classes": [
+        [
+          "away",
+          2
+        ],
+        [
+          "block",
+          2
+        ],
+        [
+          "extra",
+          2
+        ],
+        [
+          "doctor",
+          1
+        ],
+        [
+          "exception-summary",
+          1
+        ],
+        [
+          "exception-type",
+          1
+        ],
+        [
+          "muted-cell",
+          1
+        ]
+      ],
+      "filenames": [
+        "Create.cshtml",
+        "Delete.cshtml",
+        "Details.cshtml",
+        "Edit.cshtml",
+        "Index.cshtml",
+        "_Form.cshtml"
+      ]
+    },
+    "Disponibilidades": {
+      "screens": 1,
+      "forms": 0,
+      "inputs": 0,
+      "buttons": 0,
+      "unmatched_classes": [
+        [
+          "cm19-av-doctor",
+          1
+        ],
+        [
+          "header",
+          1
+        ]
+      ],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Especialidade": {
+      "screens": 4,
+      "forms": 2,
+      "inputs": 3,
+      "buttons": 2,
+      "unmatched_classes": [],
+      "filenames": [
+        "Create.cshtml",
+        "Edit.cshtml",
+        "Index.cshtml",
+        "_Form.cshtml"
+      ]
+    },
+    "Funcionario": {
+      "screens": 6,
+      "forms": 3,
+      "inputs": 7,
+      "buttons": 3,
+      "unmatched_classes": [
+        [
+          "cm-record-table--staff",
+          1
+        ]
+      ],
+      "filenames": [
+        "Create.cshtml",
+        "Delete.cshtml",
+        "Details.cshtml",
+        "Edit.cshtml",
+        "Index.cshtml",
+        "_Form.cshtml"
+      ]
+    },
+    "FuncionarioPainel": {
+      "screens": 1,
+      "forms": 0,
+      "inputs": 0,
+      "buttons": 0,
+      "unmatched_classes": [
+        [
+          "cm50-agenda-lines",
+          1
+        ]
+      ],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "HistoricoExames": {
+      "screens": 2,
+      "forms": 4,
+      "inputs": 9,
+      "buttons": 4,
+      "unmatched_classes": [
+        [
+          "alert-danger",
+          1
+        ]
+      ],
+      "filenames": [
+        "Index.cshtml",
+        "Pendentes.cshtml"
+      ]
+    },
+    "Home": {
+      "screens": 4,
+      "forms": 0,
+      "inputs": 0,
+      "buttons": 5,
+      "unmatched_classes": [
+        [
+          "care-step",
+          1
+        ],
+        [
+          "terms-shell",
+          1
+        ]
+      ],
+      "filenames": [
+        "Error.cshtml",
+        "Index.cshtml",
+        "Privacidade.cshtml",
+        "TermosDeUso.cshtml"
+      ]
+    },
+    "Identity": {
+      "screens": 8,
+      "forms": 4,
+      "inputs": 23,
+      "buttons": 8,
+      "unmatched_classes": [
+        [
+          "identity-state",
+          1
+        ],
+        [
+          "login-shell",
+          1
+        ],
+        [
+          "cm-logout-brand",
+          1
+        ],
+        [
+          "identity-logout",
+          1
+        ]
+      ],
+      "filenames": [
+        "AccessDenied.cshtml",
+        "ForgotPassword.cshtml",
+        "Login.cshtml",
+        "Logout.cshtml",
+        "Register.cshtml",
+        "ResetPasswordConfirmation.cshtml",
+        "_ViewImports.cshtml",
+        "_ViewStart.cshtml"
+      ]
+    },
+    "Integracoes": {
+      "screens": 1,
+      "forms": 1,
+      "inputs": 1,
+      "buttons": 3,
+      "unmatched_classes": [
+        [
+          "on",
+          1
+        ]
+      ],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Jornada": {
+      "screens": 5,
+      "forms": 15,
+      "inputs": 33,
+      "buttons": 23,
+      "unmatched_classes": [],
+      "filenames": [
+        "Acao.cshtml",
+        "Consulta.cshtml",
+        "Index.cshtml",
+        "Tele.cshtml",
+        "TeleNaoEncontrada.cshtml"
+      ]
+    },
+    "ListaEspera": {
+      "screens": 2,
+      "forms": 4,
+      "inputs": 10,
+      "buttons": 4,
+      "unmatched_classes": [
+        [
+          "v16-main-form",
+          1
+        ]
+      ],
+      "filenames": [
+        "Create.cshtml",
+        "Index.cshtml"
+      ]
+    },
+    "Medico": {
+      "screens": 6,
+      "forms": 4,
+      "inputs": 20,
+      "buttons": 7,
+      "unmatched_classes": [
+        [
+          "cm-record-table--doctors",
+          1
+        ],
+        [
+          "doctor",
+          1
+        ],
+        [
+          "doctor-form-v16",
+          1
+        ]
+      ],
+      "filenames": [
+        "Create.cshtml",
+        "Delete.cshtml",
+        "Details.cshtml",
+        "Edit.cshtml",
+        "Index.cshtml",
+        "_Form.cshtml"
+      ]
+    },
+    "MedicoAcesso": {
+      "screens": 1,
+      "forms": 1,
+      "inputs": 3,
+      "buttons": 1,
+      "unmatched_classes": [],
+      "filenames": [
+        "Gerenciar.cshtml"
+      ]
+    },
+    "MedicoPainel": {
+      "screens": 1,
+      "forms": 6,
+      "inputs": 6,
+      "buttons": 6,
+      "unmatched_classes": [
+        [
+          "cm50-agenda-lines",
+          1
+        ],
+        [
+          "cm50-doctor",
+          1
+        ],
+        [
+          "cm50-timeline",
+          1
+        ],
+        [
+          "cm50-upcoming",
+          1
+        ]
+      ],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "MinhaConta": {
+      "screens": 2,
+      "forms": 9,
+      "inputs": 35,
+      "buttons": 11,
+      "unmatched_classes": [
+        [
+          "current",
+          1
+        ]
+      ],
+      "filenames": [
+        "Edit.cshtml",
+        "Index.cshtml"
+      ]
+    },
+    "Operacao": {
+      "screens": 1,
+      "forms": 1,
+      "inputs": 2,
+      "buttons": 2,
+      "unmatched_classes": [],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Organizacao": {
+      "screens": 1,
+      "forms": 0,
+      "inputs": 1,
+      "buttons": 0,
+      "unmatched_classes": [],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Paciente": {
+      "screens": 6,
+      "forms": 5,
+      "inputs": 17,
+      "buttons": 5,
+      "unmatched_classes": [
+        [
+          "patient-status-body",
+          1
+        ]
+      ],
+      "filenames": [
+        "Create.cshtml",
+        "Delete.cshtml",
+        "Details.cshtml",
+        "Edit.cshtml",
+        "Index.cshtml",
+        "_Form.cshtml"
+      ]
+    },
+    "Piloto": {
+      "screens": 2,
+      "forms": 3,
+      "inputs": 22,
+      "buttons": 4,
+      "unmatched_classes": [
+        [
+          "j-fingerprint",
+          1
+        ]
+      ],
+      "filenames": [
+        "Index.cshtml",
+        "Medicao.cshtml"
+      ]
+    },
+    "Privacidade": {
+      "screens": 2,
+      "forms": 2,
+      "inputs": 7,
+      "buttons": 2,
+      "unmatched_classes": [],
+      "filenames": [
+        "Gestao.cshtml",
+        "Index.cshtml"
+      ]
+    },
+    "Psicologia": {
+      "screens": 2,
+      "forms": 3,
+      "inputs": 4,
+      "buttons": 4,
+      "unmatched_classes": [],
+      "filenames": [
+        "Acervo.cshtml",
+        "Pep.cshtml"
+      ]
+    },
+    "RecepcaoPendencias": {
+      "screens": 1,
+      "forms": 0,
+      "inputs": 0,
+      "buttons": 0,
+      "unmatched_classes": [],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Relatorios": {
+      "screens": 1,
+      "forms": 0,
+      "inputs": 0,
+      "buttons": 0,
+      "unmatched_classes": [],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Salas": {
+      "screens": 1,
+      "forms": 5,
+      "inputs": 21,
+      "buttons": 6,
+      "unmatched_classes": [],
+      "filenames": [
+        "Index.cshtml"
+      ]
+    },
+    "Shared": {
+      "screens": 13,
+      "forms": 6,
+      "inputs": 8,
+      "buttons": 28,
+      "unmatched_classes": [
+        [
+          "cm25-confirm-mini-item",
+          1
+        ],
+        [
+          "cm-header-account",
+          1
+        ],
+        [
+          "ia",
+          1
+        ],
+        [
+          "mksan-ai-fab",
+          1
+        ],
+        [
+          "mksan-ai-widget-messages",
+          1
+        ],
+        [
+          "mksan-fab",
+          1
+        ],
+        [
+          "mksan-feedback-result",
+          1
+        ],
+        [
+          "cm-a11y-wrap",
+          1
+        ],
+        [
+          "cm21-a11y-popover",
+          1
+        ],
+        [
+          "guest-header",
+          1
+        ],
+        [
+          "cm25-link-button",
+          1
+        ],
+        [
+          "cm25-login-links",
+          1
+        ],
+        [
+          "link-button",
+          1
+        ],
+        [
+          "login-links",
+          1
+        ],
+        [
+          "cm-nav-full-label",
+          1
+        ]
+      ],
+      "filenames": [
+        "Default.cshtml",
+        "Default.cshtml",
+        "_AssistenteFlutuante.cshtml",
+        "_AuthLayout.cshtml",
+        "_DocumentHead.cshtml",
+        "_Layout.cshtml",
+        "_LoginPartial.cshtml",
+        "_MenuModulos.cshtml",
+        "_NavegacaoPrincipal.cshtml",
+        "_NavegacaoTopo.cshtml",
+        "_OrientacoesConsulta.cshtml",
+        "_PublicLayout.cshtml",
+        "_ValidationScriptsPartial.cshtml"
+      ]
+    },
+    "Solicitacoes": {
+      "screens": 6,
+      "forms": 9,
+      "inputs": 27,
+      "buttons": 9,
+      "unmatched_classes": [
+        [
+          "info",
+          1
+        ],
+        [
+          "cm-task-link",
+          1
+        ]
+      ],
+      "filenames": [
+        "Contingencia.cshtml",
+        "Create.cshtml",
+        "Detalhes.cshtml",
+        "Index.cshtml",
+        "Tarefas.cshtml",
+        "_Card.cshtml"
+      ]
+    },
+    "_ViewImports.cshtml": {
+      "screens": 1,
+      "forms": 0,
+      "inputs": 0,
+      "buttons": 0,
+      "unmatched_classes": [],
+      "filenames": [
+        "_ViewImports.cshtml"
+      ]
+    },
+    "_ViewStart.cshtml": {
+      "screens": 1,
+      "forms": 0,
+      "inputs": 0,
+      "buttons": 0,
+      "unmatched_classes": [],
+      "filenames": [
+        "_ViewStart.cshtml"
+      ]
+    }
+  },
+  "pages": [
+    {
+      "screen": "Areas/Identity/Pages/Account/AccessDenied.cshtml",
+      "module": "Identity",
+      "classes": [
+        "cm-auth-brand-mark",
+        "cm-brand-plate",
+        "cm25-identity-panel",
+        "cm25-identity-shell",
+        "cm25-identity-showcase",
+        "identity-brand",
+        "identity-copy",
+        "identity-kicker",
+        "identity-panel",
+        "identity-secondary",
+        "identity-shell",
+        "identity-showcase",
+        "identity-state",
+        "identity-state-icon"
+      ],
+      "not_in_css": [
+        "identity-state"
+      ],
+      "linked_controllers": [
+        "Home"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1403
+    },
+    {
+      "screen": "Areas/Identity/Pages/Account/ForgotPassword.cshtml",
+      "module": "Identity",
+      "classes": [
+        "cm-auth-brand-mark",
+        "cm-brand-plate",
+        "cm25-identity-card",
+        "cm25-identity-card-header",
+        "cm25-identity-panel",
+        "cm25-identity-shell",
+        "cm25-identity-showcase",
+        "field-error",
+        "field-help",
+        "identity-back",
+        "identity-brand",
+        "identity-card",
+        "identity-card-header",
+        "identity-copy",
+        "identity-form",
+        "identity-kicker",
+        "identity-note",
+        "identity-panel",
+        "identity-secondary-note",
+        "identity-shell",
+        "identity-showcase",
+        "identity-showcase-note",
+        "identity-submit",
+        "input-group",
+        "validation"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 2,
+      "buttons": 2,
+      "inputs": 6,
+      "inline_styles": 0,
+      "size": 5294
+    },
+    {
+      "screen": "Areas/Identity/Pages/Account/Login.cshtml",
+      "module": "Identity",
+      "classes": [
+        "alert",
+        "alert-success",
+        "app-brand",
+        "cm-brand-plate",
+        "cm-direction-icon",
+        "erro",
+        "eyebrow",
+        "field-error",
+        "identity-back",
+        "identity-card",
+        "identity-card-header",
+        "identity-copy",
+        "identity-divider",
+        "identity-footnote",
+        "identity-form",
+        "identity-note",
+        "identity-note-line",
+        "identity-options",
+        "identity-panel",
+        "identity-secondary",
+        "identity-shell",
+        "identity-showcase",
+        "identity-submit",
+        "input-group",
+        "login-shell",
+        "mensagem",
+        "password-toggle",
+        "password-wrap",
+        "portal-account-help"
+      ],
+      "not_in_css": [
+        "login-shell"
+      ],
+      "linked_controllers": [
+        "Home"
+      ],
+      "forms": 1,
+      "buttons": 2,
+      "inputs": 4,
+      "inline_styles": 0,
+      "size": 3781
+    },
+    {
+      "screen": "Areas/Identity/Pages/Account/Logout.cshtml",
+      "module": "Identity",
+      "classes": [
+        "cm-brand-plate",
+        "cm-direction-icon",
+        "cm-logout-brand",
+        "cm25-identity-card-header",
+        "identity-card",
+        "identity-card-header",
+        "identity-logout",
+        "identity-panel",
+        "identity-shell",
+        "identity-state-icon"
+      ],
+      "not_in_css": [
+        "cm-logout-brand",
+        "identity-logout"
+      ],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 780
+    },
+    {
+      "screen": "Areas/Identity/Pages/Account/Register.cshtml",
+      "module": "Identity",
+      "classes": [
+        "ativa",
+        "ativo",
+        "aviso",
+        "botoes-form",
+        "btn-secundario",
+        "campos-convenio",
+        "checklist",
+        "cm-auth-brand-mark",
+        "cm-brand-plate",
+        "cm25-identity-card",
+        "cm25-identity-card-header",
+        "cm25-identity-panel",
+        "cm25-identity-shell",
+        "cm25-identity-showcase",
+        "date-select",
+        "erro",
+        "field-error",
+        "form-etapa",
+        "identity-back",
+        "identity-brand",
+        "identity-card",
+        "identity-card-header",
+        "identity-copy",
+        "identity-form",
+        "identity-kicker",
+        "identity-panel",
+        "identity-shell",
+        "identity-showcase",
+        "identity-showcase-note",
+        "input-group",
+        "linha",
+        "mensagem",
+        "password-guidance",
+        "password-toggle",
+        "password-wrap",
+        "register-card",
+        "register-client-feedback",
+        "register-panel",
+        "register-preview",
+        "register-preview-avatar",
+        "register-preview-grid",
+        "register-preview-head",
+        "register-shell",
+        "step",
+        "steps",
+        "terms-consent"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Home"
+      ],
+      "forms": 1,
+      "buttons": 4,
+      "inputs": 13,
+      "inline_styles": 0,
+      "size": 12638
+    },
+    {
+      "screen": "Areas/Identity/Pages/Account/ResetPasswordConfirmation.cshtml",
+      "module": "Identity",
+      "classes": [
+        "cm-auth-brand-mark",
+        "cm-brand-plate",
+        "identity-brand",
+        "identity-card",
+        "identity-card-header",
+        "identity-copy",
+        "identity-kicker",
+        "identity-panel",
+        "identity-secondary-note",
+        "identity-shell",
+        "identity-showcase",
+        "identity-submit"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 938
+    },
+    {
+      "screen": "Areas/Identity/Pages/_ViewImports.cshtml",
+      "module": "Identity",
+      "classes": [],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 134
+    },
+    {
+      "screen": "Areas/Identity/Pages/_ViewStart.cshtml",
+      "module": "Identity",
+      "classes": [],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 24
+    },
+    {
+      "screen": "Views/Acessos/Index.cshtml",
+      "module": "Acessos",
+      "classes": [
+        "access-create-card",
+        "access-create-grid",
+        "access-empty",
+        "access-list",
+        "access-management",
+        "access-row-actions",
+        "access-status",
+        "access-table",
+        "access-table-wrap",
+        "btn",
+        "cm-direction-icon",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "eyebrow",
+        "panel",
+        "panel-heading",
+        "secondary",
+        "text-link"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Funcionario",
+        "FuncionarioPainel",
+        "Medico",
+        "MedicoAcesso"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 5591
+    },
+    {
+      "screen": "Views/Agenda/Index.cshtml",
+      "module": "Agenda",
+      "classes": [
+        "agenda-head",
+        "blocked",
+        "btn",
+        "busy",
+        "cm19-agenda-filters",
+        "cm19-agenda-metrics",
+        "cm19-agenda-page",
+        "cm19-agenda-toolbar",
+        "cm19-cal-cell",
+        "cm19-cal-corner",
+        "cm19-cal-day",
+        "cm19-cal-doctor",
+        "cm19-cal-event",
+        "cm19-calendar",
+        "cm19-calendar-grid",
+        "cm19-calendar-legend",
+        "cm19-calendar-scroll",
+        "cm19-card",
+        "cm19-head-actions",
+        "cm19-no-slot",
+        "cm19-page-head",
+        "cm19-period-nav",
+        "cm19-view-switch",
+        "cm25-hero-mark",
+        "cm25-page-hero",
+        "cm25-screen",
+        "free",
+        "hojeClinica",
+        "secondary",
+        "today"
+      ],
+      "not_in_css": [
+        "free",
+        "hojeClinica"
+      ],
+      "linked_controllers": [
+        "Consulta",
+        "Disponibilidade",
+        "Salas"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 3,
+      "inline_styles": 1,
+      "size": 6841
+    },
+    {
+      "screen": "Views/Aplicativo/Index.cshtml",
+      "module": "Aplicativo",
+      "classes": [
+        "btn",
+        "cm-android-alternative",
+        "cm-android-card",
+        "cm-android-checksum",
+        "cm-android-details",
+        "cm-android-download",
+        "cm-android-grid",
+        "cm-android-heading",
+        "cm-android-instructions",
+        "cm-android-logo",
+        "cm-android-note",
+        "cm-android-package",
+        "cm-android-page",
+        "cm-android-unavailable",
+        "eyebrow",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Aplicativo",
+        "Home"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 2837
+    },
+    {
+      "screen": "Views/Atendimento/Index.cshtml",
+      "module": "Atendimento",
+      "classes": [
+        "atendimento-chat",
+        "atendimento-chat-header",
+        "atendimento-closed-compose",
+        "atendimento-compose",
+        "atendimento-context",
+        "atendimento-conversation",
+        "atendimento-conversation-list",
+        "atendimento-empty-chat",
+        "atendimento-empty-list",
+        "atendimento-filters",
+        "atendimento-header-actions",
+        "atendimento-inbox",
+        "atendimento-message",
+        "atendimento-messages",
+        "atendimento-person",
+        "atendimento-retry-form",
+        "atendimento-shell",
+        "atendimento-state-form",
+        "btn",
+        "btn-link-clean",
+        "channel-status-close",
+        "channel-status-dialog",
+        "channel-status-grid",
+        "channel-status-head",
+        "channel-status-loading",
+        "cm-central",
+        "cm-central-action-text",
+        "cm-central-create-label",
+        "cm-central-create-short",
+        "cm-central-filter",
+        "cm-central-heading",
+        "cm-central-heading-actions",
+        "cm-central-search",
+        "cm-central-summary",
+        "cm-central-tabs",
+        "cm-classic-inbox-search",
+        "cm-close-conversation",
+        "cm-compose-hint",
+        "cm-compose-menu",
+        "cm-composer-field",
+        "cm-contact-avatar",
+        "cm-contact-avatar-large",
+        "cm-context-actions",
+        "cm-context-appointment",
+        "cm-context-card",
+        "cm-context-return",
+        "cm-context-scroll",
+        "cm-context-status",
+        "cm-context-tabs",
+        "cm-emoji-menu",
+        "cm-filter-count",
+        "cm-ia-connection",
+        "cm-ia-draft-form",
+        "cm-ia-heading",
+        "cm-ia-status",
+        "cm-ia-status-copy",
+        "cm-ia-status-mark",
+        "cm-icon-action",
+        "cm-inbox-active-filters",
+        "cm-inbox-channels",
+        "cm-inbox-menu",
+        "cm-inbox-new",
+        "cm-inbox-options",
+        "cm-inbox-summary",
+        "cm-inbox-toolbar",
+        "cm-next-appointment",
+        "cm-origem-message-source",
+        "cm-patient-fact",
+        "cm-patient-facts",
+        "cm-review-draft",
+        "cm-send-message",
+        "cm23-identity-warning",
+        "cm23-identity-warning-icon",
+        "cm25-atendimento-shell",
+        "cm25-kicker",
+        "cm25-screen",
+        "cm50-central",
+        "context-avatar",
+        "context-info-row",
+        "context-link-form",
+        "context-muted",
+        "context-profile",
+        "context-quick-actions",
+        "context-section",
+        "context-unlink",
+        "conversation-copy",
+        "conversation-preview",
+        "conversation-topline",
+        "danger-link",
+        "email-draft-actions",
+        "email-draft-review",
+        "empty-chat-mark",
+        "empty-state",
+        "is",
+        "message-delivery",
+        "message-draft-discarded",
+        "message-error",
+        "message-failure",
+        "message-meta",
+        "message-sent",
+        "mode-closed",
+        "mode-humano",
+        "mode-ia",
+        "mode-pill",
+        "mode-waiting",
+        "null",
+        "secondary",
+        "small",
+        "unread-count",
+        "v16-atendimento-filters",
+        "v16-atendimento-shell",
+        "v16-chat",
+        "v16-chat-header",
+        "v16-compose",
+        "v16-eyebrow",
+        "v16-inbox",
+        "visually-hidden"
+      ],
+      "not_in_css": [
+        "channel-status-close",
+        "cm25-atendimento-shell",
+        "cm50-central",
+        "context-avatar",
+        "context-unlink",
+        "is",
+        "null",
+        "v16-atendimento-filters",
+        "v16-atendimento-shell",
+        "v16-chat",
+        "v16-chat-header",
+        "v16-compose",
+        "v16-inbox"
+      ],
+      "linked_controllers": [
+        "Agenda",
+        "Avaliacoes",
+        "Consulta",
+        "HistoricoExames",
+        "Paciente",
+        "Solicitacoes"
+      ],
+      "forms": 17,
+      "buttons": 34,
+      "inputs": 21,
+      "inline_styles": 0,
+      "size": 39459
+    },
+    {
+      "screen": "Views/Atendimento/Nova.cshtml",
+      "module": "Atendimento",
+      "classes": [
+        "atendimento-new-actions",
+        "atendimento-new-form",
+        "atendimento-new-help",
+        "btn",
+        "cm-direction-icon",
+        "cm25-actions",
+        "cm25-aside-card",
+        "cm25-channel-grid",
+        "cm25-form-aside",
+        "cm25-form-card",
+        "cm25-form-grid",
+        "cm25-form-layout",
+        "cm25-form-main",
+        "cm25-form-section-title",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-new-attendance",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "email-subject-field",
+        "field",
+        "form-grid",
+        "full",
+        "second",
+        "secondary",
+        "subtle",
+        "text-danger"
+      ],
+      "not_in_css": [
+        "cm25-new-attendance",
+        "second"
+      ],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 4,
+      "inline_styles": 0,
+      "size": 5607
+    },
+    {
+      "screen": "Views/Atendimento/_CanalIcon.cshtml",
+      "module": "Atendimento",
+      "classes": [
+        "cm-channel",
+        "cm-channel-"
+      ],
+      "not_in_css": [
+        "cm-channel-"
+      ],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1866
+    },
+    {
+      "screen": "Views/Auditoria/Index.cshtml",
+      "module": "Auditoria",
+      "classes": [
+        "btn",
+        "cm21-audit-page",
+        "cm21-audit-table",
+        "cm21-filterbar",
+        "cm21-page-head",
+        "cm25-filterbar",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page-hero",
+        "cm25-screen",
+        "secondary",
+        "table-wrap",
+        "v16-eyebrow"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 1315
+    },
+    {
+      "screen": "Views/Avaliacoes/Index.cshtml",
+      "module": "Avaliacoes",
+      "classes": [
+        "btn",
+        "cm-feedback-filters",
+        "cm-feedback-page",
+        "cm-feedback-pagination",
+        "cm-feedback-responses",
+        "cm-feedback-score",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "secondary",
+        "table",
+        "table-responsive",
+        "v18-card",
+        "v18-card-header",
+        "v18-empty",
+        "v18-report-kpis"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Atendimento"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 3783
+    },
+    {
+      "screen": "Views/Checkin/Abrir.cshtml",
+      "module": "Checkin",
+      "classes": [
+        "alert",
+        "btn",
+        "cm-page-intro",
+        "cm-simple-page",
+        "cm-workspace",
+        "eyebrow",
+        "j-card",
+        "j-grid",
+        "secondary",
+        "warning"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Checkin",
+        "Jornada"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 1532
+    },
+    {
+      "screen": "Views/Checkin/Terminal.cshtml",
+      "module": "Checkin",
+      "classes": [
+        "cm-page-intro",
+        "cm-qr-terminal",
+        "cm-simple-page",
+        "cm-workspace",
+        "eyebrow",
+        "j-card"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Jornada"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1125
+    },
+    {
+      "screen": "Views/Configuracoes/Index.cshtml",
+      "module": "Configuracoes",
+      "classes": [
+        "btn",
+        "cm19-card",
+        "cm19-ok-dot",
+        "cm19-page-head",
+        "cm19-setting-card",
+        "cm19-setting-icon",
+        "cm19-settings-grid",
+        "cm19-settings-page",
+        "cm25-hero-mark",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 1,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1838
+    },
+    {
+      "screen": "Views/Confirmacoes/Index.cshtml",
+      "module": "Confirmacoes",
+      "classes": [
+        "btn",
+        "cm-confirm-card",
+        "cm-confirm-card-actions",
+        "cm-confirm-card-copy",
+        "cm-confirm-card-icon",
+        "cm-confirm-list",
+        "cm-confirm-page",
+        "cm-confirm-page-empty",
+        "cm-confirm-page-head",
+        "cm-enable-device-alerts",
+        "cm-requests-result-note",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "danger-link",
+        "secondary",
+        "v16-eyebrow"
+      ],
+      "not_in_css": [
+        "cm-confirm-page",
+        "cm-enable-device-alerts"
+      ],
+      "linked_controllers": [
+        "Consulta",
+        "ListaEspera",
+        "Solicitacoes"
+      ],
+      "forms": 4,
+      "buttons": 5,
+      "inputs": 8,
+      "inline_styles": 0,
+      "size": 5625
+    },
+    {
+      "screen": "Views/Consulta/Create.cshtml",
+      "module": "Consulta",
+      "classes": [
+        "btn",
+        "cm19-booking-actions",
+        "cm19-booking-card",
+        "cm19-booking-page",
+        "cm19-card",
+        "cm21-linked-request",
+        "cm25-screen",
+        "cm50-booking",
+        "cm50-booking-form",
+        "cm50-booking-guide",
+        "cm50-booking-heading",
+        "cm50-booking-layout",
+        "cm50-overline",
+        "secondary"
+      ],
+      "not_in_css": [
+        "cm21-linked-request"
+      ],
+      "linked_controllers": [
+        "ListaEspera"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 1480
+    },
+    {
+      "screen": "Views/Consulta/Details.cshtml",
+      "module": "Consulta",
+      "classes": [
+        "btn",
+        "cm21-form-card",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "cm25-sticky-actions",
+        "cm42-consult-flow",
+        "cm42-flow-header",
+        "cm42-flow-next",
+        "cm42-flow-stages",
+        "cm42-stage",
+        "cm42-stage-number",
+        "compact-head",
+        "complete",
+        "comprovante-consulta",
+        "consultation-detail-grid-v16",
+        "consultation-main-v16",
+        "danger",
+        "detail-info-stack",
+        "eyebrow",
+        "secondary",
+        "soft-pill",
+        "status-pill",
+        "v16-card",
+        "v16-card-head",
+        "v16-eyebrow",
+        "v16-page",
+        "v16-page-head",
+        "v16-sticky-actions"
+      ],
+      "not_in_css": [
+        "cm42-flow-header",
+        "comprovante-consulta",
+        "consultation-main-v16"
+      ],
+      "linked_controllers": [
+        "HistoricoExames",
+        "Jornada"
+      ],
+      "forms": 5,
+      "buttons": 6,
+      "inputs": 3,
+      "inline_styles": 0,
+      "size": 10019
+    },
+    {
+      "screen": "Views/Consulta/Edit.cshtml",
+      "module": "Consulta",
+      "classes": [
+        "btn",
+        "cm25-editor-shell",
+        "cm25-form-card",
+        "cm25-form-main",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "cm25-sticky-actions",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 1058
+    },
+    {
+      "screen": "Views/Consulta/Equipe.cshtml",
+      "module": "Consulta",
+      "classes": [
+        "btn",
+        "cm-consult-context",
+        "cm-consult-filter-note",
+        "cm-consult-filters",
+        "cm-consult-heading",
+        "cm-consult-overview",
+        "cm-consult-page",
+        "cm-consult-records",
+        "cm-consult-search",
+        "cm-consult-stat-icon",
+        "cm-consult-status-filters",
+        "eyebrow",
+        "secondary",
+        "valor"
+      ],
+      "not_in_css": [
+        "valor"
+      ],
+      "linked_controllers": [
+        "Agenda",
+        "Confirmacoes",
+        "Solicitacoes"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 5,
+      "inline_styles": 0,
+      "size": 5598
+    },
+    {
+      "screen": "Views/Consulta/Index.cshtml",
+      "module": "Consulta",
+      "classes": [
+        "agenda-summary",
+        "btn",
+        "btn-link-clean",
+        "cm-record-table",
+        "cm-record-table--consultations",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-kpi",
+        "cm25-kpi-grid",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "consultation-summary-v16",
+        "date-chip",
+        "doctor",
+        "entity-avatar",
+        "entity-cell",
+        "filter-label",
+        "row-action",
+        "row-actions",
+        "row-actions-cell",
+        "secondary",
+        "simple-filter-v16",
+        "soft-pill",
+        "stat-date",
+        "status-pill",
+        "table-card",
+        "table-scroll",
+        "table-scroll-hint",
+        "time-chip",
+        "v16-card",
+        "v16-empty",
+        "v16-eyebrow",
+        "v16-head-actions",
+        "v16-page",
+        "v16-page-head",
+        "v16-stat",
+        "v16-table"
+      ],
+      "not_in_css": [
+        "consultation-summary-v16",
+        "doctor"
+      ],
+      "linked_controllers": [
+        "Agenda",
+        "Jornada"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 5569
+    },
+    {
+      "screen": "Views/Consulta/Remarcar.cshtml",
+      "module": "Consulta",
+      "classes": [
+        "btn",
+        "cm25-actions",
+        "cm25-aside-card",
+        "cm25-detail-grid",
+        "cm25-detail-side",
+        "cm25-form-card",
+        "cm25-form-grid",
+        "cm25-form-main",
+        "cm25-form-section-title",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-readonly-card",
+        "cm25-screen",
+        "doctor",
+        "entity-avatar",
+        "field",
+        "form-control",
+        "form-grid",
+        "second",
+        "secondary",
+        "subtle",
+        "validation"
+      ],
+      "not_in_css": [
+        "cm25-readonly-card",
+        "doctor",
+        "second"
+      ],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 5317
+    },
+    {
+      "screen": "Views/Consulta/_Form.cshtml",
+      "module": "Consulta",
+      "classes": [
+        "active",
+        "cm19-booking-section",
+        "cm19-booking-section-head",
+        "cm19-booking-steps",
+        "cm19-choice-grid",
+        "cm19-choice-placeholder",
+        "cm19-date-choices",
+        "cm19-inline-info",
+        "cm19-native-select",
+        "cm19-smart-slot",
+        "cm19-specialty-grid",
+        "cm19-specialty-option",
+        "cm19-time-choices",
+        "cm25-screen",
+        "compact-options",
+        "form-control",
+        "form-group",
+        "staff-patient",
+        "validation"
+      ],
+      "not_in_css": [
+        "staff-patient"
+      ],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 2,
+      "inputs": 11,
+      "inline_styles": 0,
+      "size": 22919
+    },
+    {
+      "screen": "Views/Consulta/_ListaEquipe.cshtml",
+      "module": "Consulta",
+      "classes": [
+        "btn",
+        "cm-consult-extra-actions",
+        "cm-consult-origin",
+        "cm-consult-pagination",
+        "cm-consult-past",
+        "cm-consult-patient",
+        "cm-consult-row-actions",
+        "cm-consult-table",
+        "cm-consult-table-wrap",
+        "cm-direction-icon",
+        "cm-request-avatar",
+        "cm-request-consult-status",
+        "cm-requests-empty",
+        "cm-requests-tab-empty",
+        "secondary",
+        "soft-pill",
+        "text-link",
+        "visually-hidden"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Consulta",
+        "Jornada",
+        "Solicitacoes"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 6018
+    },
+    {
+      "screen": "Views/Convenios/Index.cshtml",
+      "module": "Convenios",
+      "classes": [
+        "btn",
+        "cm21-check-option",
+        "cm21-empty-state",
+        "cm21-form-card",
+        "cm21-page-head",
+        "cm21-rule-group",
+        "cm21-rule-list",
+        "cm21-rules-actions",
+        "cm21-rules-grid",
+        "cm21-rules-page",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page-hero",
+        "cm25-screen",
+        "danger",
+        "muted",
+        "secondary",
+        "small",
+        "v16-eyebrow",
+        "v16-head-actions"
+      ],
+      "not_in_css": [
+        "cm21-rules-page"
+      ],
+      "linked_controllers": [
+        "Consulta"
+      ],
+      "forms": 2,
+      "buttons": 2,
+      "inputs": 6,
+      "inline_styles": 0,
+      "size": 4338
+    },
+    {
+      "screen": "Views/Disponibilidade/Create.cshtml",
+      "module": "Disponibilidade",
+      "classes": [
+        "away",
+        "block",
+        "btn",
+        "cm25-actions",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "compact-head",
+        "exception-create-page",
+        "exception-form",
+        "exception-form-grid",
+        "exception-form-note",
+        "exception-option",
+        "exception-option-icon",
+        "exception-time",
+        "exception-type-picker",
+        "extra",
+        "field",
+        "form-actions",
+        "full",
+        "secondary",
+        "v16-card",
+        "v16-eyebrow",
+        "v16-page",
+        "v16-page-head",
+        "validation"
+      ],
+      "not_in_css": [
+        "away",
+        "block",
+        "extra"
+      ],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 8,
+      "inline_styles": 0,
+      "size": 5820
+    },
+    {
+      "screen": "Views/Disponibilidade/Delete.cshtml",
+      "module": "Disponibilidade",
+      "classes": [
+        "btn",
+        "cm25-actions",
+        "cm25-confirm-card",
+        "cm25-confirm-icon",
+        "cm25-confirm-page",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "danger",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 983
+    },
+    {
+      "screen": "Views/Disponibilidade/Details.cshtml",
+      "module": "Disponibilidade",
+      "classes": [
+        "btn",
+        "cm25-aside-card",
+        "cm25-definition-grid",
+        "cm25-detail-card",
+        "cm25-detail-grid",
+        "cm25-detail-side",
+        "cm25-hero-actions",
+        "cm25-inline-pills",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-profile-avatar",
+        "cm25-profile-hero",
+        "cm25-screen",
+        "secondary",
+        "status-dot-pill"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1471
+    },
+    {
+      "screen": "Views/Disponibilidade/Edit.cshtml",
+      "module": "Disponibilidade",
+      "classes": [
+        "btn",
+        "cm25-aside-card",
+        "cm25-form-aside",
+        "cm25-form-card",
+        "cm25-form-layout",
+        "cm25-form-main",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "cm25-sticky-actions",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 1244
+    },
+    {
+      "screen": "Views/Disponibilidade/Index.cshtml",
+      "module": "Disponibilidade",
+      "classes": [
+        "agenda-summary",
+        "away",
+        "block",
+        "btn",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-kpi",
+        "cm25-kpi-grid",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "date-chip",
+        "doctor",
+        "entity-avatar",
+        "entity-cell",
+        "exception-guide",
+        "exception-guide-icon",
+        "exception-summary",
+        "exception-table-card",
+        "exception-type",
+        "exceptions-page",
+        "extra",
+        "modern-table",
+        "muted-cell",
+        "secondary",
+        "small",
+        "soft-pill",
+        "status-dot-pill",
+        "table",
+        "table-card",
+        "table-scroll",
+        "time-chip",
+        "v16-card",
+        "v16-card-head",
+        "v16-empty",
+        "v16-eyebrow",
+        "v16-head-actions",
+        "v16-page",
+        "v16-page-head",
+        "v16-stat",
+        "v16-table"
+      ],
+      "not_in_css": [
+        "away",
+        "block",
+        "doctor",
+        "exception-summary",
+        "exception-type",
+        "extra",
+        "muted-cell"
+      ],
+      "linked_controllers": [
+        "Agenda"
+      ],
+      "forms": 2,
+      "buttons": 2,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 6983
+    },
+    {
+      "screen": "Views/Disponibilidade/_Form.cshtml",
+      "module": "Disponibilidade",
+      "classes": [
+        "cm25-field-label",
+        "cm25-form-grid",
+        "cm25-form-section-title",
+        "cm25-toggle-row",
+        "date-select",
+        "field",
+        "form-grid",
+        "full",
+        "validation"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 4,
+      "inline_styles": 0,
+      "size": 1306
+    },
+    {
+      "screen": "Views/Disponibilidades/Index.cshtml",
+      "module": "Disponibilidades",
+      "classes": [
+        "btn",
+        "cm19-av-day",
+        "cm19-av-doctor",
+        "cm19-av-edit",
+        "cm19-av-row",
+        "cm19-availability-page",
+        "cm19-availability-table",
+        "cm19-card",
+        "cm19-empty",
+        "cm19-page-head",
+        "cm25-hero-mark",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "header"
+      ],
+      "not_in_css": [
+        "cm19-av-doctor",
+        "header"
+      ],
+      "linked_controllers": [
+        "Medico"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 2229
+    },
+    {
+      "screen": "Views/Especialidade/Create.cshtml",
+      "module": "Especialidade",
+      "classes": [
+        "btn",
+        "cm25-aside-card",
+        "cm25-form-aside",
+        "cm25-form-card",
+        "cm25-form-layout",
+        "cm25-form-main",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "cm25-sticky-actions",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1149
+    },
+    {
+      "screen": "Views/Especialidade/Edit.cshtml",
+      "module": "Especialidade",
+      "classes": [
+        "btn",
+        "cm25-aside-card",
+        "cm25-form-aside",
+        "cm25-form-card",
+        "cm25-form-layout",
+        "cm25-form-main",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "cm25-sticky-actions",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 1183
+    },
+    {
+      "screen": "Views/Especialidade/Index.cshtml",
+      "module": "Especialidade",
+      "classes": [
+        "btn",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "secondary",
+        "small",
+        "status-dot-pill",
+        "table-card",
+        "table-scroll",
+        "v16-card",
+        "v16-empty",
+        "v16-eyebrow",
+        "v16-page",
+        "v16-page-head",
+        "v16-table"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Medico"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1470
+    },
+    {
+      "screen": "Views/Especialidade/_Form.cshtml",
+      "module": "Especialidade",
+      "classes": [
+        "cm25-field-label",
+        "cm25-form-grid",
+        "cm25-form-section-title",
+        "cm25-toggle-row",
+        "field",
+        "form-grid",
+        "full",
+        "validation"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 820
+    },
+    {
+      "screen": "Views/Funcionario/Create.cshtml",
+      "module": "Funcionario",
+      "classes": [
+        "btn",
+        "cm25-aside-card",
+        "cm25-form-aside",
+        "cm25-form-card",
+        "cm25-form-layout",
+        "cm25-form-main",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "cm25-sticky-actions",
+        "secondary",
+        "subtle"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1437
+    },
+    {
+      "screen": "Views/Funcionario/Delete.cshtml",
+      "module": "Funcionario",
+      "classes": [
+        "btn",
+        "cm25-actions",
+        "cm25-confirm-card",
+        "cm25-confirm-icon",
+        "cm25-confirm-page",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "danger",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 986
+    },
+    {
+      "screen": "Views/Funcionario/Details.cshtml",
+      "module": "Funcionario",
+      "classes": [
+        "btn",
+        "cm25-aside-card",
+        "cm25-definition-grid",
+        "cm25-detail-card",
+        "cm25-detail-grid",
+        "cm25-detail-side",
+        "cm25-hero-actions",
+        "cm25-inline-pills",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-profile-avatar",
+        "cm25-profile-hero",
+        "cm25-screen",
+        "secondary",
+        "soft-pill",
+        "status-dot-pill"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1545
+    },
+    {
+      "screen": "Views/Funcionario/Edit.cshtml",
+      "module": "Funcionario",
+      "classes": [
+        "btn",
+        "cm25-aside-card",
+        "cm25-form-aside",
+        "cm25-form-card",
+        "cm25-form-layout",
+        "cm25-form-main",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "cm25-sticky-actions",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 1291
+    },
+    {
+      "screen": "Views/Funcionario/Index.cshtml",
+      "module": "Funcionario",
+      "classes": [
+        "agenda-summary",
+        "btn",
+        "cm-record-table",
+        "cm-record-table--staff",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-kpi",
+        "cm25-kpi-grid",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "danger",
+        "row-action",
+        "row-actions",
+        "row-actions-cell",
+        "soft-pill",
+        "stat-date",
+        "status-dot-pill",
+        "table-card",
+        "table-scroll",
+        "table-scroll-hint",
+        "v16-card",
+        "v16-empty",
+        "v16-eyebrow",
+        "v16-page",
+        "v16-page-head",
+        "v16-stat",
+        "v16-table"
+      ],
+      "not_in_css": [
+        "cm-record-table--staff"
+      ],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 2237
+    },
+    {
+      "screen": "Views/Funcionario/_Form.cshtml",
+      "module": "Funcionario",
+      "classes": [
+        "cm25-field-label",
+        "cm25-form-grid",
+        "cm25-form-section-title",
+        "cm25-toggle-row",
+        "compact",
+        "field",
+        "form-grid",
+        "full",
+        "validation"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 5,
+      "inline_styles": 0,
+      "size": 1549
+    },
+    {
+      "screen": "Views/FuncionarioPainel/Index.cshtml",
+      "module": "FuncionarioPainel",
+      "classes": [
+        "cm50-agenda-line",
+        "cm50-agenda-lines",
+        "cm50-alert-row",
+        "cm50-btn",
+        "cm50-btn-mint",
+        "cm50-callout",
+        "cm50-compact",
+        "cm50-empty",
+        "cm50-feature",
+        "cm50-feature-metric",
+        "cm50-intro",
+        "cm50-intro-tools",
+        "cm50-minilink",
+        "cm50-ops-grid",
+        "cm50-ops-side",
+        "cm50-overline",
+        "cm50-pill",
+        "cm50-row-header",
+        "cm50-screen",
+        "cm50-sheet",
+        "cm50-sheet-foot",
+        "cm50-sheet-heading",
+        "cm50-shortcuts",
+        "cm50-stat-overline",
+        "cm50-statline",
+        "status-pill"
+      ],
+      "not_in_css": [
+        "cm50-agenda-lines"
+      ],
+      "linked_controllers": [
+        "Agenda",
+        "Atendimento",
+        "Checkin",
+        "Confirmacoes",
+        "Consulta",
+        "ListaEspera",
+        "Organizacao",
+        "RecepcaoPendencias",
+        "Salas",
+        "Solicitacoes"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 7095
+    },
+    {
+      "screen": "Views/HistoricoExames/Index.cshtml",
+      "module": "HistoricoExames",
+      "classes": [
+        "btn",
+        "cm25-content-card",
+        "cm25-exam-record",
+        "cm25-exams-page",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "field",
+        "form-grid",
+        "secondary",
+        "v16-card",
+        "v16-empty",
+        "validation"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 2,
+      "buttons": 2,
+      "inputs": 5,
+      "inline_styles": 0,
+      "size": 2892
+    },
+    {
+      "screen": "Views/HistoricoExames/Pendentes.cshtml",
+      "module": "HistoricoExames",
+      "classes": [
+        "alert",
+        "alert-danger",
+        "alert-success",
+        "btn",
+        "cm25-content-card",
+        "cm25-exam-record",
+        "cm25-exams-page",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "field",
+        "form-grid",
+        "secondary",
+        "v16-card",
+        "v16-empty"
+      ],
+      "not_in_css": [
+        "alert-danger"
+      ],
+      "linked_controllers": [
+        "Paciente"
+      ],
+      "forms": 2,
+      "buttons": 2,
+      "inputs": 4,
+      "inline_styles": 0,
+      "size": 3194
+    },
+    {
+      "screen": "Views/Home/Error.cshtml",
+      "module": "Home",
+      "classes": [
+        "btn",
+        "cm25-actions",
+        "cm25-confirm-card",
+        "cm25-confirm-icon",
+        "cm25-confirm-page",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "danger"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Home"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 867
+    },
+    {
+      "screen": "Views/Home/Index.cshtml",
+      "module": "Home",
+      "classes": [
+        "btn",
+        "care-caption",
+        "care-illustration",
+        "care-orbit",
+        "care-plus",
+        "care-step",
+        "care-ticket",
+        "care-ticket-art",
+        "care-ticket-subtitle",
+        "care-ticket-top",
+        "cm-direction-icon",
+        "cm-install-web",
+        "cm-public-install-actions",
+        "cm21-simple-actions",
+        "cm21-simple-home",
+        "cm50-btn",
+        "cm50-empty",
+        "cm50-hero-actions",
+        "cm50-intro",
+        "cm50-intro-tools",
+        "cm50-minilink",
+        "cm50-overline",
+        "cm50-patient",
+        "cm50-patient-choices",
+        "cm50-patient-extra",
+        "cm50-patient-grid",
+        "cm50-patient-lower",
+        "cm50-patient-standard",
+        "cm50-patient-ticket",
+        "cm50-pill",
+        "cm50-request-row",
+        "cm50-screen",
+        "cm50-sheet",
+        "cm50-sheet-heading",
+        "cm50-steps",
+        "cm50-ticket-meta",
+        "eyebrow",
+        "light",
+        "orbit-one",
+        "orbit-two",
+        "patient-standard",
+        "public-actions",
+        "public-channel-note",
+        "public-feature-icon",
+        "public-hero",
+        "public-hero-copy",
+        "public-how",
+        "public-how-item",
+        "public-install",
+        "secondary",
+        "text-link"
+      ],
+      "not_in_css": [
+        "care-step"
+      ],
+      "linked_controllers": [
+        "Aplicativo",
+        "Consulta",
+        "HistoricoExames",
+        "Jornada",
+        "ListaEspera",
+        "MinhaConta",
+        "Solicitacoes"
+      ],
+      "forms": 0,
+      "buttons": 5,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 10050
+    },
+    {
+      "screen": "Views/Home/Privacidade.cshtml",
+      "module": "Home",
+      "classes": [
+        "btn",
+        "cm-brand-plate",
+        "cm25-kicker",
+        "cm25-privacy-head",
+        "cm25-privacy-shell",
+        "privacy-actions",
+        "privacy-brand",
+        "privacy-meta",
+        "privacy-note",
+        "privacy-shell",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 8376
+    },
+    {
+      "screen": "Views/Home/TermosDeUso.cshtml",
+      "module": "Home",
+      "classes": [
+        "btn",
+        "cm-brand-plate",
+        "cm25-kicker",
+        "cm25-privacy-head",
+        "cm25-privacy-shell",
+        "privacy-actions",
+        "privacy-brand",
+        "privacy-meta",
+        "privacy-note",
+        "privacy-shell",
+        "secondary",
+        "terms-shell"
+      ],
+      "not_in_css": [
+        "terms-shell"
+      ],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 8500
+    },
+    {
+      "screen": "Views/Integracoes/Index.cshtml",
+      "module": "Integracoes",
+      "classes": [
+        "ai",
+        "btn",
+        "cm19-card",
+        "cm19-integration-card",
+        "cm19-integration-grid",
+        "cm19-integration-logo",
+        "cm19-page-head",
+        "cm19-security-note",
+        "cm19-settings-page",
+        "cm25-content-card",
+        "cm25-definition-grid",
+        "cm25-hero-mark",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "db",
+        "form-control",
+        "form-group",
+        "mail",
+        "on",
+        "pwa",
+        "secondary",
+        "sms",
+        "wa"
+      ],
+      "not_in_css": [
+        "on"
+      ],
+      "linked_controllers": [
+        "Integracoes"
+      ],
+      "forms": 1,
+      "buttons": 3,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 10419
+    },
+    {
+      "screen": "Views/Jornada/Acao.cshtml",
+      "module": "Jornada",
+      "classes": [
+        "btn",
+        "j-actions",
+        "j-card",
+        "j-form",
+        "jornada",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 2,
+      "buttons": 2,
+      "inputs": 6,
+      "inline_styles": 0,
+      "size": 1774
+    },
+    {
+      "screen": "Views/Jornada/Consulta.cshtml",
+      "module": "Jornada",
+      "classes": [
+        "btn",
+        "cm-journey-heading",
+        "cm-journey-next",
+        "cm-journey-step",
+        "cm-workspace",
+        "eyebrow",
+        "j-actions",
+        "j-card",
+        "j-check",
+        "j-etapa",
+        "j-form",
+        "jornada",
+        "secondary",
+        "tele-resumo"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "ClinicalHandoff",
+        "MinhaConta",
+        "Psicologia"
+      ],
+      "forms": 10,
+      "buttons": 11,
+      "inputs": 22,
+      "inline_styles": 0,
+      "size": 10279
+    },
+    {
+      "screen": "Views/Jornada/Index.cshtml",
+      "module": "Jornada",
+      "classes": [
+        "btn",
+        "cm-journey-admin",
+        "cm-journey-indicators",
+        "cm-journey-link-icon",
+        "cm-journey-live",
+        "cm-journey-management",
+        "cm-journey-metrics",
+        "cm-journey-offers",
+        "cm-journey-page-heading",
+        "cm-journey-section",
+        "cm-journey-toolbar",
+        "cm-journey-tools",
+        "cm-workspace",
+        "eyebrow",
+        "j-grid",
+        "jornada",
+        "secondary",
+        "small"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Checkin",
+        "Consulta",
+        "Operacao",
+        "Piloto",
+        "Privacidade",
+        "Psicologia",
+        "RecepcaoPendencias",
+        "Salas"
+      ],
+      "forms": 0,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 4468
+    },
+    {
+      "screen": "Views/Jornada/Tele.cshtml",
+      "module": "Jornada",
+      "classes": [
+        "btn",
+        "cm-device-check",
+        "cm-journey-heading",
+        "cm-tele-lifecycle",
+        "j-actions",
+        "j-card",
+        "j-check",
+        "j-form",
+        "jornada",
+        "secondary",
+        "tele-aviso",
+        "tele-grid",
+        "tele-horario",
+        "tele-jornada",
+        "tele-tag"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Jornada",
+        "Teleconsulta"
+      ],
+      "forms": 3,
+      "buttons": 9,
+      "inputs": 4,
+      "inline_styles": 0,
+      "size": 8304
+    },
+    {
+      "screen": "Views/Jornada/TeleNaoEncontrada.cshtml",
+      "module": "Jornada",
+      "classes": [
+        "btn",
+        "cm-workspace",
+        "j-card",
+        "jornada"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Jornada"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 353
+    },
+    {
+      "screen": "Views/ListaEspera/Create.cshtml",
+      "module": "ListaEspera",
+      "classes": [
+        "btn",
+        "cm25-actions",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "compact-head",
+        "field",
+        "field-help",
+        "form-actions",
+        "form-card",
+        "form-grid",
+        "form-page-v16",
+        "full",
+        "secondary",
+        "v16-card",
+        "v16-eyebrow",
+        "v16-form-grid",
+        "v16-main-form",
+        "v16-page",
+        "v16-page-head",
+        "validation"
+      ],
+      "not_in_css": [
+        "v16-main-form"
+      ],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 6,
+      "inline_styles": 0,
+      "size": 2233
+    },
+    {
+      "screen": "Views/ListaEspera/Index.cshtml",
+      "module": "ListaEspera",
+      "classes": [
+        "active",
+        "agenda-summary",
+        "btn",
+        "btn-link-clean",
+        "cm-wait-priority",
+        "cm-wait-priority-form",
+        "cm-wait-priority-list",
+        "cm-wait-priority-name",
+        "cm21-inline-form",
+        "cm21-wait-offer",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-kpi",
+        "cm25-kpi-grid",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "danger-link",
+        "secondary",
+        "small",
+        "soft-pill",
+        "stat-date",
+        "status-dot-pill",
+        "table-card",
+        "table-scroll",
+        "v16-card",
+        "v16-empty",
+        "v16-eyebrow",
+        "v16-page",
+        "v16-page-head",
+        "v16-stat",
+        "v16-table"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Jornada"
+      ],
+      "forms": 3,
+      "buttons": 3,
+      "inputs": 4,
+      "inline_styles": 0,
+      "size": 6385
+    },
+    {
+      "screen": "Views/Medico/Create.cshtml",
+      "module": "Medico",
+      "classes": [
+        "btn",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "cm25-sticky-actions",
+        "compact-head",
+        "doctor-edit-page",
+        "doctor-form-shell",
+        "secondary",
+        "v16-eyebrow",
+        "v16-page",
+        "v16-page-head",
+        "v16-sticky-actions"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 1337
+    },
+    {
+      "screen": "Views/Medico/Delete.cshtml",
+      "module": "Medico",
+      "classes": [
+        "btn",
+        "cm25-actions",
+        "cm25-confirm-card",
+        "cm25-confirm-icon",
+        "cm25-confirm-page",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "danger",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 1033
+    },
+    {
+      "screen": "Views/Medico/Details.cshtml",
+      "module": "Medico",
+      "classes": [
+        "btn",
+        "cm25-aside-card",
+        "cm25-definition-grid",
+        "cm25-detail-card",
+        "cm25-detail-grid",
+        "cm25-detail-side",
+        "cm25-hero-actions",
+        "cm25-inline-pills",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-panel",
+        "cm25-panel-head",
+        "cm25-profile-avatar",
+        "cm25-profile-hero",
+        "cm25-schedule-panel",
+        "cm25-screen",
+        "cm25-week-day",
+        "cm25-week-grid",
+        "secondary",
+        "soft-pill",
+        "status-dot-pill",
+        "time-chip",
+        "v16-card",
+        "v16-empty"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "MedicoAcesso",
+        "Psicologia"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 3,
+      "inline_styles": 0,
+      "size": 3746
+    },
+    {
+      "screen": "Views/Medico/Edit.cshtml",
+      "module": "Medico",
+      "classes": [
+        "btn",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "cm25-sticky-actions",
+        "compact-head",
+        "doctor-edit-page",
+        "doctor-form-shell",
+        "secondary",
+        "v16-eyebrow",
+        "v16-page",
+        "v16-page-head",
+        "v16-sticky-actions"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 1128
+    },
+    {
+      "screen": "Views/Medico/Index.cshtml",
+      "module": "Medico",
+      "classes": [
+        "access-pill",
+        "agenda-summary",
+        "btn",
+        "cm-record-table",
+        "cm-record-table--doctors",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-kpi",
+        "cm25-kpi-grid",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "compact-summary",
+        "crud-v16",
+        "danger",
+        "doctor",
+        "entity-avatar",
+        "entity-cell",
+        "entity-sub",
+        "modern-table",
+        "row-action",
+        "row-actions",
+        "row-actions-cell",
+        "soft-pill",
+        "status-dot-pill",
+        "table",
+        "table-card",
+        "table-scroll",
+        "table-scroll-hint",
+        "v16-card",
+        "v16-card-head",
+        "v16-empty",
+        "v16-eyebrow",
+        "v16-page",
+        "v16-page-head",
+        "v16-stat",
+        "v16-table"
+      ],
+      "not_in_css": [
+        "cm-record-table--doctors",
+        "doctor"
+      ],
+      "linked_controllers": [
+        "Agenda"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 4177
+    },
+    {
+      "screen": "Views/Medico/_Form.cshtml",
+      "module": "Medico",
+      "classes": [
+        "btn",
+        "cm25-panel",
+        "doctor-form-section-v16",
+        "doctor-form-v16",
+        "doctor-section-head-v16",
+        "field",
+        "field-help",
+        "form-grid",
+        "full",
+        "schedule-add-time",
+        "schedule-chip-list",
+        "schedule-day-toggle-v16",
+        "schedule-day-v16",
+        "schedule-day-v16-body",
+        "schedule-day-v16-head",
+        "schedule-empty-hint",
+        "schedule-time-chip",
+        "schedule-toggle-ui",
+        "secondary",
+        "small",
+        "v16-card",
+        "v16-form-grid",
+        "v16-switch",
+        "v16-switch-row",
+        "validation",
+        "weekly-schedule-v16"
+      ],
+      "not_in_css": [
+        "doctor-form-v16"
+      ],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 3,
+      "inputs": 14,
+      "inline_styles": 0,
+      "size": 9139
+    },
+    {
+      "screen": "Views/MedicoAcesso/Gerenciar.cshtml",
+      "module": "MedicoAcesso",
+      "classes": [
+        "alert",
+        "btn",
+        "cm25-aside-card",
+        "cm25-form-aside",
+        "cm25-form-card",
+        "cm25-form-layout",
+        "cm25-form-main",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "cm25-sticky-actions",
+        "field",
+        "field-help",
+        "form-grid",
+        "full",
+        "secondary",
+        "validation"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Acessos",
+        "Medico"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 3,
+      "inline_styles": 0,
+      "size": 3061
+    },
+    {
+      "screen": "Views/MedicoPainel/Index.cshtml",
+      "module": "MedicoPainel",
+      "classes": [
+        "cm50-agenda-line",
+        "cm50-agenda-lines",
+        "cm50-availability",
+        "cm50-availability-grid",
+        "cm50-btn",
+        "cm50-btn-mint",
+        "cm50-compact",
+        "cm50-doctor",
+        "cm50-doctor-grid",
+        "cm50-doctor-hero",
+        "cm50-doctor-sidebar",
+        "cm50-empty",
+        "cm50-hero-actions",
+        "cm50-inline-link",
+        "cm50-intro",
+        "cm50-intro-tools",
+        "cm50-link-light",
+        "cm50-medical-actions",
+        "cm50-medical-row",
+        "cm50-minilink",
+        "cm50-overline",
+        "cm50-pill",
+        "cm50-progress-count",
+        "cm50-screen",
+        "cm50-sheet",
+        "cm50-sheet-heading",
+        "cm50-timeline",
+        "cm50-upcoming",
+        "cm50-upcoming-grid",
+        "cm50-week",
+        "status-pill"
+      ],
+      "not_in_css": [
+        "cm50-agenda-lines",
+        "cm50-doctor",
+        "cm50-timeline",
+        "cm50-upcoming"
+      ],
+      "linked_controllers": [
+        "HistoricoExames",
+        "Psicologia",
+        "Salas"
+      ],
+      "forms": 6,
+      "buttons": 6,
+      "inputs": 6,
+      "inline_styles": 0,
+      "size": 7273
+    },
+    {
+      "screen": "Views/MinhaConta/Edit.cshtml",
+      "module": "MinhaConta",
+      "classes": [
+        "btn",
+        "cm25-editor-shell",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "cm25-section-card",
+        "cm25-sticky-actions",
+        "cm25-toggle-row",
+        "date-select",
+        "field",
+        "form-grid",
+        "full",
+        "patient-form-section-body",
+        "patient-form-section-head",
+        "patient-form-section-icon",
+        "secondary",
+        "text-danger"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 10,
+      "inline_styles": 0,
+      "size": 3507
+    },
+    {
+      "screen": "Views/MinhaConta/Index.cshtml",
+      "module": "MinhaConta",
+      "classes": [
+        "btn",
+        "cm-account-actions",
+        "cm-account-avatar",
+        "cm-account-card",
+        "cm-account-card-head",
+        "cm-account-change-photo",
+        "cm-account-check",
+        "cm-account-empty",
+        "cm-account-errors",
+        "cm-account-events",
+        "cm-account-file",
+        "cm-account-heading",
+        "cm-account-hero",
+        "cm-account-insurance",
+        "cm-account-options",
+        "cm-account-page",
+        "cm-account-page-heading",
+        "cm-account-panel",
+        "cm-account-photo-actions",
+        "cm-account-photo-card",
+        "cm-account-photo-intro",
+        "cm-account-photo-preview",
+        "cm-account-readonly",
+        "cm-account-remove",
+        "cm-account-role",
+        "cm-account-session-list",
+        "cm-account-status",
+        "cm-account-tabs",
+        "cm-account-theme",
+        "cm25-page",
+        "cm25-screen",
+        "current",
+        "date-select",
+        "eyebrow",
+        "field",
+        "field-error",
+        "form-grid",
+        "full",
+        "secondary",
+        "small",
+        "sr-only",
+        "validation"
+      ],
+      "not_in_css": [
+        "current"
+      ],
+      "linked_controllers": [
+        "Privacidade"
+      ],
+      "forms": 8,
+      "buttons": 10,
+      "inputs": 25,
+      "inline_styles": 0,
+      "size": 14446
+    },
+    {
+      "screen": "Views/Operacao/Index.cshtml",
+      "module": "Operacao",
+      "classes": [
+        "btn",
+        "cm-intro-icon",
+        "cm-page-intro",
+        "cm-workspace",
+        "eyebrow",
+        "j-card",
+        "j-form",
+        "j-grid",
+        "jornada",
+        "secondary",
+        "table-wrap"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Jornada",
+        "Piloto"
+      ],
+      "forms": 1,
+      "buttons": 2,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 4640
+    },
+    {
+      "screen": "Views/Organizacao/Index.cshtml",
+      "module": "Organizacao",
+      "classes": [
+        "cm-area",
+        "cm-area-cards",
+        "cm-direction-icon",
+        "cm-directory-search",
+        "cm-funcao",
+        "cm-function-top",
+        "cm-intro-icon",
+        "cm-organizacao",
+        "cm-page-intro",
+        "eyebrow"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 1819
+    },
+    {
+      "screen": "Views/Paciente/Create.cshtml",
+      "module": "Paciente",
+      "classes": [
+        "btn",
+        "cm25-editor-shell",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "cm25-sticky-actions",
+        "patient-editor-page",
+        "patient-form-shell",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 983
+    },
+    {
+      "screen": "Views/Paciente/Delete.cshtml",
+      "module": "Paciente",
+      "classes": [
+        "btn",
+        "cm25-actions",
+        "cm25-confirm-card",
+        "cm25-confirm-icon",
+        "cm25-confirm-page",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "danger",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 980
+    },
+    {
+      "screen": "Views/Paciente/Details.cshtml",
+      "module": "Paciente",
+      "classes": [
+        "active",
+        "btn",
+        "cm19-card",
+        "cm19-card-head",
+        "cm19-data-card",
+        "cm19-data-list",
+        "cm19-empty",
+        "cm19-head-actions",
+        "cm19-history-card",
+        "cm19-patient-record",
+        "cm19-record-appointments",
+        "cm19-record-avatar",
+        "cm19-record-grid",
+        "cm19-record-head",
+        "cm19-record-profile",
+        "cm19-record-tabs",
+        "cm19-status",
+        "cm19-status-dot",
+        "cm21-patient-request-list",
+        "cm25-panel",
+        "cm25-screen",
+        "j-check",
+        "secondary",
+        "small"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Atendimento",
+        "Consulta",
+        "HistoricoExames",
+        "Solicitacoes"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 6905
+    },
+    {
+      "screen": "Views/Paciente/Edit.cshtml",
+      "module": "Paciente",
+      "classes": [
+        "btn",
+        "cm25-editor-shell",
+        "cm25-hero-actions",
+        "cm25-hero-copy",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "cm25-sticky-actions",
+        "patient-editor-page",
+        "patient-form-shell",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 1027
+    },
+    {
+      "screen": "Views/Paciente/Index.cshtml",
+      "module": "Paciente",
+      "classes": [
+        "agenda-summary",
+        "btn",
+        "cm-consult-pagination",
+        "cm-patient-summary",
+        "cm-record-table",
+        "cm-record-table--patients",
+        "cm-task-actions",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-kpi",
+        "cm25-kpi-grid",
+        "cm25-page",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "compact-summary",
+        "crud-v16",
+        "danger",
+        "entity-avatar",
+        "entity-cell",
+        "entity-sub",
+        "filter-toggle-link",
+        "modern-table",
+        "patient-toolbar",
+        "row-action",
+        "row-actions",
+        "row-actions-cell",
+        "secondary",
+        "soft-pill",
+        "status-dot-pill",
+        "table",
+        "table-card",
+        "table-scroll",
+        "table-scroll-hint",
+        "v16-card",
+        "v16-card-head",
+        "v16-empty",
+        "v16-eyebrow",
+        "v16-page",
+        "v16-page-head",
+        "v16-search-box",
+        "v16-search-form",
+        "v16-stat",
+        "v16-table"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 5363
+    },
+    {
+      "screen": "Views/Paciente/_Form.cshtml",
+      "module": "Paciente",
+      "classes": [
+        "cm-switch-control",
+        "cm-switch-copy",
+        "cm-switch-input",
+        "cm-switch-track",
+        "cm25-section-card",
+        "date-select",
+        "field",
+        "form-grid",
+        "full",
+        "patient-date-field",
+        "patient-form-section",
+        "patient-form-section-body",
+        "patient-form-section-head",
+        "patient-form-section-icon",
+        "patient-personal-grid",
+        "patient-section-contact",
+        "patient-section-insurance",
+        "patient-section-personal",
+        "patient-section-status",
+        "patient-status-body",
+        "patient-validity-field",
+        "status-toggle-field",
+        "toggle-field",
+        "toggle-field-label",
+        "validation"
+      ],
+      "not_in_css": [
+        "patient-status-body"
+      ],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 11,
+      "inline_styles": 0,
+      "size": 7319
+    },
+    {
+      "screen": "Views/Piloto/Index.cshtml",
+      "module": "Piloto",
+      "classes": [
+        "btn",
+        "cm-intro-icon",
+        "cm-page-intro",
+        "cm-workspace",
+        "eyebrow",
+        "j-actions",
+        "j-card",
+        "j-etapa",
+        "j-form",
+        "j-grid",
+        "jornada",
+        "secondary",
+        "table-wrap"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Operacao"
+      ],
+      "forms": 1,
+      "buttons": 2,
+      "inputs": 4,
+      "inline_styles": 0,
+      "size": 6384
+    },
+    {
+      "screen": "Views/Piloto/Medicao.cshtml",
+      "module": "Piloto",
+      "classes": [
+        "btn",
+        "cm-intro-icon",
+        "cm-page-intro",
+        "cm-workspace",
+        "eyebrow",
+        "j-card",
+        "j-check",
+        "j-fingerprint",
+        "j-form",
+        "jornada",
+        "secondary"
+      ],
+      "not_in_css": [
+        "j-fingerprint"
+      ],
+      "linked_controllers": [],
+      "forms": 2,
+      "buttons": 2,
+      "inputs": 18,
+      "inline_styles": 0,
+      "size": 6434
+    },
+    {
+      "screen": "Views/Privacidade/Gestao.cshtml",
+      "module": "Privacidade",
+      "classes": [
+        "btn",
+        "cm-empty-state",
+        "cm-guide-icon",
+        "cm-intro-icon",
+        "cm-page-intro",
+        "cm-workspace",
+        "eyebrow",
+        "j-card",
+        "j-check",
+        "j-form",
+        "jornada"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Jornada"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 5,
+      "inline_styles": 0,
+      "size": 2183
+    },
+    {
+      "screen": "Views/Privacidade/Index.cshtml",
+      "module": "Privacidade",
+      "classes": [
+        "btn",
+        "cm-action-panel",
+        "cm-empty-state",
+        "cm-guide-icon",
+        "cm-info-banner",
+        "cm-intro-icon",
+        "cm-numbered-steps",
+        "cm-page-intro",
+        "cm-panel-footnote",
+        "cm-privacy-guide",
+        "cm-request-meta",
+        "cm-section-heading",
+        "cm-status-pill",
+        "cm-text-preserve",
+        "cm-two-columns",
+        "cm-workspace",
+        "eyebrow",
+        "j-card",
+        "j-check",
+        "j-form",
+        "jornada"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "MinhaConta"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 3098
+    },
+    {
+      "screen": "Views/Psicologia/Acervo.cshtml",
+      "module": "Psicologia",
+      "classes": [
+        "btn",
+        "cm-intro-icon",
+        "cm-page-intro",
+        "cm-workspace",
+        "eyebrow",
+        "j-card",
+        "jornada"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 1,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 1680
+    },
+    {
+      "screen": "Views/Psicologia/Pep.cshtml",
+      "module": "Psicologia",
+      "classes": [
+        "btn",
+        "cm-action-panel",
+        "cm-export-form",
+        "cm-info-banner",
+        "cm-intro-icon",
+        "cm-page-intro",
+        "cm-panel-footnote",
+        "cm-status-pill",
+        "cm-summary-strip",
+        "cm-two-columns",
+        "cm-workspace",
+        "eyebrow",
+        "j-check",
+        "j-form",
+        "jornada",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 3,
+      "buttons": 3,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 2891
+    },
+    {
+      "screen": "Views/RecepcaoPendencias/Index.cshtml",
+      "module": "RecepcaoPendencias",
+      "classes": [
+        "btn",
+        "cm-page-intro",
+        "cm-simple-page",
+        "cm-workspace",
+        "eyebrow",
+        "j-actions",
+        "j-card",
+        "j-grid",
+        "secondary",
+        "table-wrap"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Atendimento",
+        "Checkin",
+        "Jornada",
+        "Solicitacoes"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 2133
+    },
+    {
+      "screen": "Views/Relatorios/Index.cshtml",
+      "module": "Relatorios",
+      "classes": [
+        "btn",
+        "cm21-channel-strip",
+        "cm21-report-challenge",
+        "cm21-report-channels",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page-hero",
+        "cm25-screen",
+        "secondary",
+        "v18-card",
+        "v18-card-header",
+        "v18-empty",
+        "v18-report-actions",
+        "v18-report-grid",
+        "v18-report-kpis",
+        "v18-report-list",
+        "v18-report-page",
+        "v18-specialty-item",
+        "v18-specialty-progress",
+        "v18-specialty-ranking"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Avaliacoes",
+        "Consulta",
+        "FuncionarioPainel"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 2,
+      "size": 4952
+    },
+    {
+      "screen": "Views/Salas/Index.cshtml",
+      "module": "Salas",
+      "classes": [
+        "alert",
+        "btn",
+        "cm-checkbox-label",
+        "cm-connection",
+        "cm-empty-state",
+        "cm-filter-bar",
+        "cm-form-grid",
+        "cm-muted",
+        "cm-online-actions",
+        "cm-online-card",
+        "cm-online-info",
+        "cm-online-list",
+        "cm-online-time",
+        "cm-page-actions",
+        "cm-page-heading",
+        "cm-presence",
+        "cm-presence-dot",
+        "cm-refresh-line",
+        "cm-room-block",
+        "cm-room-card",
+        "cm-room-create",
+        "cm-room-history",
+        "cm-room-icon",
+        "cm-room-resources",
+        "cm-room-schedule",
+        "cm-room-tools",
+        "cm-room-unassigned",
+        "cm-rooms-grid",
+        "cm-salas",
+        "cm-section-tabs",
+        "cm-status-pill",
+        "cm-summary-strip",
+        "cm-table-scroll",
+        "eyebrow",
+        "secondary",
+        "sr-only",
+        "warning"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Jornada"
+      ],
+      "forms": 5,
+      "buttons": 6,
+      "inputs": 21,
+      "inline_styles": 0,
+      "size": 10795
+    },
+    {
+      "screen": "Views/Shared/Components/Confirmacoes/Default.cshtml",
+      "module": "Shared",
+      "classes": [
+        "cm-confirm-all",
+        "cm-confirm-badge",
+        "cm-confirm-empty",
+        "cm-confirm-mini-actions",
+        "cm-confirm-mini-copy",
+        "cm-confirm-mini-icon",
+        "cm-confirm-mini-item",
+        "cm-confirm-mini-list",
+        "cm-confirm-popover",
+        "cm-confirm-popover-head",
+        "cm-confirm-primary",
+        "cm-confirm-trigger",
+        "cm-confirm-wrap",
+        "cm25-confirm-mini-item",
+        "cm25-confirm-popover",
+        "cm25-confirm-wrap",
+        "v18-icon-button",
+        "v18-notification-badge",
+        "v18-notification-button",
+        "v18-popover",
+        "v18-tool-wrap"
+      ],
+      "not_in_css": [
+        "cm25-confirm-mini-item"
+      ],
+      "linked_controllers": [
+        "Confirmacoes",
+        "Consulta",
+        "ListaEspera",
+        "Solicitacoes"
+      ],
+      "forms": 2,
+      "buttons": 3,
+      "inputs": 4,
+      "inline_styles": 0,
+      "size": 5156
+    },
+    {
+      "screen": "Views/Shared/Components/MenuConta/Default.cshtml",
+      "module": "Shared",
+      "classes": [
+        "cm-account-menu",
+        "cm-header-account",
+        "cm-profile-chevron",
+        "profile-copy",
+        "profile-trigger",
+        "user-avatar",
+        "v18-popover",
+        "v18-profile-wrap"
+      ],
+      "not_in_css": [
+        "cm-header-account"
+      ],
+      "linked_controllers": [
+        "MinhaConta"
+      ],
+      "forms": 1,
+      "buttons": 3,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 2040
+    },
+    {
+      "screen": "Views/Shared/_AssistenteFlutuante.cshtml",
+      "module": "Shared",
+      "classes": [
+        "btn",
+        "ia",
+        "mksan-ai-fab",
+        "mksan-ai-ring",
+        "mksan-ai-widget",
+        "mksan-ai-widget-actions",
+        "mksan-ai-widget-form",
+        "mksan-ai-widget-header",
+        "mksan-ai-widget-messages",
+        "mksan-fab",
+        "mksan-fab-logo",
+        "mksan-feedback-actions",
+        "mksan-feedback-card",
+        "mksan-feedback-comment",
+        "mksan-feedback-options",
+        "mksan-feedback-result",
+        "mksan-floating-actions",
+        "mksan-online-dot",
+        "mksan-widget-brand",
+        "mksan-widget-brand-copy",
+        "mksan-widget-brand-icon",
+        "mksan-widget-endbar",
+        "mksan-widget-status",
+        "secondary",
+        "visually-hidden"
+      ],
+      "not_in_css": [
+        "ia",
+        "mksan-ai-fab",
+        "mksan-ai-widget-messages",
+        "mksan-fab",
+        "mksan-feedback-result"
+      ],
+      "linked_controllers": [],
+      "forms": 2,
+      "buttons": 7,
+      "inputs": 3,
+      "inline_styles": 0,
+      "size": 4597
+    },
+    {
+      "screen": "Views/Shared/_AuthLayout.cshtml",
+      "module": "Shared",
+      "classes": [
+        "auth-legal-footer",
+        "identity-body"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Aplicativo"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 790
+    },
+    {
+      "screen": "Views/Shared/_DocumentHead.cshtml",
+      "module": "Shared",
+      "classes": [],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1249
+    },
+    {
+      "screen": "Views/Shared/_Layout.cshtml",
+      "module": "Shared",
+      "classes": [
+        "alert",
+        "app-brand",
+        "app-footer",
+        "app-header",
+        "app-header-inner",
+        "app-main",
+        "callmed-app",
+        "callmed-mobile-nav",
+        "cm-a11y-wrap",
+        "cm-caminho",
+        "cm-menu-conteudo",
+        "cm-module-search",
+        "cm-module-status",
+        "cm-search-shortcut",
+        "cm21-a11y-popover",
+        "cm50-app",
+        "error",
+        "eyebrow",
+        "guest-header",
+        "header-tools",
+        "icon-button",
+        "modules-dialog",
+        "primary-nav",
+        "skip-link",
+        "success",
+        "v18-icon-button",
+        "v18-popover",
+        "v18-tool-wrap",
+        "warning"
+      ],
+      "not_in_css": [
+        "cm-a11y-wrap",
+        "cm21-a11y-popover",
+        "guest-header"
+      ],
+      "linked_controllers": [
+        "Aplicativo",
+        "Home",
+        "Organizacao"
+      ],
+      "forms": 0,
+      "buttons": 13,
+      "inputs": 1,
+      "inline_styles": 0,
+      "size": 7990
+    },
+    {
+      "screen": "Views/Shared/_LoginPartial.cshtml",
+      "module": "Shared",
+      "classes": [
+        "cm25-link-button",
+        "cm25-login-links",
+        "link-button",
+        "login-links"
+      ],
+      "not_in_css": [
+        "cm25-link-button",
+        "cm25-login-links",
+        "link-button",
+        "login-links"
+      ],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 605
+    },
+    {
+      "screen": "Views/Shared/_MenuModulos.cshtml",
+      "module": "Shared",
+      "classes": [
+        "btn",
+        "cm-modulo-grupo",
+        "module-grid",
+        "nav-icon",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Organizacao"
+      ],
+      "forms": 0,
+      "buttons": 1,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1125
+    },
+    {
+      "screen": "Views/Shared/_NavegacaoPrincipal.cshtml",
+      "module": "Shared",
+      "classes": [
+        "cm-nav-full-label",
+        "cm-nav-short-label"
+      ],
+      "not_in_css": [
+        "cm-nav-full-label"
+      ],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1435
+    },
+    {
+      "screen": "Views/Shared/_NavegacaoTopo.cshtml",
+      "module": "Shared",
+      "classes": [],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 151
+    },
+    {
+      "screen": "Views/Shared/_OrientacoesConsulta.cshtml",
+      "module": "Shared",
+      "classes": [
+        "cm25-content-card",
+        "cm25-panel",
+        "v16-card"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 378
+    },
+    {
+      "screen": "Views/Shared/_PublicLayout.cshtml",
+      "module": "Shared",
+      "classes": [
+        "app-brand",
+        "btn",
+        "cm-direction-icon",
+        "public-body",
+        "public-footer",
+        "public-header",
+        "public-links",
+        "public-nav",
+        "skip-link"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Aplicativo",
+        "Home"
+      ],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 1267
+    },
+    {
+      "screen": "Views/Shared/_ValidationScriptsPartial.cshtml",
+      "module": "Shared",
+      "classes": [],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 116
+    },
+    {
+      "screen": "Views/Solicitacoes/Contingencia.cshtml",
+      "module": "Solicitacoes",
+      "classes": [
+        "cm25-screen"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 589
+    },
+    {
+      "screen": "Views/Solicitacoes/Create.cshtml",
+      "module": "Solicitacoes",
+      "classes": [
+        "btn",
+        "cm-requests-compose",
+        "cm-requests-compose-form",
+        "cm-requests-compose-intro",
+        "cm21-fieldset",
+        "cm21-form-actions",
+        "cm21-form-card",
+        "cm21-form-grid",
+        "cm21-form-page",
+        "cm21-full",
+        "cm21-page-head",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page-hero",
+        "cm25-screen",
+        "secondary",
+        "v16-eyebrow",
+        "validation"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 10,
+      "inline_styles": 0,
+      "size": 3705
+    },
+    {
+      "screen": "Views/Solicitacoes/Detalhes.cshtml",
+      "module": "Solicitacoes",
+      "classes": [
+        "active",
+        "alert",
+        "btn",
+        "clinic-aside-card",
+        "clinic-aside-icon",
+        "clinic-audit-panel",
+        "clinic-booking-confirmed",
+        "clinic-confirmed-icon",
+        "clinic-detail-hero",
+        "clinic-field",
+        "clinic-form-actions",
+        "clinic-form-intro",
+        "clinic-form-step",
+        "clinic-request-aside",
+        "clinic-request-details",
+        "clinic-request-form",
+        "clinic-request-layout",
+        "clinic-request-quick-actions",
+        "cm-direction-icon",
+        "cm-request-contact",
+        "cm-request-detail-avatar",
+        "cm-request-detail-summary",
+        "cm-request-next-step",
+        "cm-request-other-actions",
+        "cm-request-steps",
+        "cm-requests-detail",
+        "cm21-form-grid",
+        "cm21-form-page",
+        "cm21-page-head",
+        "cm25-hero-mark",
+        "cm25-kicker",
+        "cm25-page-hero",
+        "cm25-panel",
+        "cm25-screen",
+        "danger",
+        "full",
+        "info",
+        "secondary",
+        "status-pill",
+        "text-link",
+        "v16-card",
+        "validation"
+      ],
+      "not_in_css": [
+        "info"
+      ],
+      "linked_controllers": [
+        "Atendimento",
+        "Consulta"
+      ],
+      "forms": 4,
+      "buttons": 4,
+      "inputs": 10,
+      "inline_styles": 0,
+      "size": 9696
+    },
+    {
+      "screen": "Views/Solicitacoes/Index.cshtml",
+      "module": "Solicitacoes",
+      "classes": [
+        "btn",
+        "cm-direction-icon",
+        "cm-request-column",
+        "cm-request-column-count",
+        "cm-request-column-dot",
+        "cm-request-list",
+        "cm-request-stage-empty",
+        "cm-request-workspace",
+        "cm-requests-board",
+        "cm-requests-board-heading",
+        "cm-requests-channel-filter",
+        "cm-requests-closed",
+        "cm-requests-empty",
+        "cm-requests-filter-heading",
+        "cm-requests-filter-panel",
+        "cm-requests-filters",
+        "cm-requests-flow-note",
+        "cm-requests-hero",
+        "cm-requests-hero-actions",
+        "cm-requests-hero-icon",
+        "cm-requests-more",
+        "cm-requests-offline",
+        "cm-requests-offline-icon",
+        "cm-requests-organized",
+        "cm-requests-overview",
+        "cm-requests-result-note",
+        "cm-requests-screen",
+        "cm-requests-search",
+        "cm-requests-tab-empty",
+        "cm-requests-title",
+        "cm-task-link",
+        "cm21-request-page",
+        "cm25-page-hero",
+        "cm25-screen",
+        "eyebrow",
+        "secondary",
+        "text-link",
+        "visually-hidden"
+      ],
+      "not_in_css": [
+        "cm-task-link"
+      ],
+      "linked_controllers": [
+        "Consulta"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 3,
+      "inline_styles": 0,
+      "size": 8347
+    },
+    {
+      "screen": "Views/Solicitacoes/Tarefas.cshtml",
+      "module": "Solicitacoes",
+      "classes": [
+        "btn",
+        "cm-consult-heading",
+        "cm-task-actions",
+        "cm-task-card",
+        "cm-tasks-page",
+        "cm25-panel",
+        "cm25-screen",
+        "eyebrow",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Consulta"
+      ],
+      "forms": 2,
+      "buttons": 2,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 2033
+    },
+    {
+      "screen": "Views/Solicitacoes/_Card.cshtml",
+      "module": "Solicitacoes",
+      "classes": [
+        "btn",
+        "cm-direction-icon",
+        "cm-request-avatar",
+        "cm-request-booked",
+        "cm-request-card",
+        "cm-request-card-action",
+        "cm-request-card-meta",
+        "cm-request-channel",
+        "cm-request-completed-at",
+        "cm-request-consult-actions",
+        "cm-request-consult-status",
+        "cm-request-note",
+        "cm-request-origin-link",
+        "cm-request-person",
+        "cm-request-preferences",
+        "cm-request-protocol",
+        "secondary"
+      ],
+      "not_in_css": [],
+      "linked_controllers": [
+        "Atendimento",
+        "Consulta"
+      ],
+      "forms": 1,
+      "buttons": 1,
+      "inputs": 2,
+      "inline_styles": 0,
+      "size": 3743
+    },
+    {
+      "screen": "Views/_ViewImports.cshtml",
+      "module": "_ViewImports.cshtml",
+      "classes": [],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 194
+    },
+    {
+      "screen": "Views/_ViewStart.cshtml",
+      "module": "_ViewStart.cshtml",
+      "classes": [],
+      "not_in_css": [],
+      "linked_controllers": [],
+      "forms": 0,
+      "buttons": 0,
+      "inputs": 0,
+      "inline_styles": 0,
+      "size": 29
+    }
+  ]
+}

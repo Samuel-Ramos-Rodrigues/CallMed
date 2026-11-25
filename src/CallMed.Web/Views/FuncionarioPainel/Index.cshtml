@@ -1,0 +1,75 @@
+@model MKSANCrud.ViewModels.FuncionarioPainelViewModel
+@using System.Globalization
+@{
+    var admin = User.IsInRole("Admin");
+    ViewData["Title"] = admin ? "Inteligência da clínica" : "Mesa operacional";
+    var culturaPt = CultureInfo.GetCultureInfo("pt-BR");
+    var proximas = Model.ProximasConsultas.OrderBy(x => x.Data).ThenBy(x => x.Horario).Take(6).ToList();
+    var temDadosAgenda = Model.ConsultasPeriodoAgenda > 0;
+    var taxaConfirmacao = temDadosAgenda ? (int)Math.Round(Model.ConfirmadasPeriodoAgenda * 100.0 / Model.ConsultasPeriodoAgenda) : 0;
+    var taxaAguardando = temDadosAgenda ? (int)Math.Round(Model.AguardandoPeriodoAgenda * 100.0 / Model.ConsultasPeriodoAgenda) : 0;
+    var totalOutros = Math.Max(0, Model.ConsultasPeriodoAgenda - Model.ConfirmadasPeriodoAgenda - Model.AguardandoPeriodoAgenda);
+    var taxaOutros = temDadosAgenda ? Math.Max(0, 100 - taxaConfirmacao - taxaAguardando) : 0;
+    var rotuloPeriodo = Model.PeriodoAgenda switch
+    {
+        "hoje" => "hoje",
+        "proximos30" => "nos próximos 30 dias",
+        "proximos7" => "nos próximos 7 dias",
+        _ => "nos últimos 30 dias"
+    };
+}
+@if (admin)
+{
+<section class="cm9 cm9-admin" aria-labelledby="cm9-admin-title">
+  <header class="cm9-admin-banner"><div><span class="cm9-overline">ADMINISTRAÇÃO / INTELIGÊNCIA CLÍNICA</span><h1 id="cm9-admin-title">Inteligência da clínica<span class="cm9-title-dot">.</span></h1><p>Indicadores e prioridades para uma gestão mais eficiente.</p></div><a class="cm9-primary-btn" asp-controller="Relatorios" asp-action="Index">Gerar relatório ↗</a></header>
+  <section class="cm9-admin-filters" aria-label="Períodos dos indicadores"><span>▦ &nbsp; AGENDA: @Model.InicioPeriodoAgenda.ToString("dd/MM", culturaPt) a @Model.FimPeriodoAgenda.ToString("dd/MM", culturaPt) · VAGAS RECUPERADAS: MÊS ATUAL</span><a asp-controller="Operacao" asp-action="Index">Ver indicadores detalhados ↗</a></section>
+  <div class="cm9-admin-kpis" aria-label="Indicadores reais da clínica"><a asp-controller="Agenda" asp-action="Index"><span class="cm9-kpi-icon">▦</span><small>Consultas no período</small><strong>@Model.ConsultasPeriodoAgenda</strong><em>Agenda @rotuloPeriodo</em></a><a asp-controller="Confirmacoes" asp-action="Index"><span class="cm9-kpi-icon">✓</span><small>Confirmações no período</small><strong>@(temDadosAgenda ? $"{taxaConfirmacao}%" : "—")</strong><em>@Model.ConfirmadasPeriodoAgenda confirmadas ou remarcadas</em></a><a asp-controller="ListaEspera" asp-action="Index"><span class="cm9-kpi-icon">↗</span><small>Vagas recuperadas</small><strong>@Model.VagasRecuperadasListaEspera</strong><em>Neste mês · fila inteligente</em></a><a asp-controller="Atendimento" asp-action="Index"><span class="cm9-kpi-icon">☏</span><small>Conversas abertas</small><strong>@Model.ConversasAbertas</strong><em>Atual · Central de Atendimento</em></a></div>
+  <div class="cm9-admin-dashboard">
+    <section class="cm9-admin-chart" aria-labelledby="cm9-chart-title">
+      <div class="cm9-card-heading"><div><h2 id="cm9-chart-title">Situação da agenda</h2><p>Distribuição das consultas @rotuloPeriodo. Canceladas não entram no cálculo.</p></div><a asp-controller="Operacao" asp-action="Index">Analisar resultados ↗</a></div>
+      <form class="cm9-agenda-period" method="get" asp-controller="FuncionarioPainel" asp-action="Index" aria-label="Escolher período da situação da agenda">
+        <input type="hidden" name="dias" value="@Model.PeriodoDias" />
+        <label for="cm9-agenda-period-select">Período da agenda</label>
+        <select id="cm9-agenda-period-select" name="periodoAgenda">
+          <option value="hoje" selected="@(Model.PeriodoAgenda == "hoje")">Hoje</option>
+          <option value="proximos7" selected="@(Model.PeriodoAgenda == "proximos7")">Próximos 7 dias</option>
+          <option value="proximos30" selected="@(Model.PeriodoAgenda == "proximos30")">Próximos 30 dias</option>
+          <option value="ultimos30" selected="@(Model.PeriodoAgenda == "ultimos30")">Últimos 30 dias</option>
+        </select>
+        <button class="cm9-secondary-btn" type="submit">Aplicar</button>
+      </form>
+      <div class="cm9-chart-content">
+        @if (temDadosAgenda)
+        {
+          <div class="cm9-status-chart" role="img" aria-label="@taxaConfirmacao por cento confirmadas, @taxaAguardando por cento aguardando e @taxaOutros por cento em outros estados" style="--c1:@(taxaConfirmacao)%;--c2:@(taxaAguardando)%;"><span><strong>@taxaConfirmacao%</strong><small>confirmadas ou remarcadas</small></span></div>
+        }
+        else
+        {
+          <div class="cm9-chart-empty" role="status" aria-live="polite"><span class="cm9-chart-empty-icon" aria-hidden="true">▦</span><strong>Sem consultas neste período</strong><p>Não há consultas não canceladas @(rotuloPeriodo). Experimente outro período para consultar os agendamentos existentes.</p><span class="cm9-chart-empty-hint">O gráfico será exibido quando houver consultas.</span></div>
+        }
+        <div class="cm9-chart-legend">
+          <div><i class="cm9-legend-ok"></i><span>Confirmadas e remarcadas</span><strong>@Model.ConfirmadasPeriodoAgenda</strong></div>
+          <div><i class="cm9-legend-wait"></i><span>Aguardando</span><strong>@Model.AguardandoPeriodoAgenda</strong></div>
+          <div><i class="cm9-legend-other"></i><span>Outros estados</span><strong>@totalOutros</strong></div>
+          <p><strong>@Model.ConsultasPeriodoAgenda consultas</strong> de @Model.InicioPeriodoAgenda.ToString("dd/MM/yyyy") a @Model.FimPeriodoAgenda.ToString("dd/MM/yyyy"). Dados reais, sem estimativas.</p>
+        </div>
+      </div>
+    </section>
+    <aside class="cm9-admin-priorities" aria-labelledby="cm9-priorities-title"><div class="cm9-card-heading"><div><h2 id="cm9-priorities-title">Alertas e pendências</h2><p>O que merece atenção da equipe.</p></div></div><nav aria-label="Prioridades administrativas"><a asp-controller="RecepcaoPendencias" asp-action="Index"><span class="cm9-priority-icon cm9-priority-warn">!</span><span><strong>@Model.SolicitacoesPendentes solicitações pendentes</strong><small>@Model.SolicitacoesAtrasadas atrasadas</small></span><b>›</b></a><a asp-controller="Confirmacoes" asp-action="Index"><span class="cm9-priority-icon">✓</span><span><strong>@Model.AguardandoHoje aguardando confirmação hoje</strong><small>Confira a situação das consultas do dia</small></span><b>›</b></a><a asp-controller="ListaEspera" asp-action="Index"><span class="cm9-priority-icon">↗</span><span><strong>Fila inteligente</strong><small>@Model.VagasRecuperadasListaEspera vagas recuperadas</small></span><b>›</b></a></nav><a class="cm9-primary-btn cm9-block-btn" asp-controller="Organizacao" asp-action="Index">Abrir gestão da clínica ↗</a></aside>
+  </div>
+  <section class="cm9-admin-activity"><div class="cm9-section-top"><div><span class="cm9-overline">MOVIMENTAÇÃO DO DIA</span><h2>Próximos atendimentos</h2></div><a asp-controller="Agenda" asp-action="Index">Agenda completa ↗</a></div>@if (proximas.Any()) { <div class="cm9-activity-grid">@foreach (var c in proximas) { <a asp-controller="Jornada" asp-action="Consulta" asp-route-id="@c.Id"><time>@c.Horario</time><span><strong>@(c.Paciente?.Nome ?? "Paciente")</strong><small>@(c.Medico?.Nome ?? "Profissional")</small></span><em>@c.Status</em><b aria-hidden="true">›</b></a> }</div> } else { <p class="cm9-empty">Não há consultas nesta lista.</p> }</section>
+</section>
+}
+else
+{
+<section class="cm9 cm9-staff" aria-labelledby="cm9-staff-title">
+  <header class="cm9-page-heading cm9-staff-heading"><div><span class="cm9-overline">RECEPÇÃO / CENTRAL OPERACIONAL</span><h1 id="cm9-staff-title">Mesa operacional<span class="cm9-title-dot">.</span></h1><p>Organize a agenda, confirme consultas e acompanhe os atendimentos.</p></div><div class="cm9-heading-actions"><span class="cm9-day-pill">@Model.Hoje.ToString("dddd, dd/MM",culturaPt)</span><a class="cm9-primary-btn" asp-controller="Consulta" asp-action="Create">+ Novo agendamento</a></div></header>
+  <div class="cm9-staff-board">
+    <section class="cm9-staff-lane" aria-labelledby="cm9-pending-title"><header><div><span class="cm9-lane-symbol">▤</span><h2 id="cm9-pending-title">Pendências</h2></div><strong>@Model.SolicitacoesPendentes</strong></header><p>Solicitações e ajustes que precisam da equipe.</p><nav><a asp-controller="RecepcaoPendencias" asp-action="Index"><span>Exceções e chegadas<small>Prioridades da recepção</small></span><b>Resolver ›</b></a><a asp-controller="Solicitacoes" asp-action="Index"><span>Solicitações em análise<small>@Model.SolicitacoesAtrasadas atrasadas</small></span><b>Ver ›</b></a><a asp-controller="ListaEspera" asp-action="Index"><span>Fila de espera<small>Encontrar oportunidades de encaixe</small></span><b>Encaixar ›</b></a></nav></section>
+    <section class="cm9-staff-lane" aria-labelledby="cm9-confirm-title"><header><div><span class="cm9-lane-symbol cm9-green">✓</span><h2 id="cm9-confirm-title">Confirmações</h2></div><strong>@Model.AguardandoHoje</strong></header><p>Consultas de hoje e dos próximos dias.</p><nav><a asp-controller="Confirmacoes" asp-action="Index"><span>Aguardando resposta<small>@Model.AguardandoHoje confirmações</small></span><b>Confirmar ›</b></a><a asp-controller="Agenda" asp-action="Index"><span>Agenda diária<small>@Model.ConsultasHoje consultas previstas</small></span><b>Abrir ›</b></a><a asp-controller="Checkin" asp-action="Terminal"><span>Check-in digital<small>Chegada e presença dos pacientes</small></span><b>Conferir ›</b></a></nav></section>
+    <section class="cm9-staff-lane" aria-labelledby="cm9-priority-title"><header><div><span class="cm9-lane-symbol cm9-red">⚑</span><h2 id="cm9-priority-title">Atendimentos</h2></div><strong>@Model.ConversasAbertas</strong></header><p>Atendimentos que exigem acompanhamento.</p><nav><a asp-controller="Atendimento" asp-action="Index"><span>Conversas abertas<small>Equipe + assistente IA</small></span><b>Atender ›</b></a><a asp-controller="Salas" asp-action="Index" asp-route-aba="online"><span>Teleconsultas<small>Acompanhe as salas disponíveis</small></span><b>Abrir ›</b></a><a asp-controller="Paciente" asp-action="Index"><span>Pacientes<small>Dados e cadastro</small></span><b>Ver ›</b></a></nav></section>
+  </div>
+  <section class="cm9-message-hub"><div class="cm9-message-mark">✉</div><div><span class="cm9-overline">ATENDIMENTO CONECTADO</span><h2>Central de mensagens</h2><p>@Model.ConversasAbertas conversas abertas. O histórico e os controles de IA continuam na Central original.</p></div><a class="cm9-primary-btn" asp-controller="Atendimento" asp-action="Index">Abrir Central de Atendimento ↗</a></section>
+  <section class="cm9-staff-activity"><div class="cm9-section-top"><div><span class="cm9-overline">ROTINA DA RECEPÇÃO</span><h2>Próximas consultas</h2></div><a asp-controller="Agenda" asp-action="Index">Agenda completa ↗</a></div>@if(proximas.Any()) { <div class="cm9-activity-grid">@foreach(var c in proximas){ <a asp-controller="Jornada" asp-action="Consulta" asp-route-id="@c.Id"><time>@c.Horario</time><span><strong>@(c.Paciente?.Nome ?? "Paciente")</strong><small>@(c.Medico?.Nome ?? "Profissional")</small></span><em>@c.Status</em><b aria-hidden="true">›</b></a> }</div> } else { <p class="cm9-empty">Nenhuma consulta prevista nesta lista.</p> }</section>
+</section>
+}

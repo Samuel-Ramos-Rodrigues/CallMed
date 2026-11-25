@@ -1,0 +1,90 @@
+{
+  "timestamp": "2026-11-15",
+  "base": "V54.1",
+  "execution": [
+    {
+      "command": "node tests/css-integrity.cjs",
+      "ok": true,
+      "returncode": 0,
+      "stdout": "V54 palette: CallMed reference colors, V35-compatible layout, routes and PWA cache OK",
+      "stderr": ""
+    },
+    {
+      "command": "node tests/ux-contract.cjs",
+      "ok": true,
+      "returncode": 0,
+      "stdout": "UX contract OK: grouped tasks, original routes and one consultation journey.",
+      "stderr": ""
+    },
+    {
+      "command": "node tests/next/check-transport-state.cjs",
+      "ok": true,
+      "returncode": 0,
+      "stdout": "NEXT V54.1: structural regressions, session policy and Release metadata OK (not a .NET build)",
+      "stderr": ""
+    },
+    {
+      "command": "python scripts/check-css.py",
+      "ok": true,
+      "returncode": 0,
+      "stdout": "V35: CSS original e adaptadores, sem folhas extras carregadas.\nCompatibilidade para assistente, notificações, Android, avaliações e teleconsulta: OK",
+      "stderr": ""
+    },
+    {
+      "command": "python scripts/check-v35-classic-visual-contracts.py",
+      "ok": true,
+      "returncode": 0,
+      "stdout": "V54.1: green palette, V35-compatible components, 47 SVG symbols, 39 used; cache OK",
+      "stderr": ""
+    },
+    {
+      "command": "python scripts/check-architecture.py",
+      "ok": true,
+      "returncode": 0,
+      "stdout": "Auditoria estrutural: 0 problema(s).",
+      "stderr": ""
+    },
+    {
+      "command": "python scripts/auditar-views-callmed.py",
+      "ok": true,
+      "returncode": 0,
+      "stdout": "Páginas Razor analisadas: 109\nControllers encontrados: 51\nReferências MVC verificadas: 393\nRecursos estáticos verificados: 57\nProblemas de referência encontrados: 0",
+      "stderr": ""
+    },
+    {
+      "command": "python scripts/auditar-ux-paginas.py",
+      "ok": true,
+      "returncode": 0,
+      "stdout": "review: 13\n  data_driven_style: 3\n  INFO src/CallMed.Web/Views/Agenda/Index.cshtml:34 [data_driven_style] Valor calculado pelo servidor; conferir semântica e acessibilidade.\n  INFO src/CallMed.Web/Views/Consulta/_Form.cshtml:32 [conditional_id_review] ID \"convenioInfo\" reaparece em código Razor condicional; verificar no DOM.\n  INFO src/CallMed.Web/Views/Consulta/_Form.cshtml:83 [conditional_id_review] ID \"tipoPagamentoSelect\" reaparece em código Razor condicional; verificar no DOM.\n  INFO src/CallMed.Web/Views/FuncionarioPainel/Index.cshtml:15 [conditional_id_review] ID \"cm50-ops-title\" reaparece em código Razor condicional; verificar no DOM.\n  INFO src/CallMed.Web/Views/Home/Index.cshtml:24 [conditional_id_review] ID \"cm50-next-appointment\" reaparece em código Razor condicional; verificar no DOM.\n  INFO src/CallMed.Web/Views/Jornada/Tele.cshtml:33 [conditional_id_review] ID \"tele-motivo\" reaparece em código Razor condicional; verificar no DOM.\n  INFO src/CallMed.Web/Views/Jornada/Tele.cshtml:34 [conditional_id_review] ID \"tele-motivo\" reaparece em código Razor condicional; verificar no DOM.\n  INFO src/CallMed.Web/Views/Jornada/Tele.cshtml:35 [conditional_id_review] ID \"tele-motivo\" reaparece em código Razor condicional; verificar no DOM.\n  INFO src/CallMed.Web/Views/Jornada/Tele.cshtml:36 [conditional_id_review] ID \"tele-motivo\" reaparece em código Razor condicional; verificar no DOM.\n  INFO src/CallMed.Web/Views/Jornada/Tele.cshtml:37 [conditional_id_review] ID \"tele-motivo\" reaparece em código Razor condicional; verificar no DOM.\n  INFO src/CallMed.Web/Views/Jornada/Tele.cshtml:39 [conditional_id_review] ID \"tele-motivo\" reaparece em código Razor condicional; verificar no DOM.\n  INFO src/CallMed.Web/Views/Jornada/Tele.cshtml:48 [conditional_id_review] ID \"tele-motivo\" reaparece em código Razor condicional; verificar no DOM.\n  INFO src/CallMed.Web/Views/MedicoPainel/Index.cshtml:26 [conditional_id_review] ID \"cm50-next-title\" reaparece em código Razor condicional; verificar no DOM.\n  INFO src/CallMed.Web/Views/Relatorios/Index.cshtml:33 [data_driven_style] Valor calculado pelo servidor; conferir semântica e acessibilidade.\n  INFO src/CallMed.Web/Views/Relatorios/Index.cshtml:55 [data_driven_style] Valor calculado pelo servidor; conferir semântica e acessibilidade.\n  INFO src/CallMed.Web/Views/Shared/_Layout.cshtml:82 [conditional_id_review] ID \"conteudo\" reaparece em código Razor condicional; verificar no DOM.\nRelatório JSON: artifacts/ui-page-audit.json",
+      "stderr": ""
+    },
+    {
+      "command": "python scripts/auditar-next-atual.py",
+      "ok": true,
+      "returncode": 0,
+      "stdout": "{\"razor_views\": 109, \"identity_razor_pages\": 8, \"controllers_source_files\": 54, \"service_files\": 46, \"js_files\": 26, \"css_files\": 5, \"kotlin_files\": 19, \"dbset_declarations\": 46, \"has_index_declarations\": 91, \"web_api_controller_files\": 12}\nAPK integrity: True / modules: 11",
+      "stderr": ""
+    },
+    {
+      "command": "node --check (26 JavaScript)",
+      "ok": true,
+      "files": 26,
+      "failures": []
+    },
+    {
+      "command": "kotlinc SessionErrorPolicy.kt + SessionErrorPolicySmoke.kt; java -jar (built earlier)",
+      "ok": true,
+      "stdout": "OK: Kotlin V54.1 sessão mantém acesso em 403 e encerra em 401\n",
+      "stderr": ""
+    }
+  ],
+  "not_executed": [
+    "dotnet build",
+    "CallMed.Checks",
+    "PostgreSQL tests",
+    "Gradle Android full build",
+    "Playwright on authenticated app",
+    "actual channel providers",
+    "real phone or WebRTC"
+  ]
+}

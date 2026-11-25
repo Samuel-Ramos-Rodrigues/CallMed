@@ -1,0 +1,21 @@
+{
+  "version": "v54.1.5-clinic-r9",
+  "base": "r8",
+  "files_new": 961,
+  "added": [
+    "LEIA-ME-CALLMED-CLINIC-R9.md",
+    "src/CallMed.Web/wwwroot/css/callmed-clinic-r9.css",
+    "src/CallMed.Web/wwwroot/images/callmed-clinic-patient-hero.webp"
+  ],
+  "modified": [
+    "src/CallMed.Web/Views/FuncionarioPainel/Index.cshtml",
+    "src/CallMed.Web/Views/Home/Index.cshtml",
+    "src/CallMed.Web/Views/MedicoPainel/Index.cshtml",
+    "src/CallMed.Web/Views/Shared/_DocumentHead.cshtml",
+    "src/CallMed.Web/Views/Shared/_Layout.cshtml",
+    "src/CallMed.Web/wwwroot/service-worker.js"
+  ],
+  "removed": [],
+  "views": 106,
+  "qa": "static desktop/mobile (not Razor compile)"
+}

@@ -1,0 +1,25 @@
+@model MKSANCrud.ViewModels.MenuContaViewModel
+@{ var loginUrl = MKSANCrud.Services.Usuarios.PortaisAcesso.DoUsuario(User).UrlLogin; }
+<div class="v18-profile-wrap cm-header-account">
+    <button type="button" class="profile-trigger cm91-profile-trigger" data-popover-trigger="profile" aria-expanded="false" aria-controls="cm91-profile-panel" aria-label="Abrir meu perfil e configurações">
+        <span class="user-avatar" aria-hidden="true">
+            @if (Model.FotoVersao is Guid versao)
+            {
+                <img src="@Url.Action("Foto", "MinhaConta", new { v = versao })" alt="" width="36" height="36" decoding="async" data-header-avatar />
+            }
+            <span data-header-initials hidden="@Model.FotoVersao.HasValue">@Model.Iniciais</span>
+        </span>
+        <span class="profile-copy"><span>@Model.Nome</span><small>@Model.Papel</small></span>
+        <svg class="cm-profile-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4" /></svg>
+    </button>
+    <div id="cm91-profile-panel" class="v18-popover cm-account-menu cm91-profile-menu" data-popover="profile" aria-label="Menu do perfil" hidden>
+        <header class="cm91-profile-menu-header"><span class="cm91-panel-kicker">MINHA CONTA</span><strong>@Model.Nome</strong><span class="cm91-profile-role">@Model.Papel</span>@if (!string.Equals(Model.Nome, Model.Email, StringComparison.OrdinalIgnoreCase)) { <small>@Model.Email</small> }</header>
+        <div class="cm91-profile-menu-links" aria-label="Acesso à conta">
+            <a asp-controller="MinhaConta" asp-action="Index"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#user"></use></svg><span>Meu perfil<small>Informações e foto</small></span><span class="cm91-menu-arrow" aria-hidden="true">›</span></a>
+            <a asp-controller="MinhaConta" asp-action="Index" asp-route-aba="seguranca"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#shield-check"></use></svg><span>Segurança<small>Senha e dispositivos</small></span><span class="cm91-menu-arrow" aria-hidden="true">›</span></a>
+            <a asp-controller="MinhaConta" asp-action="Index" asp-route-aba="preferencias"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#settings"></use></svg><span>Preferências e acessibilidade<small>Tema, texto e contraste</small></span><span class="cm91-menu-arrow" aria-hidden="true">›</span></a>
+            <button type="button" data-pwa-install><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#download"></use></svg><span>Instalar aplicativo<small>Acesso rápido ao CallMed</small></span><span class="cm91-menu-arrow" aria-hidden="true">›</span></button>
+        </div>
+        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Content("~" + loginUrl)" method="post" data-mksan-logout><button type="submit"><svg aria-hidden="true"><use href="/icons/callmed-ui.svg#logout"></use></svg><span>Sair da conta</span></button></form>
+    </div>
+</div>

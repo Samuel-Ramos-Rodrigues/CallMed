@@ -1,0 +1,53 @@
+@* Evolução R3: comandos por contexto, sem novas rotas ou operações de gravação. *@
+@{
+    var area = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var paciente = User.IsInRole("Paciente");
+    var medico = User.IsProfissionalSaude();
+    var equipe = User.IsInRole("Funcionario") || User.IsInRole("Admin");
+    var administrador = User.IsInRole("Admin");
+    var fluxoPaciente = area is "Consulta" or "Jornada" or "ListaEspera" or "Checkin" or "Solicitacoes" or "HistoricoExames";
+    var fluxoMedico = area is "Jornada" or "Salas" or "Disponibilidade" or "Disponibilidades" or "Psicologia";
+    var fluxoRecepcao = area is "Atendimento" or "RecepcaoPendencias" or "Confirmacoes" or "Solicitacoes" or "ListaEspera" or "Agenda" or "Checkin" or "Salas" or "Consulta";
+    var fluxoGestao = area is "Organizacao" or "Relatorios" or "Operacao" or "Piloto" or "Integracoes" or "Configuracoes" or "Acessos" or "Auditoria" or "Convenios" or "Especialidade" or "Medico" or "Funcionario";
+}
+@if (paciente && fluxoPaciente)
+{
+    <nav class="cm58-context-route cm-r3-context-route" aria-label="Navegação da jornada do paciente">
+        <span class="cm58-context-label">Sua jornada</span>
+        <a class="@(area == "Consulta" ? "is-current" : "")" aria-current="@(area == "Consulta" ? "step" : null)" asp-controller="Consulta" asp-action="Create">1 · Escolher horário</a>
+        <a class="@(area == "Jornada" ? "is-current" : "")" aria-current="@(area == "Jornada" ? "step" : null)" asp-controller="Jornada" asp-action="Index">2 · Preparar consulta</a>
+        <a class="@(area == "ListaEspera" ? "is-current" : "")" aria-current="@(area == "ListaEspera" ? "step" : null)" asp-controller="ListaEspera" asp-action="Index">Fila de espera</a>
+        <a asp-controller="MinhaConta" asp-action="Index">Meus dados</a>
+    </nav>
+}
+else if (medico && fluxoMedico)
+{
+    <nav class="cm58-context-route cm-r3-context-route" aria-label="Próximas ações do profissional">
+        <span class="cm58-context-label">Seu atendimento</span>
+        <a asp-controller="MedicoPainel" asp-action="Index">Visão do dia</a>
+        <a class="@(area == "Jornada" ? "is-current" : "")" aria-current="@(area == "Jornada" ? "step" : null)" asp-controller="Jornada" asp-action="Index">Abrir consultas</a>
+        <a class="@(area == "Salas" ? "is-current" : "")" aria-current="@(area == "Salas" ? "step" : null)" asp-controller="Salas" asp-action="Index" asp-route-aba="online">Teleconsultas</a>
+        <a asp-controller="MedicoPainel" asp-action="Index" asp-fragment="meus-horarios">Meus horários</a>
+    </nav>
+}
+else if (equipe && fluxoRecepcao)
+{
+    <nav class="cm58-context-route cm-r3-context-route" aria-label="Fluxo de trabalho da recepção">
+        <span class="cm58-context-label">Operação diária</span>
+        <a class="@(area == "RecepcaoPendencias" ? "is-current" : "")" aria-current="@(area == "RecepcaoPendencias" ? "step" : null)" asp-controller="RecepcaoPendencias" asp-action="Index">1 · Chegadas e exceções</a>
+        <a class="@(area == "Confirmacoes" ? "is-current" : "")" aria-current="@(area == "Confirmacoes" ? "step" : null)" asp-controller="Confirmacoes" asp-action="Index">2 · Confirmações</a>
+        <a class="@(area == "Solicitacoes" ? "is-current" : "")" aria-current="@(area == "Solicitacoes" ? "step" : null)" asp-controller="Solicitacoes" asp-action="Index">3 · Solicitações</a>
+        <a class="@(area == "ListaEspera" ? "is-current" : "")" aria-current="@(area == "ListaEspera" ? "step" : null)" asp-controller="ListaEspera" asp-action="Index">4 · Encaixes</a>
+        <a class="@(area == "Atendimento" ? "is-current" : "")" aria-current="@(area == "Atendimento" ? "step" : null)" asp-controller="Atendimento" asp-action="Index">Mensagens</a>
+    </nav>
+}
+else if (administrador && fluxoGestao)
+{
+    <nav class="cm58-context-route cm-r3-context-route" aria-label="Áreas relacionadas à gestão">
+        <span class="cm58-context-label">Gestão da clínica</span>
+        <a class="@(area == "Organizacao" ? "is-current" : "")" aria-current="@(area == "Organizacao" ? "step" : null)" asp-controller="Organizacao" asp-action="Index">Todas as áreas</a>
+        <a class="@(area is "Operacao" or "Relatorios" or "Piloto" ? "is-current" : "")" aria-current="@(area is "Operacao" or "Relatorios" or "Piloto" ? "step" : null)" asp-controller="Operacao" asp-action="Index">Indicadores</a>
+        <a class="@(area == "Integracoes" ? "is-current" : "")" aria-current="@(area == "Integracoes" ? "step" : null)" asp-controller="Integracoes" asp-action="Index">Canais</a>
+        <a class="@(area == "Auditoria" ? "is-current" : "")" aria-current="@(area == "Auditoria" ? "step" : null)" asp-controller="Auditoria" asp-action="Index">Auditoria</a>
+    </nav>
+}

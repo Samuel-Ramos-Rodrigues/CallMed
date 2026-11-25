@@ -1,0 +1,8 @@
+CallMed | Projeto organizado
+
+Abra README.md nesta pasta. Ele contém o mapa do projeto e as instruções por tarefa.
+
+Site e API: abra CallMed.sln.
+Android Studio: abra mobile/android.
+APK para download no site: src/CallMed.Web/App_Data/Aplicativo.
+Para criar a nova chave e assinar o APK no Windows, abra ASSINAR-CALLMED.bat nesta pasta. Instruções em mobile/android/NOVA-ASSINATURA.md.

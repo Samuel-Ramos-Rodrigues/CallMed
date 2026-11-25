@@ -1,0 +1,37 @@
+@model MKSANCrud.Controllers.PendenciasRecepcaoPage
+@{ ViewData["Title"] = "Pendências de hoje"; }
+<section class="cm-workspace cm-simple-page r3-reception r4-reception r5-reception-backlog" aria-labelledby="pendencias-titulo">
+    <header class="r3-reception-head">
+        <div><span class="r4-eyebrow">RECEPÇÃO / PLANO DO DIA</span><h1 id="pendencias-titulo">Sua fila de prioridades.</h1><p>Você cuida das exceções. O check-in e as confirmações automáticas continuam funcionando.</p></div>
+        <a class="r3-primary-action" asp-controller="Consulta" asp-action="Create">+ Novo agendamento</a>
+    </header>
+    <div class="r3-reception-metrics r4-reception-metrics">
+        <a asp-controller="Agenda" asp-action="Index"><span>CONSULTAS DO DIA</span><strong>@Model.ConsultasHoje</strong><small>Ver agenda completa ↗</small></a>
+        <a asp-controller="Checkin" asp-action="Terminal"><span>CHEGADAS REGISTRADAS</span><strong>@Model.ChegadasConfirmadas</strong><small>Check-in e presença ↗</small></a>
+        <a asp-controller="Salas" asp-action="Index" asp-route-aba="online"><span>CHECK-INS ONLINE</span><strong>@Model.ProntosOnline</strong><small>Acompanhar teleconsultas ↗</small></a>
+        <div class="r3-reception-metric-alert"><span>PRECISAM DE AÇÃO</span><strong>@Model.Pendencias.Count</strong><small>Exceções do atendimento</small></div>
+    </div>
+    <div class="r3-reception-layout r4-reception-board">
+        <section class="r3-content-card r3-reception-queue" aria-labelledby="r3-exception-title">
+            <div class="r3-card-heading"><div><span class="r3-overline">FILA DE PRIORIDADES</span><h2 id="r3-exception-title">Exceções para resolver</h2><p>Abra a consulta para conferir e concluir a etapa pendente.</p></div><a class="r3-outline-button" asp-action="Index">Atualizar ↻</a></div>
+            @if (Model.Pendencias.Count == 0)
+            {
+                <div class="r3-empty-state"><strong>Nenhuma pendência nas etapas verificadas.</strong><p>Os demais atendimentos podem seguir pelo fluxo automático.</p></div>
+            }
+            else
+            {
+                <div class="r3-exception-list" role="list">
+                    @foreach (var i in Model.Pendencias)
+                    {
+                        <article class="r3-exception-item" role="listitem">
+                            <div class="r3-exception-time"><strong>@i.Horario</strong><small>Horário</small></div>
+                            <div><strong>@i.Paciente</strong><small>Profissional: @i.Profissional</small><p>@i.Motivo</p></div>
+                            <a class="r3-outline-button" asp-controller="Jornada" asp-action="Consulta" asp-route-id="@i.ConsultaId">Ver consulta ↗</a>
+                        </article>
+                    }
+                </div>
+            }
+        </section>
+        <aside class="r3-content-card r3-reception-aside"><span class="r3-overline">PRÓXIMAS AÇÕES</span><h2>Continue a operação</h2><nav aria-label="Ações da recepção"><a asp-controller="Checkin" asp-action="Terminal"><strong>Exibir QR de chegada</strong><small>Recepção e check-in digital</small><span>↗</span></a><a asp-controller="Solicitacoes" asp-action="Tarefas"><strong>Ligações e tarefas</strong><small>Demandas que precisam de retorno</small><span>↗</span></a><a asp-controller="Atendimento" asp-action="Index"><strong>Central de Atendimento</strong><small>WhatsApp, e-mail, SMS e site</small><span>↗</span></a><a asp-controller="ListaEspera" asp-action="Index"><strong>Fila inteligente</strong><small>Ocupar horários liberados</small><span>↗</span></a></nav></aside>
+    </div>
+</section>

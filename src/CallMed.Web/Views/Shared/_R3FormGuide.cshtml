@@ -1,0 +1,27 @@
+@* R3: orientações de CRUD para telas de cadastro existentes. Sem criar rotas ou alterar formulário. *@
+@{
+    var modulo = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var operacao = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    var podeOrientar = User.IsInRole("Admin") || User.IsInRole("Funcionario");
+    var cadastro = modulo is "Paciente" or "Medico" or "Funcionario" or "Especialidade" or "Disponibilidade" or "Consulta" or "Solicitacoes" or "ListaEspera" or "MinhaConta";
+    var modo = operacao switch
+    {
+        "Create" => "Novo cadastro",
+        "Edit" => "Editar cadastro",
+        "Details" => "Detalhes do registro",
+        "Delete" => "Exclusão de registro",
+        _ => ""
+    };
+}
+@if (podeOrientar && cadastro && !string.IsNullOrEmpty(modo))
+{
+    <aside class="r3-crud-guide r4-crud-guide @(operacao == "Delete" ? "is-danger" : "")" aria-label="Orientações para @modo">
+        <div>
+            <span class="r4-eyebrow">FORMULÁRIO / @modulo</span><strong class="r4-form-title">@modo</strong>
+            @if (operacao == "Delete") { <p>Confira cuidadosamente o registro antes de confirmar a exclusão. Esta ação pode afetar a operação da clínica.</p> }
+            else if (operacao == "Details") { <p>Revise informações e situação do cadastro antes de voltar à lista.</p> }
+            else { <p>Preencha ou revise os campos obrigatórios. O sistema continua validando e salvando pelas regras originais.</p> }
+        </div>
+        <a asp-controller="@modulo" asp-action="Index">Voltar à lista <span aria-hidden="true">↗</span></a>
+    </aside>
+}

@@ -1,0 +1,112 @@
+﻿Caminho;Perfil;Tipo;Escopo real;Validação
+Areas/Identity/Pages/Account/AccessDenied.cshtml;Login / Cadastro / Recuperação;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Areas/Identity/Pages/Account/ForgotPassword.cshtml;Login / Cadastro / Recuperação;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Areas/Identity/Pages/Account/Login.cshtml;Login / Cadastro / Recuperação;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Areas/Identity/Pages/Account/Logout.cshtml;Login / Cadastro / Recuperação;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Areas/Identity/Pages/Account/Register.cshtml;Login / Cadastro / Recuperação;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Areas/Identity/Pages/Account/ResetPasswordConfirmation.cshtml;Login / Cadastro / Recuperação;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Areas/Identity/Pages/_ViewImports.cshtml;Login / Cadastro / Recuperação;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Areas/Identity/Pages/_ViewStart.cshtml;Login / Cadastro / Recuperação;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Acessos/Index.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Agenda/Index.cshtml;Atendente / Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Aplicativo/Index.cshtml;Público / Todos;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Atendimento/Index.cshtml;Atendente / Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Atendimento/Nova.cshtml;Atendente / Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Atendimento/_CanalIcon.cshtml;Atendente / Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Auditoria/Index.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Avaliacoes/Index.cshtml;Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Checkin/Abrir.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Checkin/Terminal.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Configuracoes/Index.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Confirmacoes/Index.cshtml;Atendente / Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Consulta/Create.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Consulta/Details.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Consulta/Edit.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Consulta/Equipe.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Consulta/Index.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Consulta/Remarcar.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Consulta/_Form.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Consulta/_ListaEquipe.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Convenios/Index.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Disponibilidade/Create.cshtml;Médico / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Disponibilidade/Delete.cshtml;Médico / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Disponibilidade/Details.cshtml;Médico / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Disponibilidade/Edit.cshtml;Médico / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Disponibilidade/Index.cshtml;Médico / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Disponibilidade/_Form.cshtml;Médico / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Disponibilidades/Index.cshtml;Médico / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Especialidade/Create.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Especialidade/Edit.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Especialidade/Index.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Especialidade/_Form.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Funcionario/Create.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Funcionario/Delete.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Funcionario/Details.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Funcionario/Edit.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Funcionario/Index.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Funcionario/_Form.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/FuncionarioPainel/Index.cshtml;Atendente / Administrador;Alteração direta;Atalhos de decisões administrativas + CSS R2;Build + teste autenticado pendentes
+Views/HistoricoExames/Index.cshtml;Paciente / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/HistoricoExames/Pendentes.cshtml;Paciente / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Home/Error.cshtml;Paciente / Público;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Home/Index.cshtml;Paciente / Público;Alteração direta;Etapas de jornada do paciente + CSS R2;Build + teste autenticado pendentes
+Views/Home/Privacidade.cshtml;Paciente / Público;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Home/TermosDeUso.cshtml;Paciente / Público;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Integracoes/Index.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Jornada/Acao.cshtml;Paciente / Médico / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Jornada/Consulta.cshtml;Paciente / Médico / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Jornada/Index.cshtml;Paciente / Médico / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Jornada/LinkIndisponivel.cshtml;Paciente / Médico / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Jornada/Tele.cshtml;Paciente / Médico / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Jornada/TeleNaoEncontrada.cshtml;Paciente / Médico / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/ListaEspera/Create.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/ListaEspera/Index.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Medico/Create.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Medico/Delete.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Medico/Details.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Medico/Edit.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Medico/Index.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Medico/_Form.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/MedicoAcesso/Gerenciar.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/MedicoPainel/Index.cshtml;Médico;Alteração direta;Atalhos de rotina médica + CSS R2;Build + teste autenticado pendentes
+Views/MinhaConta/Edit.cshtml;Todos;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/MinhaConta/Index.cshtml;Todos;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Operacao/Index.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Organizacao/Index.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Paciente/Create.cshtml;Atendente / Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Paciente/Delete.cshtml;Atendente / Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Paciente/Details.cshtml;Atendente / Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Paciente/Edit.cshtml;Atendente / Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Paciente/Index.cshtml;Atendente / Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Paciente/_Form.cshtml;Atendente / Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Piloto/Index.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Piloto/Medicao.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Privacidade/Gestao.cshtml;Paciente / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Privacidade/Index.cshtml;Paciente / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Psicologia/Acervo.cshtml;Médico / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Psicologia/Pep.cshtml;Médico / Administração;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/RecepcaoPendencias/Index.cshtml;Atendente / Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Relatorios/Index.cshtml;Administrador;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Salas/Index.cshtml;Médico / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Shared/Components/Confirmacoes/Default.cshtml;Compartilhado;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Shared/Components/MenuConta/Default.cshtml;Compartilhado;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Shared/_AssistenteFlutuante.cshtml;Compartilhado;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Shared/_AuthLayout.cshtml;Compartilhado;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Shared/_DocumentHead.cshtml;Compartilhado;Alteração direta;Versão e link CSS R2;Build + teste autenticado pendentes
+Views/Shared/_FluxoContextual.cshtml;Compartilhado;Nova parcial;Partial nova, navegação contextual;Build + teste autenticado pendentes
+Views/Shared/_Layout.cshtml;Compartilhado;Alteração direta;Navegação contextual + dados de módulo + CSS R2;Build + teste autenticado pendentes
+Views/Shared/_LoginPartial.cshtml;Compartilhado;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Shared/_MenuModulos.cshtml;Compartilhado;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Shared/_NavegacaoPrincipal.cshtml;Compartilhado;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Shared/_NavegacaoTopo.cshtml;Compartilhado;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Shared/_OrientacoesConsulta.cshtml;Compartilhado;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Shared/_PublicLayout.cshtml;Compartilhado;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Shared/_ValidationScriptsPartial.cshtml;Compartilhado;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Solicitacoes/Contingencia.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Solicitacoes/Create.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Solicitacoes/Detalhes.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Solicitacoes/Index.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Solicitacoes/Tarefas.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/Solicitacoes/_Card.cshtml;Paciente / Equipe;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/_ViewImports.cshtml;Autenticação Identity;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes
+Views/_ViewStart.cshtml;Autenticação Identity;CSS compartilhado;Ajuste via tokens e componentes globais (sem reescrever view);Build + teste autenticado pendentes

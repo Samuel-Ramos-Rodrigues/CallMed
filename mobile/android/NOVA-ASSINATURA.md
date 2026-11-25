@@ -1,0 +1,9 @@
+# Assinar o APK 54.1.4 com a nova chave da clínica
+
+1. Extraia o projeto em uma pasta nova no PC que guardará a chave. Use o Android Studio com o SDK 36 e Build-Tools 36.0.0 instalados. Na primeira execução, o Gradle poderá baixar dependências.
+2. Na pasta que contém CallMed.sln, abra [ASSINAR-CALLMED.bat](../../ASSINAR-CALLMED.bat). Digite uma senha nova e confirme. Ao digitar, o terminal mantém a senha oculta.
+3. Guarde a senha em um gerenciador de senhas e faça backup do arquivo `%USERPROFILE%\.callmed\assinatura\callmed-site.p12` em local privado. O alias é `callmed-site`. Se repetir o comando, ele abre a chave existente e solicita a senha. Ao usar outro PC, restaure a mesma chave nesse caminho antes de executar o assinador.
+4. Após a mensagem de sucesso, confira `versao: 54.1.4` no release.json. Publique este projeto no fluxo habitual do site, incluindo juntos `src/CallMed.Web/App_Data/Aplicativo/CallMed.apk` e `release.json` da mesma pasta. A página /aplicativo passará a orientar a reinstalação a quem usa a versão 50. Antes da assinatura local, o pacote ainda contém o par oficial 50.0.0.
+5. Na primeira instalação da nova edição sobre um aparelho que usa a versão 50, confira acesso à conta e a cópia das chaves clínicas de quem usou a preparação protegida. Depois desinstale a versão antiga, instale a nova pelo site e entre novamente. Pessoas que instalaram pela primeira vez podem abrir o app normalmente.
+
+Para versões futuras, use a mesma chave. Para compilar alterações de código via GERAR-APK-NATIVO, indique o arquivo .p12 em storeFile, o alias callmed-site e a senha criada nos campos storePassword e keyPassword do seu keystore.properties local. Publique sempre a pasta de distribuição que já contém a última versão liberada, para que o Gradle confira o certificado de origem. O procedimento de migração aceita a troca de certificado somente a partir do APK oficial 50.0.0 incluído nesta entrega.

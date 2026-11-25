@@ -1,0 +1,35 @@
+@{
+  var r5controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+  var r5patient = User.IsInRole("Paciente");
+  var r5admin = User.IsInRole("Admin");
+  var r5medico = User.IsProfissionalSaude();
+}
+@if (User.Identity?.IsAuthenticated == true && r5controller != "Home" && r5controller != "FuncionarioPainel" && r5controller != "MedicoPainel" && r5controller != "Atendimento")
+{
+<nav class="r5-workflow-nav" aria-label="Caminhos rápidos do seu perfil">
+  <span class="r5-workflow-mark">WORKSPACE <span aria-hidden="true">/</span> @(r5patient ? "CUIDADO" : r5admin ? "GESTÃO" : r5medico ? "CLÍNICA" : "RECEPÇÃO")</span>
+  <div class="r5-workflow-links">
+  @if(r5patient){
+    <a asp-controller="Consulta" asp-action="Create" aria-current="@(r5controller == "Consulta" ? "page" : null)">Agendar</a>
+    <a asp-controller="Jornada" asp-action="Index" aria-current="@(r5controller == "Jornada" ? "page" : null)">Consultas</a>
+    <a asp-controller="ListaEspera" asp-action="Index" aria-current="@(r5controller == "ListaEspera" ? "page" : null)">Fila de espera</a>
+    <a asp-controller="MinhaConta" asp-action="Index" aria-current="@(r5controller == "MinhaConta" ? "page" : null)">Minha conta</a>
+  }else if(r5medico){
+    <a asp-controller="MedicoPainel" asp-action="Index">Meu dia</a>
+    <a asp-controller="Jornada" asp-action="Index" aria-current="@(r5controller == "Jornada" ? "page" : null)">Jornada</a>
+    <a asp-controller="Salas" asp-action="Index" asp-route-aba="online" aria-current="@(r5controller == "Salas" ? "page" : null)">Teleconsulta</a>
+    <a asp-controller="MinhaConta" asp-action="Index" aria-current="@(r5controller == "MinhaConta" ? "page" : null)">Meu perfil</a>
+  }else if(r5admin){
+    <a asp-controller="FuncionarioPainel" asp-action="Index">Visão geral</a>
+    <a asp-controller="Agenda" asp-action="Index" aria-current="@(r5controller == "Agenda" ? "page" : null)">Agenda</a>
+    <a asp-controller="Operacao" asp-action="Index" aria-current="@(r5controller == "Operacao" ? "page" : null)">Indicadores</a>
+    <a asp-controller="Organizacao" asp-action="Index" aria-current="@(r5controller == "Organizacao" ? "page" : null)">Gestão</a>
+  }else{
+    <a asp-controller="RecepcaoPendencias" asp-action="Index" aria-current="@(r5controller == "RecepcaoPendencias" ? "page" : null)">Pendências</a>
+    <a asp-controller="Agenda" asp-action="Index" aria-current="@(r5controller == "Agenda" ? "page" : null)">Agenda</a>
+    <a asp-controller="Confirmacoes" asp-action="Index" aria-current="@(r5controller == "Confirmacoes" ? "page" : null)">Confirmações</a>
+    <a asp-controller="Atendimento" asp-action="Index">Conversas</a>
+  }
+  </div>
+</nav>
+}

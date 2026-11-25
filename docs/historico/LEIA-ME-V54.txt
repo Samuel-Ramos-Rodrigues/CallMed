@@ -1,0 +1,20 @@
+CALLMED V54 — PALETA VERDE DA REFERÊNCIA + NAVEGAÇÃO MAIS FLUIDA
+
+BASE: Projeto completo CallMed V53 com estética V35; nenhuma funcionalidade do backend foi retirada.
+CORES: #FFFFFF, #16202A, #4A5763, #0B5E4F, #E8F4F1, #C9D3DB.
+NAVEGAÇÃO: foco/hover/seleção mais claros, transições suaves, Enter e setas na busca Ctrl+K, PWA atualizado.
+
+APLICAR O PATCH
+1) Faça backup do projeto V53 que você usa.
+2) Extraia este ZIP na RAIZ do repositório, preservando subpastas e substituindo os arquivos.
+3) Teste: node tests/css-integrity.cjs e node tests/ux-contract.cjs.
+4) Para produção, compile e teste .NET e perfis antes do deploy.
+5) Atualize o PWA e use Ctrl+Shift+R no navegador depois do deploy.
+
+IMPORTANTE
+- O PATCH pressupõe a base V53 (não uma versão antiga da master).
+- Para instalação do zero, use o ZIP de projeto completo V54 em vez do patch.
+- O APK Release V50 do projeto foi preservado, NÃO foi recompilado.
+- A prévia visual foi renderizada com dados fictícios; ainda são necessários testes com logins reais.
+- Não houve merge no GitHub nem deploy no Render.
+- Não contém arquivos .jks nem senhas.

@@ -1,0 +1,33 @@
+{
+  "base": "R7 Studio",
+  "new_version": "v54.1.5-revolution-r8",
+  "added": [
+    "LEIA-ME-CALLMED-REVOLUTION-R8.md",
+    "src/CallMed.Web/Views/Shared/_R8Context.cshtml",
+    "src/CallMed.Web/wwwroot/css/callmed-revolution-r8.css"
+  ],
+  "modified": [
+    "src/CallMed.Web/Views/Atendimento/Index.cshtml",
+    "src/CallMed.Web/Views/FuncionarioPainel/Index.cshtml",
+    "src/CallMed.Web/Views/Home/Index.cshtml",
+    "src/CallMed.Web/Views/MedicoPainel/Index.cshtml",
+    "src/CallMed.Web/Views/Shared/_DocumentHead.cshtml",
+    "src/CallMed.Web/Views/Shared/_Layout.cshtml",
+    "src/CallMed.Web/wwwroot/service-worker.js"
+  ],
+  "removed": [],
+  "backend_changed": [],
+  "tests": {
+    "postcss": true,
+    "service_worker_node_check": true,
+    "flow_contracts": true,
+    "ux_contract": true,
+    "controller_routes": true,
+    "desktop_mobile_static_layout": "4 sample screens at widths 1440 and 390; no horizontal overflow"
+  },
+  "limitations": [
+    "No .NET SDK available for compile",
+    "No live authenticated R8 tests",
+    "Not all internal Razor views individually rebuilt"
+  ]
+}
